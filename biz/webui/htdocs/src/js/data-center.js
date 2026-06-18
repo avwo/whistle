@@ -9,6 +9,9 @@ var message = require('./message');
 
 var showSysErr = util.showSysErr;
 var updateWorkers = workers.updateWorkers;
+var isFunc = util.isFunc;
+var isStr = util.isStr;
+var notEStr = util.notEStr;
 var createCgi = createCgiObj.createCgi;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
@@ -475,14 +478,14 @@ var certs = createCgiObj(
 exports.certs = certs;
 
 exports.uploadCerts = function (data, cb) {
-  if (typeof data !== 'string') {
+  if (!isStr(data)) {
     data = JSON.stringify(data);
   }
   return certs.upload(data, function (data, xhr) {
     if (!data) {
       return showSysErr(xhr);
     }
-    if (typeof cb === 'function') {
+    if (isFunc(cb)) {
       cb(data);
     } else {
       events.trigger('showCustomCerts');
@@ -532,7 +535,7 @@ exports.installPluginsFromService = function (plugins, registry) {
   if (!plugins || !exports.whistleId) {
     return;
   }
-  plugins = util.isString(plugins) ? plugins.trim().split(/\s*,\s*/) : (Array.isArray(plugins) ? plugins : []);
+  plugins = isStr(plugins) ? plugins.trim().split(/\s*,\s*/) : (Array.isArray(plugins) ? plugins : []);
   plugins = plugins.map(function(p) {
     return p.indexOf('/') === -1 ? exports.whistleId + '/' + p : p;
   }).join();
@@ -614,7 +617,7 @@ var composeParallel = createCompose();
 var composeInner = createCompose(true);
 
 function handleCompose(data, cb, options, handler) {
-  if (typeof data !== 'string') {
+  if (!isStr(data)) {
     data = JSON.stringify(data);
   }
   return handler(data, cb, options);
@@ -1453,7 +1456,7 @@ function getReqId() {
 exports.getReqId = getReqId;
 
 exports.onComposeData = function(reqId, cb) {
-  var index = util.isString(reqId) && typeof cb === 'function' ? reqId.indexOf(clientId + '/') : -1;
+  var index = isStr(reqId) && isFunc(cb) ? reqId.indexOf(clientId + '/') : -1;
   if (index) {
     return;
   }
@@ -1798,7 +1801,7 @@ var PROTOCOL_RE = /^(?:https?|wss?):\/\//;
 
 function checkUrl(data) {
   var url = data && data.url;
-  if (!url || typeof url !== 'string' || url.indexOf('#') !== -1) {
+  if (!notEStr(url) || url.indexOf('#') !== -1) {
     return false;
   }
   if (data.isHttps) {
@@ -1835,7 +1838,7 @@ exports.addNetworkList = function (list) {
     delete data.data;
     delete data.stopRecordFrames;
     delete data.pauseRecordFrames;
-    if (!util.isString(data.fwdHost)) {
+    if (!isStr(data.fwdHost)) {
       delete data.fwdHost;
     }
     if (Array.isArray(data.frames)) {
@@ -1977,28 +1980,21 @@ exports.getServerInfo = function () {
 
 exports.on = function (type, callback) {
   startLoadData();
+  if (!isFunc(callback)) {
+    return;
+  }
   if (type == 'data') {
-    if (typeof callback == 'function') {
-      dataCallbacks.push(callback);
-      callback(networkModal);
-    }
+    dataCallbacks.push(callback);
+    callback(networkModal);
   } else if (type == 'serverInfo') {
-    if (typeof callback == 'function') {
-      serverInfoCallbacks.push(callback);
-    }
+    serverInfoCallbacks.push(callback);
   } else if (type == 'log') {
-    if (typeof callback == 'function') {
-      logCallbacks.push(callback);
-      callback(logList, svrLogList);
-    }
+    logCallbacks.push(callback);
+    callback(logList, svrLogList);
   } else if (type === 'plugins' || type === 'settings' || type === 'rules') {
-    if (typeof callback == 'function') {
-      directCallbacks.push(callback);
-    }
+    directCallbacks.push(callback);
   } else if (type == 'framesUpdate') {
-    if (typeof callback == 'function') {
-      framesUpdateCallbacks.push(callback);
-    }
+    framesUpdateCallbacks.push(callback);
   }
 };
 
@@ -2192,7 +2188,7 @@ exports.showLatestClientVersion = function() {
 };
 
 function toString(options) {
-  return typeof options === 'string' ? options : JSON.stringify(options);
+  return isStr(options) ? options : JSON.stringify(options);
 }
 
 function triggerWhistleIdChanged(server, byServer) {

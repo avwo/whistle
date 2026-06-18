@@ -12,7 +12,7 @@ var pluginColsMap = {};
 var appNameMap = {};
 
 function getAppName(appName) {
-  if (!appName || typeof appName !== 'string') {
+  if (!util.notEStr(appName)) {
     return appName;
   }
   var result = appNameMap[appName];
@@ -398,7 +398,7 @@ exports.getDragger = function () {
         var fromName = e.dataTransfer.getData('-' + COLUMN_TYPE_PREFIX);
         moveTo(fromName, info.toName);
         info.target.style.background = '';
-        if (typeof this.onColumnsResort === 'function') {
+        if (util.isFunc(this.onColumnsResort)) {
           this.onColumnsResort();
         }
       }

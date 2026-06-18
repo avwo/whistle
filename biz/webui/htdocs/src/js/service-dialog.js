@@ -39,7 +39,7 @@ var ServiceDialog = React.createClass({
       return serviceApi;
     }
     fn = serviceApi[fn];
-    return typeof fn === 'function' ? fn.bind(serviceApi) : null;
+    return util.isFunc(fn) ? fn.bind(serviceApi) : null;
   },
   showService: function (_, path) {
     var self = this;

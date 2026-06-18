@@ -13,6 +13,7 @@ var BackToBottomBtn = require('./back-to-bottom-btn');
 var LogMixin = require('./log-mixin');
 
 var VIEW_KEY =  window.Symbol ? window.Symbol('view') : 'view';
+var isStr = util.isStr;
 
 function parseLog(log, expandRoot) {
   if (log[VIEW_KEY]) {
@@ -22,15 +23,15 @@ function parseLog(log, expandRoot) {
     var logText = [];
     var data = JSON.parse(log.text);
     var hasNonStr = data.some(function (obj) {
-      return typeof obj !== 'string' || obj === 'undefined';
+      return !isStr(obj) || obj === 'undefined';
     });
     log[VIEW_KEY] = data.map(function (data) {
-      if (typeof data === 'string' && data !== 'undefined') {
+      if (isStr(data) && data !== 'undefined') {
         data = hasNonStr ? '"' + data + '"' : data;
         logText.push(data);
         return <ExpandCollapse text={data} />;
       }
-      if (!data || typeof data !== 'object') {
+      if (!util.isObj(data)) {
         data = String(data);
         logText.push(data);
         return (

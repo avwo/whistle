@@ -1,5 +1,6 @@
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
+var util = require('./util');
 
 var CopyBtn = React.createClass({
   getInitialState: function () {
@@ -13,7 +14,7 @@ var CopyBtn = React.createClass({
   },
   handleText: function () {
     var value = this.props.value;
-    if (typeof value === 'function') {
+    if (util.isFunc(value)) {
       findDOMNode(this.refs.btn).setAttribute('data-clipboard-text', value() || '');
     }
   },

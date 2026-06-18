@@ -68,8 +68,9 @@ var JSONDialog = React.createClass({
       return;
     }
     var self = this;
-    var history = self.state.history;
-    var historyIndex = self.state.historyIndex;
+    var state = self.state;
+    var history = state.history;
+    var historyIndex = state.historyIndex;
     var len = history.length;
     if (historyIndex == null) {
       historyIndex = len - 1;
@@ -87,7 +88,7 @@ var JSONDialog = React.createClass({
         history.splice(0, overLen);
       }
     }
-    self.state.historyIndex = historyIndex;
+    state.historyIndex = historyIndex;
     self._show(text, keyPath, session);
   },
   _show: function (text, keyPath, session) {

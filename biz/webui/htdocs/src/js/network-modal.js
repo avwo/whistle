@@ -18,6 +18,7 @@ var MEDIA_RE = /audio\/|video\/|application\/vnd.apple.mpegurl|application\/dash
 var WASM_RE = /application\/wasm/i;
 var TYPES = ['Img', 'HTML', 'CSS', 'JS', 'JSON'];
 var RAW_TYPES = ['Font', 'Media', 'Wasm'];
+var isStr = util.isStr;
 
 function NetworkModal(list) {
   this.list = updateOrder(list);
@@ -54,7 +55,7 @@ var proto = NetworkModal.prototype;
  */
 
 function parseKeyword(keyword) {
-  keyword = typeof keyword != 'string' ? '' : keyword.trim();
+  keyword = util.trimStr(keyword);
   if (!keyword) {
     return;
   }
@@ -83,7 +84,7 @@ function parseKeyword(keyword) {
 }
 
 function parseKeywordList(keyword) {
-  keyword = typeof keyword != 'string' ? '' : keyword.trim();
+  keyword = util.trimStr(keyword);
   if (!keyword) {
     return;
   }
@@ -200,10 +201,7 @@ function checkItem(item, opts) {
   case 't':
     var type = item.res.headers;
     type = type && type['content-type'];
-    return setNot(
-        !(typeof type == 'string' && checkKeywork(type, opts)),
-        opts.not
-      );
+    return setNot(!(isStr(type) && checkKeywork(type, opts)), opts.not);
   case 'domain':
   case 'host':
   case 'd':
@@ -485,7 +483,7 @@ proto.updateDisplayCount = function () {
 };
 proto.getDisplayCount = function () {
   var winName = window.name;
-  if (typeof winName !== 'string' || winName.indexOf(WIN_NAME_PRE) !== 0) {
+  if (!isStr(winName) || winName.indexOf(WIN_NAME_PRE) !== 0) {
     return 0;
   }
   var count = parseInt(winName.substring(WIN_NAME_PRE.length));

@@ -18,6 +18,8 @@ var EnabledRulesDialog = require('./enabled-rules');
 var Icon = require('./icon');
 
 var showSysErr = util.showSysErr;
+var isFunc = util.isFunc;
+var isStr = util.isStr;
 var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var rulesCtxMenuList = [
@@ -96,7 +98,7 @@ function getTarget(e) {
 }
 
 function getName(name) {
-  if (typeof name !== 'string') {
+  if (!isStr(name)) {
     return '';
   }
   return name.substring(name.indexOf('_') + 1);
@@ -137,7 +139,7 @@ $(document).on('drop', function () {
 });
 
 function getSuffix(name) {
-  if (typeof name != 'string') {
+  if (!isStr(name)) {
     return '';
   }
   var index = name.lastIndexOf('.');
@@ -295,7 +297,7 @@ var List = React.createClass({
   onClick: function (item) {
     var self = this;
     if (
-      typeof self.props.onActive != 'function' ||
+      !isFunc(self.props.onActive) ||
       self.props.onActive(item) !== false
     ) {
       var modal = self.props.modal;
@@ -335,15 +337,15 @@ var List = React.createClass({
       ? self.onUnselect(item)
       : self.onSelect(item);
     var onDoubleClick = self.props.onDoubleClick;
-    typeof onDoubleClick == 'function' && onDoubleClick(item);
+    isFunc(onDoubleClick) && onDoubleClick(item);
   },
   onSelect: function (data) {
     var onSelect = this.props.onSelect;
-    typeof onSelect == 'function' && onSelect(data);
+    isFunc(onSelect) && onSelect(data);
   },
   onUnselect: function (data) {
     var onUnselect = this.props.onUnselect;
-    typeof onUnselect == 'function' && onUnselect(data);
+    isFunc(onUnselect) && onUnselect(data);
   },
   onChange: function (e) {
     var modal = this.props.modal;
@@ -396,6 +398,7 @@ var List = React.createClass({
   },
   onDrop: function (e) {
     var self = this;
+    var props = self.props;
     var info = getDragInfo(e, self.refs.list);
     e.stopPropagation();
     if (info) {
@@ -410,12 +413,12 @@ var List = React.createClass({
       info.target.style.background = '';
       var toTop = self.isRules() && toName === 'Default';
       if (toTop) {
-        toName = self.props.modal.list[1];
+        toName = props.modal.list[1];
         params.to = toName;
         params.toTop = true;
       }
-      if (self.props.modal.moveTo(fromName, toName, group, toTop)) {
-        var name = self.props.name === 'rules' ? 'rules' : 'values';
+      if (props.modal.moveTo(fromName, toName, group, toTop)) {
+        var name = props.name === 'rules' ? 'rules' : 'values';
         dataCenter[name].moveTo(params, function (data, xhr) {
           if (!data) {
             showSysErr(xhr);
@@ -490,31 +493,33 @@ var List = React.createClass({
   },
   onClickContextMenu: function (action, e, parentAction, menuName) {
     var self = this;
-    var name = self.props.name === 'rules' ? 'Rules' : 'Values';
+    var props = self.props;
+    var name = props.name === 'rules' ? 'Rules' : 'Values';
+    var currentFocusItem = self.currentFocusItem;
     switch (parentAction || action) {
     case 'CreateRule':
-      events.trigger('showAddRulesDialog', [null, self.currentFocusItem]);
+      events.trigger('showAddRulesDialog', [null, currentFocusItem]);
       break;
     case 'TempFile':
       events.trigger('showEditorDialog');
       break;
     case 'TestRules':
-      events.trigger('showTestRuleDialog', {ruleItem: self.currentFocusItem});
+      events.trigger('showTestRuleDialog', {ruleItem: currentFocusItem});
       break;
     case 'Save':
-      events.trigger('save' + name, self.currentFocusItem);
+      events.trigger('save' + name, currentFocusItem);
       break;
     case 'Rename':
-      events.trigger('rename' + name, self.currentFocusItem);
+      events.trigger('rename' + name, currentFocusItem);
       break;
     case 'Delete':
-      events.trigger('delete' + name, self.currentFocusItem);
+      events.trigger('delete' + name, currentFocusItem);
       break;
     case 'Rule':
-      events.trigger('createRules', [self.getCurGroup(), self.currentFocusItem]);
+      events.trigger('createRules', [self.getCurGroup(), currentFocusItem]);
       break;
     case 'Key':
-      events.trigger('createValues', [self.getCurGroup(), self.currentFocusItem]);
+      events.trigger('createValues', [self.getCurGroup(), currentFocusItem]);
       break;
     case 'Export':
       events.trigger('exportData');
@@ -526,16 +531,15 @@ var List = React.createClass({
       self.showRecycleBin(name);
       break;
     case 'Validate':
-      var item = self.currentFocusItem;
-      if (item) {
-        if (JSON_RE.test(item.value)) {
+      if (currentFocusItem) {
+        if (JSON_RE.test(currentFocusItem.value)) {
           try {
-            JSON.parse(item.value);
+            JSON.parse(currentFocusItem.value);
             message.success('Valid JSON object');
           } catch (e) {
             message.error(
                 'Warning: Invalid JSON format in the value of \'' +
-                item.name + '\'. ' +  e.message
+                currentFocusItem.name + '\'. ' +  e.message
               );
           }
         } else {
@@ -544,31 +548,30 @@ var List = React.createClass({
       }
       break;
     case 'Format':
-      self.formatJson(self.currentFocusItem);
+      self.formatJson(currentFocusItem);
       break;
     case 'Inspect':
-      if (self.currentFocusItem) {
-        events.trigger('showJsonViewDialog', self.currentFocusItem.value);
+      if (currentFocusItem) {
+        events.trigger('showJsonViewDialog', currentFocusItem.value);
       }
       break;
     case 'Help':
-      window.open(util.getDocUrl('gui/' + (self.props.name || 'values') + '.html'));
+      window.open(util.getDocUrl('gui/' + (props.name || 'values') + '.html'));
       break;
     case 'Plugins':
-      var modal = self.props.modal;
-      var activeItem = self.currentFocusItem;
+      var modal = props.modal;
       iframes.fork(action, {
         port: dataCenter.getPort(),
-        type: self.props.name === 'rules' ? 'rules' : 'values',
+        type: props.name === 'rules' ? 'rules' : 'values',
         name: menuName,
         list: modal && modal.getList(),
-        activeItem: activeItem,
+        activeItem: currentFocusItem,
         selectedItem: modal && modal.getActive(),
         setValue: function(value) {
           value = value || '';
-          if (activeItem && value != activeItem.value) {
-            activeItem.changed = true;
-            activeItem.value = value;
+          if (currentFocusItem && value != currentFocusItem.value) {
+            currentFocusItem.changed = true;
+            currentFocusItem.value = value;
             events.trigger('updateGlobal');
           }
         }
@@ -577,16 +580,16 @@ var List = React.createClass({
     }
   },
   triggerChange: function (type) {
-    var self = this;
-    var data = self.props.modal.data;
-    var list = self.props.modal.list.map(function (name) {
+    var props = this.props;
+    var data = props.modal.data;
+    var list = props.modal.list.map(function (name) {
       var item = data[name];
       return {
         name: name,
         value: (item && item.value) || ''
       };
     });
-    util.triggerListChange(self.props.name || 'values', {
+    util.triggerListChange(props.name || 'values', {
       type: type,
       url: location.href,
       list: list
@@ -760,10 +763,10 @@ var List = React.createClass({
   },
   render: function () {
     var self = this;
-    var modal = self.props.modal;
+    var props = self.props;
+    var modal = props.modal;
     var list = modal.list;
     var data = modal.data;
-    var props = self.props;
     var disabled = props.disabled;
     var filterText = self.state.filterText;
     var isRules = self.isRules();
@@ -870,7 +873,7 @@ var List = React.createClass({
             <EnabledRulesDialog ref="enabledRulesDialog" />
           </div>
           <Editor
-            {...self.props}
+            {...props}
             onChange={self.onChange}
             readOnly={!activeItem || activeItem.hide || disabledEditor}
             value={activeItem.hide ? '' : activeItem.value}

@@ -74,10 +74,11 @@ var TEXT_SUFFIX_RE = /[\w-]\.(?:txt|csv|tsv|json|xml|yaml|yml|ini|conf|log|html|
 var findDOMNode = ReactDOM.findDOMNode;
 var getHideStyle = util.getHideStyle;
 var showSysErr = util.showSysErr;
-
-function trimStr(url) {
-  return util.getString(url).trim();
-}
+var isFunc = util.isFunc;
+var isStr = util.isStr;
+var notEStr = util.notEStr;
+var trimStr = util.trimStr;
+var getStr = util.getString;
 
 function isTextFile(url) {
   if (!TEXT_SUFFIX_RE.test(url)) {
@@ -205,7 +206,7 @@ function getJsonForm(data, name) {
 }
 
 function readFileJson(file, cb) {
-  if (util.isString(file)) {
+  if (isStr(file)) {
     if (file.length > MAX_OBJECT_SIZE) {
       win.alert('File exceeds maximum size limit');
       return cb();
@@ -268,7 +269,7 @@ function getPageName(options) {
 function parseJSON(text) {
   try {
     var obj = JSON.parse(text);
-    return obj && typeof obj === 'object' ? obj : null;
+    return util.isObj(obj) ? obj : null;
   } catch (e) {
     message.error(e.message);
   }
@@ -496,7 +497,7 @@ var Index = React.createClass({
     dataCenter.rulesModal = rulesModal;
     dataCenter.exportSessions = function(sessions, opts, name) {
       var type;
-      if (typeof opts === 'string') {
+      if (isStr(opts)) {
         type = opts;
       } else if (opts) {
         type = opts.type;
@@ -505,7 +506,7 @@ var Index = React.createClass({
       if (type === 'saz' || type === 'fiddler') {
         type = 'Fiddler';
       }
-      if (typeof name !== 'string') {
+      if (!isStr(name)) {
         name = '';
       }
       self.exportSessions(type, name, sessions);
@@ -690,7 +691,8 @@ var Index = React.createClass({
   showKVDialog: function(data, isValues) {
     if (data) {
       var self = this;
-      self.refs.syncDialog.showKVDialog(data, self.state.rules, self.state.values, isValues);
+      var state = self.state;
+      self.refs.syncDialog.showKVDialog(data, state.rules, state.values, isValues);
     }
   },
   createPluginsOptions: function (plugins) {
@@ -768,8 +770,9 @@ var Index = React.createClass({
         active: selectedName === item.name
       };
     });
-    var changed = quite && updateData(valuesList, valuesData, self.state.values);
-    self.state.values.reset(valuesList, valuesData);
+    var values = self.state.values;
+    var changed = quite && updateData(valuesList, valuesData, values);
+    values.reset(valuesList, valuesData);
     self.setState({});
     return changed;
   },
@@ -1066,7 +1069,7 @@ var Index = React.createClass({
       self.showValues();
     });
     events.on('showPlugins', function (_, name) {
-      if (name && typeof name === 'string') {
+      if (notEStr(name)) {
         self.setState({ active: 'Home' });
         setTimeout(function() {
           events.trigger('highlightPlugin', name);
@@ -1102,7 +1105,7 @@ var Index = React.createClass({
         return util.openInNewWin(text);
       }
       try {
-        if (editorWin && typeof editorWin.setValue === 'function') {
+        if (editorWin && isFunc(editorWin.setValue)) {
           window.getTextFromWhistle_ = null;
           self.refs.editorWin.show();
           return editorWin.setValue(text);
@@ -1315,7 +1318,7 @@ var Index = React.createClass({
         if (iframe) {
           try {
             var win = iframe.contentWindow;
-            if (win && typeof win.onWhistleFileDrop === 'function') {
+            if (win && isFunc(win.onWhistleFileDrop)) {
               return win.onWhistleFileDrop(file);
             }
           } catch (e) {
@@ -1402,7 +1405,7 @@ var Index = React.createClass({
         if (e.keyCode == 27) {
           self.setMenuOptionsState();
           var dialog = $('.modal');
-          if (typeof dialog.modal == 'function') {
+          if (isFunc(dialog.modal)) {
             dialog.modal('hide');
           }
         }
@@ -1998,7 +2001,7 @@ var Index = React.createClass({
     });
     try {
       var onReady = window.parent.onWhistleReady;
-      if (typeof onReady === 'function') {
+      if (isFunc(onReady)) {
         var selectItem = function(item) {
           var modal = item && self.state.network;
           var index = modal && modal.getList().indexOf(item);
@@ -2204,7 +2207,8 @@ var Index = React.createClass({
     var result = [];
     var activeList = [];
     var selectedList = [];
-    var modal = this.state.rules;
+    var state = this.state;
+    var modal = state.rules;
     modal.list.forEach(function (name) {
       var item = modal.get(name);
       var value = item.value || '';
@@ -2216,7 +2220,7 @@ var Index = React.createClass({
         result.push(value);
       }
     });
-    modal = this.state.values;
+    modal = state.values;
     modal.list.forEach(function (name) {
       if (/\.rules$/.test(name)) {
         result.push(modal.get(name).value);
@@ -2367,7 +2371,7 @@ var Index = React.createClass({
           self._isAtBottom = false;
           self.autoRefresh && self.autoRefresh();
         }
-        if (typeof cb === 'function') {
+        if (isFunc(cb)) {
           cb();
         }
       }
@@ -2725,14 +2729,15 @@ var Index = React.createClass({
   closePluginTab: function (e) {
     var name = $(e.target).attr('data-name');
     var self = this;
-    var tabs = self.state.tabs || [];
+    var state = self.state;
+    var tabs = state.tabs || [];
     for (var i = 0, len = tabs.length; i < len; i++) {
       if (tabs[i].name == name) {
         tabs.splice(i, 1);
-        var active = self.state.active;
+        var active = state.active;
         if (active == name) {
           var plugin = tabs[i] || tabs[i - 1];
-          self.state.active = plugin ? plugin.name : null;
+          state.active = plugin ? plugin.name : null;
         }
         self.setState({
           tabs: tabs
@@ -3234,15 +3239,16 @@ var Index = React.createClass({
   },
   reselectRules: function (data, autoUpdate) {
     var self = this;
-    self.state.rules.clearAllSelected();
+    var state = self.state;
+    state.rules.clearAllSelected();
     self.setSelected(
-      self.state.rules,
+      state.rules,
       'Default',
       !data.defaultRulesIsDisabled,
       autoUpdate
     );
     data.list.forEach(function (name) {
-      self.setSelected(self.state.rules, name, true, autoUpdate);
+      self.setSelected(state.rules, name, true, autoUpdate);
     });
   },
   saveValues: function (item) {
@@ -3605,7 +3611,7 @@ var Index = React.createClass({
         if (data && data.ec === 0) {
           state.disabledAllRules = checked;
           self.setState({});
-          if (typeof callback === 'function') {
+          if (isFunc(callback)) {
             callback(checked);
           }
         } else {
@@ -3626,7 +3632,7 @@ var Index = React.createClass({
           state.disabledAllPlugins = checked;
           protocols.setPlugins(state);
           self.setState({});
-          if (typeof callback === 'function') {
+          if (isFunc(callback)) {
             callback(checked);
           }
         } else {
@@ -3722,7 +3728,7 @@ var Index = React.createClass({
   showChooseFileType: function (filename) {
     this._chooseFileTypeDialog.modal('show');
     var input = findDOMNode(this.refs.sessionsName);
-    if (filename && typeof filename === 'string') {
+    if (notEStr(filename)) {
       input.value = filename;
     }
     setTimeout(function () {
@@ -3739,7 +3745,7 @@ var Index = React.createClass({
     });
   },
   importHarSessions: function (result) {
-    if (!result || typeof result !== 'object') {
+    if (!util.isObj(result)) {
       return;
     }
     var entries = result.log.entries;
@@ -3797,18 +3803,19 @@ var Index = React.createClass({
       return;
     }
     var isHar = type === 'har';
+    var version = self.state.version;
     if (isHar) {
       sessions = {
         log: {
           version: '1.2',
           creator: {
             name: 'Whistle',
-            version: self.state.version,
+            version: version,
             comment: ''
           },
           browser: {
             name: 'Whistle',
-            version: self.state.version
+            version: version
           },
           pages: [],
           entries: sessions.map(util.toHar),
@@ -4000,15 +4007,15 @@ var Index = React.createClass({
     }
   },
   download: function(data) {
-    if (!data || !(util.isString(data.content) ||
-      util.isString(data.value) || util.isString(data.base64))) {
+    if (!data || !(isStr(data.content) ||
+      isStr(data.value) || isStr(data.base64))) {
       return;
     }
-    var base64 = util.getString(data.base64);
+    var base64 = getStr(data.base64);
     var self = this;
-    findDOMNode(self.refs.filename).value = util.getString(data.name);
+    findDOMNode(self.refs.filename).value = getStr(data.name);
     findDOMNode(self.refs.dataType).value = base64 ? 'rawBase64' : '';
-    findDOMNode(self.refs.content).value = base64 || util.getString(data.value|| data.content);
+    findDOMNode(self.refs.content).value = base64 || getStr(data.value|| data.content);
     findDOMNode(self.refs.downloadForm).submit();
   },
   getTabName: function () {

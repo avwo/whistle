@@ -96,7 +96,7 @@ var Timeline = React.createClass({
               request += 'ms';
               var protocol = item.protocol;
               if (
-                typeof protocol === 'string' &&
+                util.isStr(protocol) &&
                 protocol.indexOf('>') !== -1
               ) {
                 var diffTime = item.httpsTime - item.startTime;

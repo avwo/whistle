@@ -14,9 +14,10 @@ var TabMgr = React.createClass({
   componentDidMount: function () {
     var self = this;
     events.on('setComposer', function () {
-      var modal = !self.props.hide && self.props.modal;
+      var props = self.props;
+      var modal = !props.hide && props.modal;
       if (modal) {
-        var elem = self.refs[self.props.active];
+        var elem = self.refs[props.active];
         elem && elem.compose(modal);
       }
     });

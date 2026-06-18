@@ -4,15 +4,17 @@ var message = require('./message');
 var util = require('./util');
 var Icon = require('./icon');
 
+var isFunc = util.isFunc;
+
 var ShareBtn = React.createClass({
   save: function() {
     var props = this.props;
     var getData = props.getData;
-    if (typeof getData === 'function') {
+    if (isFunc(getData)) {
       return getData(this.handleData);
     }
     var data = props.data;
-    if (typeof data === 'function') {
+    if (isFunc(data)) {
       data = data();
     }
     this.handleData(data);
@@ -23,12 +25,12 @@ var ShareBtn = React.createClass({
     var type = props.type + 'Share';
     dataCenter.saveToService({
       type: type,
-      filename: typeof props.getFilename === 'function' ? props.getFilename() : props.filename,
+      filename: isFunc(props.getFilename) ? props.getFilename() : props.filename,
       data: data,
       isShare: true
     }, function(data) {
       var hasError = !data || data.ec !== 0;
-      if (typeof onComplete === 'function') {
+      if (onComplete) {
         onComplete(hasError, data);
       }
       if (hasError) {

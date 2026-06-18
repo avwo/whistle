@@ -120,16 +120,17 @@ var FrameComposer = React.createClass({
   },
   onSend: function (e) {
     var self = this;
-    var value = self.state.text;
+    var state = self.state;
+    var value = state.text;
     if (!value || self.sendTimer) {
       return;
     }
     var target = e.target;
     var base64;
-    if (self.state.isHexText) {
+    if (state.isHexText) {
       base64 = util.getBase64FromHexText(value);
       value = undefined;
-    } else if (self.state.isCRLF) {
+    } else if (state.isCRLF) {
       value = value.replace(/\r\n|\r|\n/g, '\r\n');
     }
     var params = {

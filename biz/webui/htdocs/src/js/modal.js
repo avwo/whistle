@@ -2,8 +2,11 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var CloseBtn = require('./close-btn');
+var util = require('./util');
 require('../css/modal.css');
 
+var isFunc = util.isFunc;
+var notEStr = util.notEStr;
 var GLOBAL_VAR =
   '__WHISTLE_MODAL_' +
   Date.now() +
@@ -69,7 +72,7 @@ function createModal(options, callback, gVarName) {
 }
 
 function addEvents(html, gVarName) {
-  if (!html || typeof html !== 'string') {
+  if (!notEStr(html)) {
     return html;
   }
   return html.replace(/\s(on[a-z]+=)"([^"]+)"/g, function (all, name, handle) {
@@ -102,7 +105,7 @@ function initModal(dialog, options, gVarName) {
   var footer = addEvents(options.footer, gVarName);
   var con = dialog.container;
   var headerElem = con.find('.modal-content>.modal-header:first');
-  if (!title || typeof title !== 'string') {
+  if (!notEStr(title)) {
     if (title === false || title === '') {
       headerElem.hide();
     }
@@ -121,7 +124,7 @@ exports.show = function (options) {
     removeWinField(gVarName);
     dialog && dialog.destroy();
     dialog = null;
-    if (typeof onClose === 'function') {
+    if (isFunc(onClose)) {
       onClose.call(options);
     }
   };
@@ -155,7 +158,7 @@ exports.create = function (options) {
       dialog && dialog.destroy();
       dialog = null;
     }
-    if (typeof onClose === 'function') {
+    if (isFunc(onClose)) {
       onClose.call(options);
     }
   };

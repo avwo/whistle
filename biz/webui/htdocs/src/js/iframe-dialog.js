@@ -5,9 +5,10 @@ var getBridge = require('./bridge');
 var dataCenter = require('./data-center');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var util = require('./util');
 
 function onWhistlePluginOptionModalReady(init, win) {
-  if (typeof init === 'function') {
+  if (util.isFunc(init)) {
     init(getBridge(win));
   }
 }

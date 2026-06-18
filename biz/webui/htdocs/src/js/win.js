@@ -4,6 +4,14 @@ var alertDialog;
 var confirmDialog;
 var handleConfirm;
 
+function isFunc(fn) {
+  return typeof fn === 'function';
+}
+
+function isStr(str) {
+  return typeof str === 'string';
+}
+
 function createAlert() {
   if (!alertDialog) {
     alertDialog = $(
@@ -44,19 +52,19 @@ function createConfirm() {
         '</div>'
     );
     confirmDialog.on('click', '.w-win-cancel', function () {
-      if (typeof handleConfirm === 'function') {
+      if (isFunc(handleConfirm)) {
         handleConfirm(false);
       }
       handleConfirm = null;
     });
     confirmDialog.on('click', '.w-win-delete-all', function () {
-      if (typeof handleConfirm === 'function') {
+      if (isFunc(handleConfirm)) {
         handleConfirm(2);
       }
       handleConfirm = null;
     });
     confirmDialog.on('click', '.w-win-confirm', function () {
-      if (typeof handleConfirm === 'function') {
+      if (isFunc(handleConfirm)) {
         handleConfirm(1);
       }
       handleConfirm = null;
@@ -71,7 +79,7 @@ function mockAlert(msg, copyText, btnText, className) {
   pre.className = 'alert ' + (className || 'alert-danger');
   alertDialog.modal('show');
   var btn = alertDialog.find('.w-copy-text-with-tips');
-  if (copyText && typeof copyText === 'string') {
+  if (copyText && isStr(copyText)) {
     btn.text(btnText || 'Copy');
     btn.show().attr('data-clipboard-text', copyText);
   } else {
@@ -97,3 +105,5 @@ function mockConfirm(msg, cb, removeAllBtn, flag) {
 
 exports.alert = mockAlert;
 exports.confirm = mockConfirm;
+exports.isFunc = isFunc;
+exports.isStr = isStr;

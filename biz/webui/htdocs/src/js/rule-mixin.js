@@ -45,7 +45,7 @@ var COOKIE_OPTIONS = [
 var COOKIE_ATTRS = ['Secure', 'HttpOnly', 'Partitioned'];
 
 function getElemValue(e) {
-  if (util.isString(e.value)) {
+  if (util.isStr(e.value)) {
     return e.value;
   }
   var target = e.target;

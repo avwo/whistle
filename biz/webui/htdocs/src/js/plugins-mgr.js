@@ -10,7 +10,7 @@ var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
 
 function getRegistry(cmd) {
-  if (!cmd || typeof cmd !== 'string') {
+  if (!util.notEStr(cmd)) {
     return;
   }
   cmd = cmd.trim().split(SEP_RE);

@@ -31,14 +31,15 @@ var BtnGroup = React.createClass({
   },
   render: function () {
     var self = this;
-    var tabs = self.props.tabs;
-    var isSmall = self.props.type === 's';
-    var list = tabs || self.props.btns;
-    var disabled = util.getBool(self.props.disabled);
+    var props = self.props;
+    var tabs = props.tabs;
+    var isSmall = props.type === 's';
+    var list = tabs || props.btns;
+    var disabled = util.getBool(props.disabled);
 
     return (
       <div
-        onDoubleClick={self.props.onDoubleClickBar}
+        onDoubleClick={props.onDoubleClickBar}
         className={
           'btn-group btn-group-sm ' +
           (tabs ? 'w-tabs-sm' : 'w-btn-group-sm') +
@@ -73,8 +74,8 @@ var BtnGroup = React.createClass({
             </button>
           );
         })}
-        {self.props.appendTabs || self.props.appendBtns}
-        {self.props.dockBtn}
+        {props.appendTabs || props.appendBtns}
+        {props.dockBtn}
       </div>
     );
   }

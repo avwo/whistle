@@ -55,16 +55,18 @@ module.exports = {
   },
   handleScroll: function () {
     var self = this;
-    var logs = self.state.logs;
+    var state = self.state;
+    var logs = state.logs;
+    var backBtn = self.refs.backBtn;
     var atBottom = util.scrollAtBottom(self.container, self.content);
     clearTimeout(self.scrollTimer);
-    if (logs && (self.state.scrollToBottom = atBottom)) {
+    if (logs && (state.scrollToBottom = atBottom)) {
       self.scrollTimer = setTimeout(self.trimLogs, 2000);
     }
     if (atBottom) {
-      self.refs.backBtn.hide();
+      backBtn.hide();
     } else {
-      self.refs.backBtn.show();
+      backBtn.show();
     }
   },
   importData: function (logs) {

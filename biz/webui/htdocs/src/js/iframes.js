@@ -58,7 +58,7 @@ function onPluginContextMenuReady(win) {
   }
   function emit(data) {
     try {
-      if (typeof win.onWhistleContextMenuClick === 'function') {
+      if (util.isFunc(win.onWhistleContextMenuClick)) {
         win.onWhistleContextMenuClick(data);
       }
     } catch (e) {}

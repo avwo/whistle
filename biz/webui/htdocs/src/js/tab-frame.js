@@ -6,9 +6,10 @@ var getBridge = require('./bridge');
 var IFrame = require('./iframe');
 
 var modal = dataCenter.networkModal;
+var isFunc = util.isFunc;
 
 function onWhistleInspectorCustomTabReady(init, win) {
-  if (typeof init === 'function') {
+  if (isFunc(init)) {
     init(getBridge(win));
   }
 }
@@ -37,7 +38,7 @@ var TabFrame = React.createClass({
       var win = this.refs.iframe.getWindow();
       if (
         win &&
-        typeof win.__pushWhistle5b6af7b9884e1165SessionActive__ === 'function'
+        isFunc(win.__pushWhistle5b6af7b9884e1165SessionActive__)
       ) {
         if (comItem) {
           win.__pushWhistle5b6af7b9884e1165SessionActive__(null, null, comItem);

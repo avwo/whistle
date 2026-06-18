@@ -6,6 +6,7 @@ function ListModal(list, data) {
 }
 
 var proto = ListModal.prototype;
+var isStr = util.isStr;
 
 proto.reset = function (list, data, init) {
   var self = this;
@@ -138,7 +139,7 @@ proto.unshift = function (name, value) {
 proto.set = function (name, value) {
   var item = this.get(name);
   if (item) {
-    if (typeof value == 'string') {
+    if (isStr(value)) {
       item.value = value;
     } else {
       $.extend(item, value);
@@ -428,7 +429,7 @@ proto.getSibling = function (name) {
  * selected[s, active, a]: 根据激活的过滤
  */
 proto.search = function (keyword, disabledType) {
-  keyword = typeof keyword === 'string' ? keyword.trim() : '';
+  keyword = util.trimStr(keyword);
   var not = keyword[0] === '!';
   if (not) {
     keyword = keyword.substring(1).trim();

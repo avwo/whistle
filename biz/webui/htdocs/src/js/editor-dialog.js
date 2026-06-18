@@ -10,6 +10,7 @@ var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
 var showSysErr = util.showSysErr;
+var isStr = util.isStr;
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
@@ -85,7 +86,7 @@ var EditorDialog = React.createClass({
     var textarea = self._textarea;
     if (self.props.textEditor && textarea) {
       var value = data && data.value;
-      if (typeof value === 'string') {
+      if (isStr(value)) {
         textarea.value = value;
       }
       setTimeout(function() {
@@ -143,13 +144,14 @@ var EditorDialog = React.createClass({
     initTextArea();
     this.props.standalone && events.on('showEditorDialog', function(_, data, elem) {
       self.onClose();
-      self.state.textSrc = '';
-      self.state.callback = null;
+      var state = self.state;
+      state.textSrc = '';
+      state.callback = null;
       var text = data && (data.text || data.value) || '';
       if (!data || text || data.session !== undefined) {
         var filename = data && data.filename;
         self._session = data && data.session;
-        self.state.callback = data && data.callback;
+        state.callback = data && data.callback;
         self.show({
           hasChanged: !!(text || self._textarea.value.trim()),
           value: text,
@@ -202,7 +204,7 @@ var EditorDialog = React.createClass({
   },
   onSave: function(base64) {
     var self = this;
-    var isBase64 = typeof base64 === 'string';
+    var isBase64 = isStr(base64);
     var value = isBase64 ? base64 : self.getValue();
     if (!isBase64 && !self.state.isTempFile) {
       dataCenter.values.add({

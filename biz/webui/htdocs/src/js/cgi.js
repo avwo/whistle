@@ -2,10 +2,12 @@ var $ = require('jquery');
 var util = require('./util');
 
 var auth = util.getQuery().authorization;
+var isFunc = util.isFunc;
+var isStr = util.isStr;
 
 function createCgi(url, settings) {
   var self = this;
-  if (typeof url == 'string') {
+  if (isStr(url)) {
     url = { url: url };
   }
   settings = $.extend({ dataType: 'json' }, settings, url);
@@ -14,8 +16,8 @@ function createCgi(url, settings) {
   var jqXhr;
 
   function cgiFn(data, callback, options) {
-    var opts = { url: typeof url == 'function' ? url() : url };
-    if (typeof data == 'function') {
+    var opts = { url: isFunc(url) ? url() : url };
+    if (isFunc(data)) {
       options = callback;
       callback = data;
       data = null;
@@ -52,7 +54,7 @@ function createCgi(url, settings) {
       execCallback.call(this, false, xhr, em);
     };
     opts = options;
-    if (auth && typeof opts.url === 'string') {
+    if (auth && isStr(opts.url)) {
       opts = $.extend({}, opts);
       opts.url += (opts.url.indexOf('?') === -1 ? '?' : '&') + 'authorization=' + auth;
     }

@@ -1,6 +1,9 @@
 var $ = (window.jQuery = require('jquery'));
 var React = require('react');
 var ReactDOM = require('react-dom');
+var util = require('./util');
+
+var isFunc = util.isFunc;
 
 var Dialog = React.createClass({
   getInitialState: function () {
@@ -8,18 +11,19 @@ var Dialog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
+    var props = self.props;
     self.container = $(document.createElement('div'));
-    var clazz = self.props.fullCustom ? ' w-custom-dialog' : '';
+    var clazz = props.fullCustom ? ' w-custom-dialog' : '';
     self.container.addClass(
-      'modal fade' + clazz + (self.props.wstyle ? ' ' + self.props.wstyle : '')
+      'modal fade' + clazz + (props.wstyle ? ' ' + props.wstyle : '')
     );
     document.body.appendChild(self.container[0]);
     self.componentDidUpdate();
-    if (typeof self.props.customRef === 'function') {
-      self.props.customRef(self);
+    if (isFunc(props.customRef)) {
+      props.customRef(self);
     }
-    if (typeof self.props.onClose === 'function') {
-      self.container.on('hidden.bs.modal', self.props.onClose);
+    if (isFunc(props.onClose)) {
+      self.container.on('hidden.bs.modal', props.onClose);
     }
     self.container.on('hide.bs.modal', function() {
       self._isVisible = false;
@@ -29,7 +33,7 @@ var Dialog = React.createClass({
       self._isVisible = true;
       self.onVisibleChange();
     });
-    if (typeof self.props.onShow === 'function') {
+    if (isFunc(props.onShow)) {
       self.container.on('shown.bs.modal', function() {
         self.props.onShow(self);
       });
@@ -60,7 +64,7 @@ var Dialog = React.createClass({
         style={style}
         className={'modal-dialog' + (className ? ' ' + className : '')}
       >
-        <div className="modal-content">{this.props.children}</div>
+        <div className="modal-content">{props.children}</div>
       </div>
     );
   },
@@ -86,7 +90,7 @@ var Dialog = React.createClass({
   },
   onVisibleChange: function () {
     var onVisibleChange = this.props.onVisibleChange;
-    if (typeof onVisibleChange === 'function') {
+    if (isFunc(onVisibleChange)) {
       onVisibleChange(this._isVisible);
     }
   },

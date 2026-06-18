@@ -25,6 +25,8 @@ var RulesMiniEditor = require('./rules-mini-editor');
 var ReqType = require('./req-type');
 
 var METHODS = util.METHODS;
+var isStr = util.isStr;
+var notEStr = util.notEStr;
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -59,7 +61,7 @@ var getTabClass = function (active) {
 };
 
 function getString(str, len) {
-  if (typeof str !== 'string') {
+  if (!isStr(str)) {
     return '';
   }
   len = len || MAX_BODY_SIZE;
@@ -94,7 +96,7 @@ function getStatus(statusCode) {
 }
 
 function parseValue(value) {
-  if (value && typeof value === 'object') {
+  if (util.isObj(value)) {
     value.data = util.base64ToByteArray(value.base64) || util.EMPTY_BUF;
     delete value.base64;
   }
@@ -143,7 +145,7 @@ var Composer = React.createClass({
         self.uploadBodyData = uploadBodyData;
       }
     }
-    self._url = typeof data.url === 'string' ? data.url.trim() : '';
+    self._url = util.trimStr(data.url);
 
     return {
       loading: true,
@@ -157,7 +159,7 @@ var Composer = React.createClass({
       tabName: 'Request',
       showPretty: showPretty,
       useH2: useH2,
-      rules: typeof rules === 'string' ? rules : '',
+      rules: isStr(rules) ? rules : '',
       type: type,
       disableComposerRules: disableComposerRules,
       isHexText: !!storage.get('showHexTextBody'),
@@ -419,7 +421,7 @@ var Composer = React.createClass({
     var map = {};
     var hasSelected;
     data.forEach(function (item) {
-      if (!item.url || typeof item.url !== 'string') {
+      if (!notEStr(item.url)) {
         return;
       }
       if (histroyUrls.indexOf(item.url) === -1) {
@@ -468,8 +470,8 @@ var Composer = React.createClass({
     var elem = findDOMNode(self.refs.body);
     var body = elem.value;
     if (body.trim()) {
+      var isCRLF = self.state.isCRLF;
       if (isHexText) {
-        var isCRLF = self.state.isCRLF;
         if (self._preBody === body && (!self._isCRLF === !isCRLF)) {
           elem.value = self._preHex;
         } else {
@@ -477,7 +479,7 @@ var Composer = React.createClass({
         }
       } else {
         self._preBody = hexToStr(body);
-        self._isCRLF = self.state.isCRLF;
+        self._isCRLF = isCRLF;
         self._preHex = body;
         elem.value = self._preBody;
       }
@@ -494,7 +496,7 @@ var Composer = React.createClass({
     if (Array.isArray(rules)) {
       rules = rules.join('\n');
     }
-    if (rules && typeof rules === 'string') {
+    if (notEStr(rules)) {
       rules = util.decodeURIComponentSafe(rules);
       this.onRulesChange(rules);
       this.setRulesDisable(false);
@@ -505,7 +507,8 @@ var Composer = React.createClass({
       return;
     }
     var self = this;
-    self.state.tabName = 'Request';
+    var state = self.state;
+    state.tabName = 'Request';
     self.result = null;
     var refs = self.refs;
     var isHexText = !!item.isHexText;
@@ -540,13 +543,13 @@ var Composer = React.createClass({
       self.updateRules(rules.join('\n'));
     }
     self.setUrl(item.url);
-    if (util.isString(item.method)) {
+    if (isStr(item.method)) {
       findDOMNode(refs.method).value = item.method;
-      self.state.method = item.method;
+      state.method = item.method;
     }
-    if (util.isString(headers)) {
+    if (isStr(headers)) {
       findDOMNode(refs.headers).value = headers;
-      self.state.headers = headers;
+      state.headers = headers;
     }
     if (!isHexText && !item.body && item.base64) {
       isHexText = true;
@@ -554,31 +557,31 @@ var Composer = React.createClass({
     var body = isHexText && item.base64
       ? util.getHexText(util.getHexFromBase64(item.base64))
       : util.getText(item.body) || '';
-    self.state.tabName = 'Request';
-    self.state.result = '';
-    self.state.isHexText = isHexText;
-    self.state.useH2 = item.useH2;
+    state.tabName = 'Request';
+    state.result = '';
+    state.isHexText = isHexText;
+    state.useH2 = item.useH2;
     if (item.disableBody != null) {
-      self.state.disableBody = !!item.disableBody;
+      state.disableBody = !!item.disableBody;
     } else if (body) {
-      self.state.disableBody = false;
+      state.disableBody = false;
     }
     if (item.isCRLF != null) {
-      self.state.isCRLF = !!item.isCRLF;
+      state.isCRLF = !!item.isCRLF;
       storage.set('useCRLBody', item.isCRLF ? 1 : '');
     }
     if (item.disableComposerRules != null) {
       self.setRulesDisable(item.disableComposerRules);
     }
     if (item.enableProxyRules != null) {
-      self.state.enableProxyRules = !!item.enableProxyRules;
+      state.enableProxyRules = !!item.enableProxyRules;
       storage.set('composerProxyRules', item.enableProxyRules ? 1 : '');
     }
     if (!self.updateUploadForm(req)) {
       findDOMNode(refs.body).value = body;
     }
     self.onComposerChange(true);
-    storage.set('disableComposerBody', self.state.disableBody ? 1 : '');
+    storage.set('disableComposerBody', state.disableBody ? 1 : '');
     storage.set('useH2InComposer', item.useH2 ? 1 : '');
     storage.set('showHexTextBody', isHexText ? 1 : '');
   },
@@ -813,11 +816,11 @@ var Composer = React.createClass({
       }
     }
     self.sendRequest({
-      rules: disableComposerRules ? null : self.state.rules,
+      rules: disableComposerRules ? null : state.rules,
       boundary: boundary,
       contentType: contentType,
       contentLength: contentLength,
-      useH2: self.state.useH2 ? 1 : '',
+      useH2: state.useH2 ? 1 : '',
       needResponse: true,
       url: url.replace(/^\/\//, ''),
       headers: headers,
@@ -826,7 +829,7 @@ var Composer = React.createClass({
       base64: base64,
       repeatCount: times,
       isHexText: isHexText,
-      enableProxyRules: self.state.enableProxyRules
+      enableProxyRules: state.enableProxyRules
     });
   },
   handleBody: function(res) {
@@ -916,7 +919,7 @@ var Composer = React.createClass({
         if (status) {
           em = status;
           util.showSysErr(xhr);
-        } else if (!em || typeof em !== 'string' || em === 'error') {
+        } else if (!notEStr(em) || em === 'error') {
           em = 'Please check the proxy settings or whether whistle has been started';
         }
         state.result = { url: params.url, req: '', res: { statusCode: em } };
@@ -949,8 +952,9 @@ var Composer = React.createClass({
   },
   saveRules: function () {
     var self = this;
-    var rules = self.state.rules;
-    self.state.rules = rules;
+    var state = self.state;
+    var rules = state.rules;
+    state.rules = rules;
     storage.set('composerRules', rules);
     self.setState({});
   },

@@ -68,6 +68,7 @@ var ResDetail = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
+    var props = self.props;
     var btns = state.btns;
     var btn = state.btn;
     if (!btn) {
@@ -75,7 +76,7 @@ var ResDetail = React.createClass({
       self.selectBtn(btn);
     }
     var name = btn && btn.name;
-    var modal = self.props.modal;
+    var modal = props.modal;
     var res,
       rawHeaders,
       rawTrailers,
@@ -106,7 +107,7 @@ var ResDetail = React.createClass({
       if (headers && headers['set-cookie']) {
         cookies = headers['set-cookie'];
         if (!Array.isArray(cookies)) {
-          cookies = typeof cookies == 'string' ? [cookies] : [];
+          cookies = util.isStr(cookies) ? [cookies] : [];
         }
         cookies = cookies.map(function (cookie) {
           cookie = util.parseQueryString(
@@ -228,7 +229,7 @@ var ResDetail = React.createClass({
 
     var pluginsTab = btns[8];
     var tabs = dataCenter.getResTabs();
-    var len = self.props.inComposer ? 0 : tabs.length;
+    var len = props.inComposer ? 0 : tabs.length;
     pluginsTab.hide = !len;
     if (len && len === 1) {
       pluginsTab.display = pluginsTab.title = tabs[0].name;
@@ -242,7 +243,7 @@ var ResDetail = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-detail-res' +
-          (util.getBool(self.props.hide) ? ' hide' : '')
+          (util.getBool(props.hide) ? ' hide' : '')
         }
       >
         <BtnGroup onClick={self.onClickBtn} btns={btns} />

@@ -165,7 +165,7 @@ var ListDialog = React.createClass({
 
     self.refs.dialog.show();
     if (selectedList) {
-      if (selectedList && typeof selectedList === 'string') {
+      if (selectedList && util.isStr(selectedList)) {
         selectedList = [selectedList];
       }
       var checkedItems = {};

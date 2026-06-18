@@ -20,7 +20,7 @@ proto.getItem = function(frameId) {
 
 var KW_RE = /^(c|s):(\S*)$/i;
 proto.search = function (keyword) {
-  keyword = typeof keyword !== 'string' ? '' : keyword.trim();
+  keyword = util.trimStr(keyword);
   if (!keyword) {
     this._keyword = '';
     return;

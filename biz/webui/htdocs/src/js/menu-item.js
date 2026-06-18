@@ -13,26 +13,27 @@ var MenuItem = React.createClass({
   },
   render: function () {
     var self = this;
-    var options = self.props.options;
+    var props = self.props;
+    var options = props.options;
     if (options && !options.length) {
       options = null;
     }
-    var name = self.props.name;
-    var onClick = self.props.onClick || util.noop;
-    var onClickOption = self.props.onClickOption || util.noop;
-    var onDoubleClickOption = self.props.onDoubleClickOption || util.noop;
-    var checkedOptions = self.props.checkedOptions || {};
-    var disabled = self.props.disabled;
+    var name = props.name;
+    var onClick = props.onClick || util.noop;
+    var onClickOption = props.onClickOption || util.noop;
+    var onDoubleClickOption = props.onDoubleClickOption || util.noop;
+    var checkedOptions = props.checkedOptions || {};
+    var disabled = props.disabled;
 
     return (
       <div
-        onBlur={self.props.onBlur}
+        onBlur={props.onBlur}
         tabIndex="0"
         onMouseDown={self.preventBlur}
-        style={{ display: util.getBool(self.props.hide) ? 'none' : 'block' }}
+        style={{ display: util.getBool(props.hide) ? 'none' : 'block' }}
         className={
           'w-menu-item ' +
-          (self.props.className || '') +
+          (props.className || '') +
           (disabled ? ' w-disabled' : '')
         }
       >
@@ -66,7 +67,7 @@ var MenuItem = React.createClass({
                       disabled={disabled}
                       data-name={option.name}
                       onClick={self.stopPropagation}
-                      onChange={self.props.onChange}
+                      onChange={props.onChange}
                       checked={!checkedOptions[option.name]}
                     />
                   ) : option.icon === false ? undefined : (
@@ -85,9 +86,9 @@ var MenuItem = React.createClass({
           ''
         )}
         {name ? (
-          typeof name === 'string' ? (
+          util.isStr(name) ? (
             <a onClick={onClick} className="w-menu-open" draggable="false">
-              <Icon name={self.props.icon || 'folder-open'} />
+              <Icon name={props.icon || 'folder-open'} />
               {name}
             </a>
           ) : (

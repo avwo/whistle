@@ -46,10 +46,11 @@ var About = React.createClass({
   },
   checkUpdate: function (hasNew) {
     var self = this;
-    if (self.props.onCheckUpdate) {
+    var onCheckUpdate = self.props.onCheckUpdate;
+    if (onCheckUpdate) {
       if ((!self._hasUpdate && !hasNew) || hasNew !== self._hasUpdate) {
         self._hasUpdate = hasNew;
-        self.props.onCheckUpdate(hasNew);
+        onCheckUpdate(hasNew);
       }
     }
     return hasNew;
@@ -63,7 +64,7 @@ var About = React.createClass({
     var self = this;
     self.showDialog();
     var onClick = self.props.onClick;
-    if (typeof onClick === 'function') {
+    if (util.isFunc(onClick)) {
       onClick();
     }
 

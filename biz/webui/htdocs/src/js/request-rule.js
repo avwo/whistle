@@ -194,7 +194,6 @@ var RequestRule = React.createClass({
   },
   render: function() {
     var self = this;
-    var hide = self.props.hide;
     var state = self.state;
     var version = state.version;
     var disabledMethod = state.disabledMethod;
@@ -210,7 +209,7 @@ var RequestRule = React.createClass({
     var bodyActionCount = bodyActions.length;
 
     return (
-      <div className={'w-rules-form' + (hide ? ' w-hide' : '')}>
+      <div className={'w-rules-form' + (self.props.hide ? ' w-hide' : '')}>
         <div className="w-form-item">
           <div className="w-form-value">
             <label className="w-175">

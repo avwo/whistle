@@ -36,9 +36,10 @@ var RecordBtn = React.createClass({
   },
   onClick: function () {
     var self = this;
-    var stop = !self.state.stop;
-    self.state.pause = false;
-    self.state.stop = stop;
+    var state = self.state;
+    var stop = !state.stop;
+    state.pause = false;
+    state.stop = stop;
     ACTION_OPTIONS[0] = PAUSE_OPTION;
     self.props.onClick(stop ? 'stop' : 'refresh');
     self.setState({});
@@ -79,14 +80,15 @@ var RecordBtn = React.createClass({
   },
   onClickOption: function (option) {
     var self = this;
+    var state = self.state;
     if (option.id === 'pause') {
       ACTION_OPTIONS[0] = STOP_OPTION;
-      self.state.pause = true;
-      self.state.stop = true;
+      state.pause = true;
+      state.stop = true;
     } else if (option.id === 'stop') {
       ACTION_OPTIONS[0] = PAUSE_OPTION;
-      self.state.pause = false;
-      self.state.stop = true;
+      state.pause = false;
+      state.stop = true;
     }
     self.props.onClick(option.id);
     self.hideActionOptions();

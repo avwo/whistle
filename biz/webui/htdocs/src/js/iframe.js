@@ -2,6 +2,7 @@ require('../css/iframe.css');
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var dataCenter = require('./data-center');
+var util = require('./util');
 
 var IFrame = React.createClass({
   getWindow: function() {
@@ -9,7 +10,7 @@ var IFrame = React.createClass({
   },
   onload: function(e) {
     var onLoad = this.props.onLoad;
-    if (typeof onLoad === 'function') {
+    if (util.isFunc(onLoad)) {
       onLoad(e);
     }
     dataCenter.handleIframeLoad(e);

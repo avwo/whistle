@@ -37,8 +37,9 @@ var Frames = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
-    var modal = self.state.modal;
-    var framesCtx = self.state.framesCtx;
+    var state = self.state;
+    var modal = state.modal;
+    var framesCtx = state.framesCtx;
     var frames = modal.reset(props.frames);
     var reqData = props.data || '';
     var curFrame = modal.getActive();

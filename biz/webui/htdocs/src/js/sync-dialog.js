@@ -6,6 +6,8 @@ var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
 var Icon = require('./icon');
 
+var isStr = util.isStr;
+
 var showLoading = function(time) {
   return time && (Date.now() - time > 800);
 };
@@ -23,14 +25,14 @@ var SyncDialog = React.createClass({
     self.rulesModal = rulesModal;
     self.valuesModal = valuesModal;
     self.plugin = plugin;
-    if (!util.isString(plugin.rulesUrl)) {
+    if (!isStr(plugin.rulesUrl)) {
       plugin.rulesUrl = null;
     }
-    if (!util.isString(plugin.valuesUrl)) {
+    if (!isStr(plugin.valuesUrl)) {
       plugin.valuesUrl = null;
     }
     if (plugin.rulesUrl || plugin.valuesUrl) {
-      self.setState(plugin, typeof cb === 'function' ? cb : function () {
+      self.setState(plugin, util.isFunc(cb) ? cb : function () {
         self.refs.syncDialog.show();
       });
     }
@@ -38,7 +40,7 @@ var SyncDialog = React.createClass({
   _syncRules: function(history) {
     var self = this;
     var rulesUrl = self.state.rulesUrl;
-    if (self.loadingRules || !util.isString(rulesUrl)) {
+    if (self.loadingRules || !isStr(rulesUrl)) {
       return;
     }
     self.loadingRules = Date.now() || 1;
@@ -60,7 +62,7 @@ var SyncDialog = React.createClass({
   _syncValues: function (history) {
     var self = this;
     var valuesUrl = self.state.valuesUrl;
-    if (self.loadingValues || !util.isString(valuesUrl)) {
+    if (self.loadingValues || !isStr(valuesUrl)) {
       return;
     }
     self.loadingValues = Date.now() || 1;
@@ -105,7 +107,7 @@ var SyncDialog = React.createClass({
         <div className="modal-body">
           <button
             onClick={self.syncRules}
-            disabled={loadingRules || !util.isString(state.rulesUrl)}
+            disabled={loadingRules || !isStr(state.rulesUrl)}
             type="button"
             className="btn btn-primary"
           >
@@ -114,7 +116,7 @@ var SyncDialog = React.createClass({
           </button>
           <button
             onClick={self.syncValues}
-            disabled={loadingValues || !util.isString(state.valuesUrl)}
+            disabled={loadingValues || !isStr(state.valuesUrl)}
             type="button"
             className="btn btn-default"
           >

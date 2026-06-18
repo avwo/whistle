@@ -38,12 +38,12 @@ var Inspectors = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
+    var state = self.state;
     var modal = props.modal;
-    var urlModal = self.state.urlModal;
+    var urlModal = state.urlModal;
     var hideFrames = !self.isActive('Frames');
     var hide = util.getBool(props.hide);
     var tabs = dataCenter.getTabs();
-    var active = this.state.activeName;
     urlModal.URL = modal && ((modal.isHttps ? 'tunnel://' : '') + modal.url);
 
     return (
@@ -97,7 +97,7 @@ var Inspectors = React.createClass({
           <Frames hide={hideFrames} data={modal} frames={props.frames} />
         </LazyInit>
         <TabMgr
-          active={active}
+          active={state.activeName}
           hide={hide}
           tabs={tabs}
           className="w-custom-tab-panel"

@@ -32,7 +32,7 @@ var RulesMiniEditor = React.createClass({
             onChange={self.onChange}
             onDoubleClick={props.onDoubleClick}
             style={{background: !disabled && rules ? 'var(--b-filtered)' : undefined}}
-            maxLength="25600"
+            maxLength="33000"
             className="fill"
             placeholder={props.placeholder || 'Enter rules (Higher priority than Whistle Rules)'}
           />

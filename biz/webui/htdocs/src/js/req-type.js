@@ -25,7 +25,7 @@ function getType(headers) {
         return 'custom';
       }
       var value = headers[name];
-      if (!value || typeof value !== 'string') {
+      if (!util.notEStr(value)) {
         return 'custom';
       }
       value = value.split(';')[0].trim().toLowerCase();

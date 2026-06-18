@@ -60,8 +60,9 @@ var ContextMenu = React.createClass({
     var data = self.state;
     !target.hasClass('w-ctx-item-multi') && !data.radio && self.hide();
     var action = target.attr('data-menu-action');
-    if (self.props.onClick) {
-      self.props.onClick(
+    var onClick = self.props.onClick;
+    if (onClick) {
+      onClick(
         action,
         e,
         target.attr('data-parent-action'),

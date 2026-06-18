@@ -32,9 +32,13 @@ var DIG_RE = /^([+-]?)([1-9]\d{0,15})$/;
 var SOURCE_SEP = '# (From ';
 var SOURCE_SEP_LEN = SOURCE_SEP.length;
 var BASE_SERVICE_URL = 'service/';
+var isFunc = win.isFunc;
+var isStr = win.isStr;
 
 exports.SOURCE_SEP = SOURCE_SEP;
 exports.CRLF_RE = CRLF_RE;
+exports.isFunc = isFunc;
+exports.isStr = isStr;
 exports.isElectron = /Electron\//i.test(window.navigator.userAgent);
 exports.EDITOR_THEMES = [
   'default',
@@ -116,6 +120,18 @@ function removeSpaces(str) {
 
 exports.removeSpaces = removeSpaces;
 
+function isObj(obj) {
+  return obj && typeof obj === 'object';
+}
+
+exports.isObj = isObj;
+
+function trimStr(str) {
+  return notEStr(str) ? str.trim() : '';
+}
+
+exports.trimStr = trimStr;
+
 function isSafeNumStr(str) {
   if (str == '0') {
     return true;
@@ -154,7 +170,7 @@ function getServiceApi(win, bridgeApi) {
   }
   try {
     var serviceApi = win.__whistleServiceApi;
-    if (!serviceApi && typeof win.getServiceApiForWhistle === 'function') {
+    if (!serviceApi && isFunc(win.getServiceApiForWhistle)) {
       serviceApi = win.getServiceApiForWhistle(bridgeApi) || {};
       win.__whistleServiceApi = serviceApi;
     }
@@ -176,7 +192,7 @@ exports.getServiceUrl = function (win, path, bridgeApi) {
 };
 
 exports.getQuery = function() {
-  if (typeof search === 'string') {
+  if (isStr(search)) {
     search = parseQueryString(search);
   }
   return search;
@@ -214,12 +230,6 @@ exports.compare = compare;
 exports.comparePlugin = comparePlugin;
 exports.getPluginComparator = getPluginComparator;
 
-function isString(str) {
-  return typeof str === 'string';
-}
-
-exports.isString = isString;
-
 var randomIndex = 0;
 
 exports.getRandomKey = function(prefix) {
@@ -239,11 +249,11 @@ exports.getFilepath = function(str) {
 };
 
 exports.getString = function (str) {
-  return isString(str) ? str : '';
+  return isStr(str) ? str : '';
 };
 
 function notEStr(str) {
-  return str && typeof str === 'string';
+  return str && isStr(str);
 }
 
 exports.notEStr = notEStr;
@@ -255,7 +265,7 @@ function isBool(b) {
 exports.isBool = isBool;
 
 exports.parseLogs = function (str) {
-  if (typeof str === 'string') {
+  if (isStr(str)) {
     try {
       str = JSON.parse(str);
     } catch (e) {}
@@ -351,7 +361,7 @@ exports.getCAHash = function(server, urlList) {
 
   if (Array.isArray(ipv4)) {
     ipv4.forEach(function(ip) {
-      if (ip && typeof ip === 'string') {
+      if (notEStr(ip)) {
         result.push(ip);
         urlList && urlList.push(ip);
         len += ip.length + 1;
@@ -503,9 +513,8 @@ $(document)
 
 function addDragEvent(selector, callback) {
   if (
-    !selector ||
-    typeof callback != 'function' ||
-    typeof selector != 'string' ||
+    !selector || !isFunc(callback) ||
+    !isStr(selector) ||
     !(selector = selector.trim())
   ) {
     return;
@@ -521,7 +530,7 @@ function removeDragEvent(selector, callback) {
   if (!callbacks) {
     return;
   }
-  if (typeof callback == 'function') {
+  if (isFunc(callback)) {
     var index = $.inArray(callback, callbacks);
     if (index != -1) {
       callbacks.splice(index, 1);
@@ -542,7 +551,7 @@ exports.getKey = function getKey() {
 
 function getProperty(obj, name, defaultValue) {
   if (obj && (name || name !== '')) {
-    if (typeof name == 'string') {
+    if (isStr(name)) {
       name = name.split('.');
     }
     for (var i = 0, len = name.length - 1; i <= len; i++) {
@@ -659,10 +668,10 @@ exports.getClasses = function getClasses(obj) {
 };
 
 function getRawType(type) {
-  if (type && typeof type != 'string') {
+  if (type && !isStr(type)) {
     type = type['content-type'] || type.contentType;
   }
-  return typeof type === 'string'
+  return isStr(type)
     ? type.split(';')[0].trim().toLowerCase()
     : '';
 }
@@ -773,7 +782,7 @@ exports.getProtocol = function getProtocol(url) {
 exports.getTransProto = function(req) {
   var headers = req.headers;
   var proto = headers && headers['x-whistle-transport-protocol'];
-  if (!proto || typeof proto !== 'string' || proto.length > 33) {
+  if (!isStr(proto) || proto.length > 33) {
     return;
   }
   try {
@@ -858,7 +867,7 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
 exports.parseQueryString = parseQueryString;
 
 function objectToString(obj, rawNames, noEncoding) {
-  if (!obj || typeof obj === 'string') {
+  if (!obj || isStr(obj)) {
     return obj || '';
   }
   var keys = Object.keys(obj);
@@ -926,7 +935,7 @@ exports.getRawRes = function(modal) {
 };
 
 function toLowerCase(str) {
-  return typeof str == 'string' ? str.trim().toLowerCase() : str;
+  return isStr(str) ? str.trim().toLowerCase() : str;
 }
 
 function getContentEncoding(headers) {
@@ -982,7 +991,7 @@ var parseJ = function (str, resolve) {
 
 function parseJSON(str, resolve) {
   isJSONText = false;
-  if (typeof str !== 'string' || !(str = str.trim())) {
+  if (!isStr(str) || !(str = str.trim())) {
     return;
   }
   if (resolve) {
@@ -1043,7 +1052,7 @@ function parseLine(line) {
 }
 
 function parseLinesJSON(text) {
-  if (typeof text !== 'string' || !(text = text.trim())) {
+  if (!isStr(text) || !(text = text.trim())) {
     return null;
   }
   var result;
@@ -1074,7 +1083,7 @@ function parseLinesJSON(text) {
         return;
       }
       var next = obj[key];
-      if (!next || typeof next !== 'object') {
+      if (!isObj(next)) {
         next = isNum(name[i + 1]) ? [] : {};
       }
       obj[key] = next;
@@ -1219,7 +1228,7 @@ function getStatusMessage(res) {
   if (!res.statusCode) {
     return '';
   }
-  if (typeof res.statusMessage == 'string') {
+  if (isStr(res.statusMessage)) {
     return res.statusMessage;
   }
   return STATUS_CODES[res.statusCode] || 'unknown';
@@ -1270,7 +1279,7 @@ exports.getValue = function(item, key) {
 function openEditor(value) {
   if (
     useCustomEditor &&
-    typeof window.customWhistleEditor === 'function' &&
+    isFunc(window.customWhistleEditor) &&
     window.customWhistleEditor(value) !== false
   ) {
     return;
@@ -1307,7 +1316,7 @@ exports.openInNewWin = function(value) {
 };
 
 function getMockValues(values) {
-  if (!values || (!isString(values.value) && !isString(values.base64)) ||
+  if (!values || (!isStr(values.value) && !isStr(values.base64)) ||
     (!values.isFile && !notEStr(values.name))) {
     return;
   }
@@ -1509,7 +1518,7 @@ exports.escape = function (str) {
 };
 
 function findArray(arr, cb) {
-  if (typeof arr.find === 'function') {
+  if (isFunc(arr.find)) {
     return arr.find(cb);
   }
   for (var i = 0, len = arr.length; i < len; i++) {
@@ -1792,7 +1801,7 @@ exports.triggerListChange = function (name, data) {
       window.parent[
         name === 'rules' ? 'onWhistleRulesChange' : 'onWhistleValuesChange'
       ];
-    if (typeof onChange === 'function') {
+    if (isFunc(onChange)) {
       onChange(data);
     }
   } catch (e) {}
@@ -1849,7 +1858,7 @@ if (window.TextDecoder) {
 }
 
 function decodeURIComponentSafe(str, isUtf8) {
-  if (!str || typeof str !== 'string') {
+  if (!isStr(str)) {
     return '';
   }
   var result = str.replace(SPACE_RE, ' ');
@@ -2083,7 +2092,7 @@ exports.openPreview = function (data) {
 function parseRawJson(str, quite) {
   try {
     var json = JSON.parse(str);
-    if (json && typeof json === 'object') {
+    if (isObj(json)) {
       return json;
     }
     !quite && message.error('Error: invalid JSON format');
@@ -2118,7 +2127,7 @@ function parseHeaders(str) {
 }
 
 exports.parseHeaders = function (str) {
-  str = typeof str === 'string' ? str.trim() : null;
+  str = trimStr(str);
   if (!str) {
     return {};
   }
@@ -2126,7 +2135,7 @@ exports.parseHeaders = function (str) {
 };
 
 function hasRequestBody(method) {
-  if (typeof method != 'string') {
+  if (!isStr(method)) {
     return false;
   }
   method = method.toUpperCase();
@@ -2143,9 +2152,7 @@ exports.hasRequestBody = hasRequestBody;
 var NON_LATIN1_RE = /([^\x00-\xFF]|[\r\n%])/g;
 exports.encodeNonLatin1Char = function (str) {
   /*eslint no-control-regex: "off"*/
-  return str && typeof str === 'string'
-    ? str.replace(NON_LATIN1_RE, safeEncodeURIComponent)
-    : '';
+  return notEStr(str) ? str.replace(NON_LATIN1_RE, safeEncodeURIComponent) : '';
 };
 
 var VER_LEN = 3;
@@ -2160,10 +2167,10 @@ function compareVer(n1, n2, index) {
 }
 
 exports.compareVersion = function(v1, v2) {
-  if (v1 === v2 || !v1 || typeof v1 !== 'string') {
+  if (v1 === v2 || !notEStr(v1)) {
     return 0;
   }
-  if (!v2 || typeof v2 !== 'string') {
+  if (!notEStr(v2)) {
     return 3;
   }
   v1 = v1.split('.');
@@ -2209,7 +2216,7 @@ var curPageName;
 function triggerPageChange(name) {
   try {
     var onPageChange = window.parent.onWhistlePageChange;
-    if (typeof onPageChange === 'function' && curPageName !== name) {
+    if (isFunc(onPageChange) && curPageName !== name) {
       curPageName = name;
       onPageChange(name, location.href);
     }
@@ -2226,7 +2233,7 @@ exports.triggerRulesActiveChange = function (name) {
   curActiveRules = name;
   try {
     var onChange = window.parent.onWhistleRulesActiveChange;
-    if (typeof onChange === 'function') {
+    if (isFunc(onChange)) {
       onChange(name, location.href);
     }
   } catch (e) {}
@@ -2239,7 +2246,7 @@ exports.triggerValuesActiveChange = function (name) {
   curActiveValues = name;
   try {
     var onChange = window.parent.onWhistleValuesActiveChange;
-    if (typeof onChange === 'function') {
+    if (isFunc(onChange)) {
       onChange(name, location.href);
     }
   } catch (e) {}
@@ -2338,7 +2345,7 @@ exports.addPluginMenus = function (item, list, maxTop, disabled, treeId, url) {
 };
 
 function getText(text) {
-  if (text && typeof text === 'object') {
+  if (isObj(text)) {
     try {
       return JSON.stringify(text, null, 2);
     } catch (e) {}
@@ -2385,7 +2392,7 @@ exports.parseImportData = function (data, modal, isValues) {
         value = value + '';
       }
     }
-    if (typeof value !== 'string') {
+    if (!isStr(value)) {
       return;
     }
     var isConflict;
@@ -2404,7 +2411,7 @@ exports.parseImportData = function (data, modal, isValues) {
     var map = {};
     data.forEach(function (item) {
       var name = item && item.name;
-      if (name && typeof name === 'string' && !map[name]) {
+      if (notEStr(name) && !map[name]) {
         var value = isGroup(name) ? '' : (item.value == null ? item.content : item.value);
         map[name] = 1;
         handleItem(name, value);
@@ -3235,7 +3242,7 @@ exports.getDataUrl = function() {
 };
 
 function getSimplePluginName(plugin) {
-  var name = typeof plugin === 'string' ? plugin : plugin.moduleName;
+  var name = isStr(plugin) ? plugin : plugin.moduleName;
   return name.substring(name.lastIndexOf('.') + 1);
 }
 

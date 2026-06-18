@@ -74,7 +74,7 @@ var ReqData = React.createClass({
       })
       .on('showLog', function (_, data) {
         self.toggleTab(tabs[4], function() {
-          if (typeof data === 'string') {
+          if (util.isStr(data)) {
             self.refs.tools.showTab(0, data);
           } else if (data) {
             events.trigger('uploadLogs', data);
@@ -185,9 +185,10 @@ var ReqData = React.createClass({
   },
   render: function () {
     var self = this;
-    var modal = self.props.modal;
+    var props = self.props;
+    var modal = props.modal;
     var state = self.state;
-    var data = self.props.data;
+    var data = props.data;
     var tabs = state.tabs;
     var selectedList = !data && modal && modal.getSelectedList();
     var activeItem;
@@ -243,7 +244,7 @@ var ReqData = React.createClass({
     }
     var name = curTab && curTab.name;
     var frames = activeItem && activeItem.frames;
-    var dockToBottom = self.props.dockToBottom;
+    var dockToBottom = props.dockToBottom;
 
     return (
       <div
@@ -258,7 +259,7 @@ var ReqData = React.createClass({
           ref="tabs"
           dockBtn={
             <button
-              onClick={self.props.onDockChange}
+              onClick={props.onDockChange}
               className="w-dock-btn"
               title={
                 'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'
@@ -272,7 +273,7 @@ var ReqData = React.createClass({
           tabs={tabs}
         />
         {state.initedOverview ? (
-          <Overview modal={overview} rulesModal={self.props.rulesModal} hide={name != tabs[0].name} />
+          <Overview modal={overview} rulesModal={props.rulesModal} hide={name != tabs[0].name} />
         ) : null}
         {state.initedInspectors ? (
           <Inspectors

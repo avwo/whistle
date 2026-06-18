@@ -9,9 +9,10 @@ var events = require('./events');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
 var TabMgr = require('./tab-mgr');
-
 var BtnGroup = require('./btn-group');
 var util = require('./util');
+
+var getBool = util.getBool;
 
 var BTNS = [
   {
@@ -42,8 +43,8 @@ var Tools = React.createClass({
   },
   shouldComponentUpdate: function (nextProps) {
     var self = this;
-    var hide = util.getBool(self.props.hide);
-    if (hide != util.getBool(nextProps.hide)) {
+    var hide = getBool(self.props.hide);
+    if (hide != getBool(nextProps.hide)) {
       return true;
     }
     if (hide) {
@@ -60,7 +61,7 @@ var Tools = React.createClass({
   showTab: function(index, id) {
     var self = this;
     self.refs.tabs.handleClick(BTNS[index]);
-    if (typeof id === 'string') {
+    if (util.isStr(id)) {
       self.refs.console.showLogId(id);
       self.shakeTab();
     }
@@ -142,7 +143,7 @@ var Tools = React.createClass({
       <div
         className={
           'fill v-box w-tools' +
-          (util.getBool(self.props.hide) ? ' hide' : '')
+          (getBool(self.props.hide) ? ' hide' : '')
         }
       >
         <BtnGroup
@@ -164,7 +165,7 @@ var Tools = React.createClass({
         </LazyInit>
         <TabMgr
           active={state.plugin && state.plugin.plugin}
-          hide={util.getBool(self.props.hide)}
+          hide={getBool(self.props.hide)}
           tabs={dataCenter.getToolTabs()}
           className="w-custom-tab-panel"
         />

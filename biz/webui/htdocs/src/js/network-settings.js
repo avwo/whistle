@@ -20,6 +20,7 @@ var NOT_EMPTY_STYLE = { backgroundColor: 'var(--b-filtered)' };
 var NOT_EMPTY_RE = /[^\s]/;
 var DATA_KEY_TIPS = 'e.g. res.body or res.body:/"msgno":"(\w+)"/ ...';
 var URL_DEMO = ', e.g. https://example.com/path#xxx={WHISTLE_DATA}';
+var isStr = util.isStr;
 
 var isViewInNewWin =function() {
   return storage.get('viewAllInNewWindow') === '1';
@@ -275,13 +276,13 @@ var Settings = React.createClass({
     }
 
     var excludeText = settings.excludeText;
-    if (util.isString(excludeText) && excludeText !== state.excludeText) {
+    if (isStr(excludeText) && excludeText !== state.excludeText) {
       state.excludeText = excludeText;
       filterTextChanged = true;
     }
 
     var filterText = settings.filterText;
-    if (util.isString(filterText) && filterText !== state.filterText) {
+    if (isStr(filterText) && filterText !== state.filterText) {
       state.filterText = filterText;
       filterTextChanged = true;
     }
@@ -316,7 +317,7 @@ var Settings = React.createClass({
       var keyName = lname + 'Key';
       var value = settings[lname];
       var key = settings[keyName] || '';
-      if (util.isString(value) && util.isString(key)) {
+      if (isStr(value) && isStr(key)) {
         value = value.trim();
         key = key.trim();
         if (value && (dataCenter[lname] !== value || (dataCenter[keyName] || '') !== key)) {

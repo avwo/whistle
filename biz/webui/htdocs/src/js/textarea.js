@@ -49,15 +49,16 @@ var Textarea = React.createClass({
   },
   download: function () {
     var self = this;
+    var props = self.props;
     var target = findDOMNode(self.refs.nameInput);
     var name = target.value.trim();
     target.value = '';
-    var base64 = self.props.base64;
+    var base64 = props.base64;
     findDOMNode(self.refs.filename).value = name;
     findDOMNode(self.refs.type).value = base64 ? 'base64' : '';
-    findDOMNode(self.refs.headers).value = self.props.headers || '';
+    findDOMNode(self.refs.headers).value = props.headers || '';
     findDOMNode(self.refs.content).value =
-      base64 != null ? base64 : self.props.value || '';
+      base64 != null ? base64 : props.value || '';
     findDOMNode(self.refs.downloadForm).submit();
     self.hideNameInput();
   },

@@ -19,13 +19,13 @@ var Select = React.createClass({
   updateOptions: function(options) {
     var valueList = [];
     var self = this;
-    options = (options || self.props.options).slice().map(function(option) {
-      option = util.isString(option) ? { value: option, label: option } : option;
+    var props = self.props;
+    options = (options || props.options).slice().map(function(option) {
+      option = util.isStr(option) ? { value: option, label: option } : option;
       valueList.push(option.value);
       return option;
     });
     var innerLen = options.length;
-    var props = self.props;
     var name = props.name;
     var key = self.getKey(name);
     var customOptions;

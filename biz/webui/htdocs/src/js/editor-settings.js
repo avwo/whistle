@@ -18,15 +18,16 @@ var EditorSettings = React.createClass({
     });
   },
   render: function () {
-    var self = this;
+    var props = this.props;
+
     return (
       <div className="w-editor-settings">
         <p>
           <label>
             <span className="w-label">Theme:</span>
             <select
-              value={self.props.theme}
-              onChange={self.props.onThemeChange}
+              value={props.theme}
+              onChange={props.onThemeChange}
               className="form-control"
             >
               {themes.map(function(theme) {
@@ -39,8 +40,8 @@ var EditorSettings = React.createClass({
           <label>
             <span className="w-label">Font Size:</span>
             <select
-              value={self.props.fontSize}
-              onChange={self.props.onFontSizeChange}
+              value={props.fontSize}
+              onChange={props.onFontSizeChange}
               className="form-control"
             >
               {
@@ -55,8 +56,8 @@ var EditorSettings = React.createClass({
           <label className="w-middle">
             <input
               ref="showLineNumbers"
-              checked={self.props.lineNumbers}
-              onChange={self.props.onLineNumberChange}
+              checked={props.lineNumbers}
+              onChange={props.onLineNumberChange}
               type="checkbox"
             />{' '}
             Show line number
@@ -65,8 +66,8 @@ var EditorSettings = React.createClass({
         <p className="w-editor-settings-box">
           <label className="w-middle">
             <input
-              checked={self.props.lineWrapping}
-              onChange={self.props.onLineWrappingChange}
+              checked={props.lineWrapping}
+              onChange={props.onLineWrappingChange}
               type="checkbox"
             />{' '}
             Auto line wrapping

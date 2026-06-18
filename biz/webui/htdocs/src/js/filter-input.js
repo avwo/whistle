@@ -8,6 +8,7 @@ var win = require('./win');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
+var isFunc = util.isFunc;
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
 var TITLES = {
@@ -34,7 +35,7 @@ var FilterInput = React.createClass({
           var map = {};
           self.allHintList = hintList
             .map(function (key) {
-              return typeof key === 'string' ? key.substring(0, MAX_LEN) : null;
+              return util.isStr(key) ? key.substring(0, MAX_LEN) : null;
             })
             .filter(function (key) {
               if (!key || map[key]) {
@@ -58,7 +59,7 @@ var FilterInput = React.createClass({
       }
     });
     var onFilterTypeChange = self.props.onFilterTypeChange;
-    if (typeof onFilterTypeChange === 'function') {
+    if (isFunc(onFilterTypeChange)) {
       onFilterTypeChange(self.state.filterType);
     }
   },
@@ -87,7 +88,7 @@ var FilterInput = React.createClass({
     }
   },
   filterHints: function (keyword) {
-    keyword = keyword ? keyword.trim() : '';
+    keyword = util.trimStr(keyword);
     var count = 10;
     var self = this;
     var addonHints = self.props.addonHints || [];
@@ -117,8 +118,9 @@ var FilterInput = React.createClass({
   },
   changeInput: function (value) {
     var self = this;
-    self.props.onChange && self.props.onChange(value);
-    var hintKey = self.props.hintKey;
+    var props = self.props;
+    props.onChange && props.onChange(value);
+    var hintKey = props.hintKey;
     hintKey && clearTimeout(self.timer);
     self.state.filterText = value;
     self.setState({ hintList: self.filterHints(value) }, function () {
@@ -149,8 +151,9 @@ var FilterInput = React.createClass({
   onFilterKeyDown: function (e) {
     var elem;
     var self = this;
+    var state = self.state;
     if (e.keyCode === 27) {
-      var hintList = self.state.hintList;
+      var hintList = state.hintList;
       if (hintList === null) {
         self.showHints();
       } else {
@@ -159,7 +162,7 @@ var FilterInput = React.createClass({
     } else if (e.keyCode === 38) {
       // up
       elem = self.hintElem.find('.w-active');
-      if (self.state.hintList === null) {
+      if (state.hintList === null) {
         self.showHints();
       }
       if (elem.length) {
@@ -176,7 +179,7 @@ var FilterInput = React.createClass({
     } else if (e.keyCode === 40) {
       // down
       elem = self.hintElem.find('.w-active');
-      if (self.state.hintList === null) {
+      if (state.hintList === null) {
         self.showHints();
       }
       if (elem.length) {
@@ -206,7 +209,7 @@ var FilterInput = React.createClass({
         e.stopPropagation();
       }
     }
-    if (typeof self.props.onKeyDown === 'function') {
+    if (isFunc(self.props.onKeyDown)) {
       self.props.onKeyDown(e);
     }
   },
@@ -264,12 +267,13 @@ var FilterInput = React.createClass({
   },
   render: function () {
     var self = this;
+    var state = self.state;
     var props = self.props;
-    var filterText = self.state.filterText || '';
+    var filterText = state.filterText || '';
     var hintKey = props.hintKey;
-    var hintList = self.state.hintList;
+    var hintList = state.hintList;
     var addonHints = props.addonHints || [];
-    var showTypes = typeof props.onFilterTypeChange === 'function';
+    var showTypes = isFunc(props.onFilterTypeChange);
 
     return (
       <div className={'w-filter-con' + (showTypes ? ' w-filter-show-types' : '')} style={props.wStyle}>
@@ -319,7 +323,7 @@ var FilterInput = React.createClass({
         <button
           onMouseDown={util.preventBlur}
           onClick={self.clearFilterText}
-          style={{ display: self.state.filterText ? 'block' : 'none' }}
+          style={{ display: state.filterText ? 'block' : 'none' }}
           type="button"
           className="close w-clear-input"
           title="Ctrl[Command]+D"

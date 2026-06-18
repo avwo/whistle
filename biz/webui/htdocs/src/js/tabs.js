@@ -3,9 +3,9 @@ var Icon = require('./icon');
 
 var Tabs = React.createClass({
   render: function() {
-    var self = this;
-    var tabs = self.props.tabs || [];
-    var onChange = self.props.onChange;
+    var props = this.props;
+    var tabs = props.tabs || [];
+    var onChange = props.onChange;
 
     return (
       <ul className="nav nav-tabs w-tabs">

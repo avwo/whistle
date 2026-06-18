@@ -50,7 +50,7 @@ var UrlInput = React.createClass({
     return this.state.protocol.replace(/:\/\//, '');
   },
   parseUrl: function(url) {
-    url = url && util.isString(url) ? url.replace(/[\s#]+/g, '') : '';
+    url = util.notEStr(url) ? url.replace(/[\s#]+/g, '') : '';
     var index = url.indexOf('://');
     var protocols = this.state.protocols;
     var protocol = '';

@@ -7,6 +7,8 @@ var win = require('./win');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
+var isStr = util.isStr;
+
 var KVDialog = React.createClass({
   getInitialState: function () {
     return { list: [], history: [] };
@@ -21,7 +23,7 @@ var KVDialog = React.createClass({
     if (data && Array.isArray(data.list) && typeof data.data === 'object') {
       var count = 0;
       data.list.forEach(function(name) {
-        if (name && count < 360 && typeof name === 'string' && name.length <= 256) {
+        if (name && count < 360 && isStr(name) && name.length <= 256) {
           ++count;
           history.push(name);
         }
@@ -178,7 +180,7 @@ var KVDialog = React.createClass({
               ) : (
                 list.map(function (item, i) {
                   var isGroup = util.isGroup(item.name);
-                  var value = typeof item.value === 'string' ? item.value : '';
+                  var value = isStr(item.value) ? item.value : '';
                   var exceed = value.length > 128;
                   if (item.checked) {
                     ++checkedCount;

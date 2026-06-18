@@ -15,6 +15,7 @@ var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
 var showSysErr = util.showSysErr;
+var isFunc = util.isFunc;
 var IPV6_ONLY_VAL = 4;
 var dialog;
 var curOrder;
@@ -63,9 +64,9 @@ function onDarkModeChange(cb) {
   }
   if (media) {
     cb();
-    if (typeof media.addEventListener === 'function') {
+    if (isFunc(media.addEventListener)) {
       media.addEventListener('change', cb);
-    } else if (typeof media.addListener === 'function') {
+    } else if (isFunc(media.addListener)) {
       media.addListener(cb);
     }
   }
@@ -100,7 +101,7 @@ function updateIframeTheme(iframe) {
     var curTheme = doc.getAttribute('data-theme');
     if (theme !== curTheme) {
       doc.setAttribute('data-theme', theme);
-      if (typeof win.onWhistleThemeChange === 'function') {
+      if (isFunc(win.onWhistleThemeChange)) {
         win.onWhistleThemeChange(theme);
       }
     }
@@ -320,7 +321,7 @@ var Online = React.createClass({
     var port = server.realPort || server.port;
     if (port) {
       var bip = server.realHost != null ? server.realHost : server.bip;
-      if (typeof bip === 'string' && bip.indexOf(':') !== -1) {
+      if (util.isStr(bip) && bip.indexOf(':') !== -1) {
         bip = '[' + bip + ']';
       }
       info.push('<h5><strong>Port:</strong> ' + (bip ? bip + ':' + port : port) + '</h5>');

@@ -12,8 +12,9 @@ module.exports = {
   },
   showNameInput: function (e) {
     var self = this;
-    self.state.showDownloadInput = /w-download/.test(e.target.className);
-    self.state.showNameInput = true;
+    var state = self.state;
+    state.showDownloadInput = /w-download/.test(e.target.className);
+    state.showNameInput = true;
     self.forceUpdate(function () {
       var nameInput = findDOMNode(self.refs.nameInput);
       var defaultName = !nameInput.value && self.props.defaultName;

@@ -6,6 +6,9 @@ var protocols = require('./protocols');
 var dataCenter = require('./data-center');
 var util = require('./util');
 
+var isFunc = util.isFunc;
+var isStr = util.isStr;
+var notEStr = util.notEStr;
 var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_-]+:))(\/?$|\/\/)/;
@@ -282,7 +285,7 @@ function getAtValueList(keyword) {
   keyword = keyword.substring(1);
   try {
     var getList = window.parent.getAtValueListForWhistle;
-    if (typeof getList !== 'function') {
+    if (!isFunc(getList)) {
       return;
     }
     var list = getList(keyword);
@@ -293,18 +296,18 @@ function getAtValueList(keyword) {
         if (!item || len < 1) {
           return;
         }
-        if (typeof item === 'string') {
+        if (isStr(item)) {
           --len;
           result.push(item);
           return;
         }
         var value = item.value;
-        if (!value || typeof value !== 'string') {
+        if (!notEStr(value)) {
           return;
         }
         --len;
         var label = item.label;
-        if (!label || typeof label !== 'string') {
+        if (!notEStr(label)) {
           result.push(value);
         } else {
           result.push({
@@ -361,9 +364,9 @@ function getPluginVarHints(keyword, specProto) {
 function getAtHelpUrl(name, options) {
   try {
     var _getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
-    if (typeof _getAtHelpUrl === 'function') {
+    if (isFunc(_getAtHelpUrl)) {
       var url = _getAtHelpUrl(name, options);
-      if (url === false || typeof url === 'string') {
+      if (url === false || isStr(url)) {
         return url;
       }
     }
@@ -372,7 +375,7 @@ function getAtHelpUrl(name, options) {
 }
 
 function getRuleHelp(plugin, helpUrl) {
-  if (typeof helpUrl !== 'string') {
+  if (!isStr(helpUrl)) {
     helpUrl = '';
   }
   return (
@@ -413,7 +416,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar, c
     if (len >= 60) {
       return;
     }
-    if (typeof item === 'string') {
+    if (isStr(item)) {
       item = getHintText(protoName, item.trim(), isVar);
       if (item.length < maxLen && !curHintMap[item]) {
         ++len;
@@ -423,8 +426,8 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar, c
     } else if (item) {
       var label = item.label || item.displayText || item.display;
       var curVal = item.value || item.text;
-      label = typeof label === 'string' ? label.trim() : '';
-      curVal = typeof curVal === 'string' ? curVal.trim() : '';
+      label = util.trimStr(label);
+      curVal = util.trimStr(curVal);
       if (curVal) {
         curVal = getHintText(protoName, curVal, isVar, item.isKey);
       }
@@ -675,7 +678,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
       var pluginConf = pluginVars || plugin;
       if (
         plugin &&
-        (typeof pluginConf.hintUrl === 'string' || pluginConf.hintList)
+        (isStr(pluginConf.hintUrl) || pluginConf.hintList)
       ) {
         if (!pluginVars) {
           value = RegExp.$3 || '';
@@ -695,7 +698,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           if (value) {
             value = value.toLowerCase();
             curHintList = pluginConf.hintList.filter(function (item) {
-              if (typeof item === 'string') {
+              if (isStr(item)) {
                 return item.toLowerCase().indexOf(value) !== -1;
               }
               if (item.text.toLowerCase().indexOf(value) !== -1) {
@@ -716,7 +719,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           curHintList = curHintList.map(function (item) {
             var hint;
             var text;
-            if (typeof item === 'string') {
+            if (isStr(item)) {
               text = getHintText(protoName, item, pluginVars);
             } else {
               text = getHintText(protoName, item.text, pluginVars, item.isKey);
@@ -758,7 +761,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
                 from: from,
                 to: to
               };
-              if (typeof item === 'string') {
+              if (isStr(item)) {
                 hint.text = item;
                 hint.displayText = item;
               } else {

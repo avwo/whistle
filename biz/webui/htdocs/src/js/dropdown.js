@@ -41,12 +41,14 @@ var DropDown = React.createClass({
   },
   render: function () {
     var self = this;
-    var help = self.props.help;
-    var options = self.props.options || [];
+    var props = self.props;
+    var state = self.state;
+    var help = props.help;
+    var options = props.options || [];
     var firstOption = options[0] || {};
-    var disabled = self.props.disabled;
+    var disabled = props.disabled;
     var selectedOption =
-      this.getSelectedOption() || self.state.selectedOption || firstOption;
+      this.getSelectedOption() || state.selectedOption || firstOption;
 
     return (
       <div
@@ -74,7 +76,7 @@ var DropDown = React.createClass({
         </div>
         <ul
           style={{
-            display: !disabled && self.state.hover ? 'block' : 'none',
+            display: !disabled && state.hover ? 'block' : 'none',
             padding: help ? undefined : 0
           }}
           className="dropdown-menu"

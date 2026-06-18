@@ -9,6 +9,7 @@ var dataCenter = require('./data-center');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
+var isStr = util.isStr;
 var contextMenuList = [
   { name: 'Copy URL' },
   { name: 'Copy As cURL' },
@@ -78,7 +79,7 @@ var HistoryData = React.createClass({
       return;
     }
     var headers = item.headers;
-    if (typeof headers === 'string') {
+    if (isStr(headers)) {
       headers = RULES_KEY.test(headers) ? headers.split(/\r\n|\r|\n/).filter(function(line) {
         return !RULES_KEY.test(line);
       }).join('\r\n') : headers;
@@ -116,7 +117,7 @@ var HistoryData = React.createClass({
   exportItem: function(item) {
     var headers = item.headers;
     var rules = [];
-    if (typeof headers === 'string' && RULES_KEY.test(headers)) {
+    if (isStr(headers) && RULES_KEY.test(headers)) {
       headers = headers.split(/\r\n|\r|\n/).filter(function(line) {
         if (RULES_KEY.test(line)) {
           line = line.substring(line.indexOf(':') + 1).trim();

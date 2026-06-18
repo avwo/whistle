@@ -62,12 +62,13 @@ var Properties = React.createClass({
   },
   renderKey: function(name, value) {
     var self = this;
-    if (self.props.hideKeys) {
+    var props = self.props;
+    if (props.hideKeys) {
       return null;
     }
-    var onHelp = self.props.onHelp;
-    var showEnableBtn = self.props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
-    var index = self.props.richKey ? name.indexOf('\r\u0000(') : -1;
+    var onHelp = props.onHelp;
+    var showEnableBtn = props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
+    var index = props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
       {onHelp ? <HelpIcon data-name={name} onClick={onHelp} /> : undefined}
       {showEnableBtn ? <EnableHttpsBtn /> : null}

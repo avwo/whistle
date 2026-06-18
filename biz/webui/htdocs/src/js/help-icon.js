@@ -13,7 +13,7 @@ var HelpIcon = React.createClass({
     e.preventDefault();
     var props = this.props;
     var url = props.docsUrl;
-    url = typeof url === 'function' ? url() : url;
+    url = util.isFunc(url) ? url() : url;
     if (url) {
       return events.trigger('openUrl', util.getDocUrl(url));
     }

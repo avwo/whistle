@@ -75,7 +75,7 @@ var ExportDialog = React.createClass({
     }
     var self = this;
     var data = self.state.data;
-    if (typeof data === 'function') {
+    if (util.isFunc(data)) {
       data = data();
     }
     self.hide();

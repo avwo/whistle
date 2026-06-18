@@ -10,8 +10,9 @@ var OrderTable = React.createClass({
   },
   onChange: function(e) {
     var index = e.target.getAttribute('data-index');
-    var row = this.props.rows[index];
-    this.props.onActive(e.target.checked, row);
+    var props = this.props;
+    var row = props.rows[index];
+    props.onActive(e.target.checked, row);
   },
   render: function() {
     var self = this;

@@ -46,16 +46,17 @@ var HostInput = React.createClass({
   },
   render: function() {
     var self = this;
+    var state = self.state;
     var props = self.props;
     var disabled = props.disabled;
 
     return (
       <div className={'w-host-input ' + (props.className || '')}>
         <input type="text" className="form-control w-host-input-name" placeholder="Enter IP or Domain"
-          maxLength="256" value={self.state.host} onChange={self.onHostChange} disabled={disabled} />
+          maxLength="256" value={state.host} onChange={self.onHostChange} disabled={disabled} />
         :
         <input type="number" className="form-control w-host-input-port" placeholder="Port"
-          maxLength="5" value={self.state.port} onChange={self.onPortChange} disabled={disabled} />
+          maxLength="5" value={state.port} onChange={self.onPortChange} disabled={disabled} />
       </div>
     );
   }

@@ -34,7 +34,7 @@ var NetworkRule = React.createClass({
       return;
     }
     type = type['content-type'];
-    type = util.isString(type) && util.removeSpaces(type);
+    type = util.isStr(type) && util.removeSpaces(type);
     if (type) {
       this.refs.responseType.createOption(type);
     }

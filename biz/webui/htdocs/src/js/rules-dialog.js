@@ -11,6 +11,7 @@ var Prompt = require('./prompt');
 var message = require('./message');
 
 var showSysErr = util.showSysErr;
+var isStr = util.isStr;
 var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
 var LINE__RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
@@ -140,7 +141,7 @@ var RulesDialog = React.createClass({
     var values = self._values;
     var name = values && values.name;
     var value = values && values.value;
-    if (!name || values.isFile || !util.isString(name) || !util.isString(value)) {
+    if (!name || values.isFile || !isStr(name) || !isStr(value)) {
       return cb();
     }
     var next = function(sure) {

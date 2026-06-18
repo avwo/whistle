@@ -16,6 +16,7 @@ var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
 var showSysErr = util.showSysErr;
+var isStr = util.isStr;
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
 var PLUGIN_NAME_RE = /^((?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
@@ -128,14 +129,14 @@ function getRegistry(url) {
 }
 
 function parsePluginName(list, registry) {
-  if (util.isString(list)) {
+  if (isStr(list)) {
     list = list.split(/[\s,;|]+/);
   } else if (!Array.isArray(list)) {
     return;
   }
   var plugins = [];
   list.forEach(function (name) {
-    if (util.isString(name)) {
+    if (isStr(name)) {
       name = name.trim();
       if (PLUGIN_NAME_RE.test(name)) {
         plugins.push(name);
@@ -471,7 +472,8 @@ var Home = React.createClass({
   render: function () {
     var self = this;
     var state = self.state || {};
-    var data = self.props.data || {};
+    var props = self.props;
+    var data = props.data || {};
     var plugins = data.plugins || {};
     var installUrls = [];
     var disabledPlugins = data.disabledPlugins || {};
@@ -521,7 +523,7 @@ var Home = React.createClass({
       <div
         ref="plugins"
         className="fill v-box w-plugins"
-        style={{ display: self.props.hide ? 'none' : '' }}
+        style={{ display: props.hide ? 'none' : '' }}
       >
         <div className="w-plugins-headers">
           <table className="table">
@@ -589,7 +591,7 @@ var Home = React.createClass({
                           data-name={name}
                           checked={ndp || checked}
                           disabled={!ndp && disabled}
-                          onChange={self.props.onChange}
+                          onChange={props.onChange}
                           className={ndp ? 'w-not-allowed' : undefined}
                         />
                       </td>
@@ -676,8 +678,8 @@ var Home = React.createClass({
                         ) : (
                           <span className="disabled">Help</span>
                         )}
-                        {util.isString(plugin.rulesUrl) ||
-                        util.isString(plugin.valuesUrl) ? (
+                        {isStr(plugin.rulesUrl) ||
+                        isStr(plugin.valuesUrl) ? (
                           <a
                             className="w-plugin-btn"
                             onClick={function () {
@@ -870,7 +872,8 @@ var Tabs = React.createClass({
     }
   },
   onClose: function (e) {
-    this.props.onClose && this.props.onClose(e);
+    var onClose = this.props.onClose;
+    onClose && onClose(e);
     e.stopPropagation();
   },
   onContextMenu: function(e) {
@@ -956,7 +959,7 @@ var Tabs = React.createClass({
     var tabs = props.tabs || [];
     var activeName = 'Home';
     var disabled = props.disabledAllPlugins;
-    var active = self.props.active;
+    var active = props.active;
     if (active && active != activeName) {
       for (var i = 0, len = tabs.length; i < len; i++) {
         var tab = tabs[i];
@@ -971,7 +974,7 @@ var Tabs = React.createClass({
       <div
         className="w-nav-tabs fill v-box"
         style={{
-          display: self.props.hide ? 'none' : '',
+          display: props.hide ? 'none' : '',
           paddingTop: disabled ? 0 : undefined
         }}
         onContextMenu={self.onContextMenu}
@@ -990,7 +993,7 @@ var Tabs = React.createClass({
               'w-nav-normal-tab' + (activeName == 'Home' ? ' active' : '')
             }
             data-name="Home"
-            onClick={self.props.onActive}
+            onClick={props.onActive}
           >
             <a draggable="false" data-name="Plugins" className="w-plugins-tab">
               <Icon name="th-large" />
@@ -1010,7 +1013,7 @@ var Tabs = React.createClass({
                 <a
                   data-name={tab.name}
                   title={tab.name}
-                  onClick={self.props.onActive}
+                  onClick={props.onActive}
                   draggable="false"
                   className={'w-plugins-tab' + (disd ? ' w-plugin-tab-disabled' : '')}
                 >
@@ -1033,10 +1036,10 @@ var Tabs = React.createClass({
         <div className="fill v-box w-nav-tab-panel w-fix-drag">
           <div ref="tabPanel" className="fill v-box">
             <Home
-              data={self.props}
+              data={props}
               hide={activeName != 'Home'}
-              onChange={self.props.onChange}
-              onOpen={self.props.onOpen}
+              onChange={props.onChange}
+              onOpen={props.onOpen}
             />
             {tabs.map(function (tab) {
               return (

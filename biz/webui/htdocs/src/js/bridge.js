@@ -10,9 +10,10 @@ var mockWin = require('./win');
 var parseRules = require('./parse-rules');
 
 var dataModal = dataCenter.networkModal;
+var isStr = util.isStr;
 
 function compatAjax(options) {
-  if (typeof options !== 'string') {
+  if (!isStr(options)) {
     options.type = options.type || options.method;
   }
   return options;
@@ -176,7 +177,7 @@ module.exports = getBridge;
 getBridge.getServiceBridge = function(closeDialog) {
   var bridgeApi = getBridge(null, {
     login: function(data, cb) {
-      if (typeof data !== 'string') {
+      if (!isStr(data)) {
         data = JSON.stringify(data);
       }
       dataCenter.login(data, cb);

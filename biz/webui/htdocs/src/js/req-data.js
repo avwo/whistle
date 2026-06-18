@@ -397,7 +397,7 @@ var Row = React.createClass({
               }
               var colStyle = getColStyle(col, style);
               var icon = col.iconKey && util.getProperty(item, col.iconKey);
-              var iconElem = typeof col.getIcon === 'function' ? col.getIcon(item) : undefined;
+              var iconElem = util.isFunc(col.getIcon) ? col.getIcon(item) : undefined;
 
               return (
                 <td
@@ -670,7 +670,7 @@ var ReqData = React.createClass({
     $(window).on('resize', render);
     events.on('ensureSelectedItemVisible', function () {
       var modal = self.props.modal;
-      var selected = self.props.modal.getSelectedList()[0];
+      var selected = modal.getSelectedList()[0];
       if (selected && modal.isTreeView) {
         selected = modal.getTreeNode(selected.id);
       }
@@ -1422,7 +1422,7 @@ var ReqData = React.createClass({
   },
   getTreeNode: function (e) {
     var modal = this.props.modal;
-    if (typeof e === 'string') {
+    if (util.isStr(e)) {
       return modal.getTreeNode(e);
     }
     var elem = $(e.target).closest('.w-req-data-item');

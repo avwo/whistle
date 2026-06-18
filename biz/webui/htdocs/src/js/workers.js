@@ -3,13 +3,14 @@ var util = require('./util');
 
 var workers = {};
 var modal;
+var getStr = util.getString;
 
 function isEnd(item) {
   return item.endTime || item.lost;
 }
 
 function assign(o1, o2) {
-  if (typeof Object.assign === 'function') {
+  if (util.isFunc(Object.assign)) {
     Object.assign(o1, o2);
   } else {
     Object.keys(o2).forEach(function(key) {
@@ -24,9 +25,9 @@ function setCustomData(item, newData, name) {
   assign(data, newData);
   var style = data.style;
   if (style) {
-    var color = util.getString(style.color);
-    var fontStyle = util.getString(style.fontStyle);
-    var backgroundColor = util.getString(style.backgroundColor || style.bgColor);
+    var color = getStr(style.color);
+    var fontStyle = getStr(style.fontStyle);
+    var backgroundColor = getStr(style.backgroundColor || style.bgColor);
     if (color || fontStyle || backgroundColor) {
       style = item.style || {};
       item.style = style;

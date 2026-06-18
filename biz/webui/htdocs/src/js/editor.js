@@ -30,6 +30,7 @@ var message = require('./message');
 var util = require('./util');
 
 var themes = util.EDITOR_THEMES;
+var isFunc = util.isFunc;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
   'CodeMirror-linenumbers',
@@ -308,11 +309,12 @@ var Editor = React.createClass({
       }
     });
     editor.on('change', function (e) {
+      var onChange = self.props.onChange;
       if (
-        typeof self.props.onChange == 'function' &&
+        isFunc(onChange) &&
         editor.getValue() !== (self.props.value || '')
       ) {
-        self.props.onChange.call(self, e);
+        onChange.call(self, e);
       }
     });
     editor.on('mousedown', function (_, e) {
@@ -423,7 +425,7 @@ var Editor = React.createClass({
         try {
           var onKeyDown = window.parent.onWhistleRulesEditorKeyDown;
           if (
-            typeof onKeyDown === 'function' &&
+            isFunc(onKeyDown) &&
             onKeyDown(e, options) === false
           ) {
             e.stopPropagation();
@@ -435,9 +437,9 @@ var Editor = React.createClass({
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
         var onFormat = self.props.onFormat;
         var onInspect = self.props.onInspect;
-        if (typeof onFormat === 'function' && e.keyCode === 70) {
+        if (isFunc(onFormat) && e.keyCode === 70) {
           onFormat(e);
-        } else if (typeof onInspect === 'function' && e.keyCode === 73) {
+        } else if (isFunc(onInspect) && e.keyCode === 73) {
           onInspect(e);
         }
       }
@@ -539,35 +541,36 @@ var Editor = React.createClass({
   },
   _init: function (init) {
     var self = this;
-    var mode = self.props.mode;
+    var props = self.props;
+    var mode = props.mode;
     if (self._waitingUpdate && mode === 'rules') {
       self._editor.setOption('mode', '');
       self._mode = '';
     }
     self.setMode(mode);
     self._waitingUpdate = false;
-    var value = self.props.value;
+    var value = props.value;
     var history = self._editor.getHistory();
     if (init && value && value.length > INIT_LENGTH) {
       var elem = message.info('Loading...');
       self.timer = setTimeout(function () {
         elem.hide();
         self.timer = null;
-        self.setValue(self.props.value); // 节流
+        self.setValue(props.value); // 节流
         self.setHistory(init, history);
       }, 500);
     } else if (!self.timer) {
       self.setValue(value);
       self.setHistory(init, history);
     }
-    self.setTheme(self.props.theme);
-    self.setFontSize(self.props.fontSize);
-    self.setTheme(self.props.theme);
-    self.showLineNumber(self.props.lineNumbers || false);
-    self.showLineWrapping(self.props.lineWrapping || false);
-    self.setReadOnly(self.props.readOnly || false);
+    self.setTheme(props.theme);
+    self.setFontSize(props.fontSize);
+    self.setTheme(props.theme);
+    self.showLineNumber(props.lineNumbers || false);
+    self.showLineWrapping(props.lineWrapping || false);
+    self.setReadOnly(props.readOnly || false);
     self.setAutoComplete();
-    self.setFoldGutter(self.props.foldGutter);
+    self.setFoldGutter(props.foldGutter);
   },
   componentDidUpdate: function () {
     this._init();

@@ -24,8 +24,9 @@ var PropsEditor = React.createClass({
     return {};
   },
   getValue: function (name, field) {
-    var isHeader = this.props.isHeader;
-    var allowUploadFile = this.props.allowUploadFile;
+    var props = this.props;
+    var isHeader = props.isHeader;
+    var allowUploadFile = props.allowUploadFile;
     var decode = isHeader ? util.decodeURIComponentSafe : util.noop;
     var shortName = decode(name.substring(0, MAX_NAME_LEN), isHeader);
     var result = { name: shortName };
@@ -299,25 +300,27 @@ var PropsEditor = React.createClass({
   },
   render: function () {
     var self = this;
-    var modal = self.state.modal || '';
-    var filename = self.state.filename;
-    var fileSize = self.state.fileSize;
+    var state = self.state;
+    var props = self.props;
+    var modal = state.modal || '';
+    var filename = state.filename;
+    var fileSize = state.fileSize;
     var keys = Object.keys(modal);
-    var isHeader = self.props.isHeader;
-    var allowUploadFile = self.props.allowUploadFile;
-    var data = self.state.data || '';
+    var isHeader = props.isHeader;
+    var allowUploadFile = props.allowUploadFile;
+    var data = state.data || '';
     var text = data ? 'Modify' : 'Add';
     var btnText = text + (isHeader ? ' Header' : ' Param');
-    var cbBtnText = self.props.callback ? text + ' & Send' : null;
+    var cbBtnText = props.callback ? text + ' & Send' : null;
 
     return (
       <div
         className={
           'fill v-box w-props-editor' +
-          (self.props.hide ? ' hide' : '')
+          (props.hide ? ' hide' : '')
         }
-        title={self.props.title}
-        onDoubleClick={self.props.onDoubleClick}
+        title={props.title}
+        onDoubleClick={props.onDoubleClick}
       >
         {keys.length ? (
           <table className="table">
@@ -366,13 +369,13 @@ var PropsEditor = React.createClass({
         ) : (
           <button
             onClick={self.onAdd}
-            disabled={self.props.disabled}
+            disabled={props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
-              (self.props.isHeader ? ' w-add-header' : '')
+              (props.isHeader ? ' w-add-header' : '')
             }
           >
-            {self.props.isHeader ? '+Header' : '+Param'}
+            {props.isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-com-dialog">
