@@ -51,6 +51,7 @@ export default defineConfig({
               { text: 'Rules', link: '/en/docs/gui/rules' },
               { text: 'Values', link: '/en/docs/gui/values' },
               { text: 'Plugins', link: '/en/docs/gui/plugins' },
+              { text: 'Test Rules', link: '/en/docs/gui/test-rules' },
               { text: 'Shortcut', link: '/en/docs/gui/shortcut' },
             ]
           },
@@ -263,6 +264,7 @@ export default defineConfig({
           { text: 'Rules', link: '/docs/gui/rules' },
           { text: 'Values', link: '/docs/gui/values' },
           { text: 'Plugins', link: '/docs/gui/plugins' },
+          { text: '测试规则', link: '/docs/gui/test-rules' },
           { text: '快捷键', link: '/docs/gui/shortcut' },
         ]
       },
