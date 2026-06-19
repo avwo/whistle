@@ -24,9 +24,9 @@ function enableProxy(options) {
   try {
     var host = util.joinIpPort(options.host, options.port);
     if (proxy.enableProxy(options)) {
-      showInfo('Successfully set system proxy (' + host + ')');
+      showInfo('Successfully enabled system proxy (' + host + ')');
     } else {
-      showError('Failed to set system proxy (' + host + ')');
+      showError('Failed to enable system proxy (' + host + ')');
     }
   } catch (e) {
     showError(e.message);
