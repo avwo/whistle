@@ -18,5 +18,5 @@ module.exports = function(req, res) {
   if (valuesData) {
     values.add(valuesData.name, valuesData.value, clientId);
   }
-  res.json({ec: 0, em: 'success'});
+  res.json({ec: 0});
 };

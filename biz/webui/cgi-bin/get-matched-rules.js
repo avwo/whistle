@@ -2,8 +2,8 @@ var proxy = require('../lib/proxy');
 var util = require('./util');
 
 module.exports = function(req, res) {
-  var reqId = req.query.reqId;
-  var item = reqId && proxy.getItem(reqId);
+  var testId = req.query.testId;
+  var item = testId && proxy.getTestItem(testId);
   if (!item) {
     return res.json({});
   }

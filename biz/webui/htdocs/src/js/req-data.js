@@ -365,7 +365,7 @@ var Row = React.createClass({
             <th className="order" scope="row" style={style}>
               {order}
               {item.importedData ? <Icon name="import" /> : null}
-              {item.fc && !item.importedData ? <Icon name={item.isTest ? 'text-size' : 'send'} /> : null}
+              {item.fc && !item.importedData ? <Icon name={item.testId ? 'text-size' : 'send'} /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;

@@ -11,7 +11,6 @@ module.exports = function(req, res) {
 
   res.json({
     ec: 0,
-    em: 'success',
     showUpdate: !config.disableUpdateTips && hasNewVersion > 1 && common.compareVersion(latestVersion, doNotShowAgainVersion) > 1,
     hasNewVersion: hasNewVersion > 0,
     hasUpdater: config.hasUpdater,

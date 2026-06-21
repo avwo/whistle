@@ -175,14 +175,11 @@ var TestRule = React.createClass({
       if (!data) {
         return util.showSysErr(xhr);
       }
-      if (data.ec) {
+      var testId = data.res && data.res.testId;
+      if (!testId) {
         return message.error(data.em || 'Error, please retry');
       }
-      var reqId = data.res && data.res.reqId;
-      if (!reqId) {
-        return message.error('No request ID returned');
-      }
-      dataCenter.getMatchedRules({ reqId: reqId }, function(matchedRules, xhr2) {
+      dataCenter.getMatchedRules({ testId: testId }, function(matchedRules, xhr2) {
         if (!matchedRules) {
           return util.showSysErr(xhr2);
         }
