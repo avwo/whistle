@@ -4,7 +4,7 @@ var util = require('./util');
 var TOTAL_RATE = 82;
 
 var Timeline = React.createClass({
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   render: function () {
     var modal = this.props.modal;
     var data = this.props.data;
@@ -33,7 +33,7 @@ var Timeline = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-timeline' +
-          (util.getBool(this.props.hide) ? ' hide' : '')
+          util.getHide(util.getBool(this.props.hide))
         }
       >
         <ul>
@@ -263,27 +263,25 @@ var Timeline = React.createClass({
                 <span
                   style={{
                     width: requestRate,
-                    marginBottom: resStream ? '5px' : undefined
+                    marginBottom: resStream ? '5px' : null
                   }}
                   className="w-timeline-request"
                 />
                 <span
                   style={{
                     width: responseRate,
-                    marginLeft:
-                      reqStream ? '-' + requestRate : undefined,
-                    marginBottom: reqStream ? '-5px' : undefined,
-                    height: reqStream ? '15px' : undefined
+                    marginLeft: reqStream ? '-' + requestRate : null,
+                    marginBottom: reqStream ? '-5px' : null,
+                    height: reqStream ? '15px' : null
                   }}
                   className="w-timeline-response"
                 />
                 <span
                   style={{
                     width: loadRate,
-                    marginLeft:
-                      resStream ? '-' + responseRate : undefined,
-                    marginBottom: reqStream ? '-5px' : undefined,
-                    height: reqStream ? '15px' : undefined
+                    marginLeft: resStream ? '-' + responseRate : null,
+                    marginBottom: reqStream ? '-5px' : null,
+                    height: reqStream ? '15px' : null
                   }}
                   className="w-timeline-load"
                 />

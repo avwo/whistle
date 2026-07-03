@@ -6,7 +6,6 @@ var NetworkModal = require('./network-modal');
 var Dialog = require('./dialog');
 var columns = require('./columns');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var util = require('./util');
 var win = require('./win');
 var storage = require('./storage');
@@ -15,12 +14,19 @@ var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
 var Prompt = require('./prompt');
 var message = require('./message');
+var DismissBtn = require('./dismiss-btn');
 
 var NOT_EMPTY_STYLE = { backgroundColor: 'var(--b-filtered)' };
-var NOT_EMPTY_RE = /[^\s]/;
 var DATA_KEY_TIPS = 'e.g. res.body or res.body:/"msgno":"(\w+)"/ ...';
 var URL_DEMO = ', e.g. https://example.com/path#xxx={WHISTLE_DATA}';
 var isStr = util.isStr;
+var isBool = util.isBool;
+var trigger = util.trigger;
+var preventBlur = util.preventBlur;
+var addEvent = util.on;
+var off = util.off;
+var attr = util.attr;
+var notEmpty = util.notEmpty;
 
 var isViewInNewWin =function() {
   return storage.get('viewAllInNewWindow') === '1';
@@ -43,7 +49,7 @@ var Settings = React.createClass({
     });
   },
   onColumnsResort: function () {
-    events.trigger('onColumnsChanged');
+    trigger('onColumnsChanged');
     this.setState({ columns: columns.getAllColumns() });
   },
   resetColumns: function () {
@@ -57,19 +63,17 @@ var Settings = React.createClass({
       }
     });
   },
-  shouldComponentUpdate: function () {
-    return this.refs.networkSettingsDialog.isVisible();
-  },
+  shouldComponentUpdate: util.scuDialog,
   componentDidMount: function () {
     var self = this;
-    events.on('toggleTreeView', function () {
+    addEvent('toggleTreeView', function () {
       self.setState({});
     });
-    events.on('setNetworkSettings', function(_, settings) {
+    addEvent('setNetworkSettings', function(_, settings) {
       if (!settings) {
         return;
       }
-      win.confirm('Do you confirm the changes to the network settings?', function(sure) {
+      win.confirm(util.CMF_CHG_MSG + 'the network settings?', function(sure) {
         if (sure) {
           self.setSettings(settings);
         }
@@ -77,24 +81,24 @@ var Settings = React.createClass({
     });
   },
   componentWillUnmount: function () {
-    events.off('toggleTreeView');
-    events.off('setNetworkSettings');
+    off('toggleTreeView');
+    off('setNetworkSettings');
   },
   onNetworkSettingsChange: function (e) {
     var target = e.target;
     var self = this;
-    var name = target.getAttribute('data-name');
+    var name = attr(target, 'data-name');
     if (!name || name === 'path') {
       return;
     }
     if (name === 'viewOwn') {
       dataCenter.setOnlyViewOwnData(target.checked);
       self.setState({});
-      events.trigger('filterChanged');
+      trigger('filterChanged');
       return;
     }
     if (name === 'treeView') {
-      events.trigger('switchTreeView');
+      trigger('switchTreeView');
       return;
     }
     if (name === 'viewAllInNewWindow') {
@@ -134,14 +138,14 @@ var Settings = React.createClass({
     }
     if (filterTextChanged) {
       dataCenter.setFilterText(settings);
-      events.trigger('filterChanged');
+      trigger('filterChanged');
     } else if (columnsChanged) {
-      events.trigger('onColumnsChanged');
+      trigger('onColumnsChanged');
     }
     self.setState(settings);
   },
   showViewAllSettings: function(e) {
-    e.preventDefault();
+    preventBlur(e);
     if (!isViewInNewWin()) {
       return;
     }
@@ -168,16 +172,16 @@ var Settings = React.createClass({
     var self = this;
     var settings = self.getNetworkSettings();
     self.setState(settings);
-    self.refs.networkSettingsDialog.show();
+    self.refs.dialog.show();
   },
   hideDialog: function () {
-    this.refs.networkSettingsDialog.hide();
+    this.refs.dialog.hide();
   },
   editCustomCol: function (e) {
-    e.preventDefault();
+    preventBlur(e);
     var self = this;
     self.refs.editCustomColumn.show();
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     var lname = name.toLowerCase();
     self.setState(
       {
@@ -226,7 +230,7 @@ var Settings = React.createClass({
         dataCenter[lname] = value || name;
         dataCenter[lname + 'Key'] = key;
         self.setState({});
-        events.trigger('onColumnTitleChange');
+        trigger('onColumnTitleChange');
       }
     );
   },
@@ -244,49 +248,37 @@ var Settings = React.createClass({
     var filterChanged;
     var columnsChanged;
     var viewOwn = settings.viewOwn;
-    if (util.isBool(viewOwn) && dataCenter.isOnlyViewOwnData() !== viewOwn) {
+    if (isBool(viewOwn) && dataCenter.isOnlyViewOwnData() !== viewOwn) {
       dataCenter.setOnlyViewOwnData(viewOwn);
       filterChanged = true;
     }
     var treeView = settings.treeView;
-    if (util.isBool(treeView) && treeView !== (storage.get('isTreeView') === '1')) {
-      events.trigger('switchTreeView');
+    if (isBool(treeView) && treeView !== (storage.get('isTreeView') === '1')) {
+      trigger('switchTreeView');
     }
 
     var viewInWin = settings.viewAllInWindow;
-    if (util.isBool(viewInWin) && viewInWin !== isViewInNewWin()) {
+    if (isBool(viewInWin) && viewInWin !== isViewInNewWin()) {
       storage.set('viewAllInNewWindow', viewInWin ? '1' : '');
     }
 
     var disabledHNR = settings.disabledHNR;
-    if (util.isBool(disabledHNR) && disabledHNR !== (storage.get('disabledHNR') === '1')) {
+    if (isBool(disabledHNR) && disabledHNR !== (storage.get('disabledHNR') === '1')) {
       storage.set('disabledHNR', disabledHNR ? '1' : '');
     }
 
-    var disabledFilterText = settings.disabledFilterText;
-    if (util.isBool(disabledFilterText) && disabledFilterText !== !!state.disabledFilterText) {
-      state.disabledFilterText = disabledFilterText;
-      filterTextChanged = true;
-    }
-
-    var disabledExcludeText = settings.disabledExcludeText;
-    if (util.isBool(disabledExcludeText) && disabledExcludeText !== !!state.disabledExcludeText) {
-      state.disabledExcludeText = disabledExcludeText;
-      filterTextChanged = true;
-    }
-
-    var excludeText = settings.excludeText;
-    if (isStr(excludeText) && excludeText !== state.excludeText) {
-      state.excludeText = excludeText;
-      filterTextChanged = true;
-    }
-
-    var filterText = settings.filterText;
-    if (isStr(filterText) && filterText !== state.filterText) {
-      state.filterText = filterText;
-      filterTextChanged = true;
-    }
-
+    var checkChanged = function(name, fn) {
+      var result = settings[name];
+      fn = fn || isBool;
+      if (fn(result) && result !== (fn ? state[name] : !!state[name])) {
+        state[name] = result;
+        filterTextChanged = true;
+      }
+    };
+    checkChanged('disabledFilterText');
+    checkChanged('disabledExcludeText');
+    checkChanged('excludeText', isStr);
+    checkChanged('filterText', isStr);
 
     var list = settings.columns;
     if (Array.isArray(list)) {
@@ -306,9 +298,9 @@ var Settings = React.createClass({
       if (filterTextChanged) {
         dataCenter.setFilterText(state);
       }
-      events.trigger('filterChanged');
+      trigger('filterChanged');
     } else if (columnsChanged) {
-      events.trigger('onColumnsChanged');
+      trigger('onColumnsChanged');
     }
     self.setState({});
 
@@ -327,7 +319,7 @@ var Settings = React.createClass({
     });
   },
   import: function(e) {
-    events.trigger('showImportDialog', 'networkSettings');
+    trigger('showImportDialog', 'networkSettings');
   },
   getSettings: function() {
     var state = this.state;
@@ -356,7 +348,7 @@ var Settings = React.createClass({
     };
   },
   export: function() {
-    events.trigger('showExportDialog', ['networkSettings', this.getSettings()]);
+    trigger('showExportDialog', ['networkSettings', this.getSettings()]);
   },
   onUrlType: function(e) {
     var urlType = e.target.value;
@@ -369,16 +361,19 @@ var Settings = React.createClass({
     var columnList = state.columns;
     var isTreeView = storage.get('isTreeView') === '1';
     var viewAllInNewWindow = isViewInNewWin();
+    var disabledExcludeText = state.disabledExcludeText;
+    var disabledFilterText = state.disabledFilterText;
+    var onNetworkSettingsChange = self.onNetworkSettingsChange;
 
     return (
-      <Dialog ref="networkSettingsDialog" wstyle="w-ns-dialog">
-        <div onChange={self.onNetworkSettingsChange} className="modal-body">
+      <Dialog ref="dialog" wstyle="w-ns-dialog">
+        <div onChange={onNetworkSettingsChange} className="modal-body">
           <CloseBtn />
           <fieldset className="w-ns-filter">
             <legend>
               <label>
                 <input
-                  checked={!state.disabledExcludeText}
+                  checked={!disabledExcludeText}
                   data-name="excludeFilter"
                   type="checkbox"
                   className="w-vm"
@@ -388,12 +383,12 @@ var Settings = React.createClass({
               <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
             <textarea
-              disabled={state.disabledExcludeText}
+              disabled={disabledExcludeText}
               onKeyDown={self.onFilterKeyDown}
               value={state.excludeText}
               data-name="excludeText"
               placeholder="Type filter text"
-              style={!state.disabledExcludeText && NOT_EMPTY_RE.test(state.excludeText) ? NOT_EMPTY_STYLE : undefined}
+              style={!disabledExcludeText && notEmpty(state.excludeText) ? NOT_EMPTY_STYLE : null}
               maxLength={dataCenter.MAX_EXCLUDE_LEN}
             />
           </fieldset>
@@ -401,7 +396,7 @@ var Settings = React.createClass({
             <legend>
               <label>
                 <input
-                  checked={!state.disabledFilterText}
+                  checked={!disabledFilterText}
                   data-name="filter"
                   type="checkbox"
                   className="w-vm"
@@ -411,12 +406,12 @@ var Settings = React.createClass({
               <HelpIcon docsUrl="gui/network.html#settings" />
             </legend>
             <textarea
-              disabled={state.disabledFilterText}
+              disabled={disabledFilterText}
               onKeyDown={self.onFilterKeyDown}
               value={state.filterText}
               data-name="filterText"
               placeholder="Type filter text"
-              style={!state.disabledFilterText && NOT_EMPTY_RE.test(state.filterText) ? NOT_EMPTY_STYLE : undefined}
+              style={!disabledFilterText && notEmpty(state.filterText) ? NOT_EMPTY_STYLE : null}
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>
@@ -478,7 +473,7 @@ var Settings = React.createClass({
                       data-name={col.title}
                       title={'Edit ' + col.title}
                     />
-                  ) : undefined}
+                  ) : null}
                 </label>
               );
             })}
@@ -530,13 +525,7 @@ var Settings = React.createClass({
           ) : null}
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             className="btn btn-primary"
@@ -553,7 +542,7 @@ var Settings = React.createClass({
           </button>
         </div>
         <Dialog ref="editCustomColumn" wstyle="w-ns-edit">
-          <div onChange={self.onNetworkSettingsChange} className="modal-body">
+          <div onChange={onNetworkSettingsChange} className="modal-body">
             <CloseBtn />
             <label>
               <span>Column Name:</span>
@@ -578,13 +567,7 @@ var Settings = React.createClass({
             </label>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
+            <DismissBtn />
             <button
               disabled={!state.nameChanged}
               onClick={self.changeName}

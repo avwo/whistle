@@ -9,7 +9,7 @@ var ImageView = require('./image-view');
 var JSONViewer = require('./json-viewer');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
-var events = require('./events.js');
+var Tips = require('./panel-tips');
 
 var COOKIE_HEADERS = [
   'Name',
@@ -23,6 +23,8 @@ var COOKIE_HEADERS = [
   'SameSite',
   'Partitioned'
 ];
+var EMPTY_COOKIES = { message: 'No response cookies' };
+var getHide = util.getHide;
 
 var ResDetail = React.createClass({
   getInitialState: function () {
@@ -51,11 +53,11 @@ var ResDetail = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('resTabsChange', function () {
+    util.on('resTabsChange', function () {
       self.setState({});
     });
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onClickBtn: function (btn) {
     this.selectBtn(btn);
     this.setState({});
@@ -202,7 +204,7 @@ var ResDetail = React.createClass({
       ) {
         tips = { url: modal.url };
         if (res.size < 5120) {
-          tips.message = 'Empty response body';
+          tips.message = 'No response body';
         } else {
           raw += '(Response body exceeds display limit)';
           tips.message = 'Response body exceeds display limit';
@@ -243,7 +245,7 @@ var ResDetail = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-detail-res' +
-          (util.getBool(props.hide) ? ' hide' : '')
+          getHide(util.getBool(props.hide))
         }
       >
         <BtnGroup onClick={self.onClickBtn} btns={btns} />
@@ -257,20 +259,20 @@ var ResDetail = React.createClass({
             className="fill w-detail-res-raw"
             hide={name != btns[0].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedHeaders ? (
           <div
             className={
               'fill w-detail-res-headers' +
-              (name == btns[1].name ? '' : ' hide')
+              getHide(name != btns[1].name)
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
           </div>
-        ) : undefined}
+        ) : null}
         {state.initedPreview ? (
           <ImageView imgSrc={imgSrc} data={data} hide={!showImg} />
-        ) : undefined}
+        ) : null}
         {state.initedTextView ? (
           <Textarea
             defaultName={defaultName}
@@ -281,7 +283,7 @@ var ResDetail = React.createClass({
             className="fill w-detail-res-textview"
             hide={name != btns[3].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedJSONView ? (
           <JSONViewer
             defaultName={defaultName}
@@ -290,7 +292,7 @@ var ResDetail = React.createClass({
             session={modal}
             hide={name != btns[4].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedHexView ? (
           <Textarea
             defaultName={defaultName}
@@ -302,35 +304,33 @@ var ResDetail = React.createClass({
             className="fill n-monospace w-detail-res-hex"
             hide={name != btns[5].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedCookies ? (
           <div
             className={
               'fill w-detail-res-cookies' +
-              (name == btns[6].name ? '' : ' hide')
+              getHide(name != btns[6].name)
             }
           >
-            {cookies && cookies.length ? (
-              <Table head={COOKIE_HEADERS} modal={cookies} />
-            ) : undefined}
+            {cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : (headers ? <Tips data={EMPTY_COOKIES} /> : null)}
           </div>
-        ) : undefined}
+        ) : null}
         {state.initedTrailers ? (
           <div
             className={
               'fill w-detail-res-headers' +
-              (name == btns[7].name ? '' : ' hide')
+              getHide(name != btns[7].name)
             }
           >
             <Properties modal={rawTrailers || trailers} enableViewSource="1" />
           </div>
-        ) : undefined}
+        ) : null}
         {state.initedPlugins ? (
           <PluginsTabs
             tabs={tabs}
             hide={name != pluginsTab.name || pluginsTab.hide}
           />
-        ) : undefined}
+        ) : null}
       </div>
     );
   }

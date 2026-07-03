@@ -9,7 +9,9 @@ var util = require('./util');
 var isFunc = util.isFunc;
 var isStr = util.isStr;
 var notEStr = util.notEStr;
-var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
+var setPos = CodeMirror.Pos.bind(CodeMirror);
+var loc = window.location;
+var disabledEditor = loc.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_-]+:))(\/?$|\/\/)/;
 var MAX_HINT_LEN = 512;
@@ -124,7 +126,7 @@ for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
 }
 
 $(window).on('hashchange', function () {
-  var disabled = window.location.href.indexOf('disabledEditor=1') !== -1;
+  var disabled = loc.href.indexOf('disabledEditor=1') !== -1;
   if (disabled !== disabledEditor) {
     disabledEditor = disabled;
   }
@@ -613,8 +615,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
     if (!noHint) {
       return {
         list: list,
-        from: CodeMirror.Pos(cur.line, start),
-        to: CodeMirror.Pos(cur.line, end)
+        from: setPos(cur.line, start),
+        to: setPos(cur.line, end)
       };
     }
     if (onlyOne) {
@@ -667,8 +669,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           curLine = curLine.substring(start).split(/\s/, 1)[0] || '';
           return {
             list: list,
-            from: CodeMirror.Pos(cur.line, start + protoLen),
-            to: CodeMirror.Pos(cur.line, start + curLine.length)
+            from: setPos(cur.line, start + protoLen),
+            to: setPos(cur.line, start + curLine.length)
           };
         }
       }
@@ -676,10 +678,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
     if (plugin || PLUGIN_NAME_RE.test(curWord)) {
       plugin = plugin || dataCenter.getPlugin(RegExp.$2);
       var pluginConf = pluginVars || plugin;
-      if (
-        plugin &&
-        (isStr(pluginConf.hintUrl) || pluginConf.hintList)
-      ) {
+      if (plugin && (isStr(pluginConf.hintUrl) || pluginConf.hintList)) {
         if (!pluginVars) {
           value = RegExp.$3 || '';
           value =
@@ -694,10 +693,11 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
         }
         clearTimeout(hintTimer);
         var protoName = pluginVars ? '%' + pluginName : RegExp.$1.slice(0, -1);
-        if (pluginConf.hintList) {
+        var _hints = pluginConf.hintList;
+        if (_hints) {
           if (value) {
             value = value.toLowerCase();
-            curHintList = pluginConf.hintList.filter(function (item) {
+            curHintList = _hints.filter(function (item) {
               if (isStr(item)) {
                 return item.toLowerCase().indexOf(value) !== -1;
               }
@@ -710,7 +710,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
               );
             });
           } else {
-            curHintList = pluginConf.hintList;
+            curHintList = _hints;
           }
           if (!curHintList.length) {
             return;
@@ -751,8 +751,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           curLine = curLine.substring(start).split(/\s/, 1)[0] || '';
           curFocusProto = protoName;
           end = start + curLine.trim().length;
-          var from = CodeMirror.Pos(cur.line, start);
-          var to = CodeMirror.Pos(cur.line, end);
+          var from = setPos(cur.line, start);
+          var to = setPos(cur.line, end);
           var hintList = curHintList;
           var isCursorPos = curHintPos === 'cursor';
           if (curHintOffset || isCursorPos) {
@@ -784,7 +784,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
             if (start > end) {
               start = end;
             }
-            from = CodeMirror.Pos(cur.line, start);
+            from = setPos(cur.line, start);
           }
           return { list: hintList, from: from, to: to };
         }
@@ -874,8 +874,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   }
   return {
     list: list,
-    from: CodeMirror.Pos(cur.line, start),
-    to: CodeMirror.Pos(cur.line, end)
+    from: setPos(cur.line, start),
+    to: setPos(cur.line, end)
   };
 });
 

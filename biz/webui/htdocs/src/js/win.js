@@ -4,6 +4,10 @@ var alertDialog;
 var confirmDialog;
 var handleConfirm;
 
+var DISSMISS_BTN = '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>';
+
+exports.DISSMISS_BTN = DISSMISS_BTN;
+
 function isFunc(fn) {
   return typeof fn === 'function';
 }
@@ -12,45 +16,31 @@ function isStr(str) {
   return typeof str === 'string';
 }
 
+function wrapDialog(body, footer) {
+  return '<div class="modal fade w-win-dialog" tabindex="-1" role="dialog">' +
+    '<div class="modal-dialog" role="document">' +
+      '<div class="modal-content">' +
+        '<div class="modal-body">' + body + '</div>' +
+        '<div class="modal-footer">' + footer + '</div>' +
+      '</div>' +
+    '</div>' +
+  '</div>';
+}
+
 function createAlert() {
   if (!alertDialog) {
-    alertDialog = $(
-      '<div class="modal fade w-win-dialog" tabindex="-1" role="dialog">' +
-        '<div class="modal-dialog" role="document">' +
-        '<div class="modal-content">' +
-        '<div class="modal-body">' +
-        '<pre class="alert alert-danger"></pre>' +
-        '</div>' +
-        '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
-        '<button type="button" class="btn btn-primary w-copy-text-with-tips" data-dismiss="modal"></button>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>'
-    );
+    var footer = DISSMISS_BTN + '<button type="button" class="btn btn-primary w-copy-text-with-tips" data-dismiss="modal"></button>';
+    alertDialog = $(wrapDialog('<pre class="alert alert-danger"></pre>', footer));
   }
   return alertDialog;
 }
 
 function createConfirm() {
   if (!confirmDialog) {
-    confirmDialog = $(
-      '<div class="modal fade w-win-dialog" tabindex="-1" role="dialog">' +
-        '<div class="modal-dialog" role="document">' +
-        '<div class="modal-content">' +
-        '<div class="modal-body">' +
-        '<pre></pre>' +
-        '</div>' +
-        '<div class="modal-footer">' +
-        '<button type="button" class="btn btn-default w-win-cancel" data-dismiss="modal">Cancel</button>' +
+    var footer = '<button type="button" class="btn btn-default w-win-cancel" data-dismiss="modal">Cancel</button>' +
         '<button type="button" class="btn btn-danger w-win-delete-all" data-dismiss="modal">Delete All</button>' +
-        '<button type="button" class="btn btn-primary w-win-confirm" data-dismiss="modal">Confirm</button>' +
-        '</div>' +
-        '</div>' +
-        '</div>' +
-        '</div>'
-    );
+        '<button type="button" class="btn btn-primary w-win-confirm" data-dismiss="modal">Confirm</button>';
+    confirmDialog = $(wrapDialog('<pre></pre>', footer));
     confirmDialog.on('click', '.w-win-cancel', function () {
       if (isFunc(handleConfirm)) {
         handleConfirm(false);

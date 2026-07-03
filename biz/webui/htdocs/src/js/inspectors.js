@@ -4,23 +4,24 @@ var Inspector = require('./inspector');
 var Frames = require('./frames');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var TabMgr = require('./tab-mgr');
 var ContextMenu = require('./context-menu');
 var Properties = require('./properties');
 var Icon = require('./icon');
 
+var addEvent = util.on;
+
 var Inspectors = React.createClass({
   getInitialState: function () {
     return { activeName: 'Request', urlModal: { URL: '' } };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidMount: function () {
     var self = this;
-    events.on('tabsChange', function () {
+    addEvent('tabsChange', function () {
       self.setState({});
     });
-    events.on('showFrames', function () {
+    addEvent('showFrames', function () {
       self.showTab('Frames');
     });
   },
@@ -49,7 +50,7 @@ var Inspectors = React.createClass({
     return (
       <div
         className={
-          'fill v-box w-detail-inspectors' + (hide ? ' hide' : '')
+          'fill v-box w-detail-inspectors' + util.getHide(hide)
         }
       >
         <Properties className="w-detail-inspectors-url" modal={urlModal}  showEnableBtn={true} />

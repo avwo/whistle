@@ -2,8 +2,8 @@ var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
-var CloseBtn = require('./close-btn');
-
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var CMD = 'Ctrl[Command]';
 var SETTINGS = [
@@ -220,7 +220,7 @@ var ShortcutsSettings = React.createClass({
       return;
     }
     var checked = target.checked;
-    var name = target.getAttribute('data-name');
+    var name = util.attr(target, 'data-name');
     var settings = this.state.settings;
     settings[name] = checked;
     this.setState({ settings: settings });
@@ -231,41 +231,30 @@ var ShortcutsSettings = React.createClass({
 
     return (
       <Dialog ref="dialog" wstyle="w-shortcuts">
-        <div>
-          <div className="modal-header">
-            <h4>
-              Shortcuts Settings
-            </h4>
-            <CloseBtn />
-          </div>
-          <div className="modal-body" onChange={this.onChange}>
-            {SETTINGS.map(function(setting) {
-              return (
-                <div>
-                  <h5 key={setting.category}>{setting.category}</h5>
-                  {setting.list.map(function(item) {
-                    if (!dataCenter.whistleId && item[0] === 'openService') {
-                      return null;
-                    }
-                    return <label key={item[0]}>
-                      <input type="checkbox" data-name={item[0]} checked={settings[item[0]] !== false} /> <strong>{item[1]} :</strong> {item[2]}
-                    </label>;
-                  })}
-                </div>
-              );
-            })}
-          </div>
-      </div>
-      <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+        <ModalHeader>
+          Shortcuts Settings
+        </ModalHeader>
+        <div className="modal-body" onChange={this.onChange}>
+          {SETTINGS.map(function(setting) {
+            return (
+              <div>
+                <h5 key={setting.category}>{setting.category}</h5>
+                {setting.list.map(function(item) {
+                  if (!dataCenter.whistleId && item[0] === 'openService') {
+                    return null;
+                  }
+                  return <label key={item[0]}>
+                    <input type="checkbox" data-name={item[0]} checked={settings[item[0]] !== false} /> <strong>{item[1]} :</strong> {item[2]}
+                  </label>;
+                })}
+              </div>
+            );
+          })}
         </div>
-    </Dialog>
+        <div className="modal-footer">
+          <DismissBtn />
+        </div>
+      </Dialog>
   );
   }
 });

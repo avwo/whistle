@@ -5,7 +5,6 @@ var $ = require('jquery');
 var Console = require('./console-log');
 var ServerLog = require('./server-log');
 var ToolBox = require('./tool-box');
-var events = require('./events');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
 var TabMgr = require('./tab-mgr');
@@ -36,7 +35,7 @@ var Tools = React.createClass({
   },
   componentDidMount: function() {
     var self = this;
-    events.on('toolTabsChange', function () {
+    util.on('toolTabsChange', function () {
       self.changeTab = true;
       self.setState({});
     });
@@ -78,18 +77,18 @@ var Tools = React.createClass({
     }
   },
   onDoubleClickBar: function () {
-    var self = this;
+    var refs = this.refs;
     if (BTNS[0].active) {
-      if (self.refs.console.container.scrollTop < 5) {
-        self.refs.console.autoRefresh();
+      if (refs.console.container.scrollTop < 5) {
+        refs.console.autoRefresh();
       } else {
-        self.refs.console.scrollTop();
+        refs.console.scrollTop();
       }
     } else if (BTNS[1].active) {
-      if (self.refs.serverLog.container.scrollTop < 5) {
-        self.refs.serverLog.autoRefresh();
+      if (refs.serverLog.container.scrollTop < 5) {
+        refs.serverLog.autoRefresh();
       } else {
-        self.refs.serverLog.scrollTop();
+        refs.serverLog.scrollTop();
       }
     }
   },
@@ -143,7 +142,7 @@ var Tools = React.createClass({
       <div
         className={
           'fill v-box w-tools' +
-          (getBool(self.props.hide) ? ' hide' : '')
+          util.getHide(getBool(self.props.hide))
         }
       >
         <BtnGroup

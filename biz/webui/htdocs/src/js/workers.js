@@ -1,4 +1,3 @@
-var events = require('./events');
 var util = require('./util');
 
 var workers = {};
@@ -25,15 +24,15 @@ function setCustomData(item, newData, name) {
   assign(data, newData);
   var style = data.style;
   if (style) {
-    var color = getStr(style.color);
+    var color = getStr(style.color || style.fontColor);
     var fontStyle = getStr(style.fontStyle);
     var backgroundColor = getStr(style.backgroundColor || style.bgColor);
     if (color || fontStyle || backgroundColor) {
       style = item.style || {};
       item.style = style;
-      style.color = style.color || color;
-      style.fontStyle = style.fontStyle || fontStyle;
-      style.backgroundColor = style.backgroundColor || backgroundColor;
+      style.color = color;
+      style.fontStyle = fontStyle;
+      style.backgroundColor = backgroundColor;
     }
   }
   if (util.notEStr(data.appName)) {
@@ -74,7 +73,7 @@ function setWorker(id) {
       var item = modal.getItem(data.id);
       if (item) {
         setCustomData(item, data.data, data.plugin);
-        events.trigger('updateUIThrottle');
+        util.trigger('updateUIThrottle');
       }
     }
   };

@@ -1,16 +1,21 @@
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
-var events = require('./events');
 var dataCenter = require('./data-center');
 var util = require('./util');
-var message = require('./message');
 var win = require('./win');
 var Icon = require('./icon');
-var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var ModalHeader = require('./modal-header');
+var UploadForm = require('./upload-form');
+var showError = require('./message').error;
 
 var showSysErr = util.showSysErr;
 var isStr = util.isStr;
+var trigger = util.trigger;
+var addEvent = util.on;
+var stringify = util.stringify;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 10MB';
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
@@ -33,13 +38,12 @@ function getTempFile(tempFile, cb) {
       return showSysErr(xhr);
     }
     if (result.em) {
-      message.error(result.em);
+      showError(result.em);
       if (result.ec) {
         return;
       }
     }
     cb(result.value || '');
-    util.showForbidden(result);
   });
 }
 
@@ -54,9 +58,9 @@ function getText(item, key) {
   case 'method':
     return req.method;
   case 'reqHeaders':
-    return JSON.stringify(req.headers, null, '  ');
+    return stringify(req.headers);
   case 'resHeaders':
-    return item.res.headers ? JSON.stringify(res.headers, null, '  ') : '';
+    return item.res.headers ? stringify(res.headers) : '';
   case 'reqBody':
     return util.getBody(req, true);
   case 'resBody':
@@ -81,9 +85,9 @@ var EditorDialog = React.createClass({
   },
   show: function (data) {
     var self = this;
-    self._hideDialog = false;
     self.setState(data);
     var textarea = self._textarea;
+    self.refs.dialog.show();
     if (self.props.textEditor && textarea) {
       var value = data && data.value;
       if (isStr(value)) {
@@ -93,24 +97,20 @@ var EditorDialog = React.createClass({
         textarea.focus();
       }, 600);
     }
-    self.refs.editorDialog.show();
   },
   hide: function () {
-    this.refs.editorDialog.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
   onChange: function (e) {
     this.setState({ value: e.target.value });
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   componentDidMount: function() {
     var self = this;
     if (!self.props.textEditor) {
       return;
     }
-    events.on('uploadTempFile', function(_, file) {
+    addEvent('uploadTempFile', function(_, file) {
       self.readFile(file);
     });
     var iframe = findDOMNode(self.refs.iframe);
@@ -142,7 +142,7 @@ var EditorDialog = React.createClass({
     };
     iframe.onload = initTextArea;
     initTextArea();
-    this.props.standalone && events.on('showEditorDialog', function(_, data, elem) {
+    this.props.standalone && addEvent('showEditorDialog', function(_, data, elem) {
       self.onClose();
       var state = self.state;
       state.textSrc = '';
@@ -192,7 +192,8 @@ var EditorDialog = React.createClass({
   },
   getValue: function() {
     var self = this;
-    var value = self._textarea ? self._textarea.value : self.state.value;
+    var textarea = self._textarea;
+    var value = textarea ? textarea.value : self.state.value;
     return value || '';
   },
   onConfirm: function() {
@@ -212,7 +213,7 @@ var EditorDialog = React.createClass({
         value: value
       }, function (data, xhr) {
         if (data && data.ec === 0) {
-          events.trigger('addNewValuesFile', {
+          trigger('addNewValuesFile', {
             filename: self._keyName,
             data: value,
             update: true
@@ -264,7 +265,8 @@ var EditorDialog = React.createClass({
       } else {
         newText = text.replace(/temp(\.[\w-]+)?$/, result.filepath + '$1');
       }
-      var rulesText = self._rulesItem.value.split(/\r\n|\r|\n/).map(function(l, i) {
+      var rulesItem = self._rulesItem;
+      var rulesText = rulesItem.value.split(/\r\n|\r|\n/).map(function(l, i) {
         if (i === index) {
           l = l.trim().split(/\s+/).map(function(part) {
             return part === text ? newText : part;
@@ -272,16 +274,16 @@ var EditorDialog = React.createClass({
         }
         return l;
       }).join('\n');
-      var filename = self._rulesItem.name;
+      var filename = rulesItem.name;
       dataCenter.rules.add(
         {
           name: filename,
           value: rulesText,
-          selected: self._rulesItem.selected ? '1' : ''
+          selected: rulesItem.selected ? '1' : ''
         },
         function (result, xhr) {
           if (result && result.ec === 0) {
-            events.trigger('addNewRulesFile', {
+            trigger('addNewRulesFile', {
               filename: filename,
               data: rulesText,
               update: true
@@ -299,13 +301,13 @@ var EditorDialog = React.createClass({
     try {
       var val = textarea.value.trim();
       if (val[0] === '{' || val[0] === '[') {
-        var formattedVal = JSON.stringify(JSON.parse(val), null, '  ');
+        var formattedVal = stringify(JSON.parse(val));
         if (textarea.value !== formattedVal) {
           textarea.value = formattedVal;
         }
       }
     } catch (e) {
-      message.error(e.message);
+      showError(e.message);
     }
   },
   clearValue: function() {
@@ -313,7 +315,7 @@ var EditorDialog = React.createClass({
   },
   onUpload: function () {
     if (!this.reading) {
-      findDOMNode(this.refs.readLocalFile).click();
+      this.refs.uploadForm.getInput().click();
     }
   },
   readFile: function(file) {
@@ -326,13 +328,14 @@ var EditorDialog = React.createClass({
   },
   readLocalFile: function () {
     var self = this;
-    var form = new FormData(findDOMNode(self.refs.readLocalFileForm));
+    var uploadForm = self.refs.uploadForm;
+    var form = new FormData(uploadForm.getForm());
     var file = form.get('localFile');
     if (file.size > MAX_LEN) {
-      return win.alert('Total file size must not exceed 10MB');
+      return win.alert(EXCEED_TIPS);
     }
     self.readFile(file);
-    findDOMNode(self.refs.readLocalFile).value = '';
+    uploadForm.getInput().value = '';
   },
   onTextChange: function(e) {
     var self = this;
@@ -362,7 +365,7 @@ var EditorDialog = React.createClass({
     self._rulesItem = null;
     self._session = null;
   },
-  renderHeader: function() {
+  renderHeader: function(showUpload) {
     var self = this;
     var state = self.state;
     var props = self.props;
@@ -372,40 +375,37 @@ var EditorDialog = React.createClass({
     var session = self._session;
 
     return (
-      <div className="modal-header">
-        <h4>
-          {title || 'Edit Copied Text'}
-          {session || list.length ? <span className="ml-10">
-            (Import from:
-            <select className="form-control w-session-text-select" value={textSrc} onChange={self.onTextChange}>
-              <option value="">Blank</option>
-              {session ? [
-                <optgroup label="Request Session">
-                  <option value="url">URL</option>
-                  <option value="method">Method</option>
-                  <option value="statusCode">Status Code</option>
-                  <option value="reqHeaders">Request Headers</option>
-                  <option value="resHeaders">Response Headers</option>
-                  <option value="reqBody">Request Body</option>
-                  <option value="resBody">Response Body</option>
-                  <option value="reqJson">Request JSON</option>
-                  <option value="resJson">Response JSON</option>
-                  <option value="rawReq">Raw Request</option>
-                  <option value="rawRes">Raw Response</option>
-                </optgroup>
-              ] : null}
-              { list.length ? <optgroup label="Values">{
-                  list.map(function(key) {
-                    key = '{' + key + '}';
-                    return <option value={key}>{key}</option>;
-                  })
-                }</optgroup> : null
-              }
-            </select> )
-          </span> : null}
-        </h4>
-        <CloseBtn />
-      </div>
+      <ModalHeader>
+        {title || 'Edit Copied Text'}
+        {showUpload && (session || list.length) ? <span className="ml-5">
+          -- From
+          <select className="form-control w-session-text-select ml-10" value={textSrc} onChange={self.onTextChange}>
+            <option value="">Custom</option>
+            {session ? [
+              <optgroup label="Request Session">
+                <option value="url">URL</option>
+                <option value="method">Method</option>
+                <option value="statusCode">Status Code</option>
+                <option value="reqHeaders">Request Headers</option>
+                <option value="resHeaders">Response Headers</option>
+                <option value="reqBody">Request Body</option>
+                <option value="resBody">Response Body</option>
+                <option value="reqJson">Request JSON</option>
+                <option value="resJson">Response JSON</option>
+                <option value="rawReq">Raw Request</option>
+                <option value="rawRes">Raw Response</option>
+              </optgroup>
+            ] : null}
+            { list.length ? <optgroup label="Values">{
+                list.map(function(key) {
+                  key = '{' + key + '}';
+                  return <option value={key}>{key}</option>;
+                })
+              }</optgroup> : null
+            }
+          </select>
+        </span> : null}
+      </ModalHeader>
     );
   },
   render: function () {
@@ -413,13 +413,14 @@ var EditorDialog = React.createClass({
     var state = self.state;
     var props = self.props;
     var value = state.value;
-    var textEditor = self.props.textEditor;
-    var showUpload = textEditor && !props.onConfirm;
+    var hasConfirm = props.onConfirm;
+    var textEditor = props.textEditor;
+    var showUpload = textEditor && !hasConfirm;
 
     return (
-      <Dialog ref="editorDialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
+      <Dialog ref="dialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
       (showUpload ? ' w-show-upload-temp-file' : '')} onClose={self.onClose}>
-        {self.renderHeader()}
+        {self.renderHeader(showUpload)}
         <div className="modal-body">
           {
             textEditor ? <div className="w-mock-action">
@@ -434,14 +435,8 @@ var EditorDialog = React.createClass({
           }
         </div>
         {textEditor ? <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
-          {props.onConfirm ? null : <button
+          <DismissBtn />
+          {hasConfirm ? null : <button
             type="button"
             className="btn btn-info"
             onClick={self.onUpload}
@@ -452,18 +447,12 @@ var EditorDialog = React.createClass({
           <button
             type="button"
             className="btn btn-primary"
-            onClick={props.onConfirm ? self.onConfirm : self.onSave}
+            onClick={hasConfirm ? self.onConfirm : self.onSave}
           >
-            {props.onConfirm ? 'Confirm' : 'Save'}
+            {hasConfirm ? 'Confirm' : (self._fileElem ? 'Save' : 'Create')}
           </button>
         </div> : <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             data-dismiss="modal"
@@ -474,18 +463,7 @@ var EditorDialog = React.createClass({
             Copy
           </button>
         </div>}
-        <form
-          ref="readLocalFileForm"
-          encType="multipart/form-data"
-          style={util.HIDE_STYLE}
-        >
-          <input
-            ref="readLocalFile"
-            onChange={self.readLocalFile}
-            type="file"
-            name="localFile"
-          />
-        </form>
+        <UploadForm ref="uploadForm" onChange={self.readLocalFile} />
       </Dialog>
     );
   }

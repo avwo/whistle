@@ -29,29 +29,22 @@
 .w-req-data-ctn .method {
   width: 75px;
 }
-.w-req-data-ctn .time,
-.w-req-data-ctn .dns {
+.w-req-data-ctn :is(.time, .dns) {
   width: 70px;
 }
-.w-req-data-ctn .serverPort,
-.w-req-data-ctn .clientPort {
+.w-req-data-ctn :is(.serverPort, .clientPort) {
   width: 90px;
 }
 .w-req-data-ctn .type {
   width: 125px;
 }
-.w-req-data-ctn .clientIp,
-.w-req-data-ctn .hostIp {
+.w-req-data-ctn :is(.clientIp, .hostIp) {
   width: 110px;
 }
 .w-req-data-ctn .hostname {
   width: 150px;
 }
-.w-req-data-ctn .request,
-.w-req-data-ctn .response,
-.w-req-data-ctn .download,
-.w-req-data-ctn .contentEncoding,
-.w-req-data-ctn .body {
+.w-req-data-ctn :is(.request, .response, .download, .contentEncoding, .body) {
   width: 90px;
 }
 
@@ -84,8 +77,7 @@
   overflow: hidden;
   outline: none;
 }
-.w-req-data-list th,
-.w-req-data-list td {
+.w-req-data-list :is(th, td) {
   border-top: none !important;
   border-bottom: 1px solid var(--c-border);
   font-weight: normal;
@@ -109,38 +101,32 @@
   -webkit-user-select: none;
   user-select: none;
 }
-.w-req-data-list .w-tunnel th,
-.w-req-data-list .w-tunnel td {
+.w-req-data-list .w-tunnel :is(th, td) {
   color: var(--c-gray);
 }
-.w-req-data-list .w-has-rules th,
-.w-req-data-list .w-has-rules td,
+.w-req-data-list .w-has-rules :is(th, td),
 .w-req-data-list .tree-leaf.w-has-rules {
   font-weight: 500;
   color: var(--c-has);
 }
 
-.w-req-data-list .w-has-local th,
-.w-req-data-list .w-has-local td,
+.w-req-data-list .w-has-local :is(th, td),
 .w-req-data-list .tree-leaf.w-has-local {
   font-weight: 500;
   color: var(--c-default);
 }
 
-.w-req-data-list .w-error-status th,
-.w-req-data-list .w-error-status td {
+.w-req-data-list .w-error-status :is(th, td) {
   color: var(--c-danger);
 }
-.w-req-data-list .w-forbidden th,
-.w-req-data-list .w-forbidden td {
+.w-req-data-list .w-forbidden :is(th, td) {
   color: var(--c-forbidden);
 }
 .w-req-data-list tr {
   cursor: default;
   background: var(--b-default);
 }
-.w-req-data-list .w-hover-body tr.w-selected th,
-.w-req-data-list .w-hover-body tr.w-selected td {
+.w-req-data-list .w-hover-body tr.w-selected :is(th, td) {
   background: var(--c-link) !important;
   color: var(--c-active) !important;
 }
@@ -173,8 +159,7 @@
 .w-req-data-list .tree-leaf.active span {
   color: var(--c-link) !important;
 }
-.w-req-data-list .tree-leaf.w-error-status,
-.w-req-data-list .tree-leaf.w-error-status span {
+.w-req-data-list .tree-leaf:is(.w-error-status, .w-error-status span) {
   color: var(--c-danger) !important;
 }
 .w-req-data-list .tree-leaf.w-forbidden span {
@@ -219,7 +204,7 @@
   flex: 1;
 }
 
-.w-qrcode-url-wrap span, .w-root-ca-url-wrap span {
+:is(.w-qrcode-url-wrap, .w-root-ca-url-wrap) span {
   font-size: 18px;
   cursor: pointer;
   margin-left: 10px;
@@ -235,8 +220,7 @@
   margin: 15px 0 10px;
 }
 
-.w-qrcode-dialog .modal-dialog .modal-body,
-.w-qrcode-dialog .modal-dialog .modal-footer {
+.w-qrcode-dialog .modal-dialog :is(.modal-body, .modal-footer) {
   padding: 10px 15px;
 }
 
@@ -269,10 +253,7 @@
 .w-spinner span {
   display: block;
 }
-.w-spinner .glyphicon-triangle-top.spinner-desc {
-  visibility: hidden;
-}
-.w-spinner .glyphicon-triangle-bottom.spinner-asc {
+.w-spinner :is(.glyphicon-triangle-top.spinner-desc, .glyphicon-triangle-bottom.spinner-asc) {
   visibility: hidden;
 }
 
@@ -305,7 +286,7 @@
   color: var(--c-active);
 }
 
-.highlight, .w-highlight td, .w-highlight th {
+.highlight, .w-highlight :is(td, th) {
   animation-name: blink;
   animation-iteration-count: 1;
   animation-duration: 1s;
@@ -370,7 +351,7 @@
   margin-top: -2px;
 }
 
-.w-pr td, .w-pr th {
+.w-pr :is(td, th) {
   font-style: italic;
   font-weight: normal!important;
 }

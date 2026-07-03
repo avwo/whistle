@@ -16,8 +16,7 @@
   cursor: ew-resize;
 }
 .w-detail-ctn,
-.w-detail > .w-tabs-sm,
-.w-detail > .w-order-table {
+.w-detail > :is(.w-tabs-sm, .w-order-table) {
   min-width: 560px;
   border-top: none;
 }
@@ -26,7 +25,7 @@
   min-width: auto;
 }
 
-.w-inspectors-ctx-menu .w-ctx-menu-list {
+.w-inspectors-ctx-menu .w-ctx-list {
   min-width: 100px;
 }
 

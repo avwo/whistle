@@ -1,9 +1,7 @@
 var $ = (window.jQuery = require('jquery'));
 var React = require('react');
 var ReactDOM = require('react-dom');
-var util = require('./util');
-
-var isFunc = util.isFunc;
+var isFunc = require('./util').isFunc;
 
 var Dialog = React.createClass({
   getInitialState: function () {
@@ -12,30 +10,29 @@ var Dialog = React.createClass({
   componentDidMount: function () {
     var self = this;
     var props = self.props;
-    self.container = $(document.createElement('div'));
+    var container = $(document.createElement('div'));
+    self.container = container;
     var clazz = props.fullCustom ? ' w-custom-dialog' : '';
-    self.container.addClass(
-      'modal fade' + clazz + (props.wstyle ? ' ' + props.wstyle : '')
-    );
-    document.body.appendChild(self.container[0]);
+    var wstyle = props.wstyle;
+    container.addClass('modal fade' + clazz + (wstyle ? ' ' + wstyle : ''));
+    document.body.appendChild(container[0]);
     self.componentDidUpdate();
     if (isFunc(props.customRef)) {
       props.customRef(self);
     }
     if (isFunc(props.onClose)) {
-      self.container.on('hidden.bs.modal', props.onClose);
+      container.on('hidden.bs.modal', props.onClose);
     }
-    self.container.on('hide.bs.modal', function() {
+    container.on('hide.bs.modal', function() {
       self._isVisible = false;
       self.onVisibleChange();
-    });
-    self.container.on('show.bs.modal', function() {
+    }).on('show.bs.modal', function() {
       self._isVisible = true;
       self.onVisibleChange();
     });
     if (isFunc(props.onShow)) {
-      self.container.on('shown.bs.modal', function() {
-        self.props.onShow(self);
+      container.on('shown.bs.modal', function() {
+        props.onShow(self);
       });
     }
   },
@@ -62,24 +59,26 @@ var Dialog = React.createClass({
     return (
       <div
         style={style}
-        className={'modal-dialog' + (className ? ' ' + className : '')}
+        className={'modal-dialog ' + (className || '')}
       >
         <div className="modal-content">{props.children}</div>
       </div>
     );
   },
   componentWillUnmount: function () {
-    ReactDOM.unmountComponentAtNode(this.container[0]);
-    document.body.removeChild(this.container[0]);
+    var container = this.container[0];
+    ReactDOM.unmountComponentAtNode(container);
+    document.body.removeChild(container);
   },
   show: function () {
     var self = this;
-    if (self.container.hasClass('in')) {
+    var container = self.container;
+    if (container.hasClass('in')) {
       return;
     }
     self._isVisible = true;
     self.onVisibleChange();
-    self.container.modal(
+    container.modal(
       self.props.disableBackdrop
         ? {
           show: true,

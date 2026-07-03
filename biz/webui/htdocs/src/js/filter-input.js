@@ -9,19 +9,24 @@ var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
 var isFunc = util.isFunc;
+var preventBlur = util.preventBlur;
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
-var TITLES = {
-  JS: 'JavaScript',
-  Img: 'Image',
-  WS: 'WebSocket',
-  Wasm: 'WebAssembly',
-  Mock: 'Show mock requests',
-  Error: 'Show error requests',
-  Import: 'Show import sessions',
-  Composer: 'Show composer requests',
-  Rules: 'Show requests matched rules'
+var getTitle = function (type) {
+  return 'Show only ' + type.toLowerCase() + ' requests';
 };
+var TITLES = {
+  JS: getTitle('JavaScript'),
+  Img: getTitle('Image'),
+  WS: getTitle('WebSocket'),
+  Wasm: getTitle('WebAssembly'),
+  Import: 'Show import sessions',
+  Rules: 'Show requests matching the rules'
+};
+
+TYPES.forEach(function (type) {
+  TITLES[type] = TITLES[type] || getTitle(type);
+});
 
 var FilterInput = React.createClass({
   getInitialState: function () {
@@ -203,8 +208,7 @@ var FilterInput = React.createClass({
     } else if (e.ctrlKey || e.metaKey) {
       if (e.keyCode == 68) {
         self.clearFilterText();
-        e.preventDefault();
-        e.stopPropagation();
+        util.preventAll(e);
       } else if (e.keyCode == 88) {
         e.stopPropagation();
       }
@@ -257,10 +261,10 @@ var FilterInput = React.createClass({
       filterType = '';
     }
     return (
-      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={util.preventBlur}>
-        <span className={filterType ? undefined : 'w-active'}>All</span>
+      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
+        <span className={filterType ? null : 'w-active'}>All</span>
         {TYPES.map(function (type) {
-          return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : undefined}>{type}</span>;
+          return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : null}>{type}</span>;
         })}
       </div>
     );
@@ -280,8 +284,8 @@ var FilterInput = React.createClass({
         {hintKey ? (
           <div
             className="w-filter-hint"
-            style={{ display: hintList && hintList.length ? '' : 'none' }}
-            onMouseDown={util.preventBlur}
+            style={util.getHideStyle(!(hintList && hintList.length))}
+            onMouseDown={preventBlur}
           >
             <div className="w-filter-bar">
               <a onClick={self.clear}>
@@ -305,8 +309,8 @@ var FilterInput = React.createClass({
                 })}
             </ul>
           </div>
-        ) : undefined}
-        {showTypes ? self.renderTypes() : undefined}
+        ) : null}
+        {showTypes ? self.renderTypes() : null}
         <input
           type="text"
           ref="input"
@@ -321,7 +325,7 @@ var FilterInput = React.createClass({
           placeholder={'Type filter text' + (props.placeholder || '')}
         />
         <button
-          onMouseDown={util.preventBlur}
+          onMouseDown={preventBlur}
           onClick={self.clearFilterText}
           style={{ display: state.filterText ? 'block' : 'none' }}
           type="button"

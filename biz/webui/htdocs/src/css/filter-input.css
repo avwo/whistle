@@ -14,8 +14,6 @@
 .w-filter-hint, .w-layer {
   background-color: var(--b-default);
   border-radius: 3px;
-  -webkit-box-shadow: 0 3px 6px -4px var(--s-rgba12),
-    0 6px 16px 0 var(--s-rgba8), 0 9px 28px 8px var(--s-rgba5);
   box-shadow: 0 3px 6px -4px var(--s-rgba12),
     0 6px 16px 0 var(--s-rgba8), 0 9px 28px 8px var(--s-rgba5);
 }
@@ -36,8 +34,7 @@
   bottom: 60px;
 }
 
-.w-filter-hint ul,
-.w-filter-hint li {
+.w-filter-hint :is(ul, li) {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -90,8 +87,7 @@
   cursor: pointer;
 }
 
-.w-filter-hint li:hover,
-.w-filter-hint .w-active {
+.w-filter-hint :is(li:hover, .w-active) {
   background-color: var(--b-hover) !important;
 }
 
@@ -124,7 +120,7 @@
   background: var(--b-btn-hover);
 }
 
-.w-filter-type-bar span:active, .w-filter-type-bar span.w-active {
+.w-filter-type-bar span:is(:active, .w-active) {
   border-color: var(--b-btn-active);
   background: var(--b-btn-active);
   color: var(--c-default);

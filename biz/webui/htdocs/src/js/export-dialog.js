@@ -3,8 +3,8 @@ var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var ShareViaUrlBtn = require('./share-via-url-btn');
 var util = require('./util');
-var CloseBtn = require('./close-btn');
-
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var ExportDialog = React.createClass({
   getInitialState: function () {
@@ -12,7 +12,7 @@ var ExportDialog = React.createClass({
   },
   show: function (name, data) {
     var self = this;
-    self.refs.exportDialog.show();
+    self.refs.dialog.show();
     setTimeout(function () {
       var input = findDOMNode(self.refs.input);
       input.focus();
@@ -67,10 +67,10 @@ var ExportDialog = React.createClass({
     return filename + util.formatDate() + suffix;
   },
   hide: function () {
-    this.refs.exportDialog.hide();
+    this.refs.dialog.hide();
   },
   export: function(e) {
-    if (e && e.type !== 'click' && e.keyCode !== 13) {
+    if (util.checkSubmit(e)) {
       return;
     }
     var self = this;
@@ -91,20 +91,17 @@ var ExportDialog = React.createClass({
       findDOMNode(this.refs.input).value = '';
     }
   },
-  shouldComponentUpdate: function () {
-    return this.refs.exportDialog.isVisible();
-  },
+  shouldComponentUpdate: util.scuDialog,
   render: function () {
     var self = this;
     var state = self.state;
     var showOptions = state.showOptions;
 
     return (
-      <Dialog ref="exportDialog" wstyle={'w-ie-dialog' + (showOptions ? ' w-export-network' : '')}>
-        <div className="modal-header">
-          <h4>{state.title}</h4>
-          <CloseBtn />
-        </div>
+      <Dialog ref="dialog" wstyle={'w-ie-dialog' + (showOptions ? ' w-export-network' : '')}>
+        <ModalHeader>
+          {state.title}
+        </ModalHeader>
         <div className="modal-body">
           <input
             ref="input"
@@ -117,13 +114,7 @@ var ExportDialog = React.createClass({
           />
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           <ShareViaUrlBtn type={state.name} data={state.data} getFilename={self.getInputValue} onComplete={self.onShare} />
           <button
             type="button"

@@ -36,16 +36,16 @@
   font-size: 13px;
 }
 
-.w-dns-servers-dialog {
+.w-dns-servers {
   z-index: var(--z-modal);
 }
 
-.w-dns-servers-dialog pre {
+.w-dns-servers pre {
   font-size: 14px;
   font-weight: bold;
 }
 
-.w-dns-servers-dialog .modal-dialog {
+.w-dns-servers .modal-dialog {
   width: 420px;
 }
 
@@ -95,7 +95,7 @@
 
 
 .w-shortcuts {
-   z-index: var(--z-modal);
+  z-index: var(--z-modal);
 }
 
 .w-shortcuts .modal-dialog {
@@ -127,7 +127,6 @@
   color: var(--c-default);
 }
 
-.w-shortcuts label input,
-.w-shortcuts label strong {
+.w-shortcuts label :is(input, strong) {
   margin-right: 5px;
 }

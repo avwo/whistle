@@ -3,14 +3,6 @@
   border: none;
 }
 
-.w-detail-request-headers,
-.w-detail-request-cookies,
-.w-detail-request-query,
-.w-detail-request-form,
-.w-detail-request-form {
-  overflow: auto;
-}
-
 .w-inspectors-title,
 .w-detail-webforms-title {
   line-height: 18px;

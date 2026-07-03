@@ -5,10 +5,11 @@ var PropsEditor = require('./props-editor');
 var CloseBtn = require('./close-btn');
 var Icon = require('./icon');
 var win = require('./win');
-var events = require('./events');
 
 var PROTOCOL_RE = /^[\w-]+:\/\//;
 var getHideStyle = util.getHideStyle;
+var preventBlur = util.preventBlur;
+var CMF_DEL_MSG = util.CMF_DEL_MSG;
 
 
 var UrlInput = React.createClass({
@@ -204,7 +205,7 @@ var UrlInput = React.createClass({
         elem.addClass('w-active');
       }
       util.ensureVisible(elem, self.hintElem);
-      e.preventDefault();
+      preventBlur(e);
     } else if (e.keyCode === 40) {
         // down
       elem = self.hintElem.find('.w-active');
@@ -221,7 +222,7 @@ var UrlInput = React.createClass({
         elem.addClass('w-active');
       }
       util.ensureVisible(elem, self.hintElem);
-      e.preventDefault();
+      preventBlur(e);
     } else if (e.keyCode === 13) {
       elem = self.hintElem.find('.w-active');
       var value = elem.attr('title');
@@ -252,7 +253,7 @@ var UrlInput = React.createClass({
   },
   clearUrl: function() {
     var self = this;
-    win.confirm('Do you confirm the deletion of the URL?', function(sure) {
+    win.confirm(CMF_DEL_MSG + 'the URL?', function(sure) {
       if (sure) {
         self.hideParams();
         self.setState({ url: '' }, self.handleChange);
@@ -268,7 +269,7 @@ var UrlInput = React.createClass({
   },
   clearPath: function() {
     var self = this;
-    win.confirm('Do you confirm the deletion of the path?', function(sure) {
+    win.confirm(CMF_DEL_MSG + 'the path?', function(sure) {
       if (sure) {
         self.hideParams();
         var pathIndex = self.getPathIndex();
@@ -281,7 +282,7 @@ var UrlInput = React.createClass({
   },
   clearParams: function() {
     var self = this;
-    win.confirm('Do you confirm the deletion of all params?', function(sure) {
+    win.confirm(CMF_DEL_MSG + 'all params?', function(sure) {
       if (sure) {
         self.refs.paramsEditor.clear();
         self.hideParams();
@@ -297,7 +298,7 @@ var UrlInput = React.createClass({
     var showParams = state.showParams;
 
     return (
-        <div className={'w-layer w-params-editor v-box' + (showParams ? '' : ' hide')}>
+        <div className={'w-layer w-params-editor v-box' + util.getHide(!showParams)}>
           <div className="w-filter-bar w-middle">
             <div className="w-params-btns w-middle flex-1">
               <a onClick={self.addParam}>
@@ -351,7 +352,7 @@ var UrlInput = React.createClass({
   },
   showEditor: function () {
     var self = this;
-    events.trigger('showEditorDialog', {
+    util.trigger('showEditorDialog', {
       filename: self.state.url.replace(/\?.*$/, ''),
       session: self.props.session || null,
       callback: self.handleCallback

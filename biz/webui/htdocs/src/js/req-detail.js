@@ -8,7 +8,10 @@ var JSONViewer = require('./json-viewer');
 var Textarea = require('./textarea');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
-var events = require('./events');
+var Tips = require('./panel-tips');
+
+var parseQueryString = util.parseQueryString;
+var EMPTY_COOKIES = { message: 'No request cookies' };
 
 var BTNS = [
   { name: 'Raw' },
@@ -20,6 +23,7 @@ var BTNS = [
   { name: 'Cookies' },
   { name: 'Plugins', hide: true }
 ];
+var getHide = util.getHide;
 
 var ReqDetail = React.createClass({
   getInitialState: function () {
@@ -36,11 +40,11 @@ var ReqDetail = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('reqTabsChange', function () {
+    util.on('reqTabsChange', function () {
       self.setState({});
     });
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onClickBtn: function (btn) {
     this.selectBtn(btn);
     this.setState({});
@@ -51,7 +55,7 @@ var ReqDetail = React.createClass({
     this.state['inited' + btn.name] = true;
   },
   onEdit: function () {
-    events.trigger('setComposerData', this.props.modal);
+    util.trigger('setComposerData', this.props.modal);
   },
   render: function () {
     var self = this;
@@ -88,8 +92,9 @@ var ReqDetail = React.createClass({
       headers = req.headers;
       json = util.getJson(req, true, decodeURIComponent);
       delete headers.Host;
-      cookies = util.parseQueryString(
-        headers.cookie,
+      cookies = headers.cookie;
+      cookies = cookies && parseQueryString(
+        cookies,
         /;\s*/g,
         null,
         decodeURIComponent
@@ -97,14 +102,14 @@ var ReqDetail = React.createClass({
       var realUrl = util.getRealUrl(modal);
       var index = realUrl.indexOf('?');
       query = index == -1 ? '' : realUrl.substring(index + 1);
-      query = query && util.parseQueryString(
+      query = query && parseQueryString(
         query,
         null,
         null,
         decodeURIComponent
       );
       if (util.isUrlEncoded(req)) {
-        form = util.parseQueryString(
+        form = parseQueryString(
           util.getBody(req, true),
           null,
           null,
@@ -131,7 +136,7 @@ var ReqDetail = React.createClass({
         !/^ws/.test(modal.url)
       ) {
         if (req.size < 5120) {
-          tips = { message: 'Empty request body' };
+          tips = { message: 'No request body' };
         } else {
           raw += '(Request body exceeds display limit)';
           tips = { message: 'Request body exceeds display limit' };
@@ -161,7 +166,7 @@ var ReqDetail = React.createClass({
       <div
         className={
           'fill v-box w-detail-ctn w-detail-request' +
-          (util.getBool(self.props.hide) ? ' hide' : '')
+          util.getHide(util.getBool(self.props.hide))
         }
       >
         <BtnGroup onClick={self.onClickBtn} btns={BTNS} />
@@ -174,15 +179,15 @@ var ReqDetail = React.createClass({
             value={raw}
             headers={headersStr}
             base64={base64}
-            className="fill w-detail-request-raw"
+            className="fill"
             hide={name != BTNS[0].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedHeaders ? (
           <div
             className={
-              'fill w-detail-request-headers' +
-              (name == BTNS[1].name ? '' : ' hide')
+              'fill w-auto' +
+              getHide(name != BTNS[1].name)
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
@@ -196,20 +201,17 @@ var ReqDetail = React.createClass({
             hideRight={!form}
             hideLeft={!query}
             splitRatio={0.6}
-            className={
-              'w-detail-request-webforms' +
-              (name == BTNS[2].name ? '' : ' hide')
-            }
+            className={getHide(name != BTNS[2].name)}
           >
             <div className="fill v-box">
               <div className="w-detail-webforms-title">Query</div>
-              <div className="fill v-box w-detail-request-query">
+              <div className="fill v-box w-auto">
                 <Properties modal={query} enableViewSource="1" showJsonView="1" />
               </div>
             </div>
             <div className="fill v-box">
               <div className="w-detail-webforms-title">Body</div>
-              <div className="fill v-box w-detail-request-form">
+              <div className="fill v-box w-auto">
                 {!json || !json.isJSONText ? <Properties modal={form} richKey="1" enableViewSource="1" showJsonView="1" /> :
                 <JSONViewer data={json} session={modal} />}
               </div>
@@ -225,10 +227,10 @@ var ReqDetail = React.createClass({
             base64={base64}
             value={body}
             session={modal}
-            className="fill w-detail-request-textview"
+            className="fill"
             hide={name != BTNS[3].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedJSONView ? (
           <JSONViewer
             defaultName={defaultName}
@@ -237,7 +239,7 @@ var ReqDetail = React.createClass({
             session={modal}
             hide={name != BTNS[4].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedHexView ? (
           <Textarea
             defaultName={defaultName}
@@ -246,26 +248,28 @@ var ReqDetail = React.createClass({
             base64={base64}
             value={bin}
             session={modal}
-            className="fill n-monospace w-detail-request-hex"
+            className="fill n-monospace"
             hide={name != BTNS[5].name}
           />
-        ) : undefined}
+        ) : null}
         {state.initedCookies ? (
           <div
             className={
-              'fill w-detail-request-cookies' +
-              (name == BTNS[6].name ? '' : ' hide')
+              'fill w-auto' +
+              getHide(name != BTNS[6].name)
             }
           >
-            <Properties modal={cookies} enableViewSource="1" />
+            {
+              cookies ? <Properties modal={cookies} enableViewSource="1" /> : (headers ? <Tips data={EMPTY_COOKIES} /> : null)
+            }
           </div>
-        ) : undefined}
+        ) : null}
         {state.initedPlugins ? (
           <PluginsTabs
             tabs={tabs}
             hide={name != pluginsTab.name || pluginsTab.hide}
           />
-        ) : undefined}
+        ) : null}
       </div>
     );
   }

@@ -1,7 +1,6 @@
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
-var events = require('./events');
 var win = require('./win');
 var CopyBtn = require('./copy-btn');
 var RecordBtn = require('./record-btn');
@@ -10,6 +9,9 @@ var MAX_COUNT = 360;
 var PAGE_SIZE = 30;
 var MAX_FILE_SIZE = 1024 * 1024 * 2;
 var LOG_TEXT_KEY = window.Symbol ? window.Symbol('logText') : 'logText';
+var scrollAtBottom =util.scrollAtBottom;
+var trigger = util.trigger;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 2MB';
 
 module.exports = {
   LOG_TEXT_KEY: LOG_TEXT_KEY,
@@ -25,7 +27,7 @@ module.exports = {
     var toggleHide = hide != util.getBool(nextProps.hide);
     if (toggleHide || !hide) {
       if (!toggleHide && !hide) {
-        self.state.scrollToBottom = util.scrollAtBottom(
+        self.state.scrollToBottom = scrollAtBottom(
           self.container,
           self.content
         );
@@ -37,13 +39,13 @@ module.exports = {
     return false;
   },
   selectFile: function () {
-    events.trigger('showImportDialog', this.name);
+    trigger('showImportDialog', this.name);
   },
   changeLevel: function (option) {
     this.setState({ level: option.value });
   },
   stopAutoRefresh: function () {
-    if (util.scrollAtBottom(this.container, this.content)) {
+    if (scrollAtBottom(this.container, this.content)) {
       this.container.scrollTop = this.container.scrollTop - 10;
     }
   },
@@ -58,7 +60,7 @@ module.exports = {
     var state = self.state;
     var logs = state.logs;
     var backBtn = self.refs.backBtn;
-    var atBottom = util.scrollAtBottom(self.container, self.content);
+    var atBottom = scrollAtBottom(self.container, self.content);
     clearTimeout(self.scrollTimer);
     if (logs && (state.scrollToBottom = atBottom)) {
       self.scrollTimer = setTimeout(self.trimLogs, 2000);
@@ -71,14 +73,14 @@ module.exports = {
   },
   importData: function (logs) {
     logs = util.parseLogs(logs);
-    logs && events.trigger('uploadLogs', { logs: logs });
+    logs && trigger('uploadLogs', { logs: logs });
   },
   importFile: function (file) {
     if (!file || !/\.log$/i.test(file.name)) {
       return win.alert('Only .log files are supported');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 2MB');
+      return win.alert(EXCEED_TIPS);
     }
     util.readFileAsText(file, this.importData);
   },
@@ -109,7 +111,7 @@ module.exports = {
         });
       }
     });
-    events.trigger('showExportDialog', [this.name, logs]);
+    trigger('showExportDialog', [this.name, logs]);
   },
   getLogText: function (text, log) {
     log = log && (log[LOG_TEXT_KEY] || log.text);
@@ -143,7 +145,7 @@ module.exports = {
     var pageSize = Math.max(PAGE_SIZE, Math.floor((MAX_COUNT - len) * 2 / 3));
     newLogs = newLogs.splice(0, pageSize);
     state.logs = util.filterLogList(logs.concat(newLogs), self.keyword, true);
-    var atBottom = util.scrollAtBottom(self.container, self.content);
+    var atBottom = scrollAtBottom(self.container, self.content);
     atBottom && self.trimLogs();
     self.setState({});
   },
@@ -171,14 +173,14 @@ module.exports = {
       </a>
       <a
         className={disabled ? 'w-disabled' : ''}
-        onClick={disabled ? undefined : self.export}
+        onClick={disabled ? null : self.export}
         draggable="false"
       >
         Export
       </a>
       <a
         className={'w-clear' + (disabled ? ' w-disabled' : '')}
-        onClick={disabled ? undefined : self.clearLogs}
+        onClick={disabled ? null : self.clearLogs}
         draggable="false"
       >
         Clear

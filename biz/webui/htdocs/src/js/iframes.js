@@ -38,7 +38,8 @@ var detectTimeout = function () {
 
 function getItem(win) {
   try {
-    var page = win.location.pathname.substring(1) + win.location.search;
+    var loc = win.location;
+    var page = loc.pathname.substring(1) + loc.search;
     var index = page.lastIndexOf('?');
     if (index !== -1) {
       ++index;
@@ -68,14 +69,15 @@ function onPluginContextMenuReady(win) {
     bridge.createModal = function (options) {
       var dialog = modal.create(options);
       var hide = dialog.hide;
+      var dialogs = item.dialogs;
       dialog.hide = function (_destroy) {
         if (_destroy) {
-          var index = item.dialogs.indexOf(dialog);
-          index !== -1 && item.dialogs.splice(index, 1);
+          var index = dialogs.indexOf(dialog);
+          index !== -1 && dialogs.splice(index, 1);
         }
         hide(_destroy);
       };
-      item.dialogs.push(dialog);
+      dialogs.push(dialog);
       return dialog;
     };
     win.initWhistleBridge(bridge);

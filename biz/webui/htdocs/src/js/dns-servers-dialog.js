@@ -1,6 +1,8 @@
 var React = require('react');
 var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var util = require('./util');
+var ModalHeader = require('./modal-header');
 
 var DNSDialog = React.createClass({
   getInitialState: function () {
@@ -11,7 +13,6 @@ var DNSDialog = React.createClass({
       return;
     }
     var self = this;
-    self._hideDialog = false;
     var servers = data.dns;
     if (!data.doh) {
       servers = data.dns
@@ -21,23 +22,21 @@ var DNSDialog = React.createClass({
         })
         .join('\n');
     }
+    self.refs.dialog.show();
     self.setState({
       ipv6: data.r6,
       useDefault: data.df,
       servers: servers,
       doh: data.doh
     });
-    self.refs.dnsServersDialog.show();
   },
   hide: function () {
-    this.refs.dnsServersDialog.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   render: function () {
     var state = this.state;
+    var servers = state.servers;
     var title;
     if (state.doh) {
       title = 'Resolve IP address from follow URL';
@@ -49,25 +48,16 @@ var DNSDialog = React.createClass({
         (state.useDefault ? ' first' : '');
     }
     return (
-      <Dialog ref="dnsServersDialog" wstyle="w-dns-servers-dialog">
-        <div className="modal-header">
-          {title}
-          <CloseBtn />
-        </div>
-        <pre className="modal-body">{state.servers}</pre>
+      <Dialog ref="dialog" wstyle="w-dns-servers">
+        <ModalHeader>{title}</ModalHeader>
+        <pre className="modal-body">{servers}</pre>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             data-dismiss="modal"
             className="btn btn-primary w-copy-text-with-tips"
-            data-clipboard-text={state.servers}
+            data-clipboard-text={servers}
           >
             Copy
           </button>

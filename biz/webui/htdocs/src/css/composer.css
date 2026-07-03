@@ -96,13 +96,11 @@
   position: relative;
 }
 
-.w-com-res-forbidden th,
-.w-com-res-forbidden pre {
+.w-com-res-forbidden :is(th, pre) {
   color: var(--c-forbidden)!important;
 }
 
-.w-com-res-error th,
-.w-com-res-error pre {
+.w-com-res-error :is(th, pre) {
   color: var(--c-error) !important;
 }
 .w-com-bar {
@@ -220,13 +218,9 @@
   cursor: pointer;
 }
 
-.w-com-headers textarea[readonly],
-.w-com-body textarea[readonly],
-.w-detail-com input[readonly],
-.w-com-rules textarea:disabled,
-.w-com-rules textarea[readonly],
-.w-rules-mini-editor textarea[readonly],
-.w-create-rule input[readonly] {
+:is(.w-com-headers, .w-com-body, .w-com-rules, .w-rules-mini-editor)
+  textarea:is([readonly], :disabled),
+:is(.w-detail-com, .w-create-rule) input[readonly] {
   background: var(--b-disabled) !important;
   color: var(--c-disabled) !important;
 }
@@ -269,9 +263,7 @@
   position: absolute;
 }
 
-.w-com-bar .w-com-hex-text.w-checked,
-.w-com-bar .w-com-gzip.w-checked,
-.w-com-bar .w-com-crlf.w-checked {
+.w-com-bar :is(.w-com-hex-text, .w-com-crlf).w-checked {
   font-weight: bold;
 }
 
@@ -416,49 +408,49 @@
   font-weight: 500;
 }
 
-.w-history-item i.w-req-method-tag-GET {
+.w-history-item i.w-req-tag-GET {
   background: var(--c-ok);
   color: var(--c-active);
   border-color: var(--c-ok);
 }
 
-.w-history-item i.w-req-method-tag-POST {
+.w-history-item i.w-req-tag-POST {
   background: var(--c-post);
   color: var(--c-active);
   border-color: var(--c-post);
 }
 
-.w-history-item i.w-req-method-tag-DELETE {
+.w-history-item i.w-req-tag-DELETE {
   background: var(--c-del);
   color: var(--c-active);
   border-color: var(--c-del);
 }
 
-.w-history-item i.w-req-method-tag-HEAD {
+.w-history-item i.w-req-tag-HEAD {
   background: var(--c-head);
   color: var(--c-active);
   border-color: var(--c-head);
 }
 
-.w-history-item i.w-req-method-tag-OPTIONS {
+.w-history-item i.w-req-tag-OPTIONS {
   background: var(--c-options);
   color: var(--c-active);
   border-color: var(--c-options);
 }
 
-.w-history-item i.w-req-method-tag-TRACE {
+.w-history-item i.w-req-tag-TRACE {
   background: var(--c-trace);
   color: var(--c-active);
   border-color: var(--c-trace);
 }
 
-.w-history-item i.w-req-method-tag-PATCH {
+.w-history-item i.w-req-tag-PATCH {
   background: var(--c-patch);
   color: var(--c-active);
   border-color: var(--c-patch);
 }
 
-.w-history-item i.w-req-method-tag-PUT {
+.w-history-item i.w-req-tag-PUT {
   background: var(--c-put);
   color: var(--c-active);
   border-color: var(--c-put);
@@ -481,7 +473,7 @@
   border: 1px solid var(--c-tag);
 }
 
-.w-req-method-tag {
+.w-req-tag {
   border: 1px solid var(--c-ok);
 }
 

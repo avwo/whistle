@@ -1,6 +1,6 @@
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
-
+var util = require('./util');
 
 var ACTIVE_COL = { width: 55 };
 
@@ -9,7 +9,7 @@ var OrderTable = React.createClass({
     findDOMNode(this.refs.body).scrollTop = 0;
   },
   onChange: function(e) {
-    var index = e.target.getAttribute('data-index');
+    var index = util.attr(e.target, 'data-index');
     var props = this.props;
     var row = props.rows[index];
     props.onActive(e.target.checked, row);
@@ -24,7 +24,7 @@ var OrderTable = React.createClass({
     var emptyUrl = props.emptyUrl;
 
     return (
-      <div className={'w-order-table fill vertical-box' + (props.hide ? ' hide' : '')}>
+      <div className={'w-order-table fill vertical-box' + util.getHide(props.hide)}>
         <table className="table w-order-table-head">
           <thead>
             <tr>
@@ -51,7 +51,7 @@ var OrderTable = React.createClass({
                   </tr>
                 );
               }) : <tr><td colSpan={cols.length + 1} className="w-empty">
-                  {props.loading ? 'Loading...' : (emptyUrl ? <a href={emptyUrl} target="_blank">Empty</a> : 'Empty')}
+                  {props.loading ? 'Loading...' : (emptyUrl ? <a href={emptyUrl} target="_blank">No data</a> : 'No data')}
                 </td></tr>}
             </tbody>
           </table>

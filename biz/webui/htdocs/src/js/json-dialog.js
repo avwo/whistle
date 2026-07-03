@@ -5,8 +5,10 @@ var FilterInput = require('./filter-input');
 var util = require('./util');
 var FbBtn = require('./forward-back-btn');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
 
 var KV_RE = /^(k|v):/;
+var stringify = util.stringify;
 
 var JSONDialog = React.createClass({
   getInitialState: function () {
@@ -50,17 +52,17 @@ var JSONDialog = React.createClass({
     }, 600);
   },
   filterJson: function(data) {
-    var self = this;
-    if (!self._keywordObj) {
+    var keywordObj = this._keywordObj;
+    if (!keywordObj) {
       return;
     }
-    var json = util.filterJsonText(data.str, self._keywordObj, self._type);
+    var json = util.filterJsonText(data.str, keywordObj, this._type);
     if (!json) {
       return;
     }
     return {
       json: json,
-      str: JSON.stringify(json, null, '  ')
+      str: stringify(json)
     };
   },
   show: function(text, keyPath, session) {
@@ -111,7 +113,7 @@ var JSONDialog = React.createClass({
       data = {
         json: json,
         text: text,
-        str: JSON.stringify(json, null, '  ')
+        str: stringify(json)
       };
     } else {
       return util.parseRawJson(text);
@@ -166,20 +168,14 @@ var JSONDialog = React.createClass({
           <CloseBtn />
           <div
             className="v-box"
-            style={{ width: 880, height: 560, marginTop: 22, background: self._keywordObj ? 'var(--b-filtered)' : undefined }}
+            style={{ width: 880, height: 560, marginTop: 22, background: self._keywordObj ? 'var(--b-filtered)' : null }}
           >
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} session={state.session} />
           </div>
           <FilterInput ref="filterInput" onChange={self.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
       </Dialog>
     );

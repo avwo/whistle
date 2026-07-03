@@ -2,9 +2,10 @@ var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var util = require('./util');
 var Icon = require('./icon');
+
+var addEvent = util.on;
 
 var FilterBtn = React.createClass({
   getInitialState: function () {
@@ -14,7 +15,7 @@ var FilterBtn = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('filterChanged', function () {
+    addEvent('filterChanged', function () {
       var hasFilterText = !!dataCenter.filterIsEnabled();
       if (hasFilterText !== self.state.hasFilterText) {
         self.setState({
@@ -22,7 +23,7 @@ var FilterBtn = React.createClass({
         });
       }
     });
-    events.on('shakeSettings', function () {
+    addEvent('shakeSettings', function () {
       setTimeout(function () {
         util.shakeElem($(findDOMNode(self.refs.settings)));
       }, 100);
@@ -38,7 +39,7 @@ var FilterBtn = React.createClass({
         ref="settings"
         onClick={props.onClick}
         className={'w-settings-menu' + className}
-        style={{ display: hide ? 'none' : '' }}
+        style={util.getHideStyle(hide)}
         draggable="false"
       >
         <Icon name="cog" />

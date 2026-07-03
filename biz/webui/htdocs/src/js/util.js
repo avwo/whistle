@@ -2,12 +2,12 @@ var $ = require('jquery');
 var base64JS = require('base64-js');
 var jsBase64 = require('js-base64').Base64;
 var json2 = require('./components/json');
-var events = require('./events');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
 var win = require('./win');
 var storage = require('./storage');
 
+var events = $({});
 var toByteArray = base64JS.toByteArray;
 var fromByteArray = base64JS.fromByteArray;
 var base64Decode = jsBase64.decode;
@@ -34,9 +34,15 @@ var SOURCE_SEP_LEN = SOURCE_SEP.length;
 var BASE_SERVICE_URL = 'service/';
 var isFunc = win.isFunc;
 var isStr = win.isStr;
+var trigger = events.trigger.bind(events);
 
+exports.trigger = trigger;
+exports.on = events.on.bind(events);
+exports.one = events.one.bind(events);
+exports.off = events.off.bind(events);
 exports.SOURCE_SEP = SOURCE_SEP;
 exports.CRLF_RE = CRLF_RE;
+exports.EXCEED_TIPS = 'Total file size must not exceed';
 exports.isFunc = isFunc;
 exports.isStr = isStr;
 exports.isElectron = /Electron\//i.test(window.navigator.userAgent);
@@ -114,11 +120,32 @@ exports.METHODS = [
   'VERSION-CONTROL'
 ];
 
+var SERVICE_CTX = [
+  { name: 'Share Via URL', action: 'shareViaUrl', hide: true },
+  { name: 'Show Service', action: 'showService', hide: true }
+];
+
+exports.SERVICE_CTX = SERVICE_CTX;
+
+exports.NETWORK_ACTIONS = [
+  { name: 'Create API Test', action: 'createApiTest', hide: true }
+].concat(SERVICE_CTX);
+
 function removeSpaces(str) {
   return str && str.replace(/\s+/g, '');
 }
 
 exports.removeSpaces = removeSpaces;
+
+exports.attr = function (el, name) {
+  return el.getAttribute(name);
+};
+
+function stringify(obj) {
+  return JSON.stringify(obj, null, 2);
+}
+
+exports.stringify = stringify;
 
 function isObj(obj) {
   return obj && typeof obj === 'object';
@@ -131,6 +158,10 @@ function trimStr(str) {
 }
 
 exports.trimStr = trimStr;
+
+exports.notEmpty = function (value) {
+  return /[^\s]/.test(value);
+};
 
 function isSafeNumStr(str) {
   if (str == '0') {
@@ -305,27 +336,37 @@ exports.copyText = function(text, tips) {
   btn.trigger('click');
 };
 
+function preventBlur(e) {
+  e.preventDefault();
+}
+
+
+function preventAll(e) {
+  preventBlur(e);
+  e.stopPropagation();
+}
+
+exports.preventAll = preventAll;
+
 exports.preventDefault = function(e) {
-  e.keyCode == 8 && e.preventDefault();
+  e.keyCode == 8 && preventBlur(e);
 };
 
-exports.preventBlur = function(e) {
-  e.preventDefault();
-};
+exports.preventBlur = preventBlur;
 
 function showService(path, delay) {
   if (delay) {
     setTimeout(function() {
-      events.trigger('showService', path);
+      trigger('showService', path);
     }, 100);
   } else {
-    events.trigger('showService', path);
+    trigger('showService', path);
   }
 }
 exports.showService = showService;
 
 exports.hideService = function() {
-  events.trigger('hideService');
+  trigger('hideService');
 };
 
 
@@ -382,18 +423,12 @@ exports.getCAHash = function(server, urlList) {
   return len && len <= 120 ? '#p=' + result.join() : '';
 };
 
-exports.showForbidden = function(data) {
-  if (data.forbidden) {
-    // message.warn('Without a username and password for Whistle, local non-temporary files cannot be accessed');
-    return true;
-  }
-};
-
 exports.download = function(data, filename) {
   var a = document.createElement('a');
   document.body.appendChild(a);
   a.style = 'display: none';
-  var blob = new Blob([JSON.stringify(data, null, 2)], {type: 'octet/stream'});
+  data = typeof data === 'string' ? data : stringify(data);
+  var blob = new Blob([data], {type: 'octet/stream'});
   var url = window.URL.createObjectURL(blob);
   a.href = url;
   a.download = filename || 'data_' + formatDate() + '.txt';
@@ -441,7 +476,7 @@ exports.handlePropsContextMenu = function(e, ctxMenu) {
     list[2] = PROPS_MENUS[1];
   }
   data.list = list;
-  e.preventDefault();
+  preventBlur(e);
   ctxMenu.show(data);
 };
 
@@ -468,7 +503,7 @@ exports.getBase64FromHexText = function (str) {
 
 function stopDrag() {
   dragCallback = dragTarget = dragOffset = null;
-  events.trigger('stopDrag');
+  trigger('stopDrag');
 }
 
 
@@ -489,7 +524,7 @@ $(document)
       return;
     }
     dragOffset = e;
-    e.preventDefault();
+    preventBlur(e);
   })
   .on('mousemove', function (e) {
     if (!dragTarget) {
@@ -631,13 +666,17 @@ function getBool(val) {
 
 exports.getBool = getBool;
 
-exports.shouldComponentUpdate = function (nextProps) {
+exports.checkSubmit = function(e) {
+  return e && e.type !== 'click' && e.keyCode !== 13;
+};
+
+exports.scu = function (nextProps) {
   var hide = getBool(this.props.hide);
   return hide != getBool(nextProps.hide) || !hide;
 };
 
-exports.stopPropagation = function(e) {
-  e.stopPropagation();
+exports.scuDialog = function () {
+  return this.refs.dialog.isVisible();
 };
 
 function showSysErr(xhr, useToast) {
@@ -1284,7 +1323,7 @@ function openEditor(value) {
   ) {
     return;
   }
-  events.trigger('openEditor', value);
+  trigger('openEditor', value);
 }
 
 exports.openEditor = openEditor;
@@ -1460,33 +1499,33 @@ exports.harToSession = harToSession;
 exports.handleImportData = function(data, type) {
   if (data) {
     if (data.type === 'setNetworkSettings') {
-      events.trigger('setNetworkSettings', data);
+      trigger('setNetworkSettings', data);
       return true;
     }
     if (data.type === 'setRulesSettings') {
-      events.trigger('setRulesSettings', data);
+      trigger('setRulesSettings', data);
       return true;
     }
     if (data.type === 'setValuesSettings') {
-      events.trigger('setValuesSettings', data);
+      trigger('setValuesSettings', data);
       return true;
     }
     if (data.type === 'setComposerData') {
-      events.trigger('setComposerData', data);
+      trigger('setComposerData', data);
       return true;
     }
   }
   var mockData = getMockData(data);
   if (mockData) {
-    events.trigger('showRulesDialog', mockData);
+    trigger('showRulesDialog', mockData);
   } else if (data && type === 'composerImportFile') {
     if (Array.isArray(data)) {
-      events.trigger('composer', data[0]);
+      trigger('composer', data[0]);
     } else {
       var entries = data.log && data.log.entries;
       if (Array.isArray(entries) && entries.length) {
         var entry = harToSession(entries[0]);
-        entry && events.trigger('composer', entry);
+        entry && trigger('composer', entry);
       }
     }
   }
@@ -1675,28 +1714,33 @@ exports.parseKeyword = function (keyword) {
   return result;
 };
 
-function checkKey(raw, text, key) {
+function checkKey(text, key) {
   if (key.test) {
-    return !key.test(raw);
+    return !key.test(text);
   }
   return text.toLowerCase().indexOf(key) === -1;
 }
 
 exports.checkKey = checkKey;
 
+var HIDE_CLASS = ' hide';
+
+exports.getHide = function (hide) {
+  return hide ? HIDE_CLASS : '';
+};
+
 function checkLogText(text, keyword) {
   if (!keyword.key1) {
     return '';
   }
-  var raw = text;
-  if (setNot(checkKey(raw, text, keyword.key1), keyword.key1Not)) {
-    return ' hide';
+  if (setNot(checkKey(text, keyword.key1), keyword.key1Not)) {
+    return HIDE_CLASS;
   }
-  if (keyword.key2 && setNot(checkKey(raw, text, keyword.key2), keyword.key2Not)) {
-    return ' hide';
+  if (keyword.key2 && setNot(checkKey(text, keyword.key2), keyword.key2Not)) {
+    return HIDE_CLASS;
   }
-  if (keyword.key3 && setNot(checkKey(raw, text, keyword.key3), keyword.key3Not)) {
-    return ' hide';
+  if (keyword.key3 && setNot(checkKey(text, keyword.key3), keyword.key3Not)) {
+    return HIDE_CLASS;
   }
   return '';
 }
@@ -1732,7 +1776,8 @@ exports.trimLogList = function (list, overflow, hasKeyword) {
 
 var TIME_RE = /\b\d\d?:\d\d?:\d\d?\b/;
 
-function toLocaleString(date) {
+function toDateStr(timestamp) {
+  var date = new Date(timestamp);
   var str = date.toLocaleString();
   if (!TIME_RE.test(str)) {
     return str;
@@ -1742,7 +1787,7 @@ function toLocaleString(date) {
   return str.replace(time, time + '.' + paddingMS(ms));
 }
 
-exports.toLocaleString = toLocaleString;
+exports.toDateStr = toDateStr;
 
 function setNot(flag, not) {
   return not ? !flag : flag;
@@ -1779,7 +1824,7 @@ exports.filterLogList = function (list, keyword, init) {
     } else {
       var text =
         'Date: ' +
-        toLocaleString(new Date(log.date)) +
+        toDateStr(new Date(log.date)) +
         log.logId +
         '\r\n' +
         log.text;
@@ -1795,7 +1840,7 @@ exports.scrollAtBottom = function (con, ctn) {
 };
 
 exports.triggerListChange = function (name, data) {
-  events.trigger(name + 'Change', data);
+  trigger(name + 'Change', data);
   try {
     var onChange =
       window.parent[
@@ -2347,7 +2392,7 @@ exports.addPluginMenus = function (item, list, maxTop, disabled, treeId, url) {
 function getText(text) {
   if (isObj(text)) {
     try {
-      return JSON.stringify(text, null, 2);
+      return stringify(text);
     } catch (e) {}
   }
   return text == null ? '' : String(text);
@@ -2384,7 +2429,7 @@ exports.parseImportData = function (data, modal, isValues) {
     if (isValues) {
       if (typeof value === 'object') {
         try {
-          value = JSON.stringify(value, null, '  ');
+          value = stringify(value);
         } catch (e) {
           return;
         }
@@ -2520,6 +2565,9 @@ var CRLF_BUF = strToByteArray('\r\n');
 var EMPTY_BUF = strToByteArray('');
 
 exports.EMPTY_BUF = EMPTY_BUF;
+
+exports.CMF_DEL_MSG = 'Do you confirm the deletion of ';
+exports.CMF_CHG_MSG = 'Do you confirm the changes to ';
 
 function parseMultiHeader(header) {
   try {
@@ -3251,14 +3299,14 @@ exports.getSimplePluginName = getSimplePluginName;
 exports.showJSONDialog = function(data, keyPath) {
   var str = data && JSON.stringify(data);
   if (str) {
-    events.trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
+    trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
   }
 };
 
 exports.handleFormat = function(e, onFormat) {
   if (e.shiftKey && e.keyCode === 70  && (e.metaKey || e.ctrlKey)) {
     onFormat(e);
-    e.preventDefault();
+    preventBlur(e);
   }
 };
 
@@ -3267,7 +3315,7 @@ exports.handleTab = function(e) {
   if (e.keyCode !== 9 || e.altKey || target.readOnly || target.disabled) {
     return;
   }
-  e.preventDefault();
+  preventBlur(e);
   var start = target.selectionStart;
   var end = target.selectionEnd;
   var value = target.value;
@@ -3390,9 +3438,9 @@ exports.handleClickLocate = function(text) {
       return;
     }
     if (type === 'File') {
-      events.trigger('showRules', name);
+      trigger('showRules', name);
     } else if (type === 'Plugin') {
-      events.trigger('showPlugins', name);
+      trigger('showPlugins', name);
     }
   }
 };
@@ -3408,9 +3456,13 @@ function getDocUrl(url) {
 
 exports.getDocUrl = getDocUrl;
 
+var GITHUB_URL = 'https://github.com/avwo/whistle';
+
+exports.GITHUB_URL = GITHUB_URL;
+
 exports.openChangeLog = function() {
   var lang = isZh() ? '' : '-en_US';
-  var url = 'https://github.com/avwo/whistle/blob/master/CHANGELOG' + lang + '.md';
+  var url = GITHUB_URL + '/blob/master/CHANGELOG' + lang + '.md';
   window.open(url);
 };
 
@@ -3499,8 +3551,7 @@ exports.handleEditorKeydown = function(e) {
   if (e.ctrlKey || e.metaKey) {
     if (e.keyCode == 68) {
       e.target.value = '';
-      e.preventDefault();
-      e.stopPropagation();
+      preventAll(e);
     } else if (e.keyCode == 88) {
       e.stopPropagation();
     }

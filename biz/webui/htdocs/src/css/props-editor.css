@@ -6,8 +6,7 @@
   overflow-x: hidden;
 }
 
-.w-props-editor th,
-.w-props-editor td {
+.w-props-editor :is(th, td) {
   border: none;
   border-bottom: 1px solid var(--c-border);
   border-top: none !important;
@@ -94,8 +93,7 @@
 .w-props-editor-form button {
   display: none;
 }
-.w-com-dialog label input,
-.w-com-dialog label textarea {
+.w-com-dialog label :is(input, textarea) {
   font-weight: normal;
 }
 

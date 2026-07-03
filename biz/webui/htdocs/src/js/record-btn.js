@@ -1,4 +1,4 @@
-var events = require('./events');
+var util = require('./util');
 
 var React = require('react');
 var MenuItem = require('./menu-item');
@@ -45,7 +45,7 @@ var RecordBtn = React.createClass({
     self.setState({});
   },
   componentDidMount: function () {
-    events.on('toggleNetworkState', this.onClick);
+    util.on('toggleNetworkState', this.onClick);
   },
   enable: function (flag) {
     var state = this.state;
@@ -96,7 +96,8 @@ var RecordBtn = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
-    var hide = self.props.hide;
+    var props = self.props;
+    var hide = util.getHide(props.hide);
     var pause = state.pause;
     var stop = state.stop;
     var disabled = stop || pause;
@@ -108,14 +109,13 @@ var RecordBtn = React.createClass({
         onMouseLeave={self.hideActionOptions}
         className={
           'w-menu-wrapper w-switch-btn w-menu-auto' +
-          (state.showActionOptions ? ' w-menu-wrapper-show' : '') +
-          (hide ? ' hide' : '')
+          (state.showActionOptions ? ' w-menu-wrapper-show' : '') + hide
         }
       >
         <a
           onClick={self.onClick}
           draggable="false"
-          className={'w-scroll-menu' + (disabled ? ' w-pause' : '') + (self.props.disabledRecord ? ' w-disabled' : '')}
+          className={'w-scroll-menu' + (disabled ? ' w-pause' : '') + (props.disabledRecord ? ' w-disabled' : '')}
           title={title}
         >
           <Icon name={pause ? 'minus-sign' : 'stop'} />

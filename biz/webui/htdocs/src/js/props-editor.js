@@ -3,11 +3,13 @@ var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var util = require('./util');
-var message = require('./message');
 var win = require('./win');
 var ContextMenu = require('./context-menu');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var UploadForm = require('./upload-form');
+var showError = require('./message').error;
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
@@ -15,6 +17,9 @@ var MAX_VALUE_LEN = 64 * 1024;
 var MAX_COUNT = 160;
 var index = MAX_COUNT;
 var W2_HEADER_RE = /^x-whistle-/;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 20MB';
+var getHide = util.getHide;
+var attr = util.attr;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -76,7 +81,7 @@ var PropsEditor = React.createClass({
       return;
     }
     if (Object.keys(self.state.modal || '').length >= MAX_COUNT) {
-      return message.error('Maximum allowed value: ' + MAX_COUNT);
+      return showError('Maximum allowed value: ' + MAX_COUNT);
     }
     self.setState({ data: '' });
     self.showDialog();
@@ -93,13 +98,13 @@ var PropsEditor = React.createClass({
     if (self.props.disabled) {
       return;
     }
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     var data = self.state.modal[name];
     self.setState({ data: data });
     self.showDialog(data);
   },
   execCallback: function(e) {
-    if (e.target.getAttribute('data-action') === 'callback') {
+    if (attr(e.target, 'data-action') === 'callback') {
       this.props.callback();
     }
   },
@@ -109,7 +114,7 @@ var PropsEditor = React.createClass({
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
-      return message.error('The name is required');
+      return showError('The name is required');
     }
     var valueInput = findDOMNode(self.refs.valueInput);
     var value = valueInput.value.trim();
@@ -142,7 +147,7 @@ var PropsEditor = React.createClass({
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
-      return message.error('The name is required');
+      return showError('The name is required');
     }
     var valueInput = findDOMNode(self.refs.valueInput);
     var value = valueInput.value.trim();
@@ -179,9 +184,10 @@ var PropsEditor = React.createClass({
     this.refs.composerDialog.hide();
   },
   showDialog: function (data) {
-    this.refs.composerDialog.show();
     var self = this;
-    var nameInput = findDOMNode(self.refs.name);
+    var refs = self.refs;
+    refs.composerDialog.show();
+    var nameInput = findDOMNode(refs.name);
     if (data) {
       nameInput.value = data.name || '';
       if (data.data) {
@@ -192,7 +198,7 @@ var PropsEditor = React.createClass({
           fileType: data.type
         });
       } else {
-        findDOMNode(self.refs.valueInput).value = data.value || '';
+        findDOMNode(refs.valueInput).value = data.value || '';
       }
     }
     setTimeout(function () {
@@ -205,11 +211,11 @@ var PropsEditor = React.createClass({
     if (self.props.disabled) {
       return;
     }
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     var opName = self.props.isHeader ? 'header' : 'param';
     var item = self.state.modal[name];
     win.confirm(
-      'Do you confirm the deletion of this ' + opName + ' \'' + item.name + '\'?',
+      util.CMF_DEL_MSG + 'this ' + opName + ' \'' + item.name + '\'?',
       function (sure) {
         if (sure) {
           delete self.state.modal[name];
@@ -249,15 +255,16 @@ var PropsEditor = React.createClass({
   },
   onUpload: function () {
     if (!this.reading) {
-      findDOMNode(this.refs.readLocalFile).click();
+      this.refs.uploadForm.getInput().click();
     }
   },
   readLocalFile: function () {
     var self = this;
-    var form = new FormData(findDOMNode(self.refs.readLocalFileForm));
+    var uploadForm = self.refs.uploadForm;
+    var form = new FormData(uploadForm.getForm());
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Total file size must not exceed 20MB');
+      return win.alert(EXCEED_TIPS);
     }
     var modal = self.state.modal || '';
     var size = file.size;
@@ -265,7 +272,7 @@ var PropsEditor = React.createClass({
       size += modal[key].size;
     });
     if (size > MAX_FILE_SIZE) {
-      return win.alert('Total file size must not exceed 20MB');
+      return win.alert(EXCEED_TIPS);
     }
     self.reading = true;
     util.readFile(file, function (data) {
@@ -278,7 +285,7 @@ var PropsEditor = React.createClass({
         fileType: file.type
       });
     });
-    findDOMNode(self.refs.readLocalFile).value = '';
+    uploadForm.getInput().value = '';
   },
   removeLocalFile: function (e) {
     var self = this;
@@ -317,7 +324,7 @@ var PropsEditor = React.createClass({
       <div
         className={
           'fill v-box w-props-editor' +
-          (props.hide ? ' hide' : '')
+          getHide(props.hide)
         }
         title={props.title}
         onDoubleClick={props.onDoubleClick}
@@ -327,21 +334,20 @@ var PropsEditor = React.createClass({
             <tbody onContextMenu={self.onContextMenu}>
               {keys.map(function (name) {
                 var item = modal[name];
+                var itemName = item.name;
                 return (
-                  <tr key={name} data-name={item.name} data-value={item.value}>
+                  <tr key={name} data-name={itemName} data-value={item.value}>
                     <th
                       className={
-                        isHeader && highlight(item.name) ? 'w-bold' : undefined
+                        isHeader && highlight(itemName) ? 'w-bold' : null
                       }
                     >
-                      {item.name}
+                      {itemName}
                     </th>
                     <td>
                       <pre>
-                        {item.data ? <Icon name="file" /> : undefined}
-                        {item.data
-                          ? ' [' + util.getSize(item.size) + '] '
-                          : undefined}
+                        {item.data ? <Icon name="file" /> : null}
+                        {item.data ? ' [' + util.getSize(item.size) + '] ' : null}
                         {item.value}
                       </pre>
                     </td>
@@ -372,10 +378,10 @@ var PropsEditor = React.createClass({
             disabled={props.disabled}
             className={
               'btn btn-primary btn-sm w-add-field' +
-              (props.isHeader ? ' w-add-header' : '')
+              (isHeader ? ' w-add-header' : '')
             }
           >
-            {props.isHeader ? '+Header' : '+Param'}
+            {isHeader ? '+Header' : '+Param'}
           </button>
         )}
         <Dialog ref="composerDialog" wstyle="w-com-dialog">
@@ -401,7 +407,7 @@ var PropsEditor = React.createClass({
               >
                 <div
                   onClick={self.onUpload}
-                  className={'w-props-editor-file' + (filename ? '' : ' hide')}
+                  className={'w-props-editor-file' + getHide(!filename)}
                   title={filename}
                 >
                   <CloseBtn className="w-del-btn" onClick={self.removeLocalFile} />
@@ -413,12 +419,12 @@ var PropsEditor = React.createClass({
                   ref="valueInput"
                   maxLength={MAX_VALUE_LEN}
                   placeholder="Enter key value"
-                  className={'form-control' + (filename ? ' hide' : '')}
+                  className={'form-control' + getHide(filename)}
                   onKeyDown={util.handleTab}
                 />
                 <button
                   onClick={self.onUpload}
-                  className={'btn btn-primary' + (filename ? ' hide' : '')}
+                  className={'btn btn-primary' + getHide(filename)}
                 >
                   <Icon name="folder-open" />
                   Upload
@@ -427,13 +433,7 @@ var PropsEditor = React.createClass({
             </div>
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
+            <DismissBtn />
             {
               cbBtnText ?
               <button
@@ -454,18 +454,7 @@ var PropsEditor = React.createClass({
             </button>
           </div>
         </Dialog>
-        <form
-          ref="readLocalFileForm"
-          encType="multipart/form-data"
-          style={util.HIDE_STYLE}
-        >
-          <input
-            ref="readLocalFile"
-            onChange={self.readLocalFile}
-            type="file"
-            name="localFile"
-          />
-        </form>
+        <UploadForm ref="uploadForm" onChange={self.readLocalFile} />
         <ContextMenu ref="contextMenu" />
       </div>
     );

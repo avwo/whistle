@@ -8,7 +8,7 @@ var hasWebView = function() {
 };
 
 var ImageView = React.createClass({
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   preview: function () {
     util.openPreview(this.props.data);
   },
@@ -45,11 +45,11 @@ var ImageView = React.createClass({
     return (
       <div
         className={'fill w-image-view' + (previewUrl ? ' w-image-webview' : '') +
-          (props.hide ? ' hide' : '') + (isImg ? ' w-image-bg' : '')}
+          util.getHide(props.hide) + (isImg ? ' w-image-bg' : '')}
       >
         {previewUrl || props.imgSrc ? <div className="w-textarea-bar">
           <a onClick={self.preview}>Open in new window</a>
-        </div> : undefined}
+        </div> : null}
         {self.getPreviewElem(previewUrl)}
       </div>
     );

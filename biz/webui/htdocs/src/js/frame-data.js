@@ -8,6 +8,7 @@ var FrameComposer = require('./frame-composer');
 var util = require('./util');
 var Properties = require('./properties');
 
+var toDateStr = util.toDateStr;
 
 function findActive(btn) {
   return btn.active;
@@ -94,10 +95,11 @@ var FrameClient = React.createClass({
     var session = props.data;
     var text, json, bin, base64, overview;
     if (frame) {
+      var timestamp = parseInt(frame.frameId, 10);
       if (!frame.closed) {
         var len = frame.length;
         overview = {
-          Date: util.toLocaleString(new Date(parseInt(frame.frameId, 10))),
+          Date: toDateStr(timestamp),
           Path: frame.isClient ? 'Client -> Server' : 'Server -> Client',
           Opcode: frame.opcode,
           Type: frame.opcode == 1 ? 'Text' : 'Binary',
@@ -107,7 +109,7 @@ var FrameClient = React.createClass({
         };
       } else {
         overview = {
-          Date: util.toLocaleString(new Date(parseInt(frame.frameId, 10)))
+          Date: toDateStr(timestamp)
         };
       }
       text = util.getBody(frame, true);
@@ -120,7 +122,7 @@ var FrameClient = React.createClass({
       <div
         className={
           'fill v-box w-frames-data' +
-          (self.props.hide ? ' hide' : '')
+          util.getHide(self.props.hide)
         }
         onDragEnter={self.onDragEnter}
         onDrop={self.onDrop}

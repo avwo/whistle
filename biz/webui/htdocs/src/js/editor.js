@@ -28,9 +28,13 @@ var findDOMNode = require('react-dom').findDOMNode;
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var util = require('./util');
+var dataCenter = require('./data-center');
 
 var themes = util.EDITOR_THEMES;
 var isFunc = util.isFunc;
+var preventAll = util.preventAll;
+var trigger = util.trigger;
+var addEvent = util.on;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
   'CodeMirror-linenumbers',
@@ -54,7 +58,6 @@ require('codemirror/addon/fold/brace-fold');
 require('codemirror/addon/fold/comment-fold');
 
 var rulesHint = require('./rules-hint');
-var events = require('./events');
 
 require('./rules-mode');
 var DEFAULT_THEME = 'cobalt';
@@ -84,25 +87,27 @@ var Editor = React.createClass({
       mode = 'htmlmixed';
     }
     var self = this;
+    var editor = self._editor;
     if (self._mode !== mode) {
       self._mode = mode;
-      if (self._editor) {
-        self._editor.setOption('mode', mode);
+      if (editor) {
+        editor.setOption('mode', mode);
       }
-      if (self._foldGutter) {
-        self._editor.setOption('foldGutter', false);
-        self._editor.setOption('foldGutter', true);
+      if (self._foldGutter && editor) {
+        editor.setOption('foldGutter', false);
+        editor.setOption('foldGutter', true);
       }
       self.setFoldGutter(self.props.foldGutter);
     }
   },
   setValue: function (value) {
     var self = this;
+    var editor = self._editor;
     value = self._value = value == null ? '' : value + '';
-    if (!self._editor || self._editor.getValue() == value) {
+    if (!editor || editor.getValue() == value) {
       return;
     }
-    self._editor.setValue(value);
+    editor.setValue(value);
   },
   setHistory: function(init, history) {
     var self = this;
@@ -128,17 +133,19 @@ var Editor = React.createClass({
       return;
     }
     var name = activeItem.name;
+    var editor = self._editor;
     self._editorHistoryMap = map;
     if(init) {
       self._editorCurrentHistoryKey = name;
-      self._editor.clearHistory();
+      editor.clearHistory();
     } else {
-      if(self._editorCurrentHistoryKey !== name) {
-        map[self._editorCurrentHistoryKey] = history;
+      var key = self._editorCurrentHistoryKey;
+      if(key !== name) {
+        map[key] = history;
         self._editorCurrentHistoryKey = name;
-        self._editor.clearHistory();
+        editor.clearHistory();
         if(map[name]) {
-          self._editor.setHistory(map[name]);
+          editor.setHistory(map[name]);
           delete map[name];
         }
       }
@@ -164,31 +171,31 @@ var Editor = React.createClass({
   },
   showLineNumber: function (show) {
     var self = this;
-    show = self._showLineNumber = show === false ? false : true;
+    show = self._showLineNumber = show !== false;
     if (self._editor) {
       self._editor.setOption('lineNumbers', show);
     }
   },
   showLineWrapping: function (show) {
     var self = this;
-    show = self._showLineWrapping = show === false ? false : true;
+    show = self._showLineWrapping = show !== false;
     if (self._editor) {
       self._editor.setOption('lineWrapping', show);
     }
   },
   setReadOnly: function (readOnly) {
     var self = this;
-    readOnly = self._readOnly =
-      readOnly === false || readOnly === 'false' ? false : true;
+    readOnly = self._readOnly = readOnly !== false && readOnly !== 'false';
     if (self._editor) {
       self._editor.setOption('readOnly', readOnly);
     }
   },
   handleKeyUp: function(_, e) {
     var self = this;
+    var code = e.keyCode;
     clearTimeout(self._timer);
-    var _byDelete = e.keyCode === 8;
-    if (_byDelete || e.keyCode === 13) {
+    var _byDelete = code === 8;
+    if (_byDelete || code === 13) {
       var editor = self._editor;
       self._timer = setTimeout(function () {
         if (!hasSelector('.CodeMirror-hints')) {
@@ -220,10 +227,11 @@ var Editor = React.createClass({
       return;
     }
     foldGutter = foldGutter !== false && FOLD_MODE.indexOf(self._mode) !== -1;
-    if (self._foldGutter !== foldGutter && self._editor) {
+    var editor = self._editor;
+    if (self._foldGutter !== foldGutter && editor) {
       self._foldGutter = foldGutter;
-      self._editor.setOption('foldGutter', foldGutter);
-      self._editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
+      editor.setOption('foldGutter', foldGutter);
+      editor.setOption('gutters', foldGutter ? GUTTER_STYLE : []);
     }
   },
 
@@ -260,9 +268,9 @@ var Editor = React.createClass({
         }
       }
       if (keyword) {
-        events.editorMatchedCount = value.toLowerCase().split(keyword.toLowerCase()).length - 1;
+        dataCenter.editorMatchedCount = value.toLowerCase().split(keyword.toLowerCase()).length - 1;
       } else {
-        events.editorMatchedCount = 0;
+        dataCenter.editorMatchedCount = 0;
       }
       cursor = editor.getSearchCursor(keyword, cursor, SEARCH_OPTIONS);
       preCursor = null;
@@ -283,10 +291,10 @@ var Editor = React.createClass({
     };
     self._editor = editor;
 
-    events.on('findEditorNext', findEditor);
-    events.on('findEditorPrev', findEditor);
+    addEvent('findEditorNext', findEditor);
+    addEvent('findEditorPrev', findEditor);
 
-    events.on('updatePlugins', function() {
+    addEvent('updatePlugins', function() {
       if (self.isRulesEditor()) {
         timer && clearTimeout(timer);
         if (self.props.hide) {
@@ -334,7 +342,7 @@ var Editor = React.createClass({
     $(elem).find('.CodeMirror').addClass('fill');
     setTimeout(resize, 10);
     $(window).on('resize', resetThrottle);
-    events.on('editorResize', resetThrottle);
+    addEvent('editorResize', resetThrottle);
     function resize() {
       timeout = null;
       var height = elem.offsetHeight || 0;
@@ -402,14 +410,15 @@ var Editor = React.createClass({
       if (resetRange) {
         editor.setSelections(list);
       }
-      events.trigger('toggleCommentInEditor');
+      trigger('toggleCommentInEditor');
     });
     $(elem).on('keydown', function (e) {
       var isRules = self.isRulesEditor();
       var isJS = self._mode == 'javascript';
+      var props = self.props;
       if (isRules) {
         var options = {
-          name: self.props.mode,
+          name: props.mode,
           url: location.href
         };
         if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
@@ -417,9 +426,8 @@ var Editor = React.createClass({
           if (!helpUrl) {
             return;
           }
-          events.trigger('openUrl', helpUrl);
-          e.stopPropagation();
-          e.preventDefault();
+          trigger('openUrl', helpUrl);
+          preventAll(e);
           return true;
         }
         try {
@@ -428,15 +436,14 @@ var Editor = React.createClass({
             isFunc(onKeyDown) &&
             onKeyDown(e, options) === false
           ) {
-            e.stopPropagation();
-            e.preventDefault();
+            preventAll(e);
             return true;
           }
         } catch (e) {}
       }
       if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
-        var onFormat = self.props.onFormat;
-        var onInspect = self.props.onInspect;
+        var onFormat = props.onFormat;
+        var onInspect = props.onInspect;
         if (isFunc(onFormat) && e.keyCode === 70) {
           onFormat(e);
         } else if (isFunc(onInspect) && e.keyCode === 73) {

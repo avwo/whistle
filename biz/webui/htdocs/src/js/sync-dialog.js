@@ -5,6 +5,7 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
 var Icon = require('./icon');
+var DismissBtn = require('./dismiss-btn');
 
 var isStr = util.isStr;
 
@@ -125,13 +126,7 @@ var SyncDialog = React.createClass({
           </button>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
         <KVDialog onHistoryChange={self.onHistoryChange} ref="kvDialog" />
       </Dialog>

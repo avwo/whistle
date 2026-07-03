@@ -1,6 +1,5 @@
 var util = require('./util');
 var storage = require('./storage');
-var events = require('./events');
 
 var NUM_OPTIONS = [500, 1000, 1500, 2000, 2500, 3000];
 var curLength = parseInt(storage.get('maxNetworkRows'), 10) || 1500;
@@ -178,6 +177,9 @@ function hasError(item) {
 }
 
 function checkItem(item, opts) {
+  var req = item.req;
+  var res = item.res;
+
   switch (opts.type) {
   case 'mark':
     return !item.mark || checkData(item, opts);
@@ -185,8 +187,8 @@ function checkItem(item, opts) {
   case 'content':
   case 'b':
   case 'body':
-    var reqBody = util.getBody(item.req, true);
-    var resBody = util.getBody(item.res);
+    var reqBody = util.getBody(req, true);
+    var resBody = util.getBody(res);
     return setNot(
         !checkKeywork(reqBody, opts) && !checkKeywork(resBody, opts),
         opts.not
@@ -194,12 +196,12 @@ function checkItem(item, opts) {
   case 'headers':
   case 'h':
     return setNot(
-        !inObject(item.req.headers, opts) && !inObject(item.res.headers, opts),
+        !inObject(req.headers, opts) && !inObject(res.headers, opts),
         opts.not
       );
   case 'type':
   case 't':
-    var type = item.res.headers;
+    var type = res.headers;
     type = type && type['content-type'];
     return setNot(!(isStr(type) && checkKeywork(type, opts)), opts.not);
   case 'domain':
@@ -210,21 +212,21 @@ function checkItem(item, opts) {
   case 'ip':
   case 'i':
     return setNot(
-        !checkKeywork(item.req.ip, opts) && !checkKeywork(item.res.ip, opts),
+        !checkKeywork(req.ip, opts) && !checkKeywork(res.ip, opts),
         opts.not
       );
   case 'status':
   case 's':
   case 'result':
   case 'r':
-    var status = item.res.statusCode;
+    var status = res.statusCode;
     return setNot(
         !checkKeywork(status == null ? '-' : String(status), opts),
         opts.not
       );
   case 'method':
   case 'm':
-    return setNot(!checkKeywork(item.req.method, opts), opts.not);
+    return setNot(!checkKeywork(req.method, opts), opts.not);
   case 'app':
   case 'a':
     return setNot(!checkKeywork(item.appName, opts), opts.not);
@@ -252,22 +254,6 @@ proto.hasUnmarked = function () {
 
 proto.getList = function () {
   return this._list || this.list;
-};
-
-proto.getTreeLeafs = function(treeId) {
-  if (!treeId) {
-    return;
-  }
-  var isTunnel = !treeId.indexOf('tunnel://');
-  if (isTunnel) {
-    treeId = treeId.substring(9);
-  } else {
-    treeId += '/';
-  }
-  var result = this.list.filter(function (item) {
-    return isTunnel ? item.url === treeId : !item.url.indexOf(treeId);
-  });
-  return result.length ? result : undefined;
 };
 
 function toStr(val) {
@@ -499,7 +485,7 @@ proto.clear = function () {
   self.updateTree();
   self.updateDisplayCount();
   if (len) {
-    events.trigger('selectedSessionChange');
+    util.trigger('selectedSessionChange');
   }
   return self;
 };
@@ -972,17 +958,19 @@ proto.clearRoot = function () {
 };
 
 proto.getListByPath = function (path) {
+  if (!path) {
+    return;
+  }
   var isTunnel = path.indexOf('tunnel://') === 0;
   if (isTunnel) {
     path = path.substring(9);
   } else {
-    path = path + '/';
+    path += '/';
   }
-  return this.list.filter(function (item) {
-    return (
-      !item.hide && (isTunnel ? item.url === path : !item.url.indexOf(path))
-    );
+  var result = this.list.filter(function (item) {
+    return !item.hide && (isTunnel ? item.url === path : !item.url.indexOf(path));
   });
+  return result.length ? result : undefined;
 };
 
 proto.updateTree = function () {

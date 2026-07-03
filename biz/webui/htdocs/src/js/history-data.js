@@ -3,9 +3,7 @@ var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var Divider = require('./divider');
 var ContextMenu = require('./context-menu');
-var events = require('./events');
 var util = require('./util');
-var dataCenter = require('./data-center');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 
@@ -16,16 +14,8 @@ var contextMenuList = [
   { name: 'Replay' },
   { name: 'Replay Times' },
   { name: 'Export' },
-  { name: 'Edit', icon: 'send' },
-  {
-    name: 'Service',
-    list: [
-      { name: 'Create API Test', action: 'createApiTest' },
-      { name: 'Copy As Script', action: 'copyAsScript' },
-      { name: 'Share Via URL', action: 'Export' }
-    ]
-  }
-];
+  { name: 'Edit', icon: 'send' }
+].concat(util.NETWORK_ACTIONS);
 var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
 var curItem;
 var curDisabled;
@@ -128,7 +118,7 @@ var HistoryData = React.createClass({
         return true;
       }).join('\r\n');
     }
-    events.trigger('showExportDialog', ['composer', {
+    util.trigger('showExportDialog', ['composer', {
       type: 'setComposerData',
       useH2: item.useH2,
       rules: rules.join('\n'),
@@ -171,21 +161,17 @@ var HistoryData = React.createClass({
     if (!item) {
       return;
     }
-    var noService = !dataCenter.whistleId;
     var disabled = noData(item);
     self._focusItem = item;
     contextMenuList[0].name = isTitle ? 'Copy' : 'Copy URL';
     contextMenuList[0].copyText = elem.attr('title');
 
-    for (var i = 1, len = contextMenuList.length; i < len; i++) {
+    for (var i = 1; i < 6; i++) {
       var ctxMenu = contextMenuList[i];
       ctxMenu.hide = isTitle;
       ctxMenu.disabled = disabled;
-      if (i === 6) {
-        ctxMenu.hide = noService || isTitle;
-      }
     }
-    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0) + (noService ? 0 : 30));
+    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
     data.className = 'w-keep-history-data';
     data.list = contextMenuList;
     self.refs.contextMenu.show(data);
@@ -207,8 +193,6 @@ var HistoryData = React.createClass({
       return self.props.onEdit(self._focusItem);
     case 'createApiTest':
       return util.showService('createApiTest');
-    case 'copyAsScript':
-      return util.showService('copyAsScript');
     }
   },
   render: function () {
@@ -238,7 +222,7 @@ var HistoryData = React.createClass({
                   title={item.url} onClick={function () { self.handleClick(item); }} data-index={i}>
                   <div>{item.url}</div>
                   <p>
-                    <i className={'w-req-method-tag w-req-method-tag-' + item.method}>{item.method}</i>
+                    <i className={'w-req-tag w-req-tag-' + item.method}>{item.method}</i>
                     <i className="w-req-protocol-tag">{item.protocol}</i>
                     {item.body ? <i className="w-req-type-tag">Body</i> : null}
                   </p>
@@ -296,7 +280,7 @@ var HistoryData = React.createClass({
                 <div className="w-load-tips">Loading...</div>
               </pre> : null}
           </div>
-        </Divider> : <div className="w-empty-data">Empty</div>}
+        </Divider> : <div className="w-empty-data">No data</div>}
         <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
       </div>
     );

@@ -7,6 +7,7 @@ var MethodSelect = require('./method-select');
 var StatusSelect = require('./status-select');
 var ruleMixin = require('./rule-mixin');
 var TypeSelect = require('./type-select');
+var FormItem = require('./form-item');
 
 var RES_CORS_OPTIONS = ['*', 'credentials'];
 
@@ -39,7 +40,7 @@ var NetworkRule = React.createClass({
       this.refs.responseType.createOption(type);
     }
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidUpdate: function(prevProps) {
     var session = this.props.session;
     if (session !== prevProps.session) {
@@ -47,22 +48,22 @@ var NetworkRule = React.createClass({
     }
   },
   onTypeChange: function(option) {
-    this.setState({ type: option.value }, this.handleChange);
+    this.onStateChange('type', option.value);
   },
   onResCorsChange: function(option) {
-    this.setState({ resCors: option.value }, this.handleChange);
+    this.onStateChange('resCors', option.value);
   },
   onStatusCodeChange: function(option) {
-    this.setState({ statusCode: option.value }, this.handleChange);
+    this.onStateChange('statusCode', option.value);
   },
   onDisableCache: function(e) {
-    this.setState({disabledCache: e.target.checked}, this.handleChange);
+    this.onStateChange('disabledCache', e.target.checked);
   },
   onMethodChange: function(option) {
-    this.setState({ method: option.value }, this.handleChange);
+    this.onStateChange('method', option.value);
   },
   onChange: function(url) {
-    this.setState({ url: url }, this.handleChange);
+    this.onStateChange('url', url);
   },
   handleChange: function() {
     var self = this;
@@ -111,12 +112,13 @@ var NetworkRule = React.createClass({
     var disabledStatusCode = state.disabledStatusCode;
     var disabledResCors = state.disabledResCors;
     var url = disabled ? '' : state.url;
+    var renderBox = self.renderBox;
 
     return (
       <div className={'w-rules-form' + (hide ? ' w-hide' : '')}>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabled} data-name="disabled" onChange={self.onDisableCheckChange} />
+            {renderBox(!disabled, 'disabled')}
             Mapping File/URL/(Value)
             <HelpIcon className="ml-10" docsUrl={self.getDocsUrl} />
           </label>
@@ -124,55 +126,45 @@ var NetworkRule = React.createClass({
             <UrlInput ref="url" enableLocalFile enableTplFile onChange={self.onChange} disabled={disabled} session={props.session} />
           </div>
         </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label>
-              <input type="checkbox" className="mr-10" checked={state.disabledCache} onChange={self.onDisableCache} />
-              Disable Cache
-              <HelpIcon docsUrl="rules/disable.html" className="ml-10" />
-            </label>
-          </div>
-        </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledMethod} data-name="disabledMethod" onChange={self.onDisableCheckChange} />
-              Modify Request Method
-            </label>
-            <MethodSelect disabled={disabledMethod} value={state.method}  onChange={self.onMethodChange} />
-            <HelpIcon docsUrl="rules/method.html" />
-          </div>
-        </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledStatusCode} data-name="disabledStatusCode" onChange={self.onDisableCheckChange} />
-              Set Status Code
-            </label>
-            <StatusSelect ref="statusCode" disabled={disabledStatusCode} value={state.statusCode} className="ml-10 w-300" onChange={self.onStatusCodeChange} />
-            <HelpIcon docsUrl={'rules/' + (url ? 'replaceStatus' : 'statusCode') + '.html'} />
-          </div>
-        </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledType} data-name="disabledType" onChange={self.onDisableCheckChange} />
-              Set Response Type
-            </label>
-            <TypeSelect ref="responseType" disabled={disabledType} value={state.type} className="ml-10 w-300" onChange={self.onTypeChange} hidePlaceholder />
-            <HelpIcon docsUrl="rules/resType.html" />
-          </div>
-        </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" className="mr-10" checked={!disabledResCors} data-name="disabledResCors" onChange={self.onDisableCheckChange} />
-              Set Response CORS
-            </label>
-            <Select disabled={disabledResCors} value={state.resCors} className="ml-10 w-300" onChange={self.onResCorsChange} options={RES_CORS_OPTIONS} />
-            <HelpIcon docsUrl="rules/resCors.html" />
-          </div>
-        </div>
+        <FormItem>
+          <label>
+            {renderBox(state.disabledCache, null, self.onDisableCache)}
+            Disable Cache
+            <HelpIcon docsUrl="rules/disable.html" className="ml-10" />
+          </label>
+        </FormItem>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledMethod, 'disabledMethod')}
+            Modify Request Method
+          </label>
+          <MethodSelect disabled={disabledMethod} value={state.method}  onChange={self.onMethodChange} />
+          <HelpIcon docsUrl="rules/method.html" />
+        </FormItem>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledStatusCode, 'disabledStatusCode')}
+            Set Status Code
+          </label>
+          <StatusSelect ref="statusCode" disabled={disabledStatusCode} value={state.statusCode} className="ml-10 w-300" onChange={self.onStatusCodeChange} />
+          <HelpIcon docsUrl={'rules/' + (url ? 'replaceStatus' : 'statusCode') + '.html'} />
+        </FormItem>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledType, 'disabledType')}
+            Set Response Type
+          </label>
+          <TypeSelect ref="responseType" disabled={disabledType} value={state.type} className="ml-10 w-300" onChange={self.onTypeChange} hidePlaceholder />
+          <HelpIcon docsUrl="rules/resType.html" />
+        </FormItem>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledResCors, 'disabledResCors')}
+            Set Response CORS
+          </label>
+          <Select disabled={disabledResCors} value={state.resCors} className="ml-10 w-300" onChange={self.onResCorsChange} options={RES_CORS_OPTIONS} />
+          <HelpIcon docsUrl="rules/resCors.html" />
+        </FormItem>
       </div>
     );
   }

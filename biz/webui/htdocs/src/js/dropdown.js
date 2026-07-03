@@ -60,7 +60,7 @@ var DropDown = React.createClass({
           style={{
             color:
               selectedOption === firstOption
-                ? undefined
+                ? null
                 : selectedOption.color || 'var(--c-error)'
           }}
           title={selectedOption.text}
@@ -68,16 +68,14 @@ var DropDown = React.createClass({
             'dropdown-toggle w-dropdown-text' + (disabled ? ' w-disabled' : '')
           }
         >
-          {selectedOption.icon ? (
-            <Icon name={selectedOption.icon} />
-          ) : undefined}
+          {selectedOption.icon ? <Icon name={selectedOption.icon} /> : null}
           {selectedOption.text}
           <span className="caret"></span>
         </div>
         <ul
           style={{
             display: !disabled && state.hover ? 'block' : 'none',
-            padding: help ? undefined : 0
+            padding: help ? null : 0
           }}
           className="dropdown-menu"
         >
@@ -95,12 +93,12 @@ var DropDown = React.createClass({
                   self.onChange(option);
                 }}
               >
-                {option.icon ? <Icon name={option.icon} /> : undefined}
+                {option.icon ? <Icon name={option.icon} /> : null}
                 {option.text}
               </li>
             );
           })}
-          {help ? <li role="separator" className="divider"></li> : undefined}
+          {help ? <li role="separator" className="divider"></li> : null}
           {help ? (
             <li style={{ padding: 0 }}>
               <a href={help} target="_blank">
@@ -108,7 +106,7 @@ var DropDown = React.createClass({
                 Help
               </a>
             </li>
-          ) : undefined}
+          ) : null}
         </ul>
       </div>
     );

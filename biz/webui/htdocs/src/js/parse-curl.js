@@ -115,7 +115,7 @@ module.exports = function(s) {
       break;
     case 'user':
       try {
-        headers['authorization'] = 'Basic ' + btoa(arg);
+        headers.authorization = 'Basic ' + btoa(arg);
       } catch (e) {}
       break;
     case 'user-agent':

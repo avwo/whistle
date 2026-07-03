@@ -10,20 +10,26 @@ var util = require('./util');
 var settings = require('./columns');
 var FilterInput = require('./filter-input');
 var ContextMenu = require('./context-menu');
-var events = require('./events');
 var iframes = require('./iframes');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var message = require('./message');
 var Icon = require('./icon');
 var BackToBottomBtn = require('./back-to-bottom-btn');
+var Dialog = require('./dialog');
+var DismissBtn = require('./dismiss-btn');
 
+var trigger = util.trigger;
+var addEvent = util.on;
+var preventBlur = util.preventBlur;
+var getHide = util.getHide;
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
 var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
+var BASE_DOM = '.ReactVirtualized__Grid:first';
 var MAX_LEN = 64;
 var HINTS = [
   '<keyword or regex for URL>',
@@ -34,6 +40,18 @@ var HINTS = [
   'b:<keyword or regex for request or response body>'
 ];
 var contextMenuList = [
+  {
+    name: 'Actions',
+    list: [
+      { name: 'Abort' },
+      { name: 'Replay' },
+      { name: 'Replay Times', action: 'replayTimes' },
+      { name: 'Edit Request' },
+      { name: 'Mark' },
+      { name: 'Unmark' },
+      { name: 'Test Rules' }
+    ].concat(util.NETWORK_ACTIONS)
+  },
   {
     name: 'Open',
     list: [
@@ -53,8 +71,8 @@ var contextMenuList = [
     shiftToEdit: true,
     list: [
       { name: 'Cell Text' },
-      { name: 'URL (No Query)' },
-      { name: 'Full URL' },
+      { name: 'URL (+Query)' },
+      { name: 'URL (-Query)' },
       { name: 'As cURL' },
       { name: 'Client IP' },
       { name: 'Server IP' },
@@ -77,23 +95,13 @@ var contextMenuList = [
     ]
   },
   {
-    name: 'Settings',
+    name: '+Rule',
     list: [
-      { name: 'Edit Settings' },
-      { name: 'Exclude All Matching Hosts', action: 'excludeHost' },
-      { name: 'Exclude All Matching URLs', action: 'excludeUrl' }
-    ]
-  },
-  {
-    name: 'Actions',
-    list: [
-      { name: 'Abort' },
-      { name: 'Replay' },
-      { name: 'Replay Times', action: 'replayTimes' },
-      { name: 'Edit Request' },
-      { name: 'Mark' },
-      { name: 'Unmark' },
-      { name: 'Test Rules' }
+      { name: 'Mapping' },
+      { name: 'Network' },
+      { name: 'Request' },
+      { name: 'Response' },
+      { name: 'Debug' }
     ]
   },
   {
@@ -107,22 +115,11 @@ var contextMenuList = [
     ]
   },
   {
-    name: '+Rule',
+    name: 'Settings',
     list: [
-      { name: 'Mapping' },
-      { name: 'Network' },
-      { name: 'Request' },
-      { name: 'Response' },
-      { name: 'Debug' }
-    ]
-  },
-  {
-    name: 'Service',
-    hide: true,
-    list: [
-      { name: 'Create API Test',  action: 'createApiTest' },
-      { name: 'Copy As Script',  action: 'copyAsScript' },
-      { name: 'Share Via URL', action: 'Export' }
+      { name: 'Edit Settings' },
+      { name: 'Exclude All Matching Hosts', action: 'excludeHost' },
+      { name: 'Exclude All Matching URLs', action: 'excludeUrl' }
     ]
   },
   { name: 'Save' },
@@ -138,6 +135,10 @@ var contextMenuList = [
 
 var getCellText = function (target) {
   return ((target.attr('data-custom') ? target.attr('title') : target.text()) || '').trim();
+};
+
+var preventInputBlur = function (e) {
+  e.target.nodeName != 'INPUT' && preventBlur(e);
 };
 
 var getFocusItemList = function (curItem) {
@@ -321,14 +322,16 @@ function getValue(item, key, name) {
 }
 
 function getIcon(data, className) {
+  var name;
   if (className.indexOf('danger') !== -1) {
-    return <Icon name="remove-circle" className="icon-leaf" />;
+    name = 'remove-circle';
+  } else if (className.indexOf('w-forbidden') !== -1) {
+    name = 'ban-circle';
+  } else if (data && !data.endTime && !data.lost) {
+    name = 'hourglass';
   }
-  if (className.indexOf('w-forbidden') !== -1) {
-    return <Icon name="ban-circle" className="icon-leaf" />;
-  }
-  if (data && !data.endTime && !data.lost) {
-    return <Icon name="hourglass" className="icon-leaf" />;
+  if (name) {
+    return <Icon name={name} className="icon-leaf" />;
   }
   var type = getType(className);
   var status = data.res && data.res.statusCode;
@@ -397,7 +400,6 @@ var Row = React.createClass({
               }
               var colStyle = getColStyle(col, style);
               var icon = col.iconKey && util.getProperty(item, col.iconKey);
-              var iconElem = util.isFunc(col.getIcon) ? col.getIcon(item) : undefined;
 
               return (
                 <td
@@ -405,9 +407,9 @@ var Row = React.createClass({
                   className={col.className}
                   style={colStyle}
                   data-custom={isCustom ? 1 : null}
-                  title={col.showTitle ? (url || value) : undefined}
+                  title={col.showTitle ? (url || value) : null}
                 >
-                  {iconElem}
+                  {util.isFunc(col.getIcon) ? col.getIcon(item) : null}
                   {icon ? <img className="w-cell-img" src={icon} /> : null}
                   {isCustom && value && value.length > 1690 ? value.substring(0, 1680) + '...' : value}
                 </td>
@@ -433,7 +435,7 @@ var ReqData = React.createClass({
   },
   componentDidUpdate: function () {
     var self = this;
-    self.isShownBtn && events.trigger('checkAtBottom');
+    self.isShownBtn && trigger('checkAtBottom');
     if (storage.get('disabledHNR') === '1') {
       return;
     }
@@ -507,7 +509,7 @@ var ReqData = React.createClass({
       }
       if (hasChanged) {
         modal.updateTree();
-        events.trigger('updateGlobal');
+        trigger('updateGlobal');
       }
     }
     curNewIdList.forEach(function (id) {
@@ -556,42 +558,42 @@ var ReqData = React.createClass({
   componentDidMount: function () {
     var self = this;
     var timer;
-    events.on('hashFilterChange', function () {
+    addEvent('hashFilterChange', function () {
       self.setState({});
     });
-    events.on('onColumnsChanged', function () {
+    addEvent('onColumnsChanged', function () {
       self.setState({ columns: settings.getSelectedColumns() });
     });
-    events.on('onColumnTitleChange', function () {
+    addEvent('onColumnTitleChange', function () {
       self.setState({});
     });
-    events.on('changeRecordState', function (_, type) {
+    addEvent('changeRecordState', function (_, type) {
       self.setState({ record: type }, self.updateList);
     });
-    events.on('selectedIndex', function (_, index) {
+    addEvent('selectedIndex', function (_, index) {
       var list = self.props.modal.getList();
       var item = list && (list[index] || list[list.length - 1]);
       item && self.triggerActiveItem(item);
     });
-    events.on('focusNetworkFilterInput', function() {
+    addEvent('focusNetworkFilterInput', function() {
       self.refs.filterInput.focus();
     });
-    events.on('saveSessions', function (_, item) {
-      var list = self.getActivedList(item);
+    addEvent('saveSessions', function (_, item) {
+      var list = Array.isArray(item) && item.length ? item : self.getActivedList(item);
       var len = list && list.length;
       if (!len) {
         return;
       }
       self._sessionsList = list;
       self._pendingSave = false;
-      $(findDOMNode(self.refs.saveSessions)).modal('show');
+      self.refs.saveSessions.show();
       setTimeout(function () {
         var input = findDOMNode(self.refs.sessionsName);
         input.focus();
         input.select();
       }, 500);
     });
-    events.on('replayTreeView', function (_, dataId, count) {
+    addEvent('replayTreeView', function (_, dataId, count) {
       var item = self.props.modal.getTreeNode(dataId);
       var parent = item && item.parent;
       if (!parent) {
@@ -614,7 +616,7 @@ var ReqData = React.createClass({
     self.$content = $(self.content)
       .on('dblclick', 'tr', function (e) {
         if (clickedCount > 2) {
-          events.trigger('toggleDetailTab');
+          trigger('toggleDetailTab');
         }
       })
       .on('click', 'tr', function (e) {
@@ -659,7 +661,7 @@ var ReqData = React.createClass({
 
         if (item) {
           self.onClick(e, item, true);
-          e.preventDefault();
+          preventBlur(e);
         }
       })
       .on('scroll', render)
@@ -668,7 +670,7 @@ var ReqData = React.createClass({
       .on('mouseleave', toggleDraggable);
 
     $(window).on('resize', render);
-    events.on('ensureSelectedItemVisible', function () {
+    addEvent('ensureSelectedItemVisible', function () {
       var modal = self.props.modal;
       var selected = modal.getSelectedList()[0];
       if (selected && modal.isTreeView) {
@@ -678,7 +680,7 @@ var ReqData = React.createClass({
         self.scrollToRow(selected);
       }
     });
-    events.on('focusNetworkList', function () {
+    addEvent('focusNetworkList', function () {
       self.container.focus();
     });
     var curRemoteUrl;
@@ -705,7 +707,7 @@ var ReqData = React.createClass({
       if (curRemoteUrl.indexOf('&from_5b6af7b9884e1165') === -1) {
         url += (url.indexOf('?') === -1 ? '?' : '') + '&from_5b6af7b9884e1165';
       }
-      events.trigger('importSessionsFromUrl', url);
+      trigger('importSessionsFromUrl', url);
     };
     importRemoteUrl();
     $(window).on('hashchange', importRemoteUrl);
@@ -717,7 +719,7 @@ var ReqData = React.createClass({
     };
     self.hideBackBtn = hideBackBtn;
     self.isShownBtn = false;
-    events.on('toggleBackToBottomBtn', function(_, show) {
+    addEvent('toggleBackToBottomBtn', function(_, show) {
       if (show) {
         if (!self.isShownBtn) {
           self.isShownBtn = true;
@@ -727,11 +729,11 @@ var ReqData = React.createClass({
         hideBackBtn();
       }
     });
-    events.on('checkViewInspectors', function(_, reqId) {
+    addEvent('checkViewInspectors', function(_, reqId) {
       self._curComposerReqId = reqId && { reqId: reqId };
       reqId && self.props.modal.getItem(reqId) && self.showViewInspectorsBtn(true);
     });
-    events.on('setActiveSession', function(_, reqId) {
+    addEvent('setActiveSession', function(_, reqId) {
       var item = self.props.modal.getItem(reqId);
       item && self.triggerActiveItem(item);
     });
@@ -778,8 +780,8 @@ var ReqData = React.createClass({
     modal.clearActive();
     item.active = item.selected;
     hm && self.scrollToRow(item);
-    events.trigger('networkStateChange');
-    events.trigger('selectedSessionChange', item);
+    trigger('networkStateChange');
+    trigger('selectedSessionChange', item);
   },
   setSelected: function (item, unselect) {
     if (item.selected) {
@@ -805,7 +807,7 @@ var ReqData = React.createClass({
     settings.excludeText = str;
     settings.disabledExcludeText = false;
     dataCenter.setFilterText(settings);
-    events.trigger('filterChanged');
+    trigger('filterChanged');
   },
   getActiveList: function (curItem) {
     if (!curItem.selected) {
@@ -833,13 +835,13 @@ var ReqData = React.createClass({
         }
       });
       self.updateFilter(filterList.join('\n'));
-      events.trigger('shakeSettings');
+      trigger('shakeSettings');
     }
-    events.trigger('updateGlobal');
+    trigger('updateGlobal');
   },
   removeTreeNode: function (treeId, others) {
     if (this.props.modal.removeTreeNode(treeId, others)) {
-      events.trigger('updateGlobal');
+      trigger('updateGlobal');
     }
   },
   removeAllSuchURL: function (item, justRemove) {
@@ -863,13 +865,13 @@ var ReqData = React.createClass({
         }
       });
       self.updateFilter(filterList.join('\n'));
-      events.trigger('shakeSettings');
+      trigger('shakeSettings');
     }
-    events.trigger('updateGlobal');
+    trigger('updateGlobal');
   },
   triggerActiveItem: function (item) {
     this.onClick('', item, true);
-    events.trigger('networkStateChange');
+    trigger('networkStateChange');
   },
   onClickHeadMenu: function(action) {
     var col = this.curHeadCol;
@@ -884,6 +886,12 @@ var ReqData = React.createClass({
     var modal = self.props.modal;
     var treeId = self.treeTarget;
     var curUrl = (item && item.url) || (treeId && treeId + '/');
+    var getSessions = function () {
+      if (treeId && !self.isTreeLeafNode) {
+        return [modal.getListByPath(treeId) || item];
+      }
+      return [item];
+    };
     self.currentFocusItem = null;
     switch (parentAction || action) {
     case 'New Tab':
@@ -896,26 +904,26 @@ var ReqData = React.createClass({
       util.openPreview(item);
       break;
     case 'Source':
-      util.openEditor(JSON.stringify(item, null, '  '));
+      util.openEditor(util.stringify(item));
       break;
     case 'toggleView':
-      events.trigger('switchTreeView');
+      trigger('switchTreeView');
       break;
     case 'Overview':
       self.triggerActiveItem(item);
-      events.trigger('showOverview');
+      trigger('showOverview');
       break;
     case 'Inspectors':
       self.triggerActiveItem(item);
-      events.trigger('showInspectors');
+      trigger('showInspectors');
       break;
     case 'Timeline':
       self.triggerActiveItem(item);
-      events.trigger('showTimeline');
+      trigger('showTimeline');
       break;
     case 'Composer':
     case 'Edit Request':
-      events.trigger('composer', item);
+      trigger('composer', item);
       break;
     case 'Mark':
     case 'Unmark':
@@ -929,38 +937,28 @@ var ReqData = React.createClass({
       this.setState({});
       break;
     case 'Replay':
-      events.trigger('replaySessions', [item, e.shiftKey]);
+      trigger('replaySessions', [item, e.shiftKey]);
       break;
     case 'replayTimes':
-      events.trigger('replaySessions', [item, true]);
+      trigger('replaySessions', [item, true]);
       break;
     case 'Export':
-      if (treeId && !self.isTreeLeafNode) {
-        events.trigger('exportSessions', [
-          modal.getListByPath(treeId)
-        ]);
-      } else {
-        events.trigger('exportSessions', item);
-      }
+      trigger('exportSessions', getSessions());
       break;
     case 'Test Rules':
-      events.trigger('showTestRuleDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId)});
+      trigger('showTestRuleDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId)});
       break;
-    case 'createApiTest':
-      return util.showService('createApiTest');
-    case 'copyAsScript':
-      return util.showService('copyAsScript');
     case 'Save':
-      events.trigger('saveSessions', [item]);
+      trigger('saveSessions', getSessions());
       break;
     case 'Abort':
-      events.trigger('abortRequest', item);
+      trigger('abortRequest', item);
       break;
     case 'Import':
-      events.trigger('showImportDialog');
+      trigger('showImportDialog');
       break;
     case 'Edit Settings':
-      events.trigger('filterSessions', e);
+      trigger('filterSessions', e);
       break;
     case 'removeAllSuchHost':
       curUrl && self.removeAllSuchHost(item, true);
@@ -978,30 +976,30 @@ var ReqData = React.createClass({
       if (treeId) {
         self.removeTreeNode(treeId);
       } else {
-        events.trigger('removeIt', item);
+        trigger('removeIt', item);
       }
       break;
     case 'All':
-      events.trigger('clearAll');
+      trigger('clearAll');
       break;
     case 'Others':
       if (treeId) {
         self.removeTreeNode(treeId, true);
       } else {
-        events.trigger('removeOthers', item);
+        trigger('removeOthers', item);
       }
       break;
     case 'Selected':
-      events.trigger('removeSelected');
+      trigger('removeSelected');
       break;
     case 'Unselected':
-      events.trigger('removeUnselected');
+      trigger('removeUnselected');
       break;
     case 'Unmarked':
-      events.trigger('removeUnmarked');
+      trigger('removeUnmarked');
       break;
     case 'Help':
-      events.trigger('openUrl', util.getDocUrl('gui/network.html'));
+      trigger('openUrl', util.getDocUrl('gui/network.html'));
       break;
     case 'Plugins':
       iframes.fork(action, {
@@ -1009,8 +1007,8 @@ var ReqData = React.createClass({
         type: 'network',
         name: name,
         activeItem: item,
-        activeList: modal.getTreeLeafs(treeId),
-        selectedList: self.props.modal.getSelectedList()
+        activeList: modal.getListByPath(treeId),
+        selectedList: modal.getSelectedList()
       });
       break;
     case 'Expand':
@@ -1028,12 +1026,12 @@ var ReqData = React.createClass({
     case 'Request':
     case 'Response':
     case 'Debug':
-      events.trigger('showAddRulesDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId), type: action});
+      trigger('showAddRulesDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId), type: action});
       break;
     }
   },
   onHeadCtxMenu: function(e) {
-    e.preventDefault();
+    preventBlur(e);
     var name = $(e.target).closest('th').attr('data-name');
     var col = settings.getColumn(name);
     var menus = col && col.menus;
@@ -1051,7 +1049,7 @@ var ReqData = React.createClass({
     var target = $(e.target);
     var nodeName =  target.prop('nodeName');
     var el = target.closest('.w-req-data-item');
-    e.preventDefault();
+    preventBlur(e);
     if (!el.length) {
       el = target.closest('.w-req-table');
     }
@@ -1060,7 +1058,7 @@ var ReqData = React.createClass({
     var dataId = el.attr('data-id');
     clearTimeout(self._delayCtxTimer);
     if (!modal.isTreeView && !dataId) {
-      var con = self.container.find('.ReactVirtualized__Grid:first');
+      var con = self.container.find(BASE_DOM);
       if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
         var pageX = e.pageX;
         var pageY = e.pageY;
@@ -1084,7 +1082,7 @@ var ReqData = React.createClass({
     self.treeTarget = null;
     self.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
-    var list0 = contextMenuList[0].list;
+    var list0 = contextMenuList[1].list;
     list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled || clickBlank) {
       list0[6].disabled = true;
@@ -1105,23 +1103,23 @@ var ReqData = React.createClass({
     } else {
       list0[8].name = 'Tree View';
     }
-    contextMenuList[1].disabled = disabled && !treeId;
+    contextMenuList[2].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
     var isTreeNode = disabled && !treeUrl;
-    contextMenuList[1].list.forEach(function (menu) {
+    contextMenuList[2].list.forEach(function (menu) {
       menu.disabled = disabled;
       switch (menu.name) {
       case 'Cell Text':
         menu.copyText = cellText;
         menu.disabled = disabled || !cellText;
         break;
-      case 'URL (No Query)':
+      case 'URL (-Query)':
         menu.copyText = util.getUrl(
             (item && item.url.replace(/[?#].*$/, '')) || treeUrl
           );
         menu.disabled = isTreeNode;
         break;
-      case 'Full URL':
+      case 'URL (+Query)':
         menu.copyText = util.getUrl((item && item.url) || treeUrl);
         menu.disabled = isTreeNode;
         break;
@@ -1154,8 +1152,8 @@ var ReqData = React.createClass({
       }
     });
 
-    var list2 = contextMenuList[2].list;
-    contextMenuList[2].disabled = disabled;
+    var list2 = contextMenuList[3].list;
+    contextMenuList[3].disabled = disabled;
     for (var i = 0; i < 4; i++) {
       list2[i].disabled = disabled;
     }
@@ -1169,8 +1167,8 @@ var ReqData = React.createClass({
     var selectedList = modal.getSelectedList();
     var selectedCount = selectedList.length;
     var hasData = modal.list.length;
-    var removeItem = contextMenuList[2].list;
-    contextMenuList[2].disabled = !hasData;
+    var removeItem = contextMenuList[3].list;
+    contextMenuList[3].disabled = !hasData;
     removeItem[0].disabled = !hasData;
     removeItem[1].disabled = clickBlank;
     removeItem[2].disabled = disabled || selectedCount === hasData;
@@ -1180,12 +1178,12 @@ var ReqData = React.createClass({
     removeItem[6].disabled = clickBlank;
     removeItem[7].disabled = clickBlank;
 
-    var filterItem = contextMenuList[3].list;
+    var filterItem = contextMenuList[6].list;
     filterItem[1].disabled = clickBlank;
     filterItem[2].disabled = clickBlank;
 
-    var actionItem = contextMenuList[4].list;
-    contextMenuList[4].disabled = disabled;
+    var actionItem = contextMenuList[0].list;
+    contextMenuList[0].disabled = disabled;
     if (item) {
       actionItem[3].disabled = false;
       if (item.selected) {
@@ -1220,6 +1218,7 @@ var ReqData = React.createClass({
       actionItem[3].disabled = true;
       actionItem[4].disabled = true;
     }
+
     var treeItem = contextMenuList[5];
     var treeList = treeItem.list;
     treeItem.hide = !modal.isTreeView;
@@ -1242,45 +1241,40 @@ var ReqData = React.createClass({
       treeList[2].disabled = !hasData;
       treeList[3].disabled = !hasData;
     }
-    var rulesItem = contextMenuList[6];
-    var serviceItem = contextMenuList[7];
-    var pluginItem = contextMenuList[11];
-    serviceItem.list.forEach(function (menu, i) {
-      menu.disabled = disabled && (i < serviceItem.list.length - 1 || !treeNodeData);
-    });
+    var rulesItem = contextMenuList[4];
+    var pluginItem = contextMenuList[10];
     rulesItem.hide = dataCenter.hideRulesEditor;
-    contextMenuList[10].disabled = clickBlank && !selectedCount;
-    contextMenuList[8].disabled = clickBlank && !selectedCount;
-    serviceItem.disabled = clickBlank;
-    serviceItem.hide = !dataCenter.whistleId;
+    contextMenuList[9].disabled = clickBlank && !selectedCount;
+    contextMenuList[7].disabled = clickBlank && !selectedCount;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
-      (treeItem.hide ? 9 : 10) + (serviceItem.hide ? 0 : 1) - (rulesItem.hide ? 1 : 0),
+      (treeItem.hide ? 9 : 10) - (rulesItem.hide ? 1 : 0),
       disabled,
       treeId,
       item && item.url
     );
-    var height = (treeItem.hide ? 370 : 400) - (serviceItem.hide ? 30 : 0) - (pluginItem.hide ? 30 : 0) - (rulesItem.hide ? 30 : 0);
+    var height = (treeItem.hide ? 340 : 370) - (pluginItem.hide ? 30 : 0) - (rulesItem.hide ? 30 : 0);
     pluginItem.maxHeight = height;
     var data = util.getMenuPosition(e, 110, height);
     data.list = contextMenuList;
-    data.className = data.marginRight < 360 ? 'w-ctx-menu-left' : '';
+    data.className = data.marginRight < 360 ? 'w-ctx-left' : '';
     self.refs.contextMenu.show(data);
   },
   updateList: function () {
     this.refs.content.refs.list.forceUpdateGrid();
-    events.trigger('checkAtBottom');
+    trigger('checkAtBottom');
   },
   onFilterChange: function (keyword) {
     var self = this;
+    var modal = self.props.modal;
     var filterBody = BODY_FILTER.test(keyword);
     clearTimeout(self.networkStateChangeTimer);
-    !filterBody && self.props.modal.search(keyword);
+    !filterBody && modal.search(keyword);
     self.networkStateChangeTimer = setTimeout(function () {
-      filterBody && self.props.modal.search(keyword);
+      filterBody && modal.search(keyword);
       self.setState({ filterText: keyword }, self.updateList);
-      events.trigger('networkStateChange');
+      trigger('networkStateChange');
     }, 600);
   },
   onFilterTypeChange: function (type) {
@@ -1288,7 +1282,7 @@ var ReqData = React.createClass({
     var baseDom = self.container;
     var atBottom;
     if (baseDom) {
-      baseDom = baseDom.find('.ReactVirtualized__Grid:first');
+      baseDom = baseDom.find(BASE_DOM);
       var body = baseDom.find('.ReactVirtualized__Grid__innerScrollContainer')[0];
       if (body) {
         var height = baseDom[0].offsetHeight + 5;
@@ -1318,7 +1312,7 @@ var ReqData = React.createClass({
     this.refs.filterInput.clearFilterText();
   },
   autoRefresh: function () {
-    this.container.find('.ReactVirtualized__Grid:first')[0].scrollTop = 100000000;
+    this.container.find(BASE_DOM)[0].scrollTop = 100000000;
     this.hideBackBtn();
   },
   orderBy: function (e) {
@@ -1333,7 +1327,7 @@ var ReqData = React.createClass({
       columnKeys = {};
     } else {
       order = columnState[name];
-      columnKeys[name] = target.getAttribute('data-key');
+      columnKeys[name] = util.attr(target, 'data-key');
       if (order == 'desc') {
         columnState[name] = 'asc';
       } else if (order == 'asc') {
@@ -1370,13 +1364,13 @@ var ReqData = React.createClass({
       if (!util.hasShortcut( e.shiftKey ? 'replaySelectedRequestsTimes' : 'replaySelectedRequests')) {
         return;
       }
-      events.trigger('replaySessions', [null, e.shiftKey]);
+      trigger('replaySessions', [null, e.shiftKey]);
     } else if (e.keyCode === 65) {
       if (!util.hasShortcut('abortRequest')) {
         return;
       }
-      e.preventDefault();
-      events.trigger('abortRequest');
+      preventBlur(e);
+      trigger('abortRequest');
     }
   },
   renderColumn: function (col) {
@@ -1466,7 +1460,7 @@ var ReqData = React.createClass({
   },
   saveSessions: function (e) {
     var self = this;
-    if (self._pendingSave || (e && e.type !== 'click' && e.keyCode !== 13)) {
+    if (self._pendingSave || util.checkSubmit(e)) {
       return;
     }
     var list = self._sessionsList;
@@ -1482,16 +1476,13 @@ var ReqData = React.createClass({
       if (data.em) {
         return message.error(data.em);
       }
-      $(findDOMNode(self.refs.saveSessions)).modal('hide');
+      self.refs.saveSessions.hide();
       self._sessionsList = null;
       self.setState({ sessionsName: '' });
-      events.trigger('shakeSavedTab');
-      events.trigger('savedSessionsChanged');
+      trigger('shakeSavedTab');
+      trigger('savedSessionsChanged');
       message.success('Sessions saved successfully');
     });
-  },
-  preventBlur: function (e) {
-    e.target.nodeName != 'INPUT' && e.preventDefault();
   },
   renderTreeNode: function (item, options) {
     var draggable = this.state.draggable;
@@ -1520,7 +1511,7 @@ var ReqData = React.createClass({
     );
   },
   enableRecord: function () {
-    events.trigger('enableRecord');
+    trigger('enableRecord');
   },
   getVisibleList: function () {
     var modal = this.props.modal;
@@ -1534,7 +1525,7 @@ var ReqData = React.createClass({
   showViewInspectorsBtn: function(visible) {
     var composerReqId = this._curComposerReqId;
     if (composerReqId && composerReqId.visible !== visible) {
-      events.trigger('showViewInspectorsBtn', visible);
+      trigger('showViewInspectorsBtn', visible);
       composerReqId.visible = visible;
     }
   },
@@ -1560,7 +1551,7 @@ var ReqData = React.createClass({
     hasChanged && self.showViewInspectorsBtn(false);
 
     return (
-      <div className={'fill w-req-data-con v-box' + (self.props.hide ? ' hide' : '')}>
+      <div className={'fill w-req-data-con v-box' + getHide(self.props.hide)}>
         <div
           className="w-req-data-ctn fill v-box"
           style={colStyle}
@@ -1573,7 +1564,7 @@ var ReqData = React.createClass({
               </button>
             </div>
           ) : null}
-          <div className={'w-req-data-headers' + (isTreeView ? ' hide' : '')}>
+          <div className={'w-req-data-headers' + getHide(isTreeView)}>
             <table className="table">
               <thead>
                 <tr onClick={self.orderBy} onContextMenu={self.onHeadCtxMenu}>
@@ -1592,7 +1583,7 @@ var ReqData = React.createClass({
               background:
                 dataCenter.hashFilterObj || filterText || state.filterType
                   ? 'var(--b-filtered)'
-                  : undefined
+                  : null
             }}
             className={
               'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')
@@ -1655,45 +1646,35 @@ var ReqData = React.createClass({
         <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
         <ContextMenu onClick={self.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
-        <div ref="saveSessions" className="modal fade w-choose-filte-type">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-body">
-                <label className="w-choose-filte-type-label w-save-sessions-label">
-                  Save as
-                  <input
-                    ref="sessionsName"
-                    onChange={self.filterSessionsName}
-                    onKeyDown={self.saveSessions}
-                    placeholder="Enter filename (optional)"
-                    className="form-control"
-                    maxLength={MAX_LEN}
-                    value={state.sessionsName || ''}
-                  />
-                </label>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  data-dismiss="modal"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  onKeyDown={self.saveSessions}
-                  tabIndex="0"
-                  onMouseDown={self.preventBlur}
-                  className="btn btn-primary"
-                  onClick={self.saveSessions}
-                >
-                  Save
-                </button>
-                </div>
-            </div>
+        <Dialog ref="saveSessions" wstyle="w-choose-file-type">
+          <div className="modal-body">
+            <label className="w-choose-file-type-label w-save-sessions-label">
+              Save as
+              <input
+                ref="sessionsName"
+                onChange={self.filterSessionsName}
+                onKeyDown={self.saveSessions}
+                placeholder="Enter filename (optional)"
+                className="form-control"
+                maxLength={MAX_LEN}
+                value={state.sessionsName || ''}
+              />
+            </label>
           </div>
-        </div>
+          <div className="modal-footer">
+            <DismissBtn />
+            <button
+              type="button"
+              onKeyDown={self.saveSessions}
+              tabIndex="0"
+              onMouseDown={preventInputBlur}
+              className="btn btn-primary"
+              onClick={self.saveSessions}
+            >
+              Save
+            </button>
+          </div>
+        </Dialog>
       </div>
     );
   }

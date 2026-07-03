@@ -1,27 +1,29 @@
 var React = require('react');
-var events = require('./events');
+var util = require('./util');
+
+var trigger = util.trigger;
 
 var ViewInspector = React.createClass({
   getInitialState: function () {
     return { visible: false };
   },
   showInspectors: function () {
-    events.trigger('setActiveSession', this.props.reqId);
-    events.trigger('showInspectors');
+    trigger('setActiveSession', this.props.reqId);
+    trigger('showInspectors');
   },
   shouldComponentUpdate: function (nextProps, nextState) {
     var reqId = nextProps.reqId;
     var isChanged = this.props.reqId !== reqId;
     if (isChanged) {
-      events.trigger('checkViewInspectors', reqId);
+      trigger('checkViewInspectors', reqId);
     }
     return isChanged || this.state.visible !== nextState.visible;
   },
   componentDidMount: function() {
-    events.on('showViewInspectorsBtn', (_, visible) => {
+    util.on('showViewInspectorsBtn', (_, visible) => {
       this.setState({ visible: visible });
     });
-    events.trigger('checkViewInspectors', this.props.reqId);
+    trigger('checkViewInspectors', this.props.reqId);
   },
   render: function() {
     if (!this.state.visible || !this.props.reqId) {

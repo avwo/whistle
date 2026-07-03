@@ -1,7 +1,6 @@
 var $ = require('jquery');
 var React = require('react');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var storage = require('./storage');
 var util = require('./util');
 
@@ -10,6 +9,7 @@ var sortedCols = Array.isArray(settings.columns) ? settings.columns : [];
 var pluginColList = dataCenter.getPluginColumns();
 var pluginColsMap = {};
 var appNameMap = {};
+var attr = util.attr;
 
 function getAppName(appName) {
   if (!util.notEStr(appName)) {
@@ -342,7 +342,7 @@ function getTarget(e) {
 
 function getDragInfo(e) {
   var target = getTarget(e);
-  var name = target && target.getAttribute('data-name');
+  var name = target && attr(target, 'data-name');
   if (!name) {
     return;
   }
@@ -375,7 +375,7 @@ exports.getDragger = function () {
   return {
     onDragStart: function (e) {
       var target = getTarget(e);
-      var name = target && target.getAttribute('data-name');
+      var name = target && attr(target, 'data-name');
       e.dataTransfer.setData(COLUMN_TYPE_PREFIX + name, 1);
       e.dataTransfer.setData('-' + COLUMN_TYPE_PREFIX, name);
     },
@@ -415,7 +415,7 @@ exports.getWidth = function(col) {
   return colWidthData[col.name] || col.width || col.minWidth;
 };
 
-events.on('pluginColumnsChange', function() {
+util.on('pluginColumnsChange', function() {
   var map = {};
   pluginColList = dataCenter.getPluginColumns().map(function(col) {
     map[col.name] = col;
@@ -431,5 +431,5 @@ events.on('pluginColumnsChange', function() {
   });
   pluginColsMap = map;
   updateColumns();
-  events.trigger('onColumnsChanged');
+  util.trigger('onColumnsChanged');
 });

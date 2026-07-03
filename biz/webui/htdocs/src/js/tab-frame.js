@@ -1,12 +1,12 @@
 var React = require('react');
 var util = require('./util');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var getBridge = require('./bridge');
 var IFrame = require('./iframe');
 
 var modal = dataCenter.networkModal;
 var isFunc = util.isFunc;
+var CB_KEY = '__pushWhistle5b6af7b9884e1165SessionActive__';
 
 function onWhistleInspectorCustomTabReady(init, win) {
   if (isFunc(init)) {
@@ -24,12 +24,12 @@ var TabFrame = React.createClass({
     };
   },
   componentDidMount: function () {
-    events.on('selectedSessionChange', this.handlePush);
+    util.on('selectedSessionChange', this.handlePush);
   },
   componentWillUnmount: function () {
-    events.off('selectedSessionChange', this.handlePush);
+    util.off('selectedSessionChange', this.handlePush);
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   compose: function (item) {
     this.handlePush(null, null, item);
   },
@@ -38,17 +38,15 @@ var TabFrame = React.createClass({
       var win = this.refs.iframe.getWindow();
       if (
         win &&
-        isFunc(win.__pushWhistle5b6af7b9884e1165SessionActive__)
+        isFunc(win[CB_KEY])
       ) {
         if (comItem) {
-          win.__pushWhistle5b6af7b9884e1165SessionActive__(null, null, comItem);
+          win[CB_KEY](null, null, comItem);
           comItem = null;
         } else if (this.props.hide) {
-          win.__pushWhistle5b6af7b9884e1165SessionActive__(null, true);
+          win[CB_KEY](null, true);
         } else {
-          win.__pushWhistle5b6af7b9884e1165SessionActive__(
-            item || modal.getActive()
-          );
+          win[CB_KEY](item || modal.getActive());
         }
       }
     } catch (e) {}
@@ -66,7 +64,6 @@ var TabFrame = React.createClass({
   },
   render: function () {
     var self = this;
-    var display = self.props.hide ? 'none' : undefined;
     // 防止被改
     window.onWhistleInspectorCustomTabReady = onWhistleInspectorCustomTabReady;
     return (
@@ -74,7 +71,7 @@ var TabFrame = React.createClass({
         onLoad={self.onLoad}
         ref="iframe"
         src={self.state.url}
-        style={{ display: display }}
+        style={util.getHideStyle(self.props.hide)}
       />
     );
   }

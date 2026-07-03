@@ -4,12 +4,11 @@ var QRCodeImg = require('./qrcode');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
-var findDOMNode = require('react-dom').findDOMNode;
-var $ = require('jquery');
-var events = require('./events');
 var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var Dialog = require('./dialog');
 
 function getCAType(type) {
   if (type === 'crt' || type === 'pem') {
@@ -33,7 +32,7 @@ var HttpsSettings = React.createClass({
     this.setState({ caFullUrl: e.target.value });
   },
   show: function() {
-    $(findDOMNode(this.refs.rootCADialog)).modal('show');
+    this.refs.dialog.show();
   },
   showCustomCertsInfo: function () {
     var self = this;
@@ -50,8 +49,9 @@ var HttpsSettings = React.createClass({
       self.refs.certsInfoDialog.show(data.certs, data.dir);
     });
   },
+  shouldComponentUpdate: util.scuDialog,
   componentDidMount: function() {
-    events.on('showCustomCerts', this.showCustomCertsInfo);
+    util.on('showCustomCerts', this.showCustomCertsInfo);
   },
   render: function() {
     var self = this;
@@ -76,102 +76,92 @@ var HttpsSettings = React.createClass({
     }
 
     return (
-      <div ref="rootCADialog" className="modal fade w-https-dialog">
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-body">
-                <CloseBtn />
-                <div style={{marginBottom: 10}}>
-                  <HelpIcon docsUrl="gui/https.html" />
-                  <a
-                    className="w-download-rootca"
-                    title={caShortUrl}
-                    href={caUrl}
-                    target="downloadTargetFrame"
-                  >
-                    Download RootCA
-                  </a>
-                  <select className="w-root-ca-type" value={caType} onChange={self.selectCAType}>
-                    <option value="crt">rootCA.crt</option>
-                    <option value="cer">rootCA.cer</option>
-                    <option value="pem">rootCA.pem</option>
-                  </select>
-                </div>
-                <div className="w-root-ca-url-wrap">
-                  <select className="w-root-ca-url" value={caFullUrl} onChange={self.selectCAUrl}>
-                    <option value="">{caShortUrl} (PROXY REQUIRED)</option>
-                    {caUrlList.map(function (url) {
-                      url = url[0] === 'h' ? url : 'http://' + url + ':' + port;
-                      url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
-                      return <option value={url}>{url}</option>;
-                    })}
-                  </select>
-                  <Icon title="Copy Root CA URL" name="copy" className="w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
-                </div>
-                <a
-                  href={caUrl}
-                  target="downloadTargetFrame"
+      <Dialog ref="dialog" wstyle="w-https-dialog">
+          <div className="modal-body">
+            <CloseBtn />
+            <div style={{marginBottom: 10}}>
+              <HelpIcon docsUrl="gui/https.html" />
+              <a
+                className="w-download-rootca"
+                title={caShortUrl}
+                href={caUrl}
+                target="downloadTargetFrame"
+              >
+                Download RootCA
+              </a>
+              <select className="w-root-ca-type" value={caType} onChange={self.selectCAType}>
+                <option value="crt">rootCA.crt</option>
+                <option value="cer">rootCA.cer</option>
+                <option value="pem">rootCA.pem</option>
+              </select>
+            </div>
+            <div className="w-root-ca-url-wrap">
+              <select className="w-root-ca-url" value={caFullUrl} onChange={self.selectCAUrl}>
+                <option value="">{caShortUrl} (PROXY REQUIRED)</option>
+                {caUrlList.map(function (url) {
+                  url = url[0] === 'h' ? url : 'http://' + url + ':' + port;
+                  url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
+                  return <option value={url}>{url}</option>;
+                })}
+              </select>
+              <Icon title="Copy Root CA URL" name="copy" className="w-copy-text-with-tips" data-clipboard-text={caFullUrl || caShortUrl} />
+            </div>
+            <a
+              href={caUrl}
+              target="downloadTargetFrame"
+            >
+              <QRCodeImg url={caFullUrl || caShortUrl + caHash} />
+            </a>
+            <div className="w-https-settings">
+              <p>
+                <label
+                  title={
+                    multiEnv
+                      ? 'Use \'pattern enable://capture\' in rules to enable HTTPS'
+                      : null
+                  }
                 >
-                  <QRCodeImg url={caFullUrl || caShortUrl + caHash} />
-                </a>
-                <div className="w-https-settings">
-                  <p>
-                    <label
-                      title={
-                        multiEnv
-                          ? 'Use \'pattern enable://capture\' in rules to enable HTTPS'
-                          : undefined
-                      }
-                    >
-                      <input
-                        disabled={multiEnv}
-                        checked={interceptHttpsConnects}
-                        onChange={onEnableHttps}
-                        type="checkbox"
-                        className="w-vm"
-                      />
-                      <span className="w-vm w-mrl-5">
-                        Enable HTTPS (Capture Tunnel Traffic)
-                      </span>
-                    </label>
-                  </p>
-                  <p>
-                    <label>
-                      <input
-                        checked={dataCenter.supportH2 && enableHttp2}
-                        onChange={onEnableHttp2}
-                        type="checkbox"
-                        className="w-vm"
-                      />
-                    <span className="w-vm w-mrl-5">
-                      Enable HTTP/2
-                    </span>
-                    </label>
-                  </p>
-                  <a
-                    draggable="false"
-                    style={{
-                      color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : undefined
-                    }}
-                    onClick={self.showCustomCertsInfo}
-                  >
-                    Custom Certs Settings
-                  </a>
-                  <CertsInfoDialog ref="certsInfoDialog" />
-                </div>
-              </div>
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  data-dismiss="modal"
-                >
-                  Close
-                </button>
-              </div>
+                  <input
+                    disabled={multiEnv}
+                    checked={interceptHttpsConnects}
+                    onChange={onEnableHttps}
+                    type="checkbox"
+                    className="w-vm"
+                  />
+                  <span className="w-vm w-mrl-5">
+                    Enable HTTPS (Capture Tunnel Traffic)
+                  </span>
+                </label>
+              </p>
+              <p>
+                <label>
+                  <input
+                    checked={dataCenter.supportH2 && enableHttp2}
+                    onChange={onEnableHttp2}
+                    type="checkbox"
+                    className="w-vm"
+                  />
+                <span className="w-vm w-mrl-5">
+                  Enable HTTP/2
+                </span>
+                </label>
+              </p>
+              <a
+                draggable="false"
+                style={{
+                  color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : null
+                }}
+                onClick={self.showCustomCertsInfo}
+              >
+                Custom Certs Settings
+              </a>
+              <CertsInfoDialog ref="certsInfoDialog" />
             </div>
           </div>
-        </div>
+          <div className="modal-footer">
+            <DismissBtn />
+          </div>
+        </Dialog>
     );
   }
 });

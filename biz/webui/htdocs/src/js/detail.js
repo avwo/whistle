@@ -2,7 +2,6 @@ require('../css/detail.css');
 var $ = require('jquery');
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
-var events = require('./events');
 var BtnGroup = require('./btn-group');
 var Overview = require('./overview');
 var Inspectors = require('./inspectors');
@@ -12,6 +11,8 @@ var Tools = require('./tools');
 var Saved = require('./saved');
 var util = require('./util');
 var Icon = require('./icon');
+
+var trigger = util.trigger;
 
 var ReqData = React.createClass({
   getInitialState: function () {
@@ -61,11 +62,10 @@ var ReqData = React.createClass({
     var update = function () {
       self.setState({});
     };
-    events
-      .on('showOverview', function () {
-        events.trigger('overviewScrollTop');
-        self.toggleTab(tabs[0]);
-      })
+    util.on('showOverview', function () {
+      trigger('overviewScrollTop');
+      self.toggleTab(tabs[0]);
+    })
       .on('showInspectors', function () {
         self.toggleTab(tabs[1]);
       })
@@ -77,7 +77,7 @@ var ReqData = React.createClass({
           if (util.isStr(data)) {
             self.refs.tools.showTab(0, data);
           } else if (data) {
-            events.trigger('uploadLogs', data);
+            trigger('uploadLogs', data);
             self.refs.tools.shakeTab();
           }
         });
@@ -116,7 +116,7 @@ var ReqData = React.createClass({
       self.state.activeItem = item;
     }
     self.toggleTab(self.state.tabs[3], function () {
-      item && events.trigger('setComposer');
+      item && trigger('setComposer');
     });
   },
   isShowingSaved: function() {
@@ -148,12 +148,12 @@ var ReqData = React.createClass({
     }
     var item = self.getItemById(id, list);
     if (self.isShowingSaved()) {
-      return events.trigger('saveSessions', [item]);
+      return trigger('saveSessions', [item]);
     }
     item && self.showComposer(item);
   },
   onDoubleClick: function () {
-    events.trigger('ensureSelectedItemVisible');
+    trigger('ensureSelectedItemVisible');
   },
   toggleTab: function (tab, callback) {
     var self = this;
@@ -265,7 +265,7 @@ var ReqData = React.createClass({
                 'Dock to ' + (dockToBottom ? 'right' : 'bottom') + ' (F12)'
               }
             >
-              <Icon name={'menu-' + (dockToBottom ? 'right' : 'down')} className={data ? 'hide' : ''} />
+              <Icon name={'menu-' + (dockToBottom ? 'right' : 'down')} className={util.getHide(data)} />
             </button>
           }
           onDoubleClick={self.onDoubleClick}

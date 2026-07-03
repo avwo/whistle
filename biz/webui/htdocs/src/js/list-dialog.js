@@ -11,6 +11,8 @@ var dataCenter = require('./data-center');
 var ShareViaURLBtn = require('./share-via-url-btn');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var TEMP_LINK_RE_G = /(?:^|\s)(?:[\w-]+:\/\/)?<?temp\/([\da-z]{64})(?:\.[\w-]+)?(?:$|\s)>?/mg;
 
@@ -34,9 +36,7 @@ var ListDialog = React.createClass({
       ]
     };
   },
-  shouldComponentUpdate: function () {
-    return this.refs.dialog.isVisible();
-  },
+  shouldComponentUpdate: util.scuDialog,
   onChange: function (e) {
     var target = e.target;
     var name = target.parentNode.title;
@@ -49,11 +49,11 @@ var ListDialog = React.createClass({
     this.setState({ checkedItems: checkedItems });
   },
   donwload: function(data) {
-    var self = this;
-    var input = findDOMNode(self.refs.filename);
-    var form = findDOMNode(self.refs.exportData);
-    findDOMNode(self.refs.exportName).value = input.value.trim();
-    findDOMNode(self.refs.data).value = JSON.stringify(data);
+    var refs = this.refs;
+    var input = findDOMNode(refs.filename);
+    var form = findDOMNode(refs.exportData);
+    findDOMNode(refs.exportName).value = input.value.trim();
+    findDOMNode(refs.data).value = JSON.stringify(data);
     form.submit();
     input.value = '';
   },
@@ -210,9 +210,6 @@ var ListDialog = React.createClass({
   hide: function() {
     this.refs.dialog.hide();
   },
-  preventDefault: function (e) {
-    e.preventDefault();
-  },
   onTabChange: function (tab) {
     var tabs = this.state.tabs;
     tabs.forEach(function (t) {
@@ -273,14 +270,13 @@ var ListDialog = React.createClass({
 
     return (
       <Dialog ref="dialog" wclassName="w-list-dialog">
-        { props.title ? <div className="modal-header">
-                <h4>{props.title}</h4>
-                <CloseBtn />
-              </div> : null }
+        { props.title ? <ModalHeader>
+                {props.title}
+              </ModalHeader> : null }
         <div className="modal-body">
           {props.title ? null : <CloseBtn />}
           {rulesModal ? <Tabs tabs={tabs} onChange={self.onTabChange} /> : null}
-          <div className={tabs[0].active ? '' : ' hide'} style={{marginTop: 10}}>
+          <div className={'mt-10' + util.getHide(!tabs[0].active)}>
             <div className="w-list-wrapper">
               {list.map(function (name, i) {
                 if (!i && isRules) {
@@ -319,24 +315,18 @@ var ListDialog = React.createClass({
                   ref="filename"
                   value={state.filename}
                   onChange={self.filterFilename}
-                  style={{ width: 812, display: 'inline-block', marginLeft: 5 }}
-                  className="form-control"
+                  style={{ width: 812, display: 'inline-block' }}
+                  className="form-control ml-5"
                   placeholder="Enter filename (optional)"
                 />
               </p>)}
         </div>
         <div className="modal-footer">
-        {onConfirm ? null : <label className={'w-kv-check-all' + (tabs[1].active ? ' hide' : '')}>
+        {onConfirm ? null : <label className={'w-kv-check-all' + util.getHide(tabs[1].active)}>
           <input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={!listLen} />
           Select all
         </label>}
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           {onConfirm ? null : <ShareViaURLBtn getFilename={self.getInputValue} disabled={!selectedCount}
             type={self.isRuleList() ? 'mock' : props.name}
             getData={self.getExportData} onComplete={self.onShare} />}
@@ -344,7 +334,7 @@ var ListDialog = React.createClass({
             type="button"
             className="btn btn-primary"
             disabled={!selectedCount}
-            onMouseDown={self.preventDefault}
+            onMouseDown={util.preventBlur}
             onClick={onConfirm ? function() {
               onConfirm(checkedNames);
             } : self.onConfirm}

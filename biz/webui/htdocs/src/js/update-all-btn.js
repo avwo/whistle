@@ -1,5 +1,5 @@
 var React = require('react');
-var events = require('./events');
+var util = require('./util');
 var Icon = require('./icon');
 
 var UpdateAllBtn = React.createClass({
@@ -8,12 +8,12 @@ var UpdateAllBtn = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('setUpdateAllBtnState', function (_, hasNewPlugin) {
+    util.on('setUpdateAllBtnState', function (_, hasNewPlugin) {
       self.setState({ disabled: !hasNewPlugin });
     });
   },
   updateAllPlugins: function () {
-    !this.state.disabled && events.trigger('updateAllPlugins');
+    !this.state.disabled && util.trigger('updateAllPlugins');
   },
   render: function () {
     var self = this;
@@ -21,7 +21,7 @@ var UpdateAllBtn = React.createClass({
     return (
       <a
         onClick={self.updateAllPlugins}
-        className={'w-plugins-menu w-plugin-update-btn' + (hide ? ' hide' : '')}
+        className={'w-plugins-menu w-plugin-update-btn' + util.getHide(hide)}
         draggable="false"
       >
         <Icon name="refresh" />

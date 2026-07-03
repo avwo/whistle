@@ -11,6 +11,8 @@ var Icon = require('./icon');
 var textareaMixin = require('./textarea-mixin');
 
 var MAX_LENGTH = 1024 * 6;
+var getHide = util.getHide;
+var getBool = util.getBool;
 
 var Textarea = React.createClass({
   mixins: [textareaMixin],
@@ -18,9 +20,9 @@ var Textarea = React.createClass({
     return {};
   },
   componentDidMount: function () {
-    var self = this;
-    var bar = $(findDOMNode(self.refs.bar));
-    $(findDOMNode(self.refs.textarea))
+    var refs = this.refs;
+    var bar = $(findDOMNode(refs.bar));
+    $(findDOMNode(refs.textarea))
     .on('mousedown', function() {
       bar.css('visibility', 'hidden');
     })
@@ -30,19 +32,20 @@ var Textarea = React.createClass({
   },
   shouldComponentUpdate: function (nextProps) {
     var self = this;
-    var hide = util.getBool(self.props.hide);
-    var nextHide = util.getBool(nextProps.hide);
+    var props = self.props;
+    var hide = getBool(props.hide);
+    var nextHide = getBool(nextProps.hide);
     if (self._isCaptured !== dataCenter.isCapture) {
       self._isCaptured = dataCenter.isCapture;
       return true;
     }
-    if (hide !== nextHide || !self.props.value) {
+    if (hide !== nextHide || !props.value) {
       return true;
     }
     if (hide) {
       return false;
     }
-    return self.props.value !== nextProps.value;
+    return props.value !== nextProps.value;
   },
   edit: function () {
     util.openEditor(this.props.value);
@@ -54,12 +57,13 @@ var Textarea = React.createClass({
     var name = target.value.trim();
     target.value = '';
     var base64 = props.base64;
-    findDOMNode(self.refs.filename).value = name;
-    findDOMNode(self.refs.type).value = base64 ? 'base64' : '';
-    findDOMNode(self.refs.headers).value = props.headers || '';
-    findDOMNode(self.refs.content).value =
+    var refs = self.refs;
+    findDOMNode(refs.filename).value = name;
+    findDOMNode(refs.type).value = base64 ? 'base64' : '';
+    findDOMNode(refs.headers).value = props.headers || '';
+    findDOMNode(refs.content).value =
       base64 != null ? base64 : props.value || '';
-    findDOMNode(self.refs.downloadForm).submit();
+    findDOMNode(refs.downloadForm).submit();
     self.hideNameInput();
   },
   getText: function() {
@@ -82,19 +86,17 @@ var Textarea = React.createClass({
       <div
         className={
           'fill v-box w-textarea' +
-          (props.hide ? ' hide' : '')
+          getHide(props.hide)
         }
       >
         <Tips data={props.tips} />
-        <div ref="bar" className={'w-textarea-bar' + (value ? '' : ' hide')}>
+        <div ref="bar" className={'w-textarea-bar' + getHide(!value)}>
           {props.reqType === 'reqRaw' ? <a onClick={props.onEdit}>
             <Icon name="send" />
             Edit
-          </a> : undefined}
-          <CopyBtn value={props.value} />
-          {isHexView ? (
-            <CopyBtn name="AsHex" value={util.getHexText(props.value)} />
-          ) : undefined}
+          </a> : null}
+          <CopyBtn value={value} />
+          {isHexView ? <CopyBtn name="AsHex" value={util.getHexText(value)} /> : null}
           <a
             onDoubleClick={self.download}
             onClick={self.showNameInput}

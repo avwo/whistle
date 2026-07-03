@@ -1,26 +1,24 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var util = require('./util');
 
 var CookiesDialog = React.createClass({
   getInitialState: function() {
     return { cookies: [] };
   },
   show: function (cookies) {
-    this.refs.cookiesDialog.show();
-    this._hideDialog = false;
+    this.refs.dialog.show();
     this.setState({ cookies: cookies || [] });
   },
   hide: function () {
-    this.refs.cookiesDialog.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   insert: function (e) {
     var self = this;
-    var i = e.target.getAttribute('data-index');
+    var i = util.attr(e.target, 'data-index');
     var cookie = self.state.cookies[i];
     cookie && self.props.onInsert(cookie, true);
     self.hide();
@@ -29,7 +27,7 @@ var CookiesDialog = React.createClass({
     var self = this;
     var cookies = self.state.cookies;
     return (
-      <Dialog ref="cookiesDialog" wstyle="w-com-cookies-dialog">
+      <Dialog ref="dialog" wstyle="w-com-cookies-dialog">
         <div className="modal-body">
           <CloseBtn onClick={self.hide} />
           <table className="table">
@@ -67,13 +65,7 @@ var CookiesDialog = React.createClass({
           </table>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            onClick={self.hide}
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
       </Dialog>
     );

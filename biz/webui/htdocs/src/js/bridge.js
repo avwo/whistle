@@ -5,10 +5,10 @@ var createCgi = require('./cgi').createCgi;
 var dataCenter = require('./data-center');
 var util = require('./util');
 var modal = require('./modal');
-var events = require('./events');
 var mockWin = require('./win');
 var parseRules = require('./parse-rules');
 
+var trigger = util.trigger;
 var dataModal = dataCenter.networkModal;
 var isStr = util.isStr;
 
@@ -41,15 +41,9 @@ function getBridge(win, api) {
   var plugin = getPlugin(win);
   var result = {
     updateUI: function() {
-      events.trigger('updateUIThrottle');
+      trigger('updateUIThrottle');
     },
     pageId: dataCenter.getPageId(),
-    getWhistleId: function() {
-      return dataCenter.whistleId;
-    },
-    hasWhistleToken: function() {
-      return dataCenter.hasWhistleToken;
-    },
     escapeHtml: util.escape,
     compose: dataCenter.compose,
     createComposeInterrupt: dataCenter.createComposeInterrupt,
@@ -66,16 +60,16 @@ function getBridge(win, api) {
     alert: mockWin.alert,
     confirm: mockWin.confirm,
     showNetwork: function () {
-      events.trigger('showNetwork');
+      trigger('showNetwork');
     },
     showRules: function (name) {
-      events.trigger('showRules', name);
+      trigger('showRules', name);
     },
     showValues: function () {
-      events.trigger('showValues');
+      trigger('showValues');
     },
     showPlugins: function () {
-      events.trigger('showPlugins');
+      trigger('showPlugins');
     },
     getActiveSession: function () {
       return dataModal.getActive();
@@ -89,33 +83,33 @@ function getBridge(win, api) {
       return util.handleImportData(data);
     },
     download: function(data) {
-      events.trigger('download', [data]);
+      trigger('download', [data]);
     },
     showOption: function() {
-      events.trigger('showPluginOption', plugin);
+      trigger('showPluginOption', plugin);
     },
     hideOption: function() {
-      events.trigger('hidePluginOption', plugin);
+      trigger('hidePluginOption', plugin);
     },
     setNetworkSettings: function(data) {
-      events.trigger('setNetworkSettings', data);
+      trigger('setNetworkSettings', data);
     },
     setRulesSettings: function(data) {
-      events.trigger('setRulesSettings', data);
+      trigger('setRulesSettings', data);
     },
     setValuesSettings: function(data) {
-      events.trigger('setValuesSettings', data);
+      trigger('setValuesSettings', data);
     },
     setComposerData: function(data) {
-      events.trigger('setComposerData', data);
+      trigger('setComposerData', data);
     },
     readFileAsText: util.readFileAsText,
     readFileAsBase64: util.readFileAsBase64,
     showHttpsSettings: function() {
-      events.trigger('showHttpsSettingsDialog');
+      trigger('showHttpsSettingsDialog');
     },
     showCustomCerts: function() {
-      events.trigger('showCustomCerts');
+      trigger('showCustomCerts');
     },
     uploadCustomCerts: function(data, cb) {
       return dataCenter.uploadCerts(data, cb);
@@ -126,10 +120,10 @@ function getBridge(win, api) {
       return dataCenter.getInstalledPlugins();
     },
     showInstallPlugins: function(list, registry) {
-      events.trigger('showInstallPlugins', [list, registry]);
+      trigger('showInstallPlugins', [list, registry]);
     },
     showUpdatePlugins: function(list, registry) {
-      events.trigger('showUpdatePlugins', [list, registry]);
+      trigger('showUpdatePlugins', [list, registry]);
     },
     getVersion: function() {
       return dataCenter.version;
@@ -158,10 +152,10 @@ function getBridge(win, api) {
       return serverInfo && $.extend(true, {}, serverInfo);
     },
     importRules: function (data) {
-      events.trigger('handleImportRules', data);
+      trigger('handleImportRules', data);
     },
     importValues: function (data) {
-      events.trigger('handleImportValues', data);
+      trigger('handleImportValues', data);
     }
   };
   if (api) {

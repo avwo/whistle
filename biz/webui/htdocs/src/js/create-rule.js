@@ -1,8 +1,6 @@
 require('../css/create-rule.css');
 var React = require('react');
 var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
-var events = require('./events');
 var UrlInput = require('./url-input');
 var CopyBtn = require('./copy-btn');
 var NetworkRule = require('./network-rule');
@@ -15,8 +13,12 @@ var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var Select = require('./custom-select');
 var util = require('./util');
+var DismissBtn = require('./dismiss-btn');
+var ModalHeader = require('./modal-header');
 
 var getHideStyle = util.getHideStyle;
+var trigger = util.trigger;
+var addEvent = util.on;
 var TYPE_OPTIONS = [
   { value: 'Mapping', label: 'Modify Mapping' },
   { value: 'Network', label: 'Modify Network' },
@@ -45,8 +47,7 @@ var CreateRuleDialog = React.createClass({
   },
   show: function (data, filename) {
     var self = this;
-    self._hideDialog = false;
-    self.refs.addRules.show();
+    self.refs.dialog.show();
     var session = data && data.session;
     var treeNode = data && data.treeNode;
     var onSave = data && data.onSave;
@@ -62,22 +63,19 @@ var CreateRuleDialog = React.createClass({
     });
   },
   showEditor: function() {
-    events.trigger('showEditorDialog', {
+    trigger('showEditorDialog', {
       session: this.state.session || null
     });
   },
   hide: function () {
-    this.refs.addRules.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
   onTypeChange: function(option) {
     this.setState({ type: option.value });
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   componentDidMount: function() {
-    events.on('hideRulesDialog', this.hide);
+    addEvent('hideRulesDialog', this.hide);
   },
   getFormatedRules: function() {
     var rules = this.getRules();
@@ -91,7 +89,7 @@ var CreateRuleDialog = React.createClass({
       this.hide();
       return state.onSave(rules);
     }
-    events.trigger('showRulesDialog', {
+    trigger('showRulesDialog', {
       filename: state.filename,
       rules: rules
     });
@@ -214,19 +212,16 @@ var CreateRuleDialog = React.createClass({
     this.setState({ filters: filters });
   },
   showTestRule: function() {
-    events.trigger('showTestRuleDialog', {ruleText: this.getFormatedRules(), session: this.state.session});
+    trigger('showTestRuleDialog', {ruleText: this.getFormatedRules(), session: this.state.session});
   },
   renderHeader: function() {
     var state = this.state;
 
     return (
-      <div className="modal-header">
-        <h4>
+      <ModalHeader>
         Create Rule
         <Select className="ml-10" value={state.type} onChange={this.onTypeChange} options={TYPE_OPTIONS} />
-        </h4>
-        <CloseBtn onClick={this.hide} />
-      </div>
+      </ModalHeader>
     );
   },
   renderPattern: function() {
@@ -239,6 +234,7 @@ var CreateRuleDialog = React.createClass({
     var urlInputStyle = getHideStyle(isRegExp);
     var regExpStyle = getHideStyle(!isRegExp);
     var wildcardStyle = getHideStyle(patternType !== 'wildcard');
+    var ignoreCase = state.ignoreCase;
 
     return (
       <div className="w-form-item w-rules-form">
@@ -254,9 +250,9 @@ var CreateRuleDialog = React.createClass({
           <span className="w-regexp-symbol" style={regExpStyle}>/</span>
           <input className="form-control mx-2" type="text" placeholder={placeholder} maxLength="1024"
             value={state.regexp} onChange={self.onRegExpChange} style={regExpStyle} />
-          <span className="w-regexp-symbol" style={regExpStyle}>/{state.ignoreCase ? 'i' : null}</span>
+          <span className="w-regexp-symbol" style={regExpStyle}>/{ignoreCase ? 'i' : null}</span>
           <label className="ml-10" style={regExpStyle}>
-            <input type="checkbox" className="mr-5" checked={state.ignoreCase} onChange={self.onIgnoreCaseChange} /> Case-insensitive
+            <input type="checkbox" className="mr-5" checked={ignoreCase} onChange={self.onIgnoreCaseChange} /> Case-insensitive
           </label>
           <label className="ml-10" style={urlInputStyle}>
             <input type="checkbox" className="mr-5" checked={state.fullMatch} onChange={self.onFullMatchChange} /> Full-match
@@ -303,7 +299,7 @@ var CreateRuleDialog = React.createClass({
     var rules = self.getRules();
 
     return (
-      <Dialog ref="addRules" wstyle="w-create-rule">
+      <Dialog ref="dialog" wstyle="w-create-rule">
         {self.renderHeader()}
         <div className="modal-body">
           {self.renderPattern()}
@@ -316,13 +312,7 @@ var CreateRuleDialog = React.createClass({
           {self.renderRules(rules)}
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           <button
             disabled={!rules}
             type="button"

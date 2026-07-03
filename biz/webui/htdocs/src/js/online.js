@@ -13,9 +13,14 @@ var message = require('./message');
 var ShortcutsSettings = require('./shortcuts-settings');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
 
 var showSysErr = util.showSysErr;
 var isFunc = util.isFunc;
+var getQps = util.getQps;
+var getSize = util.getSize;
+var escape = util.escape;
+var formatTime = util.formatTime;
 var IPV6_ONLY_VAL = 4;
 var dialog;
 var curOrder;
@@ -43,6 +48,14 @@ var handleThemeChange = setTheme;
 var appearanceMode = storage.get('appearanceMode');
 if (['auto', 'dark', 'light'].indexOf(appearanceMode) === -1) {
   appearanceMode = 'auto';
+}
+
+function getTotal(cur, max) {
+  return cur + ' (Total: ' + max + ')';
+}
+
+function getMax(cur, max) {
+  return cur + ' (Max: ' + max + ')';
 }
 
 function isDarkMode() {
@@ -175,10 +188,7 @@ function createDialog() {
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
       '<a class="w-online-shortcuts-settings">Shortcuts Settings</a>' +
       '</div>' +
-      '<div class="modal-footer">' +
-      '<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>' +
-      // '<button type="button" class="btn btn-primary w-login-btn" data-action="login">' +
-      // '<span class="glyphicon glyphicon-log-in"></span><span class="w-login-label">Login</span></button>' +
+      '<div class="modal-footer">' + win.DISSMISS_BTN +
       '</div></div></div></div>'
     ).appendTo(document.body);
     var appearanceSelect = dialog.find('.w-theme-option select');
@@ -291,54 +301,38 @@ var Online = React.createClass({
       return;
     }
     var self = this;
-    var clientVersion = self.props.clientVersion;
     self.state.server = server;
     var info = [];
-    var whistleId = util.escape(server.whistleId);
-    var username = util.escape(server.username);
-    var host = util.escape(server.host);
+    var whistleId = escape(server.whistleId);
+    var username = escape(server.username);
     if (whistleId) {
       info.push('<h5 class="w-whistle-id-option" title="' + whistleId + '"><strong>Whistle ID:</strong> ' + whistleId + '</h5>');
     }
     if (username) {
       info.push('<h5 class="w-system-host"><strong>Username:</strong> ' + username + '</h5>');
     }
-    if (host) {
-      info.push('<h5><strong>Host:</strong> ' + host + '</h5>');
-    }
-    if (server.pid) {
-      info.push('<h5><strong>PID:</strong> ' + server.pid + '</h5>');
-    }
-    if (server.nodeVersion) {
-      info.push('<h5><strong>Node:</strong> ' + server.nodeVersion + '</h5>');
-    }
-    if (clientVersion) {
-      info.push('<h5><strong>Client:</strong> v' + clientVersion + '</h5>');
-    }
-    if (server.version) {
-      info.push('<h5><strong>Whistle:</strong> v' + server.version + '</h5>');
-    }
+    var addInfo = function(name, value, prefix) {
+      if (value) {
+        info.push('<h5><strong>' + name + ':</strong> ' + (prefix || '') + value + '</h5>');
+      }
+    };
+    addInfo('Host', escape(server.host));
+    addInfo('PID', server.pid);
+    addInfo('Node', server.nodeVersion);
+    addInfo('Client', self.props.clientVersion, 'v');
+    addInfo('Whistle', server.version, 'v');
+
     var port = server.realPort || server.port;
     if (port) {
       var bip = server.realHost != null ? server.realHost : server.bip;
       if (util.isStr(bip) && bip.indexOf(':') !== -1) {
         bip = '[' + bip + ']';
       }
-      info.push('<h5><strong>Port:</strong> ' + (bip ? bip + ':' + port : port) + '</h5>');
+      addInfo('Port', bip ? bip + ':' + port : port);
     }
-    if (server.socksPort) {
-      info.push(
-        '<h5><strong>SOCKS Port:</strong> ' + server.socksPort + '</h5>'
-      );
-    }
-    if (server.httpPort) {
-      info.push('<h5><strong>HTTP Port:</strong> ' + server.httpPort + '</h5>');
-    }
-    if (server.httpsPort) {
-      info.push(
-        '<h5><strong>HTTPS Port:</strong> ' + server.httpsPort + '</h5>'
-      );
-    }
+    addInfo('SOCKS Port', server.socksPort);
+    addInfo('HTTP Port', server.httpPort);
+    addInfo('HTTPS Port', server.httpsPort);
     if (server.ipv4.length) {
       info.push('<h5><strong>IPv4:</strong></h5>');
       info.push('<p>' + server.ipv4.join('<br/>') + '</p>');
@@ -349,42 +343,12 @@ var Online = React.createClass({
     }
     createDialog();
     var ctn = dialog.find('.w-online-ctn').html(info.join(''));
-    var loginBtn = dialog.find('.w-login-btn');
-    var loginElem = loginBtn[0];
-    if (loginElem) {
-      var hasToken = dataCenter.hasWhistleToken;
-      loginElem.className = 'btn w-login-btn  btn-' + (hasToken ? 'danger' : 'primary');
-      loginBtn.attr('data-action', hasToken ? 'logout' : 'login');
-      loginBtn.find('.w-login-label').text(hasToken ? 'Logout' : 'Login');
-      loginBtn.find('.glyphicon')[0].className = 'glyphicon glyphicon-log-' + (hasToken ? 'out' : 'in');
-    }
     if (curVerbatim !== server.verbatim) {
       curVerbatim = server.verbatim;
       dialog.find('.w-dns-order-option select').html(getDnsOrder(server.verbatim));
     }
     !self._pendingDnsOrder && selectDnsOption(server.dnsOrder);
     ctn.find('h5.w-system-host').attr('title', server.host);
-    loginBtn.on('click', function (e) {
-      var action = $(e.target).closest('button').attr('data-action');
-      if (action === 'logout') {
-        return win.confirm('Are you sure you want to log out?', function (sure) {
-          if (!sure) {
-            return;
-          }
-          dataCenter.logout(function (data, xhr) {
-            if (!data) {
-              return showSysErr(xhr);
-            }
-            if (data.ec !== 0) {
-              return message.error(data.em || 'Logout failed');
-            }
-            message.success('Logged out successfully');
-            dataCenter.triggerWhistleIdChanged();
-          });
-        });
-      }
-      util.showService('login');
-    });
     if (!self._initProxyInfo) {
       self._initProxyInfo = true;
       var curServerInfo;
@@ -448,53 +412,44 @@ var Online = React.createClass({
         var uptimeElem = dialog.find('#whistleUptime');
         var qpsElem = dialog.find('#whistleQps');
         var uiQpsElem = dialog.find('#whistleAllQps');
-        uptimeElem.text(util.formatTime(pInfo.uptime));
+        var memUsage = pInfo.memUsage;
+        var totalTunnelRequests = pInfo.totalTunnelRequests;
+        var tunnelRequests = pInfo.tunnelRequests;
+        var totalWsRequests = pInfo.totalWsRequests;
+        var httpRequests = pInfo.httpRequests;
+        var totalHttpRequests = pInfo.totalHttpRequests;
+        var allHttpRequests = pInfo.allHttpRequests;
+        var totalAllHttpRequests = pInfo.totalAllHttpRequests;
+        var allWsRequests = pInfo.allWsRequests;
+        var totalAllWsRequests = pInfo.totalAllWsRequests;
+        var cpuPercent = pInfo.cpuPercent;
+        var tunnelReqs = '\nTUNNEL: ' + getTotal(tunnelRequests, totalTunnelRequests);
+        var totalQps = pInfo.totalQps;
+        var totalAllQps = pInfo.totalAllQps;
+        var tunnelQps = pInfo.tunnelQps;
+        uptimeElem.text(formatTime(pInfo.uptime));
         uptimeElem.parent().attr('title', pInfo.uptime);
         reqElem
           .parent()
           .attr(
             'title',
-            'HTTP[S]: ' +
-              pInfo.httpRequests +
-              ' (Total: ' +
-              pInfo.totalHttpRequests +
-              ')' +
-              '\nWS[S]: ' +
-              pInfo.wsRequests +
-              ' (Total: ' +
-              pInfo.totalWsRequests +
-              ')' +
-              '\nTUNNEL: ' +
-              pInfo.tunnelRequests +
-              ' (Total: ' +
-              pInfo.totalTunnelRequests +
-              ')'
+            'HTTP[S]: ' + getTotal(httpRequests, totalHttpRequests) +
+            '\nWS[S]: ' + getTotal(pInfo.wsRequests, totalWsRequests) +
+            tunnelReqs
           );
         uiReqElem
           .parent()
           .attr(
             'title',
-            'HTTP[S]: ' +
-              pInfo.allHttpRequests +
-              ' (Total: ' +
-              pInfo.totalAllHttpRequests +
-              ')' +
-              '\nWS[S]: ' +
-              pInfo.allWsRequests +
-              ' (Total: ' +
-              pInfo.totalAllWsRequests +
-              ')' +
-              '\nTUNNEL: ' +
-              pInfo.tunnelRequests +
-              ' (Total: ' +
-              pInfo.totalTunnelRequests +
-              ')'
+            'HTTP[S]: ' + getTotal(allHttpRequests, totalAllHttpRequests) +
+            '\nWS[S]: ' + getTotal(allWsRequests, totalAllWsRequests) +
+            tunnelReqs
           );
         memElem.parent().attr(
           'title',
-          Object.keys(pInfo.memUsage)
+          Object.keys(memUsage)
             .map(function (key) {
-              return key + ': ' + pInfo.memUsage[key];
+              return key + ': ' + memUsage[key];
             })
             .join('\n')
         );
@@ -503,9 +458,9 @@ var Online = React.createClass({
           .attr(
             'title',
         [
-          'HTTP[s]: ' + util.getQps(pInfo.httpQps),
-          'WS[S]: ' + util.getQps(pInfo.wsQps),
-          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+          'HTTP[s]: ' + getQps(pInfo.httpQps),
+          'WS[S]: ' + getQps(pInfo.wsQps),
+          'TUNNEL: ' + getQps(tunnelQps)
         ].join('\n')
           );
         uiQpsElem
@@ -513,89 +468,51 @@ var Online = React.createClass({
           .attr(
             'title',
         [
-          'HTTP[s]: ' + util.getQps(pInfo.allHttpQps),
-          'WS[S]: ' + util.getQps(pInfo.allWsQps),
-          'TUNNEL: ' + util.getQps(pInfo.tunnelQps)
+          'HTTP[s]: ' + getQps(pInfo.allHttpQps),
+          'WS[S]: ' + getQps(pInfo.allWsQps),
+          'TUNNEL: ' + getQps(tunnelQps)
         ].join('\n')
           );
-        var totalCount =
-          pInfo.httpRequests + pInfo.wsRequests + pInfo.tunnelRequests;
-        var totalUICount =
-          pInfo.allHttpRequests + pInfo.allWsRequests + pInfo.tunnelRequests;
-        var allCount =
-          pInfo.totalHttpRequests +
-          pInfo.totalWsRequests +
-          pInfo.totalTunnelRequests;
-        var allUICount =
-          pInfo.totalAllHttpRequests +
-          pInfo.totalAllWsRequests +
-          pInfo.totalTunnelRequests;
+        var totalCount = httpRequests + pInfo.wsRequests + tunnelRequests;
+        var totalUICount = allHttpRequests + allWsRequests + tunnelRequests;
+        var allCount = totalHttpRequests + totalWsRequests + totalTunnelRequests;
+        var allUICount = totalAllHttpRequests + totalAllWsRequests +  totalTunnelRequests;
+        var curPInfo = curServerInfo && curServerInfo.pInfo;
         pInfo.totalCount = totalCount;
         pInfo.allCount = allCount;
         pInfo.totalUICount = totalUICount;
         pInfo.allUICount = allUICount;
-        if (!curServerInfo || !curServerInfo.pInfo) {
-          reqElem.text(totalCount + ' (Total: ' + allCount + ')');
-          uiReqElem.text(totalUICount + ' (Total: ' + allUICount + ')');
-          cpuElem.text(pInfo.cpuPercent + ' (Max: ' + pInfo.maxCpu + ')');
-          memElem.text(
-            util.getSize(pInfo.memUsage.rss) +
-              ' (Max: ' +
-              util.getSize(pInfo.maxRss) +
-              ')'
-          );
-          qpsElem.text(
-            util.getQps(pInfo.totalQps) +
-              ' (Max: ' +
-              util.getQps(pInfo.maxQps) +
-              ')'
-          );
-          uiQpsElem.text(
-            util.getQps(pInfo.totalAllQps) +
-              ' (Max: ' +
-              util.getQps(pInfo.maxAllQps) +
-              ')'
-          );
+        if (!curPInfo) {
+          reqElem.text(getTotal(totalCount, allCount));
+          uiReqElem.text(getTotal(totalUICount, allUICount));
+          cpuElem.text(getMax(cpuPercent, pInfo.maxCpu));
+          memElem.text(getMax(getSize(memUsage.rss), getSize(pInfo.maxRss)));
+          qpsElem.text(getMax(getQps(totalQps), getQps(pInfo.maxQps)));
+          uiQpsElem.text(getMax(getQps(totalAllQps), getQps(pInfo.maxAllQps)));
         } else {
-          var curPInfo = curServerInfo.pInfo;
-          if (pInfo.memUsage.rss !== curPInfo.memUsage.rss) {
-            memElem.text(
-              util.getSize(pInfo.memUsage.rss) +
-                ' (Max: ' +
-                util.getSize(pInfo.maxRss) +
-                ')'
-            );
+          if (memUsage.rss !== curPInfo.memUsage.rss) {
+            memElem.text(getMax(getSize(memUsage.rss), getSize(pInfo.maxRss)));
           }
           if (
             totalCount !== curPInfo.totalCount ||
             allCount !== curPInfo.allCount
           ) {
-            reqElem.text(totalCount + ' (Total: ' + allCount + ')');
+            reqElem.text(getTotal(totalCount, allCount));
           }
           if (
             totalUICount !== curPInfo.totalUICount ||
             allUICount !== curPInfo.allUICount
           ) {
-            uiReqElem.text(totalUICount + ' (Total: ' + allUICount + ')');
+            uiReqElem.text(getTotal(totalUICount, allUICount));
           }
-          if (pInfo.cpuPercent !== curPInfo.cpuPercent) {
-            cpuElem.text(pInfo.cpuPercent + ' (Max: ' + pInfo.maxCpu + ')');
+          if (cpuPercent !== curPInfo.cpuPercent) {
+            cpuElem.text(getMax(cpuPercent, pInfo.maxCpu));
           }
-          if (pInfo.totalQps !== curPInfo.totalQps) {
-            qpsElem.text(
-              util.getQps(pInfo.totalQps) +
-                ' (Max: ' +
-                util.getQps(pInfo.maxQps) +
-                ')'
-            );
+          if (totalQps !== curPInfo.totalQps) {
+            qpsElem.text(getMax(getQps(totalQps), getQps(pInfo.maxQps)));
           }
-          if (pInfo.totalAllQps !== curPInfo.totalAllQps) {
-            uiQpsElem.text(
-              util.getQps(pInfo.totalAllQps) +
-                ' (Max: ' +
-                util.getQps(pInfo.maxAllQps) +
-                ')'
-            );
+          if (totalAllQps !== curPInfo.totalAllQps) {
+            uiQpsElem.text(getMax(getQps(totalAllQps), getQps(pInfo.maxAllQps)));
           }
         }
         curServerInfo = info;
@@ -610,31 +527,22 @@ var Online = React.createClass({
       return;
     }
     var info = [];
-    if (server.whistleId) {
-      info.push('Whistle ID: ' + server.whistleId);
-    }
-    if (server.username) {
-      info.push('Username: ' + server.username);
-    }
-    if (server.host) {
-      info.push('Host: ' + server.host);
-    }
-    if (server.pid) {
-      info.push('PID: ' + server.pid);
-    }
-    var port = server.realPort || server.port;
-    if (port) {
-      info.push('Port: ' + port);
-    }
-    if (server.socksPort) {
-      info.push('SOCKS Port: ' + server.socksPort);
-    }
-    if (server.httpPort) {
-      info.push('HTTP Port: ' + server.httpPort);
-    }
-    if (server.httpsPort) {
-      info.push('HTTPS Port: ' + server.httpsPort);
-    }
+    var addInfo = function(name, value, prefix) {
+      if (value) {
+        info.push(name + ': ' + (prefix || '') + value);
+      }
+    };
+    addInfo('Whistle ID', server.whistleId);
+    addInfo('Username', server.username);
+    addInfo('Host', server.host);
+    addInfo('PID', server.pid);
+    addInfo('Node', server.nodeVersion);
+    addInfo('Client', this.props.clientVersion, 'v');
+    addInfo('Whistle', server.version, 'v');
+    addInfo('Port', server.realPort || server.port);
+    addInfo('SOCKS Port', server.socksPort);
+    addInfo('HTTP Port', server.httpPort);
+    addInfo('HTTPS Port', server.httpsPort);
 
     if (server.ipv4.length) {
       info.push('IPv4:');
@@ -646,33 +554,21 @@ var Online = React.createClass({
     }
     var pInfo = server.pInfo;
     if (pInfo) {
-      info.push('Uptime: ' + util.formatTime(pInfo.uptime));
-      info.push(
-        'All Requests: ' +
-          (pInfo.allHttpRequests +
-            pInfo.allWsRequests +
-            pInfo.tunnelRequests +
-            ' (Total: ' +
-            (pInfo.totalAllHttpRequests +
-              pInfo.totalAllWsRequests +
-              pInfo.totalTunnelRequests) +
-            ')')
+      var tunnelRequests = pInfo.tunnelRequests;
+      var totalTunnelRequests = pInfo.totalTunnelRequests;
+      addInfo('Uptime', formatTime(pInfo.uptime));
+      addInfo(
+        'All Requests', getTotal(pInfo.allHttpRequests + pInfo.allWsRequests + tunnelRequests,
+          pInfo.totalAllHttpRequests + pInfo.totalAllWsRequests + totalTunnelRequests)
       );
-      info.push(
-        'Requests: ' +
-          (pInfo.httpRequests +
-            pInfo.wsRequests +
-            pInfo.tunnelRequests +
-            ' (Total: ' +
-            (pInfo.totalHttpRequests +
-              pInfo.totalWsRequests +
-              pInfo.totalTunnelRequests) +
-            ')')
+      addInfo('All QPS', getMax(getQps(pInfo.totalAllQps), getQps(pInfo.maxAllQps)));
+      addInfo(
+        'Requests', getTotal(pInfo.httpRequests + pInfo.wsRequests + tunnelRequests,
+          pInfo.totalHttpRequests + pInfo.totalWsRequests +  totalTunnelRequests)
       );
-      pInfo.cpuPercent && info.push('CPU: ' + pInfo.cpuPercent);
-      info.push('Memory: ' + util.getSize(pInfo.memUsage.rss));
-      info.push('QPS: ' + util.getQps(pInfo.totalQps));
-      info.push('All QPS: ' + util.getQps(pInfo.totalAllQps));
+      addInfo('QPS', getMax(getQps(pInfo.totalQps), getQps(pInfo.maxQps)));
+      addInfo('CPU', getMax(pInfo.cpuPercent, pInfo.maxCpu));
+      addInfo('Memory', getMax(getSize(pInfo.memUsage.rss), getSize(pInfo.maxRss)));
     }
     if (server.dns) {
       info.push('Use custom DNS servers');
@@ -711,13 +607,7 @@ var Online = React.createClass({
             Do you want to reload this page?
           </div>
           <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Cancel
-            </button>
+            <DismissBtn />
             <button
               type="button"
               className="btn btn-primary"

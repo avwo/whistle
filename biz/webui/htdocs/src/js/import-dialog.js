@@ -4,12 +4,15 @@ var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
-var events = require('./events');
-var message = require('./message');
 var EditorDialog = require('./editor-dialog');
 var parseCurl = require('./parse-curl');
 var Icon = require('./icon');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
+var UploadForm = require('./upload-form');
+var showError = require('./message').error;
+
+var trigger = util.trigger;
 
 function getAccept(name) {
   if (name === 'network') {
@@ -39,7 +42,7 @@ var ImportDialog = React.createClass({
   },
   show: function (name) {
     var self = this;
-    self.refs.importDialog.show();
+    self.refs.dialog.show();
     setTimeout(function () {
       var input = findDOMNode(self.refs.input);
       input.focus();
@@ -54,20 +57,20 @@ var ImportDialog = React.createClass({
     });
   },
   hide: function () {
-    this.refs.importDialog.hide();
+    this.refs.dialog.hide();
   },
   showService: function () {
     util.showService(this.state.name + '/history');
   },
   importRemoteUrl: function (e) {
-    if (e && e.type !== 'click' && e.keyCode !== 13) {
+    if (util.checkSubmit(e)) {
       return;
     }
     var self = this;
     var input = findDOMNode(self.refs.input);
     var url = input.value.trim();
     if (!url) {
-      message.error('The url or file path is required');
+      showError('The url or file path is required');
       input.value = '';
       input.focus();
       return;
@@ -75,51 +78,49 @@ var ImportDialog = React.createClass({
     dataCenter.getRemoteData(url, function (_, data) {
       if (data) {
         self.hide();
-        events.trigger(self.state.name + 'ImportData', [data]);
+        trigger(self.state.name + 'ImportData', [data]);
       }
     });
   },
   handleFile: function(file) {
     if (file) {
       this.hide();
-      events.trigger(this.state.name + 'ImportFile', [file]);
+      trigger(this.state.name + 'ImportFile', [file]);
     }
   },
   componentDidMount: function () {
     var self = this;
-    events.on('importFile', function (_, file) {
+    util.on('importFile', function (_, file) {
       self.handleFile(file);
     });
   },
-  shouldComponentUpdate: function () {
-    return this.refs.importDialog.isVisible();
-  },
+  shouldComponentUpdate: util.scuDialog,
   uploadFile: function() {
     var self = this;
-    var fileInput = findDOMNode(self.refs.importFile);
+    var fileInput = self.refs.uploadForm.getInput();
     self.handleFile(fileInput.files[0]);
-    findDOMNode(self.refs.importFile).value = '';
+    fileInput.value = '';
   },
   selectFile: function() {
-    findDOMNode(this.refs.importFile).click();
+    this.refs.uploadForm.getInput().click();
   },
   importCURL: function(text) {
     text = text.trim();
     if (!text) {
-      message.error('The text is required');
+      showError('The text is required');
       return false;
     }
     try {
       var result = parseJson(text) || parseCurl(text);
       if (!result || !result.url) {
-        message.error('Not cURL text');
+        showError('Not cURL text');
         return false;
       }
       result.isHexText = false;
       result.headers = util.objectToString(result.headers);
-      events.trigger('setComposerData', [result]);
+      trigger('setComposerData', [result]);
     } catch (e) {
-      message.error(e.message);
+      showError(e.message);
       return false;
     }
 
@@ -132,11 +133,10 @@ var ImportDialog = React.createClass({
     var state = self.state;
 
     return (
-      <Dialog ref="importDialog" wstyle="w-ie-dialog w-import-dialog">
-        <div className="modal-header">
-          <h4>{state.title}</h4>
-          <CloseBtn />
-        </div>
+      <Dialog ref="dialog" wstyle="w-ie-dialog w-import-dialog">
+        <ModalHeader>
+          {state.title}
+        </ModalHeader>
         <div className="modal-body">
           <input
             ref="input"
@@ -146,13 +146,7 @@ var ImportDialog = React.createClass({
           />
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           {
             state.importCURL ? <button
             type="button"
@@ -190,19 +184,7 @@ var ImportDialog = React.createClass({
             Import
           </button>
         </div>
-        <form
-          ref="importFileForm"
-          encType="multipart/form-data"
-          style={util.HIDE_STYLE}
-        >
-          <input
-            ref="importFile"
-            onChange={self.uploadFile}
-            name="fileInput"
-            type="file"
-            accept={state.accept}
-          />
-        </form>
+        <UploadForm ref="uploadForm" name="fileInput" onChange={self.uploadFile} accept={state.accept} />
         <EditorDialog ref="editorDialog" title="Import cURL" hideFormat="1" placeholder="Enter cURL text"
           textEditor onConfirm={self.importCURL} />
       </Dialog>

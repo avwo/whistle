@@ -2,7 +2,7 @@ require('../css/editor-settings.css');
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
-var events = require('./events');
+var util = require('./util');
 var themes = require('./util').EDITOR_THEMES;
 
 var fontSizeOptions = [13];
@@ -13,7 +13,7 @@ for (var i = 14; i <= 36; i += 2) {
 var EditorSettings = React.createClass({
   componentDidMount: function () {
     var self = this;
-    events.on('toggle' + (self.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
+    util.on('toggle' + (self.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
       $(findDOMNode(self.refs.showLineNumbers)).trigger('click');
     });
   },
@@ -52,7 +52,7 @@ var EditorSettings = React.createClass({
             </select>
           </label>
         </p>
-        <p className="w-editor-settings-box">
+        <p className="w-editor-option">
           <label className="w-middle">
             <input
               ref="showLineNumbers"
@@ -63,7 +63,7 @@ var EditorSettings = React.createClass({
             Show line number
           </label>
         </p>
-        <p className="w-editor-settings-box">
+        <p className="w-editor-option">
           <label className="w-middle">
             <input
               checked={props.lineWrapping}

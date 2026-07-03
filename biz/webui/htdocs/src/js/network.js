@@ -5,7 +5,6 @@ var storage = require('./storage');
 var Divider = require('./divider');
 var ReqData = require('./req-data');
 var Detail = require('./detail');
-var events = require('./events');
 
 var getWidth = function (vertical) {
   var docElem = document.documentElement;
@@ -59,10 +58,10 @@ var Network = React.createClass({
           e.preventDefault();
         }
       });
-    events.trigger('networkDidMount');
-    events.on('toggleNetworkDock', self.onDockChange);
+    util.trigger('networkDidMount');
+    util.on('toggleNetworkDock', self.onDockChange);
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onDockChange: function () {
     var self = this;
     var dockToBottom = !self.state.dockToBottom;
@@ -89,21 +88,23 @@ var Network = React.createClass({
   },
   render: function () {
     var self = this;
-    var modal = self.props.modal;
-    var dockToBottom = self.state.dockToBottom;
+    var state = self.state;
+    var props = self.props;
+    var modal = props.modal;
+    var dockToBottom = state.dockToBottom;
     return (
-      <div className={'v-box fill' + (self.props.hide ? ' hide' : '')}>
+      <div className={'v-box fill' + util.getHide(props.hide)}>
         <Divider
           ref="divider"
           vertical={dockToBottom}
-          rightWidth={self.state.rightWidth}
+          rightWidth={state.rightWidth}
         >
           <ReqData modal={modal} />
           <Detail
             dockToBottom={dockToBottom}
             onDockChange={self.onDockChange}
             modal={modal}
-            rulesModal={self.props.rulesModal}
+            rulesModal={props.rulesModal}
           />
         </Divider>
       </div>

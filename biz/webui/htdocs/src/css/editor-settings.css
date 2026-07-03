@@ -1,5 +1,5 @@
 .w-editor-settings label,
-.w-editor-settings-box label {
+.w-editor-option label {
   font-weight: normal;
   white-space: nowrap;
 }
@@ -15,7 +15,7 @@
 .w-rules-settings-dialog .w-editor-settings select {
   width: 260px;
 }
-.w-editor-settings-box {
+.w-editor-option {
   padding-left: 65px;
   margin: 10px !important;
 }

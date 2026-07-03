@@ -22,8 +22,7 @@
 .w-detail .glyphicon {
   margin-right: 3px;
 }
-.w-menu .glyphicon-folder-open,
-.w-menu .glyphicon-folder-close {
+.w-menu :is(.glyphicon-folder-open, .glyphicon-folder-close) {
   margin-right: 6px;
 }
 .w-menu .w-online {
@@ -31,27 +30,28 @@
   top: 0;
   right: 0;
 }
-.w-menu .w-online,
-.w-menu a:hover,
-.w-left-menu a:hover,
-.w-left-menu a:hover .w-disabled {
+.w-menu :is(.w-online, a:hover),
+.w-left-menu :is(a:hover, a:hover .w-disabled) {
   color: var(--c-link);
 }
-.w-left-menu a:hover, .w-menu a:hover {
+
+:is(.w-left-menu, .w-menu) a:hover {
   background: var(--b-btn-hover);
 }
 .w-menu .w-offline {
   color: var(--c-disabled) !important;
   cursor: default;
 }
-.w-menu .w-disabled,
-.w-frames-action .w-disabled {
+
+:is(.w-menu, .w-frames-action) .w-disabled {
   color: var(--c-disabled) !important;
   cursor: not-allowed !important;
 }
+
 .w-left-menu .w-disabled {
   color: var(--c-disabled);
 }
+
 .w-menu .w-menu-enable .glyphicon-cog, .w-enabled {
   color: var(--c-risk) !important;
 }
@@ -131,21 +131,17 @@
   left: 272px;
 }
 
-.w-menu-wrapper .w-menu-item {
+.w-menu-wrapper .w-menu-item, .w-values-list .glyphicon-ok {
   display: none !important;
 }
 .w-menu-wrapper-show .w-menu-item {
   display: block !important;
 }
 
-.w-values-list .glyphicon-ok {
-  display: none !important;
-}
 .w-values-list a {
   font-weight: normal !important;
 }
-.w-disabled .glyphicon-ok,
-.w-disabled .glyphicon-stop {
+.w-disabled :is(.glyphicon-ok, .glyphicon-stop) {
   color: var(--c-disabled) !important;
 }
 
@@ -190,19 +186,19 @@
   text-decoration: underline;
 }
 
-.w-choose-filte-type .modal-dialog {
+.w-choose-file-type .modal-dialog {
   width: 500px;
 }
-.w-choose-filte-type .modal-footer, .w-choose-filte-type-label {
+.w-choose-file-type .modal-footer, .w-choose-file-type-label {
   white-space: nowrap;
 }
-.w-choose-filte-type-label .form-control {
+.w-choose-file-type-label .form-control {
   margin-left: 10px;
   width: 325px;
   display: inline-block;
   font-weight: normal;
 }
-.w-choose-filte-type-label select.form-control {
+.w-choose-file-type-label select.form-control {
   margin: 0 5px;
   width: 80px;
 }
@@ -268,17 +264,12 @@
   font-weight: bold;
   border: 1px solid var(--c-border);
 }
-.w-left-menu a .w-left-menu-tips:hover {
+.w-left-menu a .w-left-menu-tips:hover,
+.w-menu :is(.w-import-menu, .w-export-menu, .w-remove-menu-list) {
   display: none;
 }
-.w-menu .w-import-menu,
-.w-menu .w-export-menu,
-.w-menu .w-remove-menu-list {
-  display: none;
-}
-.w-show-left-menu .w-import-menu,
-.w-show-left-menu .w-export-menu,
-.w-show-left-menu .w-remove-menu-list {
+
+.w-show-left-menu :is(.w-import-menu, .w-export-menu, .w-remove-menu-list) {
   display: inline-block;
 }
 
@@ -398,7 +389,7 @@
   }
 }
 
-.w-show-left-menu .w-help-name, .w-show-left-menu .w-https-name {
+.w-show-left-menu :is(.w-help-name, .w-https-name) {
   display: inline!important;
 }
 
@@ -459,27 +450,27 @@
 }
 
 
-.w-hover-body tr:hover th, .w-hover-body tr:hover td {
+.w-hover-body tr:hover :is(th, td) {
   background: var(--b-hover);
 }
 
-.w-req-table .w-hover-body tr:hover th, .w-req-table .w-hover-body tr:hover td {
+.w-req-table .w-hover-body tr:hover :is(th, td) {
   background: var(--b-list-hover) !important;
 }
 
-.w-hover-body tr.warning:hover th, .w-hover-body tr.warning:hover td {
+.w-hover-body tr.warning:hover :is(th, td) {
   background: var(--b-list-warn) !important;
 }
-.w-hover-body tr.info:hover th, .w-hover-body tr.info:hover td {
+.w-hover-body tr.info:hover :is(th, td) {
   background: var(--b-list-info) !important;
 }
-.w-hover-body tr.success:hover th, .w-hover-body tr.success:hover td {
+.w-hover-body tr.success:hover :is(th, td) {
   background: var(--b-success-hover) !important;
 }
-.w-hover-body tr.danger:hover th, .w-hover-body tr.danger:hover td {
+.w-hover-body tr.danger:hover :is(th, td) {
   background: var(--b-list-danger-hover) !important;
 }
-.w-hover-body tr.w-mark:hover th, .w-hover-body tr.w-mark:hover td {
+.w-hover-body tr.w-mark:hover :is(th, td) {
   background: var(--b-list-mark) !important;
 }
 

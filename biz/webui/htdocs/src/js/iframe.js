@@ -17,9 +17,8 @@ var IFrame = React.createClass({
   },
   render: function() {
     var props = this.props;
-    var className = props.className;
     return (
-      <div className={'fill box w-fix-drag w-iframe' + (className ? ' ' + className : '')} style={props.style}>
+      <div className={'fill box w-fix-drag w-iframe ' + (props.className || '')} style={props.style}>
         <iframe ref="iframe" onLoad={this.onload} src={props.src} className="fill" />
       </div>
     );

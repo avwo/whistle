@@ -3,23 +3,23 @@ var Dialog = require('./dialog');
 var QRCodeImg = require('./qrcode');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
+var util = require('./util');
 
 var QRCodeDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
-  shouldComponentUpdate: function () {
-    return this.refs.qrcodeDialog.isVisible();
-  },
+  shouldComponentUpdate: util.scuDialog,
   show: function (url) {
-    this.refs.qrcodeDialog.show();
+    this.refs.dialog.show();
     this.setState({ url: url });
   },
   render: function () {
     var url = this.state.url;
 
     return (
-      <Dialog ref="qrcodeDialog" wstyle="w-qrcode-dialog">
+      <Dialog ref="dialog" wstyle="w-qrcode-dialog">
         <div className="modal-body">
           <h4>QR Code</h4>
           <CloseBtn />
@@ -30,13 +30,7 @@ var QRCodeDialog = React.createClass({
           <QRCodeImg url={this.state.url} />
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
       </Dialog>
     );

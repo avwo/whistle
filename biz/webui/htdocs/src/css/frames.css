@@ -135,8 +135,7 @@
   background: var(--b-title);
 }
 
-.w-frames-com-action .btn-group,
-.w-frames-com-action .w-format-json-btn {
+.w-frames-com-action :is(.btn-group, .w-format-json-btn) {
   margin: 1px 15px 1px 0;
   float: right;
   font-size: 12px !important;
@@ -155,33 +154,26 @@
   padding: 0;
 }
 
-.w-detail-inspectors .glyphicon-arrow-right,
-.w-frames-list .glyphicon-arrow-right,
-.w-com-tabs .glyphicon-arrow-right,
-.w-frames-com-action .glyphicon-arrow-right {
+:is(.w-detail-inspectors, .w-frames-list, .w-com-tabs, .w-frames-com-action) .glyphicon-arrow-right {
   color: var(--c-req);
 }
 
-.w-detail-inspectors .glyphicon-arrow-left,
-.w-frames-list .glyphicon-arrow-left,
-.w-com-tabs .glyphicon-arrow-left,
-.w-frames-com-action .glyphicon-arrow-left {
+:is(.w-detail-inspectors, .w-frames-list, .w-com-tabs, .w-frames-com-action) .glyphicon-arrow-left {
   color: var(--c-res);
 }
 .w-frames-data textarea {
   border: none;
 }
 
-.w-frames-list .w-frames-ignore,
-.w-frames-list .w-frames-ignore .glyphicon {
+.w-frames-list :is(.w-frames-ignore, .w-frames-ignore .glyphicon) {
   color: var(--c-disabled) !important;
   font-style: italic !important;
 }
 
-.w-frames-list .w-frames-ignore.w-frames-selected,
-.w-frames-list .w-frames-ignore.w-frames-selected .glyphicon {
+.w-frames-list .w-frames-ignore:is(.w-frames-selected, .w-frames-selected .glyphicon) {
   color: var(--c-active) !important;
 }
+
 .w-frames-com-action .w-frames-hex-data {
   margin-left: -10px;
   font-weight: normal;

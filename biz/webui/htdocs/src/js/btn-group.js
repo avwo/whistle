@@ -9,9 +9,10 @@ var BtnGroup = React.createClass({
       return;
     }
     var self = this;
+    var onClick = self.props.onClick;
     self.clearSelection();
     btn.active = true;
-    if (!self.props.onClick || self.props.onClick(btn)) {
+    if (!onClick || onClick(btn)) {
       self.setState({
         curBtn: btn
       });
@@ -24,9 +25,8 @@ var BtnGroup = React.createClass({
     });
   },
   onDoubleClick: function (e) {
-    if (this.props.onDoubleClick) {
-      this.props.onDoubleClick(e);
-    }
+    var onDoubleClick = this.props.onDoubleClick;
+    onDoubleClick && onDoubleClick(e);
     e.stopPropagation();
   },
   render: function () {
@@ -48,8 +48,7 @@ var BtnGroup = React.createClass({
       >
         {list.map(function (btn) {
           btn.disabled = disabled;
-          var icon = btn.icon ? <Icon name={btn.icon} /> : '';
-          var clazz = btn.className ? ' ' + btn.className : '';
+          var className = btn.className;
           btn.key = btn.key || util.getKey();
 
           return (
@@ -66,10 +65,10 @@ var BtnGroup = React.createClass({
               className={
                 'btn btn-default' +
                 (btn.active && !disabled ? ' active' : '') +
-                clazz
+                (className ? ' ' + className : '')
               }
             >
-              {icon}
+              {btn.icon ? <Icon name={btn.icon} /> : null}
               {btn.display || btn.name}
             </button>
           );

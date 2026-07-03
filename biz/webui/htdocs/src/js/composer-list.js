@@ -3,24 +3,24 @@ var Composer = require('./composer');
 var util = require('./util');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var TabMgr = require('./tab-mgr');
 var storage = require('./storage');
 var Icon = require('./icon');
 
 var DEFAULT_TAB = ' ';
+var addEvent = util.on;
 
 var ComposerList = React.createClass({
   getInitialState: function () {
     return { activeName: storage.get('activeComposerTab') || DEFAULT_TAB };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidMount: function () {
     var self = this;
-    events.on('comTabsChange', function () {
+    addEvent('comTabsChange', function () {
       self.setState({});
     });
-    events.on('_setComposerData', function() {
+    addEvent('_setComposerData', function() {
       self.showTab(DEFAULT_TAB);
     });
   },
@@ -67,7 +67,7 @@ var ComposerList = React.createClass({
     return (
       <div
         className={
-          'fill v-box w-com-list' + (hide ? ' hide' : '')
+          'fill v-box w-com-list' + util.getHide(hide)
         }
       >
         {tabs.length ? (

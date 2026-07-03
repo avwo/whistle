@@ -1,7 +1,7 @@
 require('../css/test-rule.css');
 var React = require('react');
 var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
 var Icon = require('./icon');
 var UrlInput = require('./url-input');
 var RulesMiniEditor = require('./rules-mini-editor');
@@ -14,6 +14,7 @@ var ReqType = require('./req-type');
 var message = require('./message');
 var StatusSelect = require('./status-select');
 var win = require('./win');
+var DismissBtn = require('./dismiss-btn');
 
 var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
@@ -125,7 +126,7 @@ var TestRule = React.createClass({
     this.setState({method: e.target.value});
   },
   onTypeChange: function(e) {
-    var type = e.target.getAttribute('data-type');
+    var type = util.attr(e.target, 'data-type');
     var headers = ReqType.setType(this.state.headers, ReqType.TYPES[type], true);
     this.setState({ type: type, headers: headers });
   },
@@ -138,13 +139,14 @@ var TestRule = React.createClass({
   updateType: function() {
     var self = this;
     var state = self.state;
-    if (state.headers === self._headers) {
+    var headers = state.headers;
+    if (headers === self._headers) {
       return;
     }
     clearTimeout(self._typeTimer);
-    self._headers = state.headers;
+    self._headers = headers;
     self._typeTimer = setTimeout(function() {
-      var type = ReqType.getType(util.parseHeaders(state.headers));
+      var type = ReqType.getType(util.parseHeaders(headers));
       if (type !== state.type) {
         self.setState({ type: type });
       }
@@ -197,6 +199,9 @@ var TestRule = React.createClass({
   showRawRules: function() {
     this.refs.rulesEditor.showRules(this.state.rawRules);
   },
+  renderBox: function(checked, onChange) {
+    return <input type="checkbox" className="mr-10" checked={checked} onChange={onChange} />;
+  },
   render: function() {
     var self = this;
     var state = self.state;
@@ -204,18 +209,17 @@ var TestRule = React.createClass({
     var url = state.url;
     var disabledHeaders = state.disabledHeaders;
     var disabledBody = state.disabledBody;
+    var disabledMock = state.disabledMock;
+    var renderBox = self.renderBox;
 
     self.updateType();
 
     return (
       <Dialog ref="testRules" wstyle="w-test-rule-dialog">
         <div className="modal-body">
-          <div className="modal-header">
-            <h4>
-              Test Rules Matching
-            </h4>
-            <CloseBtn onClick={self.hide} />
-          </div>
+          <ModalHeader>
+            Test Rules Matching
+          </ModalHeader>
           <div className="w-test-rule">
             <div className="w-rules-form">
               <label>
@@ -231,9 +235,9 @@ var TestRule = React.createClass({
                 placeholder="Enter rules for testing"
               />
               <label className="mt-10">
-                <input type="checkbox" checked={!state.disabledMock} onChange={self.onMockChange} className="mr-10" />
+                {renderBox(!disabledMock, self.onMockChange)}
                 Mock Response Status Code
-                <StatusSelect disabled={state.disabledMock} value={state.statusCode} onChange={self.onStatusCodeChange} />
+                <StatusSelect disabled={disabledMock} value={state.statusCode} onChange={self.onStatusCodeChange} />
               </label>
             </div>
             <div className="w-rules-form">
@@ -258,7 +262,7 @@ var TestRule = React.createClass({
             </div>
             <div className="w-rules-form">
               <label>
-                <input type="checkbox" checked={!disabledHeaders} onChange={self.onDisableHeadersChange} className="mr-10" />
+                {renderBox(!disabledHeaders, self.onDisableHeadersChange)}
                 Request Headers
               </label>
               <ReqType disabled={disabledHeaders} value={state.type} onChange={self.onTypeChange} className="w-test-rule-type" />
@@ -267,7 +271,7 @@ var TestRule = React.createClass({
             </div>
             <div className="w-rules-form">
               <label>
-                <input type="checkbox" checked={!disabledBody} onChange={self.onDisableBodyChange} className="mr-10" />
+                {renderBox(!disabledBody, self.onDisableBodyChange)}
                 Request Body
               </label>
               <textarea value={state.body} disabled={disabledBody} className="form-control w-form-value" maxLength={MAX_BODY_SIZE}
@@ -276,19 +280,12 @@ var TestRule = React.createClass({
           </div>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
         <Dialog ref="matchedRule" wstyle="w-test-rule-dialog">
-          <div className="modal-header">
-            <h4>Matched Rules</h4>
-            <CloseBtn />
-          </div>
+          <ModalHeader>
+            Matched Rules
+          </ModalHeader>
           <MatchedRule modal={state.matchedRules} showOnlyMatchRules={true} noSource />
         </Dialog>
       </Dialog>

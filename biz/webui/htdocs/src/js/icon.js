@@ -11,8 +11,10 @@ var Icon = React.createClass({
   },
   render: function() {
     var props = this.props;
+    var className = props.className;
+
     return <span
-      className={'glyphicon glyphicon-' + props.name + (props.className ? ' ' + props.className : '')}
+      className={'glyphicon glyphicon-' + props.name + (className ? ' ' + className : '')}
       data-name={props['data-name']}
       data-clipboard-text={props['data-clipboard-text']}
       title={props.title}

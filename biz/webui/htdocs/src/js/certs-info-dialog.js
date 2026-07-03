@@ -10,8 +10,10 @@ var message = require('./message');
 var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
 
 var MAX_CERT_SIZE = 128 * 1024;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 128KB';
 
 function getCertName(cert, filename) {
   filename = filename || cert.filename;
@@ -86,13 +88,11 @@ var CertsInfoDialog = React.createClass({
     if (rootCA) {
       list.unshift(rootCA);
     }
-    self.refs.certsInfoDialog.show();
-    self._hideDialog = false;
+    self.refs.dialog.show();
     self.setState({ list: list });
   },
   hide: function () {
-    this.refs.certsInfoDialog.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
   showRemoveTips: function (item) {
     var dir = (item.dir || '').replace(/\\/g, '/');
@@ -100,7 +100,7 @@ var CertsInfoDialog = React.createClass({
     var crt = dir + getCertName(item);
     var key = dir + item.filename + '.key';
     this.refs.tipsDialog.show({
-      title: 'Delete the following files and restart whistle:',
+      title: 'Delete the following files and restart whistle',
       tips: key + '\n' + crt,
       dir: item.dir
     });
@@ -114,7 +114,7 @@ var CertsInfoDialog = React.createClass({
   removeCert: function (item) {
     var self = this;
     win.confirm(
-      'Do you confirm the deletion of \'' + getCertName(item) + '\'?',
+      util.CMF_DEL_MSG + '\'' + getCertName(item) + '\'?',
       function (sure) {
         if (!sure) {
           return;
@@ -123,15 +123,13 @@ var CertsInfoDialog = React.createClass({
       }
     );
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   formatFiles: function (fileList) {
     var certs;
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
       if (cert.size > MAX_CERT_SIZE || !(cert.size > 0)) {
-        message.error('Maximum file size: 128KB');
+        message.error(EXCEED_TIPS);
         return;
       }
       var { name } = cert;
@@ -219,7 +217,7 @@ var CertsInfoDialog = React.createClass({
   handleActive: function (e) {
     var target = e.target;
     var checked = target.checked;
-    var filename = target.getAttribute('data-filename');
+    var filename = util.attr(target, 'data-filename');
     var data = JSON.stringify({ filename: filename, disabled: !checked });
     dataCenter.certs.active(data, this.handleCgi);
   },
@@ -233,7 +231,7 @@ var CertsInfoDialog = React.createClass({
     var self = this;
     var list = self.state.list || [];
     return (
-      <Dialog ref="certsInfoDialog" wstyle="w-certs-dialog">
+      <Dialog ref="dialog" wstyle="w-certs-dialog">
         <div className="modal-body">
           <CloseBtn onClick={self.hide} />
           <h4 className="w-certs-title">
@@ -252,40 +250,46 @@ var CertsInfoDialog = React.createClass({
             <tbody>
               {list.length ? (
                 list.map(function (item, i) {
+                  var disabled = item.disabled;
+                  var readOnly = item.readOnly;
+                  var filename = item.filename;
+                  var isRoot = item.isRoot;
+                  var validity = item.validity;
+
                   return (
                     <tr
-                      className={(item.isInvalid ? 'w-cert-invalid' : '') + (item.disabled ? ' w-certs-disabled' : '')}
+                      className={(item.isInvalid ? 'w-cert-invalid' : '') + (disabled ? ' w-certs-disabled' : '')}
                     >
                       <th className="w-certs-order">{i + 1}</th>
                       <td className="w-certs-active">
-                        {item.isRoot ? null :  <input type="checkbox" data-filename={item.filename}
-                        onChange={self.handleActive} checked={!item.disabled} />}
+                        {isRoot ? null :  <input type="checkbox" data-filename={filename}
+                        onChange={self.handleActive} checked={!disabled} />}
                       </td>
                       <td
                         className="w-certs-filename"
-                        title={item.filename}
+                        title={filename}
                       >
-                        {item.displayName || item.filename}
+                        {item.displayName || filename}
                         <br />
                         <a
-                          className={item.readOnly ? null : 'w-delete'}
+                          className={readOnly ? null : 'w-delete'}
                           onClick={function () {
-                            item.readOnly
+                            readOnly
                               ? self.showRemoveTips(item)
                               : self.removeCert(item);
                           }}
                         >
-                          {item.readOnly ? 'View path' : 'Delete'}
+                          {readOnly ? 'View path' : 'Delete'}
                         </a>
                       </td>
                       <td className="w-certs-domain" title={item.domain}>
-                        {item.isRoot ? null : item.domain}
+                        {isRoot ? null : item.domain}
                       </td>
                       <td
                         className="w-certs-validity"
-                        title={item.validity}
+                        title={validity}
                       >
-                        {item.validity}
+                        {validity}
                       </td>
                       <td className="w-certs-status">{item.status}</td>
                     </tr>
@@ -294,7 +298,7 @@ var CertsInfoDialog = React.createClass({
               ) : (
                 <tr>
                   <td colSpan="5" className="w-empty">
-                    Empty
+                    No data
                   </td>
                 </tr>
               )}
@@ -302,13 +306,7 @@ var CertsInfoDialog = React.createClass({
           </table>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           {dataCenter.whistleId ? <button
             type="button"
             className="btn btn-warning"
@@ -328,11 +326,8 @@ var CertsInfoDialog = React.createClass({
           />
           <button
             type="button"
-            style={{
-              display: dataCenter.isDiableCustomCerts() ? 'none' : undefined,
-              marginLeft: 5
-            }}
-            className="btn btn-primary"
+            style={util.getHideStyle(dataCenter.isDiableCustomCerts())}
+            className="btn btn-primary ml-5"
             onClick={self.showUpload}
           >
             <Icon name="folder-open" />

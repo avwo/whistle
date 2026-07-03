@@ -1,6 +1,5 @@
 var React = require('react');
 var util = require('./util');
-var events = require('./events');
 
 var HelpIcon = React.createClass({
   shouldComponentUpdate: function (nextProps) {
@@ -9,13 +8,12 @@ var HelpIcon = React.createClass({
     || props.onClick !== nextProps.onClick || props['data-name'] !== nextProps['data-name'];
   },
   onClick: function(e) {
-    e.stopPropagation();
-    e.preventDefault();
+    util.preventAll(e);
     var props = this.props;
     var url = props.docsUrl;
     url = util.isFunc(url) ? url() : url;
     if (url) {
-      return events.trigger('openUrl', util.getDocUrl(url));
+      return util.trigger('openUrl', util.getDocUrl(url));
     }
     props.onClick(e);
   },

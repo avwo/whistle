@@ -27,7 +27,6 @@ exports.getServerInfo = function(req) {
   var info = {
     whistleId: config.whistleId,
     hasUpdater: config.hasUpdater,
-    hasWhistleToken: config.hasWhistleToken,
     pid: PID,
     pInfo: proc,
     verbatim: config.verbatim,

@@ -5,12 +5,14 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
-var events = require('./events');
 var win = require('./win');
 var Icon = require('./icon');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var showSysErr = util.showSysErr;
+var addEvent = util.on;
+var attr = util.attr;
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
 function decode(name) {
@@ -26,18 +28,18 @@ var RecycleBinDialog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    events.on('rulesRecycleList', function (_, data) {
+    addEvent('rulesRecycleList', function (_, data) {
       if (self.state.name === 'Rules') {
         self.show(data, true);
       }
     });
-    events.on('valuesRecycleList', function (_, data) {
+    addEvent('valuesRecycleList', function (_, data) {
       if (self.state.name === 'Values') {
         self.show(data, true);
       }
     });
   },
-  show: function (options, quiet) {
+  show: function (options) {
     var self = this;
     if (options.list) {
       options.list = options.list
@@ -47,18 +49,17 @@ var RecycleBinDialog = React.createClass({
           }
           return {
             filename: decode(RegExp.$2),
-            date: util.toLocaleString(new Date(parseInt(RegExp.$1, 10))),
+            date: util.toDateStr(parseInt(RegExp.$1, 10)),
             name: name
           };
         })
         .filter(util.noop);
     }
-    self.setState(options, function () {
-      !quiet && self.refs.recycleBinDialog.show();
-    });
+    self.refs.dialog.show();
+    self.setState(options);
   },
   hide: function () {
-    this.refs.recycleBinDialog.hide();
+    this.refs.dialog.hide();
   },
   checkFile: function (data, xhr) {
     if (!data) {
@@ -84,7 +85,7 @@ var RecycleBinDialog = React.createClass({
   },
   view: function (e) {
     var self = this;
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     dataCenter[this.state.name.toLowerCase()].recycleView(
       { name: name },
       function (data, xhr) {
@@ -92,7 +93,7 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         if (!data.data) {
-          return message.info('Empty content');
+          return message.info('No content');
         }
         util.openEditor(data.data);
       }
@@ -107,16 +108,16 @@ var RecycleBinDialog = React.createClass({
           return;
         }
         item.data = data.data;
-        events.trigger('recover' + self.state.name, item);
+        util.trigger('recover' + self.state.name, item);
       }
     );
   },
   remove: function (e) {
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     var origName = decode(name.substring(name.indexOf('.') + 1));
     var self = this;
     win.confirm(
-      'Do you confirm the deletion of \'' + origName + '\' completely?',
+      util.CMF_DEL_MSG + '\'' + origName + '\' completely?',
       function (sure) {
         if (sure) {
           dataCenter[self.state.name.toLowerCase()].recycleRemove(
@@ -141,11 +142,10 @@ var RecycleBinDialog = React.createClass({
     var state = self.state;
     var list = state.list || [];
     return (
-      <Dialog ref="recycleBinDialog" wstyle="w-files-dialog">
-        <div className="modal-header">
-          <h4>{state.name} Trash</h4>
-          <CloseBtn />
-        </div>
+      <Dialog ref="dialog" wstyle="w-files-dialog">
+        <ModalHeader>
+          {state.name} Trash
+        </ModalHeader>
         <div className="modal-body" ref="recycleBinBody">
           <table className="table">
             <thead>
@@ -157,16 +157,18 @@ var RecycleBinDialog = React.createClass({
             <tbody className="w-hover-body">
               {list.length ? (
                 list.map(function (item, i) {
+                  var name = item.name;
+                  var filename = item.filename;
                   return (
-                    <tr key={item.name}>
+                    <tr key={name}>
                       <th className="w-files-order">{i + 1}</th>
                       <td className="w-files-date">{item.date}</td>
-                      <td className="w-files-path" title={item.filename}>
-                        {util.isGroup(item.filename) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
-                        {item.filename}
+                      <td className="w-files-path" title={filename}>
+                        {util.isGroup(filename) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
+                        {filename}
                       </td>
                       <td className="w-files-operation">
-                        <a data-name={item.name} onClick={self.view}>
+                        <a data-name={name} onClick={self.view}>
                           View
                         </a>
                         <a
@@ -176,7 +178,7 @@ var RecycleBinDialog = React.createClass({
                         >
                           Restore
                         </a>
-                        <a data-name={item.name} onClick={self.remove}>
+                        <a data-name={name} onClick={self.remove}>
                           Delete
                         </a>
                       </td>
@@ -186,7 +188,7 @@ var RecycleBinDialog = React.createClass({
               ) : (
                 <tr>
                   <td colSpan="4" style={{ textAlign: 'center' }}>
-                    Empty
+                    No data
                   </td>
                 </tr>
               )}
@@ -194,13 +196,7 @@ var RecycleBinDialog = React.createClass({
           </table>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
       </Dialog>
     );
@@ -212,16 +208,16 @@ var RecycleBinDialogWrap = React.createClass({
     return false;
   },
   show: function (options) {
-    this.refs.recycleBinDialog.show(options);
+    this.refs.dialog.show(options);
   },
   hide: function () {
-    this.refs.recycleBinDialog.hide();
+    this.refs.dialog.hide();
   },
   isVisible: function () {
-    return this.refs.recycleBinDialog.isVisible();
+    return this.refs.dialog.isVisible();
   },
   render: function () {
-    return <RecycleBinDialog ref="recycleBinDialog" />;
+    return <RecycleBinDialog ref="dialog" />;
   }
 });
 

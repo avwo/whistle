@@ -89,7 +89,7 @@
   background: var(--b-heavy-active);
 }
 
-.w-list-left .w-list-group:hover, .w-list-left .w-list-group:active {
+.w-list-left .w-list-group:is(:hover, :active) {
   color: var(--c-default);
 }
 

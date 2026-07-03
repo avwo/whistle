@@ -4,9 +4,8 @@ var HelpIcon = require('./help-icon');
 var util = require('./util');
 var ruleMixin = require('./rule-mixin');
 var HeaderSelect = require('./header-select');
-var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
 var MethodSelect = require('./method-select');
+var FormItem = require('./form-item');
 
 var HTTP_VERSION_OPTIONS = ['HTTP/1.1', 'HTTP/2.0'];
 var URL_ACTIONS = ['Set Param', 'Delete Param', 'Modify Path (path/to?query)'];
@@ -15,6 +14,7 @@ var BODY_ACTIONS = util.BODY_ACTIONS;
 var getRandomKey = util.getRandomKey;
 var getInjectValue = util.getInjectValue;
 var getFilepath = util.getFilepath;
+var removeSpaces = util.removeSpaces;
 
 var RequestRule = React.createClass({
   mixins: [ruleMixin],
@@ -65,16 +65,12 @@ var RequestRule = React.createClass({
       self.props.onChange(rules, values.join('\n\n'));
     }
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onMethodChange: function(option) {
-    this.setState({ method: option.value }, this.handleChange);
+    this.onStateChange('method', option.value);
   },
   onVersionChange: function(option) {
-    this.setState({ version: option.value }, this.handleChange);
-  },
-  showCorsSettings: function(e) {
-    this._curHeaderAction = this.getData(e);
-    this.refs.corsSettings.show();
+    this.onStateChange('version', option.value);
   },
   getUrlRules: function() {
     var state = this.state;
@@ -102,11 +98,11 @@ var RequestRule = React.createClass({
         }
         break;
       case URL_ACTIONS[1]:
-        rules.push('delete://urlParams.' + util.removeSpaces(key));
+        rules.push('delete://urlParams.' + removeSpaces(key));
         break;
       default:
         var data = {};
-        data[util.removeSpaces(key)] = util.removeSpaces(value);
+        data[removeSpaces(key)] = removeSpaces(value);
         rules.push('pathReplace://(' + JSON.stringify(data) + ')');
       }
     });
@@ -207,32 +203,30 @@ var RequestRule = React.createClass({
     var urlActionCount = urlActions.length;
     var headerActionCount = headerActions.length;
     var bodyActionCount = bodyActions.length;
+    var renderBox = self.renderBox;
+    var renderButtons = self.renderButtons;
 
     return (
       <div className={'w-rules-form' + (self.props.hide ? ' w-hide' : '')}>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" data-name="disabledMethod" className="mr-10" checked={!disabledMethod} onChange={self.onDisableCheckChange} />
-              Modify Request Method
-            </label>
-            <MethodSelect disabled={disabledMethod} value={state.method}  onChange={self.onMethodChange} />
-            <HelpIcon docsUrl="rules/method.html" />
-          </div>
-        </div>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <label className="w-175">
-              <input type="checkbox" className="mr-10" data-name="disabledVersion" checked={!disabledVersion} onChange={self.onDisableCheckChange} />
-              Modify HTTP Version
-            </label>
-            <Select disabled={disabledVersion} className="mx-10 w-300" options={HTTP_VERSION_OPTIONS} value={version} onChange={self.onVersionChange} />
-            <HelpIcon docsUrl={'rules/' + (version === HTTP_VERSION_OPTIONS[0] ? 'disable' : 'enable') + '.html'} />
-          </div>
-        </div>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledMethod, 'disabledMethod')}
+            Modify Request Method
+          </label>
+          <MethodSelect disabled={disabledMethod} value={state.method}  onChange={self.onMethodChange} />
+          <HelpIcon docsUrl="rules/method.html" />
+        </FormItem>
+        <FormItem>
+          <label className="w-175">
+            {renderBox(!disabledVersion, 'disabledVersion')}
+            Modify HTTP Version
+          </label>
+          <Select disabled={disabledVersion} className="mx-10 w-300" options={HTTP_VERSION_OPTIONS} value={version} onChange={self.onVersionChange} />
+          <HelpIcon docsUrl={'rules/' + (version === HTTP_VERSION_OPTIONS[0] ? 'disable' : 'enable') + '.html'} />
+        </FormItem>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" data-name="disabledUrl" checked={!disabledUrl} onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledUrl, 'disabledUrl')}
             Modify Request URL
             <HelpIcon className="ml-10" docsUrl="rules/urlParams.html#related" />
           </label>
@@ -243,7 +237,7 @@ var RequestRule = React.createClass({
                   <Select className="w-190" disabled={disabledUrl} value={action.type} data={action} options={URL_ACTIONS}
                     onChange={self.onActionChange} key={action.index} />
                   {self.renderUrlAction(action, disabledUrl)}
-                  {self.renderButtons(action, disabledUrl, urlActionCount)}
+                  {renderButtons(action, disabledUrl, urlActionCount)}
                 </div>
               );
             })
@@ -251,7 +245,7 @@ var RequestRule = React.createClass({
         </div>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" data-name="disabledHeader" checked={!disabledHeader} onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledHeader, 'disabledHeader')}
             Modify Request Headers
             <HelpIcon className="ml-10" docsUrl="rules/reqHeaders.html#related" />
           </label>
@@ -261,7 +255,7 @@ var RequestRule = React.createClass({
                   <div data-name="headerActions" className="w-form-value" data-index={action.index} key={action.index}>
                     {self.renderHeaders(action, disabledHeader, true, 'w-190')}
                     {self.renderHeaderAction(action, disabledHeader, true)}
-                    {self.renderButtons(action, disabledHeader, headerActionCount)}
+                    {renderButtons(action, disabledHeader, headerActionCount)}
                   </div>
                 );
               })
@@ -269,7 +263,7 @@ var RequestRule = React.createClass({
         </div>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" data-name="disabledBody" checked={!disabledBody} onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledBody, 'disabledBody')}
             Modify Request Body
             <HelpIcon className="ml-10" docsUrl="rules/reqBody.html#related" />
           </label>
@@ -280,47 +274,12 @@ var RequestRule = React.createClass({
                   <Select className="w-190" disabled={disabledBody} value={action.type} data={action} options={BODY_ACTIONS}
                     onChange={self.onActionChange} key={action.index} />
                   {self.renderBodyAction(action, disabledBody, BODY_ACTIONS)}
-                  {self.renderButtons(action, disabledBody, bodyActionCount)}
+                  {renderButtons(action, disabledBody, bodyActionCount)}
                 </div>
               );
             })
           }
         </div>
-        <Dialog ref="corsSettings" wstyle="w-cors-settings-dialog">
-        <div className="modal-header">
-            Request CORS Settings
-            <CloseBtn />
-          </div>
-          <div className="modal-body">
-            <div className="w-form-item">
-              <label>Origin</label>
-              <input type="text" className="form-control w-form-value" placeholder="Enter origin, e.g. * or https://example.com" />
-            </div>
-            <div className="w-form-item">
-              <label>Access-Control-Request-Method</label>
-              <input type="text" className="form-control w-form-value" placeholder="Enter request method, e.g. GET or POST" />
-            </div>
-            <div className="w-form-item">
-              <label>Access-Control-Request-Headers</label>
-              <input type="text" className="form-control w-form-value" placeholder="Enter request headers, e.g. Content-Type, X-Custom-Header" />
-            </div>
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-            >
-              Confirm
-            </button>
-          </div>
-        </Dialog>
       </div>
     );
   }

@@ -2,8 +2,9 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var Dialog = require('./dialog');
 var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
 var util = require('./util');
-require('../css/modal.css');
+var DismissBtn = require('./dismiss-btn');
 
 var isFunc = util.isFunc;
 var notEStr = util.notEStr;
@@ -53,17 +54,12 @@ function createModal(options, callback, gVarName) {
       {options.fullCustom ? (
         <CloseBtn />
       ) : (
-        <div className="modal-header">
-          <h4 />
-          <CloseBtn />
-        </div>
+        <ModalHeader />
       )}
       <div className="modal-body"></div>
-      {options.fullCustom ? undefined :
+      {options.fullCustom ? null :
         <div className="modal-footer">
-          <button type="button" className="btn btn-default" data-dismiss="modal">
-            Close
-          </button>
+          <DismissBtn />
         </div>
       }
     </Dialog>,

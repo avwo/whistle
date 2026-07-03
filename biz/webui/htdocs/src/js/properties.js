@@ -23,6 +23,10 @@ function getSrcInfo(val, sep) {
   return { value: val, btnText: btnText };
 }
 
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
 var Properties = React.createClass({
   getInitialState: function () {
     return { viewSource: false };
@@ -70,7 +74,7 @@ var Properties = React.createClass({
     var showEnableBtn = props.showEnableBtn && name === 'URL' && TUNNEL_RE.test(value);
     var index = props.richKey ? name.indexOf('\r\u0000(') : -1;
     return (<th>
-      {onHelp ? <HelpIcon data-name={name} onClick={onHelp} /> : undefined}
+      {onHelp ? <HelpIcon data-name={name} onClick={onHelp} /> : null}
       {showEnableBtn ? <EnableHttpsBtn /> : null}
       {self.renderValue(index === -1 ? name : name.substring(0, index))}
       {index === -1 ? null : <span className="w-gray">{name.substring(index + 2)}</span>}
@@ -134,7 +138,7 @@ var Properties = React.createClass({
     if (self.textStr !== sourceText) {
       self.textStr = sourceText;
       try {
-        self.jsonStr = JSON.stringify(modal, null, '  ');
+        self.jsonStr = util.stringify(modal);
       } catch (e) {
         self.jsonStr = undefined;
       }
@@ -144,12 +148,8 @@ var Properties = React.createClass({
       <div
         ref="properties"
         className={
-          'w-props-wrap ' +
-          (viewSource
-            ? 'w-props-view-source '
-            : 'w-props-view-parsed ') +
-          (props.hide ? 'hide' : '') +
-          (clazz ? ' ' + clazz : '')
+          'w-props-wrap w-props-view-' + (viewSource ? 'source' : 'parsed') +
+          util.getHide(props.hide) + (clazz ? ' ' + clazz : '')
         }
       >
         {sourceText ? (
@@ -157,20 +157,20 @@ var Properties = React.createClass({
             <CopyBtn value={sourceText} name="AsText" />
             {self.jsonStr ? (
               <CopyBtn value={self.jsonStr} name="AsJSON" />
-            ) : undefined}
+            ) : null}
             <a onClick={self.toggle}>{viewSource ? 'Form' : 'Text'}</a>
           </div>
-        ) : undefined}
+        ) : null}
         {copyValue ? (
           <div className="w-textarea-bar">
             <CopyBtn value={copyValue} name={props.name} />
           </div>
-        ) : undefined}
+        ) : null}
         {sourceText ? (
           <pre className="w-props-source">
             {self.renderValue(sourceText)}
           </pre>
-        ) : undefined}
+        ) : null}
         <table
           className={
             'table w-props w-props-parsed ' + (props.className || '')
@@ -179,7 +179,7 @@ var Properties = React.createClass({
         >
           <tbody>
             {rawValue ? (
-              <tr key="raw" className={rawValue ? undefined : 'w-no-value'}
+              <tr key="raw" className={rawValue ? null : 'w-no-value'}
                 data-name={rawName}  data-value={rawValue}>
                 <th>{rawName}</th>
                 <td className="w-props-raw-data w-user-select-none" title={rawValue}>
@@ -196,12 +196,12 @@ var Properties = React.createClass({
                   val = util.toString(val);
                   var json = showJsonView && util.likeJson(val) && util.parseJSON(val);
                   return (
-                    <tr key={i} className={val ? undefined : 'w-no-value'}
+                    <tr key={i} className={val ? null : 'w-no-value'}
                     data-name={name}  data-value={val}>
                       {self.renderKey(name, val)}
                       <td
                         className={json ? 'w-props-json' : 'w-user-select-none'}
-                        onContextMenu={json ? util.stopPropagation : null}
+                        onContextMenu={onContextMenu}
                       >
                         {
                           json ? <JSONTree data={json}
@@ -224,19 +224,20 @@ var Properties = React.createClass({
               var className = css && css.className;
               var showInfo = !json && showEnableBtn && name === 'Status Code' && value === 'captureError';
               var list = isRules ? value.split(util.CRLF_RE) : null;
+              var onContextMenu = json ? stopPropagation : null;
 
               return (
                 <tr
                   key={name}
                   title={title[name]}
-                  className={value ? undefined : 'w-no-value'}
+                  className={value ? null : 'w-no-value'}
                   data-name={name}  data-value={value}
                 >
                   {self.renderKey(isArr ? i + 1 + '' : name, value)}
                   <td
                     className={(json ? 'w-props-json ' : 'w-user-select-none ') + (className || '')}
                     style={style}
-                    onContextMenu={json ? util.stopPropagation : null}
+                    onContextMenu={onContextMenu}
                   >
                     {
                       json ? <JSONTree data={json} onSearch={function() {

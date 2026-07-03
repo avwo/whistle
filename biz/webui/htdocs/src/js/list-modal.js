@@ -7,6 +7,8 @@ function ListModal(list, data) {
 
 var proto = ListModal.prototype;
 var isStr = util.isStr;
+var isGroupName = util.isGroup;
+var checkKey = util.checkKey;
 
 proto.reset = function (list, data, init) {
   var self = this;
@@ -51,7 +53,7 @@ proto.hasChanged = function () {
   var data = this.data;
   return Object.keys(data).some(function (name) {
     var item = data[name];
-    return item && item.changed && !util.isGroup(item.name);
+    return item && item.changed && !isGroupName(item.name);
   });
 };
 
@@ -60,7 +62,7 @@ proto.getGroupName = function(name) {
   if (i !== -1) {
     for (; i >=0; i--) {
       name = this.list[i];
-      if (util.isGroup(name)) {
+      if (isGroupName(name)) {
         return name;
       }
     }
@@ -93,9 +95,9 @@ proto.exists = function (name) {
 };
 
 function push(list, name) {
-  if (!util.isGroup(name)) {
+  if (!isGroupName(name)) {
     for (var i = 0, len = list.length; i < len; i++) {
-      if (util.isGroup(list[i])) {
+      if (isGroupName(list[i])) {
         return list.splice(i, 0, name);
       }
     }
@@ -172,19 +174,19 @@ proto.moveTo = function (fromName, toName, group, toTop) {
   var fromIndex = list.indexOf(fromName);
   var toIndex = list.indexOf(toName);
   if (fromIndex !== -1 && toIndex !== -1 && fromIndex !== toIndex) {
-    if (group && util.isGroup(fromName)) {
+    if (group && isGroupName(fromName)) {
       var data = self.data;
       var children = [fromName];
       for (var i = fromIndex + 1, len = list.length; i < len; i++) {
         var name = data[list[i]].name;
-        if (util.isGroup(name)) {
+        if (isGroupName(name)) {
           break;
         }
         children.push(name);
       }
-      if (fromIndex < toIndex && util.isGroup(toName)) {
+      if (fromIndex < toIndex && isGroupName(toName)) {
         for (; toIndex < len; toIndex++) {
-          if (util.isGroup(list[toIndex + 1])) {
+          if (isGroupName(list[toIndex + 1])) {
             break;
           }
         }
@@ -196,7 +198,7 @@ proto.moveTo = function (fromName, toName, group, toTop) {
       list.splice(fromIndex, len);
       children.unshift(toIndex, 0);
       list.splice.apply(list, children);
-    } else if (toTop || util.isGroup(fromName) || !util.isGroup(toName) || self.getGroupName(fromName) === toName) {
+    } else if (toTop || isGroupName(fromName) || !isGroupName(toName) || self.getGroupName(fromName) === toName) {
       list.splice(fromIndex, 1);
       list.splice(toIndex, 0, fromName);
     } else {
@@ -222,7 +224,7 @@ proto.moveToGroup = function(name, groupName, isTop) {
     return list.splice(index, 0, name);
   }
   for (var len = list.length; index < len; index++) {
-    if (util.isGroup(list[index])) {
+    if (isGroupName(list[index])) {
       break;
     }
   }
@@ -242,7 +244,7 @@ proto.getChangedList = function () {
 };
 
 proto.getChangedGroupList = function(item) {
-  if (!util.isGroup(item.name)) {
+  if (!isGroupName(item.name)) {
     return [item];
   }
   var result = [];
@@ -252,7 +254,7 @@ proto.getChangedGroupList = function(item) {
   if (i > 0) {
     for (var len = list.length; i < len; i++) {
       item = data[list[i]];
-      if (util.isGroup(item.name)) {
+      if (isGroupName(item.name)) {
         break;
       }
       item.changed && result.push(item);
@@ -277,7 +279,7 @@ proto.clearAllSelected = function () {
 
 proto.setActive = function (name, active) {
   var item = this.get(name);
-  if (item && !util.isGroup(item.name)) {
+  if (item && !isGroupName(item.name)) {
     active = active !== false;
     active && this.clearAllActive();
     item.active = active;
@@ -291,7 +293,7 @@ proto.getActiveObj = function() {
   var data = this.data;
   for (var i = 0, len = list.length; i < len; i++) {
     var item = data[list[i]];
-    if (util.isGroup(item.name)) {
+    if (isGroupName(item.name)) {
       if (item._isNewGroup) {
         delete item._isNewGroup;
         obj.groupItem = item;
@@ -317,7 +319,7 @@ proto.getActive = function (ensure) {
   var list = this.list;
   for (var i = 0, len = list.length; i < len; i++) {
     var item = this.data[list[i]];
-    if (!util.isGroup(item.name)) {
+    if (!isGroupName(item.name)) {
       if (item.active) {
         return item;
       }
@@ -366,7 +368,7 @@ proto.removeGroup = function (name) {
   var hasActive;
   for (var len = list.length; index < len; index++) {
     name = list[index];
-    if (util.isGroup(name)) {
+    if (isGroupName(name)) {
       break;
     }
     result.push(name);
@@ -406,19 +408,19 @@ proto.getSibling = function (name) {
   var index = self.getIndex(name);
   var list = self.list;
   name = list[index + 1];
-  name = util.isGroup(name) && list[index - 1];
-  if (name && !util.isGroup(name)) {
+  name = isGroupName(name) && list[index - 1];
+  if (name && !isGroupName(name)) {
     return self.data[name];
   }
   for (var i = index + 1, len = list.length; i < len; i++) {
     name = list[i];
-    if (!util.isGroup(name)) {
+    if (!isGroupName(name)) {
       return self.data[name];
     }
   }
   for (i = index - 1; i >= 0; i--) {
     name = list[i];
-    if (!util.isGroup(name)) {
+    if (!isGroupName(name)) {
       return self.data[name];
     }
   }
@@ -470,7 +472,7 @@ proto.filter = function () {
   list.forEach(function (name) {
     var item = data[name];
     var hideSelected = filterSelected && !item.selected;
-    if (util.isGroup(name)) {
+    if (isGroupName(name)) {
       if (group && showGroup) {
         group.hide = false;
       }
@@ -480,11 +482,11 @@ proto.filter = function () {
     if (!keyword || hideSelected) {
       item.hide = hideSelected;
     } else if (filterBody) {
-      item.hide = !item.value || setNot(util.checkKey(item.value, item.value, keyword), not);
+      item.hide = !item.value || setNot(checkKey(item.value, keyword), not);
     } else {
-      item.hide = !name || setNot(util.checkKey(name, name, keyword), not);
+      item.hide = !name || setNot(checkKey(name, keyword), not);
       if (item.hide && !filterKey) {
-        item.hide = !item.value || setNot(util.checkKey(item.value, item.value, keyword), not);
+        item.hide = !item.value || setNot(checkKey(item.value, keyword), not);
       }
     }
     showGroup = showGroup || !item.hide;
@@ -537,7 +539,7 @@ proto.down = function () {
 };
 
 function isVisibleItem(item) {
-  return !item.hide && !util.isGroup(item.name);
+  return !item.hide && !isGroupName(item.name);
 }
 
 proto.prev = function () {

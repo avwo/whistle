@@ -9,6 +9,8 @@ var dataCenter = require('./data-center');
 var LazyInit = require('./lazy-init');
 var $ = require('jquery');
 
+var getHide = util.getHide;
+
 var Frames = React.createClass({
   getInitialState: function () {
     return {
@@ -22,7 +24,7 @@ var Frames = React.createClass({
       self.setState({});
     });
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onClickFrame: function (frame) {
     var modal = this.state.modal;
     modal.setActive(frame);
@@ -50,7 +52,7 @@ var Frames = React.createClass({
     return (
       <div
         className={
-          'fill v-box w-frames' + (props.hide ? ' hide' : '')
+          'fill v-box w-frames' + getHide(props.hide)
         }
       >
         <LazyInit inited={!hide}>
@@ -71,7 +73,7 @@ var Frames = React.createClass({
             <FrameData framesCtx={framesCtx} data={reqData} frame={curFrame} />
           </Divider>
         </LazyInit>
-        <div className={'w-no-frames' + (frames ? ' hide' : '')}>No Frames</div>
+        <div className={'w-no-frames' + getHide(frames)}>No Frames</div>
       </div>
     );
   }

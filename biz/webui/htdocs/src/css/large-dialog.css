@@ -21,7 +21,7 @@
   z-index: var(--z-max);
 }
 
-.w-large-dialog button.close, .w-custom-dialog button.close {
+:is(.w-large-dialog, .w-custom-dialog) button.close {
   font-size: 20px;
   line-height: 6px;
   padding: 4px 3px 8px;
@@ -34,7 +34,7 @@
   z-index: 1;
 }
 
-.w-large-dialog button.close:hover, .w-custom-dialog button.close:hover {
+:is(.w-large-dialog, .w-custom-dialog) button.close:hover {
   color: var(--c-heavy);
 }
 
@@ -58,18 +58,18 @@
   color: var(--c-default);
 }
 
-.w-large-dialog .modal-content, .w-custom-dialog .modal-content {
+:is(.w-large-dialog, .w-custom-dialog) .modal-content {
   border-radius: 5px;
   height: 100%;
   padding: 0;
   border: none;
 }
 
-.w-large-dialog iframe, .w-custom-dialog iframe {
+:is(.w-large-dialog, .w-custom-dialog) iframe {
   border-radius: 5px;
 }
 
-.w-large-dialog .modal-body, .w-custom-dialog .modal-body {
+:is(.w-large-dialog, .w-custom-dialog) .modal-body {
   display: block;
   width: 100%;
   height: 100%;

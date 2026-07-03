@@ -4,18 +4,14 @@
 .w-props-source {
   padding: 5px 10px;
 }
-.w-props-view-source .w-props-parsed {
-  display: none;
-}
+.w-props-view-source .w-props-parsed,
 .w-props-view-parsed .w-props-source {
   display: none;
 }
-.w-props-view-source .w-textarea-bar,
-.w-props-view-parsed .w-textarea-bar {
+:is(.w-props-view-source, .w-props-view-parsed) .w-textarea-bar {
   right: 5px !important;
 }
-.w-props th,
-.w-props td {
+.w-props :is(th, td) {
   border: none !important;
   font-size: 12px;
   padding-top: 3px !important;
@@ -51,8 +47,7 @@
   display: none;
 }
 
-.w-props th:hover .w-help-icon,
-.w-props th .w-enable-https-help {
+.w-props :is(th:hover .w-help-icon, th .w-enable-https-help) {
   display: inline-block;
   vertical-align: top;
 }
@@ -67,7 +62,7 @@
   user-select: none;
 }
 
-.w-user-select-none > pre, .w-user-select-none > span  {
+.w-user-select-none > :is(pre, span)  {
   user-select: text;
   display: block;
 }

@@ -4,7 +4,9 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var util = require('./util');
 var Icon = require('./icon');
-var events = require('./events');
+
+var preventBlur = util.preventBlur;
+var getHideStyle = util.getHideStyle;
 
 var ContextMenu = React.createClass({
   getInitialState: function () {
@@ -19,7 +21,7 @@ var ContextMenu = React.createClass({
       .on('mousedown click', function (e) {
         if ($(e.target).closest('.w-ctx-menu').length) {
           if (e.target.nodeName !== 'INPUT') {
-            e.preventDefault();
+            preventBlur(e);
           }
           return;
         }
@@ -41,17 +43,14 @@ var ContextMenu = React.createClass({
       this.container
     );
   },
-  preventDefault: function (e) {
-    e.preventDefault();
-  },
   isVisible: function () {
     return this.state.visible;
   },
   onClick: function (e) {
     var target = $(e.target).closest('li');
-    e.preventDefault();
+    preventBlur(e);
     if (
-      target.hasClass('w-ctx-sub-menu-list') ||
+      target.hasClass('w-ctx-sub-list') ||
       target.hasClass('w-ctx-item-disabled')
     ) {
       return;
@@ -70,7 +69,7 @@ var ContextMenu = React.createClass({
       );
     }
     if ((e.shiftKey || e.ctrlKey || e.metaKey) && target.attr('data-shift-to-edit')) {
-      events.trigger('showCopyEditor', target.attr('data-clipboard-text'));
+      util.trigger('showCopyEditor', target.attr('data-clipboard-text'));
     }
     if (data.radio) {
       data.list.forEach(function (item) {
@@ -95,65 +94,63 @@ var ContextMenu = React.createClass({
           display: data.visible ? '' : 'none'
         }}
       >
-        <ul className="w-ctx-menu-list">
+        <ul className="w-ctx-list">
           {list.map(function (item) {
             var subList = item.list;
-            var shiftToEdit = item.shiftToEdit ? 1 : undefined;
             var multiple = !subList && item.multiple;
             return (
               <li
                 data-menu-action={item.action || item.name}
                 key={item.name}
                 className={
-                  'w-ctx-menu-item ' +
+                  'w-ctx-item ' +
                   (item.sep ? 'w-ctx-item-sep' : '') +
                   (item.disabled ? ' w-ctx-item-disabled' : '') +
-                  (subList ? ' w-ctx-sub-menu-list' : '') +
+                  (subList ? ' w-ctx-sub-list' : '') +
                   (item.copyText ? ' w-copy-text' : '')
                 }
                 data-clipboard-text={item.copyText}
-                style={{ display: item.hide ? 'none' : undefined }}
+                style={getHideStyle(item.hide)}
                 onClick={item.onClick}
               >
                 <label className={'w-ctx-item-tt' + (item.selected ? ' w-ctx-selected' : '')}>
-                  {radio ? <span className={'w-ctx-checked' + (item.selected ? ' visible' : '')}>✔️</span> : undefined}
+                  {radio ? <span className={'w-ctx-checked' + (item.selected ? ' visible' : '')}>✔️</span> : null}
                   {item.icon ? <Icon name={item.icon} /> : null}
                   {multiple ? (
                     <input type="checkbox" checked={item.checked} />
                   ) : null}
                   {item.name}
                 </label>
-                {subList ? (
-                  <Icon name="play" />
-                ) : undefined}
-                {subList ? <div className="w-ctx-menu-gap"></div> : undefined}
+                {subList ? <Icon name="play" /> : null}
+                {subList ? <div className="w-ctx-gap"></div> : null}
                 {subList ? (
                   <ul
-                    className="w-ctx-menu-list"
+                    className="w-ctx-list"
                     style={
                       item.top > 0
                         ? { top: -item.top * 30 - 1, maxHeight: item.maxHeight }
-                        : undefined
+                        : null
                     }
                   >
                     {subList.map(function (subItem, i) {
+                      var name = subItem.name;
                       return (
                         <li
                           title={subItem.title}
                           data-parent-action={item.action}
-                          data-name={subItem.name}
-                          data-menu-action={subItem.action || subItem.name}
+                          data-name={name}
+                          data-menu-action={subItem.action || name}
                           key={i}
                           onClick={subItem.onClick}
                           className={
-                            'w-ctx-menu-item ' +
+                            'w-ctx-item ' +
                             (subItem.sep ? 'w-ctx-item-sep' : '') +
                             (subItem.disabled ? ' w-ctx-item-disabled' : '') +
                             (subItem.copyText ? ' w-copy-text' : '')
                           }
-                          style={{ display: subItem.hide ? 'none' : undefined }}
+                          style={getHideStyle(subItem.hide)}
                           data-clipboard-text={subItem.copyText}
-                          data-shift-to-edit={shiftToEdit}
+                          data-shift-to-edit={item.shiftToEdit ? 1 : null}
                         >
                           <label className="w-ctx-item-tt">
                             {subItem.multiple ? (
@@ -162,13 +159,13 @@ var ContextMenu = React.createClass({
                                 checked={subItem.checked}
                               />
                             ) : null}
-                            {subItem.name}
+                            {name}
                           </label>
                         </li>
                       );
                     })}
                   </ul>
-                ) : undefined}
+                ) : null}
               </li>
             );
           })}

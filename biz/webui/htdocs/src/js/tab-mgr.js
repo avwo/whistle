@@ -1,7 +1,6 @@
 var React = require('react');
 var util = require('./util');
 var TabFrame = require('./tab-frame');
-var events = require('./events');
 
 var MAX_IFRAME_COUNT = 6;
 
@@ -10,10 +9,10 @@ var TabMgr = React.createClass({
     this.initedTabs = {};
     return {};
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidMount: function () {
     var self = this;
-    events.on('setComposer', function () {
+    util.on('setComposer', function () {
       var props = self.props;
       var modal = !props.hide && props.modal;
       if (modal) {
@@ -80,7 +79,7 @@ var TabMgr = React.createClass({
         className={
           'fill v-box ' +
           (props.className || '') +
-          (hideAll ? ' hide' : '')
+          util.getHide(hideAll)
         }
       >
         {tabs}

@@ -3,18 +3,21 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var Editor = require('./editor');
 var storage = require('./storage');
-var events = require('./events');
 var util = require('./util');
 var win = require('./win');
 var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
 var Prompt = require('./prompt');
 var message = require('./message');
+var DismissBtn = require('./dismiss-btn');
 
 var showSysErr = util.showSysErr;
 var isStr = util.isStr;
+var isGroupName = util.isGroup;
+var trigger = util.trigger;
 var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
-var LINE__RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
+var LINE_RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
 
 function getEnabledIcon(item) {
   return item && item.selected ? ' (✓)' : '';
@@ -22,7 +25,7 @@ function getEnabledIcon(item) {
 
 function getName(name) {
   name = name || storage.get('previewRulesName');
-  if (util.isGroup(name)) {
+  if (isGroupName(name)) {
     return 'Default';
   }
   var rulesModal = dataCenter.getRulesModal();
@@ -90,7 +93,7 @@ var RulesDialog = React.createClass({
         value: ''
       }, function (result, xhr) {
         if (result && result.ec === 0) {
-          events.trigger('addNewRulesFile', {
+          trigger('addNewRulesFile', {
             filename: name,
             data: ''
           });
@@ -151,7 +154,7 @@ var RulesDialog = React.createClass({
           value: value
         }, function (data, xhr) {
           if (data && data.ec === 0) {
-            events.trigger('addNewValuesFile', {
+            trigger('addNewValuesFile', {
               filename: name,
               data: value
             });
@@ -186,7 +189,7 @@ var RulesDialog = React.createClass({
         var curRules = (self._rules || '').replace(TEMP_FILE_RE_G, filepath);
         if (curRules) {
           var hasRule;
-          rulesValue = rulesValue.replace(LINE__RE, function(line, _, key) {
+          rulesValue = rulesValue.replace(LINE_RE, function(line, _, key) {
             if (key) {
               return line;
             }
@@ -216,19 +219,19 @@ var RulesDialog = React.createClass({
         values: values
       }), function (result, xhr) {
         if (result && result.ec === 0) {
-          events.trigger('addNewRulesFile', {
+          trigger('addNewRulesFile', {
             filename: filename,
             data: rulesValue
           });
-          events.trigger('addMockRulesSuccess');
+          trigger('addMockRulesSuccess');
           if (values) {
-            events.trigger('addNewValuesFile', {
+            trigger('addNewValuesFile', {
               filename: values.name,
               data: values.value
             });
           }
           self.refs.rulesDialog.hide();
-          events.trigger('hideRulesDialog');
+          trigger('hideRulesDialog');
         } else {
           showSysErr(xhr);
         }
@@ -252,7 +255,7 @@ var RulesDialog = React.createClass({
           return line.trim().split(/\s+/).join(' ') === curRules ? '' : line;
         }).join('\n');
       } else {
-        value = value.replace(LINE__RE, function(line, _, key) {
+        value = value.replace(LINE_RE, function(line, _, key) {
           if (key) {
             return line;
           }
@@ -285,11 +288,11 @@ var RulesDialog = React.createClass({
     var data = rulesModal.data;
     for (var i = 0, len = list.length; i < len; i++) {
       var name = list[i];
-      if (util.isGroup(name)) {
+      if (isGroupName(name)) {
         var items = [];
         for (++i; i < len; i++) {
           var itemName = list[i];
-          if (util.isGroup(itemName)) {
+          if (isGroupName(itemName)) {
             i--;
             break;
           }
@@ -308,10 +311,9 @@ var RulesDialog = React.createClass({
 
     return (
       <Dialog ref="rulesDialog" wstyle="w-rules-dialog">
-        {self.props.onSave ? <div className="modal-header">
-          <h4>Rules Editor</h4>
-          <CloseBtn />
-        </div> : <div className="modal-title">
+        {self.props.onSave ? <ModalHeader>
+          Rules Editor
+        </ModalHeader> : <div className="modal-title">
           Select Rule File:
           <select className="form-control" onChange={self.onRulesChange} value={state.rulesName}>
             {self.getSelectList()}
@@ -328,13 +330,7 @@ var RulesDialog = React.createClass({
           {...util.getRulesTheme()}
         />
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           <button
             type="button"
             className="btn btn-primary"

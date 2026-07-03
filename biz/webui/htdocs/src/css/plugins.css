@@ -58,8 +58,7 @@
   width: 100%;
   height: 100%;
 }
-.w-nav-tabs .w-nav-tab-panel,
-.w-nav-tabs .w-nav-tab-panel > div {
+.w-nav-tabs :is(.w-nav-tab-panel, .w-nav-tab-panel > div) {
   overflow: hidden;
 }
 .w-nav-tabs > .nav > .w-nav-normal-tab > a {
@@ -96,8 +95,7 @@
   overflow-x: hidden;
   outline: none;
 }
-.w-plugins-list th,
-.w-plugins-list td {
+.w-plugins-list :is(th, td) {
   border-top: none !important;
   border-bottom: 1px solid var(--c-border);
   padding: 8px 6px !important;
@@ -106,8 +104,7 @@
   white-space: nowrap;
 }
 .w-plugins-disable,
-.w-plugins-disable a,
-.w-plugins-disable td {
+.w-plugins-disable :is(a, td) {
   color: var(--c-disabled);
 }
 
@@ -127,8 +124,7 @@
 .w-plugins-version {
   width: 150px;
 }
-.w-has-new-version .w-plugins-version .w-new-version,
-.w-has-new-version .w-plugin-update-btn,
+.w-has-new-version :is(.w-plugins-version .w-new-version, .w-plugin-update-btn),
 .w-plugins-menu.w-plugin-update-btn,
 .w-about-dialog .w-new-version {
   color: var(--c-risk) !important;
@@ -138,42 +134,34 @@
   margin-left: 5px;
 }
 
-.w-has-new-version .w-plugins-version .w-new-version:hover,
-.w-has-new-version .w-plugin-update-btn:hover,
-.w-plugins-menu.w-plugin-update-btn:hover,
-.w-about-dialog .w-new-version:hover {
-  color: var(--c-risk) !important;
-}
 .w-plugins-date {
   width: 190px;
 }
 .w-plugins-operation {
   width: 360px;
 }
-.w-plugins-operation a,
-.w-plugins-operation span.disabled {
+.w-plugins-operation :is(a, span.disabled) {
   margin-right: 20px;
 }
-.w-plugins-operation a:last-child,
-.w-plugins-operation span.disabled:last-child {
+.w-plugins-operation :is(a:last-child, span.disabled:last-child) {
   margin-right: 0;
 }
-.w-plugins-operation span.disabled {
+.w-plugins-operation :is(span.disabled) {
   color: var(--c-disabled);
 }
 
-.w-plugin-rules-dialog .modal-dialog {
+.w-plugin-rules .modal-dialog {
   width: 680px;
 }
-.w-plugin-rules-dialog .modal-dialog pre {
+.w-plugin-rules .modal-dialog pre {
   max-height: 230px;
   overflow: auto;
   padding: 10px;
 }
-.w-plugin-rules-dialog fieldset {
+.w-plugin-rules fieldset {
   border: 1px solid var(--c-border);
 }
-.w-plugin-rules-dialog fieldset legend {
+.w-plugin-rules fieldset legend {
   font-size: 13px;
   padding: 0 10px;
   border: none;
@@ -181,21 +169,21 @@
   margin: 0 10px;
   font-weight: bold;
 }
-.w-plugin-rules-dialog fieldset:nth-child(2) {
+.w-plugin-rules fieldset:nth-child(2) {
   margin-top: 15px;
 }
-.w-plugin-rules-dialog .modal-header h4 {
+.w-plugin-rules .modal-header h4 {
   margin: 0;
 }
-.w-plugin-rules-dialog .modal-header .close {
+.w-plugin-rules .modal-header .close {
   position: absolute;
   right: 10px;
   top: 16px;
 }
-.w-plugin-update-dialog {
+.w-plugin-update {
   z-index: var(--z-modal-max);
 }
-.w-plugin-update-dialog .modal-dialog {
+.w-plugin-update .modal-dialog {
   width: 600px;
 }
 .w-plugin-update-cmd {
@@ -218,7 +206,7 @@
 .w-plugin-btn:hover {
   color: var(--c-link-hover) !important;
 }
-.w-plugin-update-dialog .modal-footer {
+.w-plugin-update .modal-footer {
   white-space: nowrap;
 }
 .w-registry-list {
@@ -256,4 +244,8 @@
 
 .w-plugin-copy-cmd:hover {
   color: var(--c-default);
+}
+
+.w-dialog-for-plguin .modal-header {
+  display: none;
 }

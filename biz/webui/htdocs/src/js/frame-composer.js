@@ -6,9 +6,13 @@ var message = require('./message');
 var storage = require('./storage');
 var win = require('./win');
 var Icon = require('./icon');
+var UploadForm = require('./upload-form');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 1MB';
+var preventBlur = util.preventBlur;
+var getHide = util.getHide;
 
 var FrameComposer = React.createClass({
   getInitialState: function () {
@@ -20,8 +24,9 @@ var FrameComposer = React.createClass({
   componentDidMount: function () {
     var self = this;
     var framesCtx = self.props.framesCtx;
-    self.dataField = findDOMNode(self.refs.uploadData);
-    self.dataForm = findDOMNode(self.refs.uploadDataForm);
+    var uploadForm = self.refs.uploadForm;
+    self.dataField = uploadForm.getInput();
+    self.dataForm = uploadForm.getForm();
     framesCtx.on('composeFrame', function (e, frame) {
       if (frame) {
         var body;
@@ -55,7 +60,7 @@ var FrameComposer = React.createClass({
     var text = storage.get('composeFrameData');
     self.setTextarea(String(text || ''));
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   uploadTextToServer: function () {
     var self = this;
     self.target = 'server';
@@ -88,7 +93,7 @@ var FrameComposer = React.createClass({
   uploadForm: function (form) {
     var file = form.get('uploadData');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert('Maximum file size: 1MB');
+      return win.alert(EXCEED_TIPS);
     }
     var self = this;
     var params = {
@@ -135,7 +140,7 @@ var FrameComposer = React.createClass({
     }
     var params = {
       type: target.nodeName === 'A' ? 'bin' : 'text',
-      target: target.getAttribute('data-target') ? 'server' : 'client',
+      target: util.attr(target, 'data-target') ? 'server' : 'client',
       text: value,
       base64: base64
     };
@@ -155,7 +160,7 @@ var FrameComposer = React.createClass({
     var data = util.parseRawJson(this.state.text);
     if (data) {
       this.setState({
-        text: JSON.stringify(data, null, '  ')
+        text: util.stringify(data)
       });
     }
   },
@@ -173,9 +178,6 @@ var FrameComposer = React.createClass({
   },
   onTextareaChange: function (e) {
     this.setTextarea(e.target.value);
-  },
-  preventDefault: function (e) {
-    e.preventDefault();
   },
   onTypeChange: function (e) {
     var isHexText = e.target.checked;
@@ -201,12 +203,13 @@ var FrameComposer = React.createClass({
     var displayStyle = util.getHideStyle(isHttps);
     var tips = closed ? 'The connection is closed' : undefined;
     var disabled = closed || self.sendTimer;
+    closed = getHide(closed);
+
     return (
       <div
         onDrop={self.onDrop}
         className={
-          'fill v-box w-frames-com' +
-          (self.props.hide ? ' hide' : '')
+          'fill v-box w-frames-com' + getHide(self.props.hide)
         }
       >
         <div className="w-frames-com-action">
@@ -225,7 +228,7 @@ var FrameComposer = React.createClass({
           <label
             className={
               'w-frames-crlf' +
-              (isHexText ? ' hide' : '') +
+              getHide(isHexText) +
               (isCRLF ? ' w-frames-checked' : '')
             }
           >
@@ -240,7 +243,7 @@ var FrameComposer = React.createClass({
             <button
               disabled={disabled}
               title={tips}
-              onMouseDown={self.preventDefault}
+              onMouseDown={preventBlur}
               onClick={self.onSend}
               type="button"
               className="btn btn-default btn-sm"
@@ -261,7 +264,7 @@ var FrameComposer = React.createClass({
             </button>
             <ul
               style={leftStyle}
-              className={'dropdown-menu' + (closed ? ' hide' : '')}
+              className={'dropdown-menu' + closed}
             >
               <li style={displayStyle}>
                 <a onClick={self.onSend}>Send Binary Data</a>
@@ -280,7 +283,7 @@ var FrameComposer = React.createClass({
             <button
               disabled={disabled}
               title={tips}
-              onMouseDown={self.preventDefault}
+              onMouseDown={preventBlur}
               data-target="server"
               onClick={self.onSend}
               type="button"
@@ -302,7 +305,7 @@ var FrameComposer = React.createClass({
             </button>
             <ul
               style={leftStyle}
-              className={'dropdown-menu' + (closed ? ' hide' : '')}
+              className={'dropdown-menu' + closed}
             >
               <li style={displayStyle}>
                 <a data-target="server" onClick={self.onSend}>
@@ -330,27 +333,14 @@ var FrameComposer = React.createClass({
         </div>
         <textarea
           ref="textarea"
-          style={{ fontFamily: isHexText ? 'monospace' : undefined }}
           maxLength={MAX_LENGTH}
           value={text}
           onKeyDown={self.onForamt}
           onChange={self.onTextareaChange}
           placeholder={'Enter ' + (isHexText ? 'hex ' : '') + 'text'}
-          className="fill"
+          className={'fill' + (isHexText ? ' n-monospace' : '')}
         />
-        <form
-          ref="uploadDataForm"
-          method="post"
-          encType="multipart/form-data"
-          style={util.HIDE_STYLE}
-        >
-          <input
-            ref="uploadData"
-            onChange={self.onFormChange}
-            type="file"
-            name="uploadData"
-          />
-        </form>
+        <UploadForm ref="uploadForm" name="uploadData" onChange={self.onFormChange} />
       </div>
     );
   }

@@ -29,8 +29,7 @@
   overflow-x: hidden;
   overflow-y: auto;
 }
-.w-menu-item a .glyphicon,
-.w-menu-item input {
+.w-menu-item :is(a .glyphicon, input) {
   margin-right: 8px;
   font-size: 12px;
   vertical-align: text-bottom;
@@ -38,8 +37,7 @@
 .w-menu-item a .glyphicon {
   vertical-align: initial;
 }
-.w-menu-item a .glyphicon-ok,
-.w-menu-item a .glyphicon-plus {
+.w-menu-item a :is(.glyphicon-ok, .glyphicon-plus) {
   color: var(--c-ok);
 }
 .w-create-menu-item a .glyphicon-plus {

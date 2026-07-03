@@ -5,10 +5,12 @@ var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
-var events = require('./events');
 var DropDown = require('./dropdown');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var LogMixin = require('./log-mixin');
+
+var addEvent = util.on;
+var getHide = util.getHide;
 
 var ServerLog = React.createClass({
   name: 'server',
@@ -52,17 +54,17 @@ var ServerLog = React.createClass({
     ));
     self.content = findDOMNode(self.refs.svrContent);
 
-    events.on('uploadLogs', self.handleImport);
+    addEvent('uploadLogs', self.handleImport);
     dataCenter.on('log', function(_, logs) {
       self.updateLogs(logs);
     });
 
     $(container).on('scroll', self.handleScroll);
 
-    events.on('serverImportFile', function (_, file) {
+    addEvent('serverImportFile', function (_, file) {
       self.importFile(file);
     });
-    events.on('serverImportData', function (_, data) {
+    addEvent('serverImportData', function (_, data) {
       self.importData(data);
     });
   },
@@ -98,7 +100,7 @@ var ServerLog = React.createClass({
       <div
         className={
           'fill v-box w-textarea w-server-log' +
-          (self.props.hide ? ' hide' : '')
+          getHide(self.props.hide)
         }
       >
         <div className="w-log-action-bar">
@@ -111,10 +113,10 @@ var ServerLog = React.createClass({
               var upper = log.level.toUpperCase();
               var text =
                 'Date: ' +
-                util.toLocaleString(new Date(log.date)) +
+                util.toDateStr(log.date) +
                 ' (Level: ' + upper + ')' +
                 '\r\n' + log.text;
-              var hide = log.hide || (level && log.level !== level) ? ' hide' : '';
+              var hide = getHide(log.hide || (level && log.level !== level));
               if (!hide) {
                 ++index;
               }

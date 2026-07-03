@@ -7,13 +7,14 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var FilterInput = require('./filter-input');
 var DropDown = require('./dropdown');
-var events = require('./events');
 var storage = require('./storage');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var LogMixin = require('./log-mixin');
 
 var VIEW_KEY =  window.Symbol ? window.Symbol('view') : 'view';
 var isStr = util.isStr;
+var addEvent = util.on;
+var getHide = util.getHide;
 
 function parseLog(log, expandRoot) {
   if (log[VIEW_KEY]) {
@@ -41,7 +42,7 @@ function parseLog(log, expandRoot) {
           />
         );
       }
-      logText.push(JSON.stringify(data, null, 2));
+      logText.push(util.stringify(data));
       return (
         <JSONTree
           data={data}
@@ -114,13 +115,13 @@ var Console = React.createClass({
     ));
     self.content = findDOMNode(self.refs.logContent);
 
-    events.on('uploadLogs', self.handleImport);
+    addEvent('uploadLogs', self.handleImport);
     dataCenter.on('log', self.updateLogs);
 
-    events.on('consoleImportFile', function (_, file) {
+    addEvent('consoleImportFile', function (_, file) {
       self.importFile(file);
     });
-    events.on('consoleImportData', function (_, data) {
+    addEvent('consoleImportData', function (_, data) {
       self.importData(data);
     });
 
@@ -164,20 +165,15 @@ var Console = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
+    var props = self.props;
     var logs = state.logs;
     var logIdList = state.logIdList;
     var level = state.level;
     var expandRoot = state.expandRoot;
     var index = 0;
-    var className = self.props.className;
 
     return (
-      <div
-        className={
-          'fill v-box w-textarea w-log' + (className ? ' ' + className : '') +
-          (self.props.hide ? ' hide' : '')
-        }
-      >
+      <div className={'fill v-box w-textarea w-log ' + (props.className || '') + getHide(props.hide)}>
         <div className="w-log-action-bar">
           <DropDown
             onBeforeShow={self.onBeforeShow}
@@ -203,9 +199,9 @@ var Console = React.createClass({
               var upper = log.level.toUpperCase();
               var date =
                 'Date: ' +
-                util.toLocaleString(new Date(log.date)) +
+                util.toDateStr(log.date) +
                 getLogInfo(log, upper) + '\r\n';
-              var hide = log.hide || (level && log.level !== level) ? ' hide' : '';
+              var hide = getHide(log.hide || (level && log.level !== level));
               if (!hide) {
                 ++index;
               }

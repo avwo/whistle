@@ -22,12 +22,12 @@ var NetworkRule = React.createClass({
       serverAddress: ''
     };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
-  onAddressChange: function(host, name) {
-    this.setState({ [name]: host }, this.handleChange);
+  shouldComponentUpdate: util.scu,
+  onAddrChange: function(host, name) {
+    this.onStateChange(name, host);
   },
   onProxyNameChange: function(option) {
-    this.setState({ proxyName: option.value }, this.handleChange);
+    this.onStateChange('proxyName', option.value);
   },
   handleChange: function() {
     var self = this;
@@ -55,28 +55,29 @@ var NetworkRule = React.createClass({
     var self = this;
     var state = self.state;
     var proxyName = state.proxyName;
-    var hide = self.props.hide;
     var disabledServer = state.disabledServer;
     var disabledProxy = state.disabledProxy;
+    var renderBox = self.renderBox;
+    var onAddrChange = self.onAddrChange;
 
     return (
-      <div className={'w-rules-form' + (hide ? ' w-hide' : '')}>
+      <div className={'w-rules-form' + (self.props.hide ? ' w-hide' : '')}>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabledServer} data-name="disabledServer" onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledServer, 'disabledServer')}
             Server Address
             <HelpIcon docsUrl="rules/host.html" className="ml-10" />
           </label>
-          <HostInput name="serverAddress" className="w-form-value" onChange={self.onAddressChange} disabled={disabledServer} />
+          <HostInput name="serverAddress" className="w-form-value" onChange={onAddrChange} disabled={disabledServer} />
         </div>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabledProxy} data-name="disabledProxy" onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledProxy, 'disabledProxy')}
             <Select value={proxyName} className="w-proxy-options" onChange={self.onProxyNameChange} options={PROXY_OPTIONS} />
             Address
             <HelpIcon docsUrl={'rules/' + proxyName + '.html'} className="ml-10" />
           </label>
-          <HostInput name="proxyAddress" className="w-form-value" onChange={self.onAddressChange} disabled={disabledProxy} />
+          <HostInput name="proxyAddress" className="w-form-value" onChange={onAddrChange} disabled={disabledProxy} />
         </div>
       </div>
     );

@@ -2,6 +2,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 var Textarea = require('./textarea');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
 
 var TextDialog = React.createClass({
   getInitialState: function () {
@@ -35,13 +36,7 @@ var TextDialog = React.createClass({
           </div>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             className="btn btn-primary w-copy-text-with-tips"

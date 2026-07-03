@@ -2,10 +2,10 @@ require('../css/kv.css');
 var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
-var events = require('./events');
 var win = require('./win');
 var Icon = require('./icon');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var isStr = util.isStr;
 
@@ -16,8 +16,7 @@ var KVDialog = React.createClass({
   show: function (data, rulesModal, valuesModal, isValues, selectedHistory) {
     var self = this;
     self.isValues = isValues;
-    self.refs.kvDialog.show();
-    self._hideDialog = false;
+    self.refs.dialog.show();
     var history = [];
     var hideDefaultOption = data && data.hideDefaultOption;
     if (data && Array.isArray(data.list) && typeof data.data === 'object') {
@@ -48,12 +47,9 @@ var KVDialog = React.createClass({
   },
   hide: function () {
     var self = this;
-    self.refs.kvDialog.hide();
-    self._hideDialog = true;
+    self.refs.dialog.hide();
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   selectHistory: function(e) {
     var onHistoryChange = this.props.onHistoryChange;
     onHistoryChange && onHistoryChange(e.target.value, this.isValues);
@@ -89,7 +85,7 @@ var KVDialog = React.createClass({
     data[''] = list;
     var save = function() {
       self.hide();
-      return events.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
+      return util.trigger(self.isValues ? 'uploadValues' : 'uploadRules', data);
     };
     if (!hasConflict) {
       return save();
@@ -135,11 +131,10 @@ var KVDialog = React.createClass({
     var title = self.isValues ? 'Values' : 'Rules';
 
     return (
-      <Dialog ref="kvDialog" wstyle="w-kv-dialog">
-        <div className="modal-header">
-          <h4>Select {title}</h4>
-          <CloseBtn onClick={self.hide} />
-        </div>
+      <Dialog ref="dialog" wstyle="w-kv-dialog">
+        <ModalHeader>
+          Select {title}
+        </ModalHeader>
         <div className="modal-body">
           {history.length ? <label>
             History:
@@ -161,7 +156,7 @@ var KVDialog = React.createClass({
                 })
               }
             </select>
-          </label> : undefined}
+          </label> : null}
           <table className="table">
             <thead>
               <th className="w-kv-box"><input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={noData} /></th>
@@ -174,7 +169,7 @@ var KVDialog = React.createClass({
               {noData ? (
                 <tr>
                   <td colSpan="3" className="w-empty">
-                    Empty
+                    No data
                   </td>
                 </tr>
               ) : (
@@ -200,7 +195,7 @@ var KVDialog = React.createClass({
                   return (
                     <tr
                       key={i}
-                      className={item.isConflict ? 'w-kv-conflict' : undefined}
+                      className={item.isConflict ? 'w-kv-conflict' : null}
                     >
                       <th className="w-kv-box"><input type="checkbox" checked={item.checked} onChange={function(e) {
                         self.checkItem(e, item);
@@ -229,13 +224,7 @@ var KVDialog = React.createClass({
             <input type="checkbox" checked={checkedAll} onChange={self.checkAll} disabled={noData} />
             Select all
           </label>
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Cancel
-          </button>
+          <DismissBtn />
           <button
             type="button"
             className="btn btn-default"

@@ -10,6 +10,7 @@ var ContextMenu = require('./context-menu');
 var Icon = require('./icon');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 
+var toDateStr = util.toDateStr;
 var SEND_PERATORS = [
   {
     value: 0,
@@ -107,12 +108,13 @@ var FrameList = React.createClass({
     }
     var reqData = self.props.reqData;
     if (reqData) {
+      var refs = self.refs;
       if (reqData.pauseRecordFrames) {
-        self.refs.recordBtn.enable('pause');
+        refs.recordBtn.enable('pause');
       } else if (reqData.stopRecordFrames) {
-        self.refs.recordBtn.enable('stop');
+        refs.recordBtn.enable('stop');
       } else {
-        self.refs.recordBtn.enable();
+        refs.recordBtn.enable();
       }
     }
   },
@@ -377,7 +379,7 @@ var FrameList = React.createClass({
         <div
           tabIndex="0"
           onKeyDown={self.onClear}
-          style={{ background: keyword ? 'var(--b-filtered)' : undefined }}
+          style={{ background: keyword ? 'var(--b-filtered)' : null }}
           onScroll={self.shouldScrollToBottom}
           ref={self.setContainer}
           className="fill w-frames-list"
@@ -397,7 +399,7 @@ var FrameList = React.createClass({
                 item.title =
                   item.title ||
                   'Date: ' +
-                    util.toLocaleString(new Date(parseInt(item.frameId, 10)));
+                    toDateStr(parseInt(item.frameId, 10));
               }
               if (item.data == null) {
                 item.data = util.getBody(item, true);
@@ -408,7 +410,7 @@ var FrameList = React.createClass({
               if (!item.title && !item.closed) {
                 item.title =
                   'Date: ' +
-                  util.toLocaleString(new Date(parseInt(item.frameId, 10))) +
+                    toDateStr(parseInt(item.frameId, 10)) +
                   '\nPath: ' +
                   (item.isClient ? 'Client -> Server' : 'Server -> Client');
                 if (item.opcode) {
@@ -440,7 +442,7 @@ var FrameList = React.createClass({
                   key={item.frameId}
                   data-id={item.frameId}
                   title={item.title}
-                  style={{ display: item.hide ? 'none' : undefined }}
+                  style={util.getHideStyle(item.hide)}
                   onClick={function () {
                     onClickFrame && onClickFrame(item);
                   }}

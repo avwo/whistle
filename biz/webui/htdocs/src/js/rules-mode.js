@@ -1,5 +1,4 @@
 var CodeMirror = require('codemirror');
-var events = require('./events');
 var protocols = require('./protocols');
 var util = require('./util');
 
@@ -13,7 +12,7 @@ var IP_WITH_PORT_RE = /^\[([:\da-f.]+)\](?::(\d+))?$/i;
 var PLUGIN_VAR_RE = /^%[a-z\d_\-]+[=.]/;
 var isWildcard = util.isWildcard;
 
-events.on('updatePlugins', function () {
+util.on('updatePlugins', function () {
   forwardRules = protocols.getForwardRules();
   pluginRules = protocols.getPluginRules();
 });

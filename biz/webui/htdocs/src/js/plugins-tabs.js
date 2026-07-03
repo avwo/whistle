@@ -2,6 +2,8 @@ var React = require('react');
 var util = require('./util');
 var TabMgr = require('./tab-mgr');
 
+var getHide = util.getHide;
+
 var PluginsTabs = React.createClass({
   getInitialState: function () {
     var tab = this.props.tabs[0];
@@ -9,39 +11,40 @@ var PluginsTabs = React.createClass({
       active: tab && tab.plugin
     };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onSelect: function (tab) {
     this.setState({ active: tab.plugin });
   },
   render: function () {
     var self = this;
     var props = self.props;
+    var state = self.state;
     var tabs = props.tabs;
     var hide = props.hide;
-    var active = self.state.active;
+    var active = state.active;
     var single = tabs.length < 2;
     if (single) {
       active = tabs[0] && tabs[0].plugin;
       if (active) {
-        self.state.active = active;
+        state.active = active;
       }
     }
     return (
-      <div className={'fill box w-plugins-tabs' + (hide ? ' hide' : '')}>
-        <div className={'w-plugins-tabs-list' + (single ? ' hide' : '')}>
+      <div className={'fill box w-plugins-tabs' + getHide(hide)}>
+        <div className={'w-plugins-tabs-list' + getHide(single)}>
           {tabs.map(function (tab) {
+            var plugin = tab.plugin;
+            var name = tab.name;
             return (
               <button
-                key={tab.plugin}
+                key={plugin}
                 onClick={function () {
                   self.onSelect(tab);
                 }}
-                className={
-                  'btn btn-default' + (active == tab.plugin ? ' active' : '')
-                }
-                title={'[' + tab.plugin + '] ' + tab.name}
+                className={'btn btn-default' + (active == plugin ? ' active' : '')}
+                title={'[' + plugin + '] ' + name}
               >
-                {tab.name}
+                {name}
               </button>
             );
           })}

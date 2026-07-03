@@ -4,7 +4,8 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
 var storage = require('./storage');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
@@ -48,26 +49,20 @@ var PluginsMgr = React.createClass({
   show: function (cmd, list, isUpdate) {
     var self = this;
     list = list || [];
-    var len = list.length;
     self._cmd = cmd;
-    self._hideDialog = false;
-    if (!len) {
+    if (!list.length) {
       return self.installPlugin();
     }
+    self.refs.dialog.show();
     self.setState({
       isUpdate: isUpdate,
       list: list
-    }, function() {
-      self.refs.pluginsMgr.show();
     });
   },
   hide: function () {
-    this.refs.pluginsMgr.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   render: function () {
     var self = this;
     var state = self.state;
@@ -76,34 +71,28 @@ var PluginsMgr = React.createClass({
     var actionText = isUpdate ? 'Update' : 'Install';
 
     return (
-      <Dialog ref="pluginsMgr" wstyle="w-plugins-mgr-dialog">
-        <div className="modal-header">
-          <h4>Select {isUpdate ? 'Updater' : 'Installer'}</h4>
-          <CloseBtn />
-        </div>
+      <Dialog ref="dialog" wstyle="w-plugins-mgr-dialog">
+        <ModalHeader>
+          Select {isUpdate ? 'Updater' : 'Installer'}
+        </ModalHeader>
         <div className="modal-body">
           <div className="btn btn-primary plugin-mgr-btn" data-dismiss="modal" onClick={self.installPlugin}>
             {actionText} <span>(Use Default)</span>
           </div>
           {
             list.map(function (item) {
+              var moduleName = item.moduleName;
               return (
                 <div className="btn btn-default plugin-mgr-btn" data-dismiss="modal"
-                  key={item.moduleName} onClick={self.installPluginExt.bind(self, item)}>
-                  {actionText} <span>(Use plugin {util.getSimplePluginName(item.moduleName)})</span>
+                  key={moduleName} onClick={self.installPluginExt.bind(self, item)}>
+                  {actionText} <span>(Use plugin {util.getSimplePluginName(moduleName)})</span>
                 </div>
               );
             })
           }
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
         </div>
       </Dialog>
     );

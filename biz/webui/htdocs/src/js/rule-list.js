@@ -9,10 +9,10 @@ var RuleList = React.createClass({
   getInitialState: function () {
     return { active: '', checkedList: [] };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onClick: function (e) {
     this.setState({
-      active: e.target.getAttribute('data-name')
+      active: util.attr(e.target, 'data-name')
     });
   },
   onChange: function (e, line) {
@@ -45,7 +45,7 @@ var RuleList = React.createClass({
     }
 
     return (
-      <Divider leftWidth="220" className={props.hide ? ' hide' : ''}>
+      <Divider leftWidth="220" className={util.getHide(props.hide)}>
         <div className="w-list-left w-list-data w-rule-list-name">
         {list.map(function (item) {
           if (util.isGroup(item.name)) {

@@ -4,6 +4,7 @@
 
 .w-certs-dialog thead th {
   padding: 5px 0 10px;
+  vertical-align: middle !important;
 }
 
 .w-certs-dialog .w-help-icon {
@@ -50,20 +51,13 @@
 .w-certs-dialog td {
   overflow: hidden;
   text-overflow: ellipsis;
+  vertical-align: middle !important;
 }
 
 .w-certs-filename {
   width: 200px;
 }
 
-.w-certs-dialog th,
-.w-certs-dialog td {
-  vertical-align: middle !important;
-}
-
-.w-certs-disabled .w-certs-order,
-.w-certs-disabled .w-certs-filename,
-.w-certs-disabled .w-certs-domain,
-.w-certs-disabled .w-certs-validity {
+.w-certs-disabled :is(.w-certs-order, .w-certs-filename, .w-certs-domain, .w-certs-validity) {
   color: var(--c-disabled);
 }

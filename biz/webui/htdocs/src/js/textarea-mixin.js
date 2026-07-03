@@ -4,12 +4,13 @@ var win = require('./win');
 var message = require('./message');
 var dataCenter = require('./data-center');
 var util = require('./util');
-var events = require('./events');
+
+var trigger = util.trigger;
+var preventBlur = function (e) {
+  e.target.nodeName != 'INPUT' && e.preventDefault();
+};
 
 module.exports = {
-  preventBlur: function (e) {
-    e.target.nodeName != 'INPUT' && e.preventDefault();
-  },
   showNameInput: function (e) {
     var self = this;
     var state = self.state;
@@ -87,10 +88,10 @@ module.exports = {
     return dataCenter.hideRulesEditor ? null : <a className="w-add" onClick={this.showNameInput} draggable="false">+Rule</a>;
   },
   createTempFile: function () {
-    events.trigger('showEditorDialog', { text: this.getText(), session: this.props.session });
+    trigger('showEditorDialog', { text: this.getText(), session: this.props.session });
   },
   createRule: function () {
-    events.trigger('showAddRulesDialog', { session: this.props.session });
+    trigger('showAddRulesDialog', { session: this.props.session });
   },
   renderInput: function () {
     var self = this;
@@ -99,7 +100,7 @@ module.exports = {
 
     return (
       <div
-        onMouseDown={self.preventBlur}
+        onMouseDown={preventBlur}
         style={{ display: state.showNameInput ? 'block' : 'none' }}
         className="w-shadow w-textarea-input"
       >
@@ -120,7 +121,7 @@ module.exports = {
           onClick={self.submit}
           className="btn btn-primary"
         >
-          {showInput ? 'OK' : '+Key'}
+          {showInput ? 'Download' : '+Key'}
         </button>
         {showInput ? null : <button
           type="button"

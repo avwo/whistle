@@ -3,9 +3,8 @@ var createCgiObj = require('./cgi');
 var util = require('./util');
 var NetworkModal = require('./network-modal');
 var storage = require('./storage');
-var events = require('./events');
 var workers = require('./workers');
-var message = require('./message');
+var showError = require('./message').error;
 
 var showSysErr = util.showSysErr;
 var updateWorkers = workers.updateWorkers;
@@ -13,6 +12,10 @@ var isFunc = util.isFunc;
 var isStr = util.isStr;
 var notEStr = util.notEStr;
 var createCgi = createCgiObj.createCgi;
+var getDisplaySize = util.getDisplaySize;
+var toRegExp = util.toRegExp;
+var getTransProto = util.getTransProto;
+var trigger = util.trigger;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
@@ -29,6 +32,7 @@ var svrLogList = [];
 var setDataCenter = NetworkModal.setDataCenter;
 var networkModal = new NetworkModal(dataList);
 var curServerInfo;
+var curWhistleId;
 var initialDataPromise, initialData, startedLoad;
 var lastPageLogTime = -4;
 var lastSvrLogTime = -2;
@@ -73,7 +77,6 @@ var DEFAULT_CONF = {
   data: {}
 };
 var composerItem;
-var manualLogout; // 手动登出
 var hasUpdater;
 var HAS_RULES_KEY = window.Symbol ? window.Symbol('hasRules') : '__hasRules';
 var clearedLogs;
@@ -86,7 +89,7 @@ exports.setComposerItem = function(item) {
 };
 
 exports.checkPluginUpdates = function (plugin, callback) {
-  if (!exports.whistleId) {
+  if (!curWhistleId) {
     return callback();
   }
   // TODO: 从服务端检查插件更新
@@ -149,7 +152,7 @@ function updateRulesInfo(data) {
   exports.backRulesFirst = data.backRulesFirst;
   if (exports.enabledRulesCount !== enabledCount) {
     exports.enabledRulesCount = enabledCount;
-    events.trigger('enabledRulesCountChange', enabledCount);
+    trigger('enabledRulesCountChange', enabledCount);
   }
 }
 
@@ -183,11 +186,11 @@ function handleHashFilterChanged(e) {
     var curValueName = obj.valuesName || obj.valueName;
     if (curRuleName !== exports.activeRulesName) {
       exports.activeRulesName = curRuleName;
-      events.trigger('activeRules');
+      trigger('activeRules');
     }
     if (curValueName !== exports.activeValuesName) {
       exports.activeValuesName = curValueName;
-      events.trigger('activeValues');
+      trigger('activeValues');
     }
     if (obj.url) {
       filter = {};
@@ -216,7 +219,7 @@ function handleHashFilterChanged(e) {
   }
   exports.hashFilterObj = filter;
   if (e && !compareFilter(filter)) {
-    events.trigger('hashFilterChange');
+    trigger('hashFilterChange');
   }
   hashFilterObj = filter;
 }
@@ -258,11 +261,10 @@ function getFilterText() {
 exports.getFilterText = getFilterText;
 
 function setNetworkColumns(settings) {
-  settings = settings || {};
   storage.set(
     'networkColumns',
     JSON.stringify({
-      columns: settings.columns
+      columns: (settings || {}).columns
     })
   );
 }
@@ -322,7 +324,7 @@ function resolveFilterText(text) {
       line = line.substring(not ? 3 : 2);
       if (line) {
         result = result || [];
-        pattern = util.toRegExp(line);
+        pattern = toRegExp(line);
         result.push({
           type: type,
           not: not,
@@ -332,7 +334,7 @@ function resolveFilterText(text) {
       }
     } else if (line) {
       result = result || [];
-      pattern = util.toRegExp(line);
+      pattern = toRegExp(line);
       result.push({
         pattern: pattern,
         keyword: pattern ? null : line.toLowerCase()
@@ -488,7 +490,7 @@ exports.uploadCerts = function (data, cb) {
     if (isFunc(cb)) {
       cb(data);
     } else {
-      events.trigger('showCustomCerts');
+      trigger('showCustomCerts');
     }
   });
 };
@@ -532,12 +534,12 @@ exports.plugins = createCgiObj(
 );
 
 exports.installPluginsFromService = function (plugins, registry) {
-  if (!plugins || !exports.whistleId) {
+  if (!plugins || !curWhistleId) {
     return;
   }
   plugins = isStr(plugins) ? plugins.trim().split(/\s*,\s*/) : (Array.isArray(plugins) ? plugins : []);
   plugins = plugins.map(function(p) {
-    return p.indexOf('/') === -1 ? exports.whistleId + '/' + p : p;
+    return p.indexOf('/') === -1 ? curWhistleId + '/' + p : p;
   }).join();
   if (!plugins) {
     return;
@@ -740,7 +742,7 @@ exports.socket = $.extend(
 function updateCertStatus(data) {
   if (exports.hasInvalidCerts != data.hasInvalidCerts) {
     exports.hasInvalidCerts = data.hasInvalidCerts;
-    events.trigger('updateUI');
+    trigger('updateUI');
   }
 }
 
@@ -904,13 +906,13 @@ function checkDataChanged(data, mclientName, mtimeName) {
 
 function emitRulesChanged(data) {
   if (checkDataChanged(data, 'mrulesClientId', 'mrulesTime')) {
-    events.trigger('rulesChanged');
+    trigger('rulesChanged');
   }
 }
 
 function emitValuesChanged(data) {
   if (checkDataChanged(data, 'mvaluesClientId', 'mvaluesTime')) {
-    events.trigger('valuesChanged');
+    trigger('valuesChanged');
   }
 }
 
@@ -943,7 +945,7 @@ function emitCustomTabsChange(curList, oldList, name) {
   var curLen = curList.length;
   var oldLen = oldList.length;
   if (!curLen) {
-    oldLen && events.trigger(name);
+    oldLen && trigger(name);
     return;
   }
   if (curLen === 1) {
@@ -953,15 +955,15 @@ function emitCustomTabsChange(curList, oldList, name) {
       curList[0].name !== oldList[0].name ||
       curList[0].action !== oldList[0].action
     ) {
-      events.trigger(name);
+      trigger(name);
     }
     return;
   }
   if (!oldLen || oldLen === 1) {
-    return events.trigger(name);
+    return trigger(name);
   }
   if (curLen !== oldLen || checkTabList(curList, oldList, curLen)) {
-    events.trigger(name);
+    trigger(name);
   }
 }
 
@@ -1146,7 +1148,7 @@ function startLoadData() {
         return;
       }
       if (Array.isArray(data.installErrors) && data.installErrors.length) {
-        message.error(data.installErrors.join('\n'));
+        showError(data.installErrors.join('\n'));
       }
       var preCapture = exports.isCapture;
       if (preCapture === 0) {
@@ -1157,8 +1159,8 @@ function startLoadData() {
         var capture = !!data.interceptHttpsConnects;
         if (exports.isCapture !== capture) {
           exports.isCapture = capture;
-          events.trigger('reqTabsChange');
-          events.trigger('resTabsChange');
+          trigger('reqTabsChange');
+          trigger('resTabsChange');
         }
       }
       var server = data.server;
@@ -1275,7 +1277,7 @@ function startLoadData() {
       emitCustomTabsChange(toolTabList, _toolTabList, 'toolTabsChange');
       if (hasPluginColsChange(_pluginCols, pluginColumns)) {
         pluginColumns = _pluginCols;
-        events.trigger('pluginColumnsChange');
+        trigger('pluginColumnsChange');
       }
       if (hasWorkerChanged || webWorkerList.length !== _workers.length) {
         webWorkerList = _workers;
@@ -1365,7 +1367,7 @@ function startLoadData() {
               hasNewIp = true;
             }
           });
-          hasNewIp && events.trigger('updateUI');
+          hasNewIp && trigger('updateUI');
         }
         return;
       }
@@ -1572,10 +1574,10 @@ function setStyle(item) {
   }
   var key1 = exports.custom1Key;
   var key2 = exports.custom2Key;
-  if (!util.notEStr(key1)) {
+  if (!notEStr(key1)) {
     item.custom1 = getCustomValue(style, true);
   }
-  if (!util.notEStr(key2)) {
+  if (!notEStr(key2)) {
     item.custom2 = getCustomValue(style);
   }
 }
@@ -1717,7 +1719,7 @@ function setReqData(item) {
   item.hostIp = res.ip || defaultValue;
   item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(item.rules);
   item.clientIp = req.ip || '127.0.0.1';
-  item.date = item.date || util.toLocaleString(new Date(item.startTime));
+  item.date = item.date || util.toDateStr(item.startTime);
   item.clientPort = req.port;
   item.serverPort = item.res.port;
   item.contentEncoding =
@@ -1725,8 +1727,8 @@ function setReqData(item) {
     (item.res.hasGzipError ? ' (Incorrect header)' : '');
   var reqSize = req.size == null ? defaultValue : req.size;
   var resSize = res.size == null ? defaultValue : res.size;
-  var reqSizeStr = util.getDisplaySize(reqSize, req.unzipSize);
-  var resSizeStr = util.getDisplaySize(resSize, res.unzipSize);
+  var reqSizeStr = getDisplaySize(reqSize, req.unzipSize);
+  var resSizeStr = getDisplaySize(resSize, res.unzipSize);
   item.body =  reqSizeStr === '' && resSizeStr === '' ? '' : reqSizeStr  + ', ' + resSizeStr;
   item.bodySize = (req.size || 0) + (res.size || 0);
   var result = res.statusCode == null ? defaultValue : res.statusCode;
@@ -1768,7 +1770,7 @@ function setReqData(item) {
   }
   if (!item.path) {
     if (item.isHttps) {
-      item.protocol =  util.getTransProto(res) || util.getTransProto(req) || 'HTTP';
+      item.protocol =  getTransProto(res) || getTransProto(req) || 'HTTP';
     } else {
       item.protocol =item.useH2
         ? 'H2' : util.getProtocol(url);
@@ -1862,7 +1864,7 @@ exports.addNetworkList = function (list) {
     workers.postMessage(data);
   });
   if (hasData) {
-    events.trigger('autoRefreshNetwork');
+    trigger('autoRefreshNetwork');
     setTimeout(function() {
       curNewList.forEach(function(item) {
         delete item.highlight;
@@ -1916,14 +1918,14 @@ function updateServerInfo(data) {
   if (curServerInfo) {
     if (curServerInfo.strictMode != data.strictMode) {
       curServerInfo.strictMode = data.strictMode;
-      events.trigger('updateStrictMode');
+      trigger('updateStrictMode');
     }
     if (curServerInfo.version !== data.version || curServerInfo.latestVersion !== data.latestVersion
       || curServerInfo.latestClientVersion !== data.latestClientVersion) {
       curServerInfo.version = data.version;
       curServerInfo.latestVersion = data.latestVersion;
       curServerInfo.latestClientVersion = data.latestClientVersion;
-      events.trigger('updateVersion', data);
+      trigger('updateVersion', data);
     }
   }
   if (
@@ -2082,7 +2084,7 @@ function getMenus(menuName) {
           menu.mtime = plugin.mtime;
           menu.priority = plugin.priority;
           menu._key = name;
-          menu._urlPattern = util.toRegExp(menu.urlPattern) || util.toRegExp(menu.namePattern);
+          menu._urlPattern = toRegExp(menu.urlPattern) || toRegExp(menu.namePattern);
           list.push(menu);
         });
       }
@@ -2155,10 +2157,10 @@ exports.getRemoteData = function (url, callback) {
       return callback(true);
     }
     if (data.ec !== 0) {
-      message.error(data.em || 'Error');
+      showError(data.em || 'Error');
       return callback(true);
     }
-    if (util.showForbidden(data)) {
+    if (data.forbidden) {
       return callback(true);
     }
     try {
@@ -2166,7 +2168,7 @@ exports.getRemoteData = function (url, callback) {
       data = value && JSON.parse(value);
       return callback(false, data || {});
     } catch (e) {
-      message.error(e.message);
+      showError(e.message);
     }
     callback(true);
   });
@@ -2181,7 +2183,7 @@ exports.showLatestClientVersion = function() {
       return showSysErr(xhr);
     }
     if (result.ec) {
-      message.error(result.em || 'Update failed');
+      showError(result.em || 'Update failed');
     }
   });
   return true;
@@ -2191,38 +2193,12 @@ function toString(options) {
   return isStr(options) ? options : JSON.stringify(options);
 }
 
-function triggerWhistleIdChanged(server, byServer) {
-  var whistleId = server && server.whistleId;
-  var hasWhistleToken = server && server.hasWhistleToken;
-  if (!hasWhistleToken !== !exports.hasWhistleToken) {
-    exports.hasWhistleToken = hasWhistleToken;
-    events.trigger('hasWhistleTokenChanged', hasWhistleToken);
-  }
-  if (whistleId !== exports.whistleId) {
-    if (byServer) {
-      if (manualLogout) {
-        if (server) {
-          server.whistleId = undefined;
-        }
-        manualLogout = false;
-        return;
-      }
-    } else {
-      manualLogout = true;
-    }
-    exports.whistleId = whistleId;
-    events.trigger('whistleIdChanged', whistleId);
-  }
-}
-
-exports.triggerWhistleIdChanged = triggerWhistleIdChanged;
-
 function updateWhistleId(server) {
-  var whistleId = server && server.whistleId;
-  triggerWhistleIdChanged(server, true);
-  if (whistleId && rulesMFlag !== server.rulesMFlag) {
+  curWhistleId = server && server.whistleId;
+  exports.whistleId = curWhistleId;
+  if (curWhistleId && rulesMFlag !== server.rulesMFlag) {
     rulesMFlag = server.rulesMFlag;
-    events.trigger('rulesMFlagChanged', rulesMFlag);
+    trigger('rulesMFlagChanged', rulesMFlag);
   }
 }
 
@@ -2231,10 +2207,7 @@ exports.getRulesMFlag = function() {
 };
 
 exports.saveToService = function(options, callback) {
-  if (!exports.whistleId) {
-    return;
-  }
-  exports.save(toString(options), callback);
+  curWhistleId && exports.save(toString(options), callback);
 };
 
 setDataCenter(exports);

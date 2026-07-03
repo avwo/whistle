@@ -29,7 +29,7 @@
   cursor: pointer;
 }
 
-.w-kv-dialog thead th, .w-kv-dialog thead td {
+.w-kv-dialog thead :is(th, td) {
   padding: 8px;
 }
 

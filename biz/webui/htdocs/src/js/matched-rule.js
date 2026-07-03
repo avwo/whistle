@@ -1,7 +1,6 @@
 var React = require('react');
 var Properties = require('./properties');
 var util = require('./util');
-var events = require('./events');
 var protocols = require('./protocols');
 var PanelTips = require('./panel-tips');
 
@@ -83,9 +82,9 @@ function getRuleStr(rule) {
 }
 
 function onHelp(e) {
-  var name = e.target.getAttribute('data-name');
+  var name = util.attr(e.target, 'data-name');
   var helpUrl = getHelpUrl(name);
-  helpUrl && events.trigger('openUrl', name === 'rule' ? helpUrl + 'rule/' : helpUrl);
+  helpUrl && util.trigger('openUrl', name === 'rule' ? helpUrl + 'rule/' : helpUrl);
 }
 
 var MatchedRule = React.createClass({
@@ -176,9 +175,10 @@ var MatchedRule = React.createClass({
             if (ruleStr) {
               result.push(ruleStr + (realUrl ? ' (URL: ' + realUrl + ')' : '') + getPluginName(rule));
             }
-            if (rules.proxy && rules.proxy.host) {
+            var proxy = rules.proxy;
+            if (proxy && proxy.host) {
               result.push(
-                  getRuleStr(rules.proxy.host) + ' (URL: ' + getMatcher(rules.proxy) + ')' + getPluginName(rule)
+                  getRuleStr(proxy.host) + ' (URL: ' + getMatcher(proxy) + ')' + getPluginName(rule)
                 );
             }
             rulesModal[name] = result.join('\n');
@@ -197,7 +197,7 @@ var MatchedRule = React.createClass({
     }
 
     if (showOnlyMatchRules && (!rules || Object.keys(rules).length === 0)) {
-      return <PanelTips data={EMPTY}  className="w-test-rule-empty-tips" />;
+      return <PanelTips data={EMPTY}  className="w-empty-tips" />;
     }
     return (
       <Properties

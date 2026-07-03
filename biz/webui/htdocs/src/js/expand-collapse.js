@@ -5,16 +5,22 @@ var MIN_LENGTH = 1024;
 var EXPAND_LENGTH = 1024 * 32;
 var MAX_LENGTH = EXPAND_LENGTH * 3;
 
+var renderBtn = function (text, onClick) {
+  return (
+    <button onClick={onClick} className="w-expand-collapse">
+      {text}
+    </button>
+  );
+};
+
 var ExpandCollapse = React.createClass({
   getInitialState: function () {
     return { expandLength: MIN_LENGTH };
   },
   componentWillReceiveProps: function (nextProps) {
     var self = this;
-    if (
-      nextProps.text !== self.props.text ||
-      self.props.wStyle !== nextProps.wStyle
-    ) {
+    var props = self.props;
+    if (nextProps.text !== props.text || nextProps.wStyle !== props.wStyle) {
       self.state.expandLength = MIN_LENGTH;
     }
   },
@@ -41,20 +47,8 @@ var ExpandCollapse = React.createClass({
     return (
       <span style={style}>
         {isCollapse ? text : text.substring(0, expandLength) + '...'}
-        {viewAll ? (
-          <button onClick={self.viewAll} className="w-expand-collapse">
-            ViewAll
-          </button>
-        ) : isCollapse ? undefined : (
-          <button onClick={self.onExpand} className="w-expand-collapse">
-            Expand
-          </button>
-        )}
-        {expandLength > MIN_LENGTH ? (
-          <button onClick={self.onCollapse} className="w-expand-collapse">
-            Collapse
-          </button>
-        ) : undefined}
+        {viewAll ? renderBtn('ViewAll', self.viewAll) : (isCollapse ? null : renderBtn('Expand', self.onExpand))}
+        {expandLength > MIN_LENGTH ? renderBtn('Collapse', self.onCollapse) : null}
       </span>
     );
   }

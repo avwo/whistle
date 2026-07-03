@@ -6,6 +6,7 @@ var ruleMixin = require('./rule-mixin');
 var StatusSelect = require('./status-select');
 var UrlInput = require('./url-input');
 var HeaderSelect = require('./header-select');
+var FormItem = require('./form-item');
 
 var STATUS_CODE_ACTIONS = [
   { value: 'statusCode://', label: 'Direct Status Code' },
@@ -92,15 +93,15 @@ var ResponseRule = React.createClass({
       self.props.onChange(rules, values.join('\n\n'));
     }
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   onStatusCodeActionChange: function(option) {
-    this.setState({ statusCodeAction: option.value }, this.handleChange);
+    this.onStateChange('statusCodeAction', option.value);
   },
   onStatusCodeChange: function(option) {
-    this.setState({ statusCode: option.value }, this.handleChange);
+    this.onStateChange('statusCode', option.value);
   },
   onUrlChange: function(url) {
-    this.setState({ redirectUrl: url }, this.handleChange);
+    this.onStateChange('redirectUrl', url);
   },
   getStatusProtocol: function(statusCodeAction) {
     if (statusCodeAction[0] === 'C') {
@@ -236,22 +237,21 @@ var ResponseRule = React.createClass({
     var headerCount = headerActions.length;
     var bodyCount = bodyActions.length;
     var isRedirect = statusCodeAction[0] === '3' || statusCodeAction[0] === 'C';
+    var renderBox = self.renderBox;
 
     return (
       <div className={'w-rules-form' + (hide ? ' w-hide' : '')}>
-        <div className="w-form-item">
-          <div className="w-form-value">
-            <input type="checkbox" className="mr-10" checked={!disabledStatusCode} data-name="disabledStatusCode" onChange={self.onDisableCheckChange} />
-            <Select value={statusCodeAction} disabled={disabledStatusCode} className="w-175" options={STATUS_CODE_ACTIONS}
-              onChange={self.onStatusCodeActionChange} />
-            <StatusSelect value={state.statusCode} className={isRedirect ? 'w-hide' : null} disabled={disabledStatusCode} onChange={self.onStatusCodeChange} />
-            <UrlInput isRedirect className={'mr-10' + (isRedirect ? '' : ' w-hide')} disabled={disabledStatusCode} onChange={self.onUrlChange} />
-            <HelpIcon docsUrl={'rules/' + self.getStatusProtocol(statusCodeAction) + '.html'} />
-          </div>
-        </div>
+        <FormItem>
+          {renderBox(!disabledStatusCode, 'disabledStatusCode')}
+          <Select value={statusCodeAction} disabled={disabledStatusCode} className="w-175" options={STATUS_CODE_ACTIONS}
+            onChange={self.onStatusCodeActionChange} />
+          <StatusSelect value={state.statusCode} className={isRedirect ? 'w-hide' : null} disabled={disabledStatusCode} onChange={self.onStatusCodeChange} />
+          <UrlInput isRedirect className={'mr-10' + (isRedirect ? '' : ' w-hide')} disabled={disabledStatusCode} onChange={self.onUrlChange} />
+          <HelpIcon docsUrl={'rules/' + self.getStatusProtocol(statusCodeAction) + '.html'} />
+        </FormItem>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabledHeader} data-name="disabledHeader" onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledHeader, 'disabledHeader')}
             Modify Response Headers
             <HelpIcon className="ml-10" docsUrl="rules/resHeaders.html#related" />
           </label>
@@ -269,7 +269,7 @@ var ResponseRule = React.createClass({
         </div>
         <div className="w-form-item">
           <label>
-            <input type="checkbox" className="mr-10" checked={!disabledBody} data-name="disabledBody" onChange={self.onDisableCheckChange} />
+            {renderBox(!disabledBody, 'disabledBody')}
             Modify Response Body
             <HelpIcon className="ml-10" docsUrl="rules/resBody.html#related" />
           </label>

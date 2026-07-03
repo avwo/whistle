@@ -4,13 +4,13 @@ var util = require('./util');
 var GitHubIcon = require('./github-icon');
 var Icon = require('./icon');
 
+var noop = util.noop;
+
+function stopPropagation(e) {
+  e.stopPropagation();
+}
+
 var MenuItem = React.createClass({
-  preventBlur: function (e) {
-    e.preventDefault();
-  },
-  stopPropagation: function (e) {
-    e.stopPropagation();
-  },
   render: function () {
     var self = this;
     var props = self.props;
@@ -19,9 +19,9 @@ var MenuItem = React.createClass({
       options = null;
     }
     var name = props.name;
-    var onClick = props.onClick || util.noop;
-    var onClickOption = props.onClickOption || util.noop;
-    var onDoubleClickOption = props.onDoubleClickOption || util.noop;
+    var onClick = props.onClick || noop;
+    var onClickOption = props.onClickOption || noop;
+    var onDoubleClickOption = props.onDoubleClickOption || noop;
     var checkedOptions = props.checkedOptions || {};
     var disabled = props.disabled;
 
@@ -29,7 +29,7 @@ var MenuItem = React.createClass({
       <div
         onBlur={props.onBlur}
         tabIndex="0"
-        onMouseDown={self.preventBlur}
+        onMouseDown={util.preventBlur}
         style={{ display: util.getBool(props.hide) ? 'none' : 'block' }}
         className={
           'w-menu-item ' +
@@ -43,13 +43,17 @@ var MenuItem = React.createClass({
             style={{ border: name ? null : 'none' }}
           >
             {options.map(function (option) {
+              var icon = option.icon;
+              var name = option.name;
+              var disabled = option.disabled;
+
               return (
                 <a
-                  key={option.name}
-                  className={option.disabled ? 'w-disabled' : undefined}
+                  key={name}
+                  className={disabled ? 'w-disabled' : undefined}
                   title={option.title}
                   onClick={function (e) {
-                    if (option.disabled) {
+                    if (disabled) {
                       return;
                     }
                     onClickOption(option, e);
@@ -61,23 +65,23 @@ var MenuItem = React.createClass({
                   target={option.href ? option.target || '_blank' : undefined}
                   draggable="false"
                 >
-                  {option.icon == 'checkbox' ? (
+                  {icon == 'checkbox' ? (
                     <input
                       type="checkbox"
                       disabled={disabled}
-                      data-name={option.name}
-                      onClick={self.stopPropagation}
+                      data-name={name}
+                      onClick={stopPropagation}
                       onChange={props.onChange}
-                      checked={!checkedOptions[option.name]}
+                      checked={!checkedOptions[name]}
                     />
-                  ) : option.icon === false ? undefined : (
-                    option.icon === 'github' ? <GitHubIcon /> :
+                  ) : icon === false ? null : (
+                    icon === 'github' ? <GitHubIcon /> :
                     <Icon
-                      name={option.icon || 'asterisk'}
-                      className={option.icon ? '' : 'w-hidden'}
+                      name={icon || 'asterisk'}
+                      className={icon ? '' : 'w-hidden'}
                     />
                   )}
-                  {option.name}
+                  {name}
                 </a>
               );
             })}

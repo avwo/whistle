@@ -123,9 +123,7 @@
   height: 22px;
 }
 
-.w-create-rule .form-control:disabled,
-.w-test-rule-dialog .form-control:disabled,
-.w-url-input .form-control:disabled {
+:is(.w-create-rule, .w-test-rule-dialog, .w-url-input) .form-control:disabled {
   background-color: var(--b-heavy);
 }
 
@@ -218,12 +216,12 @@
   display: inline;
 }
 
-.w-preview-rules .w-pr-FILE, .w-preview-rules .w-pr-TPL, .w-preview-rules .w-pr-STATUSCODE,
-.w-preview-rules .w-pr-REDIRECT, .w-preview-rules .w-pr-LOCATIONHREF {
+.w-preview-rules :is(.w-pr-FILE, .w-pr-TPL, .w-pr-STATUSCODE,
+.w-pr-REDIRECT, .w-pr-LOCATIONHREF) {
   color: #ff9e59;
 }
 
-.w-preview-rules .w-pr-REQMERGE, .w-preview-rules .w-pr-PATHREPLACE, .w-preview-rules .w-pr-URLPARAMS {
+.w-preview-rules :is(.w-pr-REQMERGE, .w-pr-PATHREPLACE, .w-pr-URLPARAMS) {
   color: #ff9d00;
 }
 
@@ -231,30 +229,29 @@
   color: #845dc4;
 }
 
-.w-preview-rules .w-pr-EXCLUDEFILTER, .w-preview-rules .w-pr-LINEPROPS, .w-preview-rules .w-pr-DISABLE,
-.w-preview-rules .w-pr-DELETE {
+.w-preview-rules :is(.w-pr-EXCLUDEFILTER, .w-pr-LINEPROPS, .w-pr-DISABLE, .w-pr-DELETE) {
   color: #d44;
 }
 
-.w-preview-rules .w-pr-WEINRE, .w-preview-rules .w-pr-LOG, .w-preview-rules .w-pr-ENABLE  {
+.w-preview-rules :is(.w-pr-WEINRE, .w-pr-LOG, .w-pr-ENABLE) {
   color: #845dc4;
 }
 
-.w-preview-rules .w-pr-REQDELAY, .w-preview-rules .w-pr-REQSPEED, .w-preview-rules .w-pr-METHOD,
-.w-preview-rules .w-pr-REQHEADERS,.w-preview-rules .w-pr-REQBODY,.w-preview-rules .w-pr-HEADERREPLACE,
-.w-preview-rules .w-pr-REQCORS, .w-preview-rules .w-pr-REQPREPEND, .w-preview-rules .w-pr-REQBODY,
-.w-preview-rules .w-pr-REQAPPEND, .w-preview-rules .w-pr-REQREPLACE, .w-preview-rules .w-pr-AUTH,
-.w-preview-rules .w-pr-REQCOOKIES {
+.w-preview-rules :is(.w-pr-REQDELAY, .w-pr-REQSPEED, .w-pr-METHOD,
+.w-pr-REQHEADERS,.w-pr-REQBODY,.w-pr-HEADERREPLACE,
+.w-pr-REQCORS, .w-pr-REQPREPEND, .w-pr-REQBODY,
+.w-pr-REQAPPEND, .w-pr-REQREPLACE, .w-pr-AUTH,
+.w-pr-REQCOOKIES) {
   color: #9effff;
 }
 
-.w-preview-rules .w-pr-RESDELAY, .w-preview-rules .w-pr-RESSPEED, .w-preview-rules .w-pr-RESTYPE,
-.w-preview-rules .w-pr-PROXY, .w-preview-rules .w-pr-HTTPS-PROXY, .w-preview-rules .w-pr-SOCKS,
-.w-preview-rules .w-pr-RESHEADERS, .w-preview-rules .w-pr-RESPBODY, .w-preview-rules .w-pr-REPLACESTATUS,
-.w-preview-rules .w-pr-RESCORS, .w-preview-rules .w-pr-RESPREPEND, .w-preview-rules .w-pr-RESBODY, .w-preview-rules .w-pr-RESAPPEND,
-.w-preview-rules .w-pr-RESREPLACE, .w-preview-rules .w-pr-RESMERGE, .w-preview-rules .w-pr-HTMLPREPEND, .w-preview-rules .w-pr-HTMLBODY,
-.w-preview-rules .w-pr-HTMLAPPEND, .w-preview-rules .w-pr-CSSPREPEND, .w-preview-rules .w-pr-CSSBODY, .w-preview-rules .w-pr-CSSAPPEND,
-.w-preview-rules .w-pr-JSPREPEND, .w-preview-rules .w-pr-JSBODY, .w-preview-rules .w-pr-JSAPPEND, .w-preview-rules .w-pr-RESCOOKIES {
+.w-preview-rules :is(.w-pr-RESDELAY, .w-pr-RESSPEED, .w-pr-RESTYPE,
+.w-pr-PROXY, .w-pr-HTTPS-PROXY, .w-pr-SOCKS,
+.w-pr-RESHEADERS, .w-pr-RESPBODY, .w-pr-REPLACESTATUS,
+.w-pr-RESCORS, .w-pr-RESPREPEND, .w-pr-RESBODY, .w-pr-RESAPPEND,
+.w-pr-RESREPLACE, .w-pr-RESMERGE, .w-pr-HTMLPREPEND, .w-pr-HTMLBODY,
+.w-pr-HTMLAPPEND, .w-pr-CSSPREPEND, .w-pr-CSSBODY, .w-pr-CSSAPPEND,
+.w-pr-JSPREPEND, .w-pr-JSBODY, .w-pr-JSAPPEND, .w-pr-RESCOOKIES) {
   color: #292;
 }
 

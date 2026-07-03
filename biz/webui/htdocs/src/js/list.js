@@ -10,7 +10,6 @@ var Editor = require('./editor');
 var FilterInput = require('./filter-input');
 var ContextMenu = require('./context-menu');
 var dataCenter = require('./data-center');
-var events = require('./events');
 var iframes = require('./iframes');
 var storage = require('./storage');
 var RecycleBinDialog = require('./recycle-bin');
@@ -20,18 +19,25 @@ var Icon = require('./icon');
 var showSysErr = util.showSysErr;
 var isFunc = util.isFunc;
 var isStr = util.isStr;
-var hideEnableHTTPSTips = window.location.href.indexOf('hideEnableHTTPSTips=1') !== -1;
-var disabledEditor = window.location.href.indexOf('disabledEditor=1') !== -1;
+var isGroupName = util.isGroup;
+var trigger = util.trigger;
+var addEvent = util.on;
+var preventBlur = util.preventBlur;
+var attr = util.attr;
+var loc = window.location;
+var hideEnableHTTPSTips = loc.href.indexOf('hideEnableHTTPSTips=1') !== -1;
+var disabledEditor = loc.href.indexOf('disabledEditor=1') !== -1;
+var SERVICE_CTX_MENU = util.SERVICE_CTX;
 var rulesCtxMenuList = [
   {
     name: 'Actions',
     list: [
       { name: 'Copy Name', action: 'Name' },
-      { name: 'Copy Rule Text', action: 'Rules' },
+      { name: 'Copy Rules', action: 'Rules' },
       { name: 'Create Rule', action: 'CreateRule' },
       { name: 'Create File', action: 'TempFile' },
       { name: 'Test Rules', action: 'TestRules' }
-    ]
+    ].concat(SERVICE_CTX_MENU)
   },
   { name: 'Enable', action: 'Save' },
   {
@@ -56,10 +62,11 @@ var valuesCtxMenuList = [
     list: [
       { name: 'Copy Key', action: 'CopyKey' },
       { name: 'Copy Value', action: 'Value' },
+      { name: 'Create File', action: 'TempFile' },
       { name: 'Validate JSON', action: 'Validate' },
       { name: 'Format JSON', action: 'Format' },
       { name: 'Inspect JSON', action: 'Inspect' }
-    ]
+    ].concat(SERVICE_CTX_MENU)
   },
   { name: 'Save' },
   {
@@ -109,7 +116,7 @@ function getDragInfo(e, list) {
   if (list && !target) {
     target = $(findDOMNode(list)).find('a:last')[0];
   }
-  var name = target && target.getAttribute('data-name');
+  var name = target && attr(target, 'data-name');
   if (!name) {
     return;
   }
@@ -151,7 +158,7 @@ var List = React.createClass({
     var nodes = util.parseJSON(storage.get(this.getCollapseKey()));
     var map = {};
     this.collapseGroups = Array.isArray(nodes) ? nodes.filter(function(name) {
-      if (util.isGroup(name) && name[1] && !map[name]) {
+      if (isGroupName(name) && name[1] && !map[name]) {
         map[name] = 1;
         return true;
       }
@@ -166,22 +173,21 @@ var List = React.createClass({
         if (visible && (e.ctrlKey || e.metaKey)) {
           var modal = self.props.modal;
           if (e.keyCode === 83 && util.hasShortcut('save' + (self.isRules() ? 'Rules' : 'Values') + 'Changes')) {
-            modal.getChangedList().forEach(trigger);
+            modal.getChangedList().forEach(function (item) {
+              self.onDoubleClick(item);
+            });
             return false;
           }
         }
       })
       .on('hashchange', function () {
-        var disabled = window.location.href.indexOf('disabledEditor=1') !== -1;
+        var disabled = loc.href.indexOf('disabledEditor=1') !== -1;
         if (disabled !== disabledEditor) {
           disabledEditor = disabled;
           self.setState({});
         }
       });
 
-    function trigger(item) {
-      self.onDoubleClick(item);
-    }
     var modal = self.props.modal;
     this.curListLen = modal.list.length;
     this.curActiveItem = modal.getActive();
@@ -201,33 +207,33 @@ var List = React.createClass({
           group && self.expandGroup(group.name);
           e.shiftKey ? self.setState({}) : self.onClick(item);
           if (self.isRules()) {
-            events.trigger('updateUI');
+            trigger('updateUI');
           }
-          e.preventDefault();
+          preventBlur(e);
         }
       });
     var comName = self.isRules() ? 'Rules' : 'Values';
-    events.on('toggleCommentInEditor', function () {
+    addEvent('toggleCommentInEditor', function () {
       var activeItem = modal.getActive();
       if (activeItem) {
-        events.trigger('save' + comName, activeItem);
+        trigger('save' + comName, activeItem);
       }
     });
     if (self.isRules()) {
-      events.on('enabledRulesCountChange', function() {
+      addEvent('enabledRulesCountChange', function() {
         self.setState({});
       });
     }
 
 
-    events.on('reload' + comName + 'RecycleBin', function () {
+    addEvent('reload' + comName + 'RecycleBin', function () {
       self.reloadRecycleBin(comName);
     });
-    events.on('expand' + comName + 'Group', function(_, groupName) {
+    addEvent('expand' + comName + 'Group', function(_, groupName) {
       var group = self.getGroupByName(groupName);
       group && self.expandGroup(group.name);
     });
-    events.on('reqTabsChange', function() {
+    addEvent('reqTabsChange', function() {
       self.setState({});
     });
     var scrollToBottom = function() {
@@ -236,13 +242,13 @@ var List = React.createClass({
     var focusList = function() {
       findDOMNode(self.refs.list).focus();
     };
-    events.on('scroll' + comName + 'Bottom', function() {
+    addEvent('scroll' + comName + 'Bottom', function() {
       scrollToBottom();
     });
-    events.on('focus' + comName + 'List', function() {
+    addEvent('focus' + comName + 'List', function() {
       focusList();
     });
-    events.on(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
+    addEvent(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
       var index = name === newName ? - 1 : self.collapseGroups.indexOf(name);
       if (index !== -1) {
         if (self.collapseGroups.indexOf(newName) !== -1) {
@@ -253,7 +259,7 @@ var List = React.createClass({
         storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
       }
     });
-    events.on('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
+    addEvent('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
       self.refs.filterInput.focus();
     });
     self.ensureVisible(true);
@@ -266,7 +272,7 @@ var List = React.createClass({
       storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
     }
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidUpdate: function () {
     var self = this;
     var modal = self.props.modal;
@@ -322,7 +328,7 @@ var List = React.createClass({
     self.setState({});
   },
   onClickGroup: function (e) {
-    var name = e.target.getAttribute('data-group');
+    var name = attr(e.target, 'data-group');
     var groups = this.props.modal.groups;
     var group = groups[name];
     if (!group) {
@@ -363,7 +369,7 @@ var List = React.createClass({
         selectedItem: item
       });
       if (!hasChanged) {
-        events.trigger('updateGlobal');
+        trigger('updateGlobal');
       }
     }
   },
@@ -377,7 +383,7 @@ var List = React.createClass({
   },
   onDragStart: function (e) {
     var target = getTarget(e);
-    var name = target && target.getAttribute('data-name');
+    var name = target && attr(target, 'data-name');
     if (name) {
       e.dataTransfer.setData(NAME_PREFIX + name, 1);
       e.dataTransfer.setData('-' + NAME_PREFIX, name);
@@ -425,7 +431,7 @@ var List = React.createClass({
             return;
           }
           if (data.ec === 2) {
-            events.trigger(name + 'Changed');
+            trigger(name + 'Changed');
           }
         }
         );
@@ -439,11 +445,11 @@ var List = React.createClass({
     if (/\S/.test(value)) {
       var json = util.parseRawJson(value);
       if (json) {
-        json = JSON.stringify(json, null, '  ');
+        json = util.stringify(json);
         if (value !== json) {
           item.changed = true;
           item.value = json;
-          events.trigger('updateGlobal');
+          trigger('updateGlobal');
         }
       }
     }
@@ -476,13 +482,13 @@ var List = React.createClass({
   getGroupByName: function(name) {
     var modal = this.props.modal;
     var item = modal.data[name];
-    if (!item || util.isGroup(item.name)) {
+    if (!item || isGroupName(item.name)) {
       return item;
     }
     var i = modal.list.indexOf(name) - 1;
     for (; i >= 0; i--) {
       item = modal.data[modal.list[i]];
-      if (util.isGroup(item.name)) {
+      if (isGroupName(item.name)) {
         return item;
       }
     }
@@ -498,34 +504,34 @@ var List = React.createClass({
     var currentFocusItem = self.currentFocusItem;
     switch (parentAction || action) {
     case 'CreateRule':
-      events.trigger('showAddRulesDialog', [null, currentFocusItem]);
+      trigger('showAddRulesDialog', [null, currentFocusItem]);
       break;
     case 'TempFile':
-      events.trigger('showEditorDialog');
+      trigger('showEditorDialog');
       break;
     case 'TestRules':
-      events.trigger('showTestRuleDialog', {ruleItem: currentFocusItem});
+      trigger('showTestRuleDialog', {ruleItem: currentFocusItem});
       break;
     case 'Save':
-      events.trigger('save' + name, currentFocusItem);
+      trigger('save' + name, currentFocusItem);
       break;
     case 'Rename':
-      events.trigger('rename' + name, currentFocusItem);
+      trigger('rename' + name, currentFocusItem);
       break;
     case 'Delete':
-      events.trigger('delete' + name, currentFocusItem);
+      trigger('delete' + name, currentFocusItem);
       break;
     case 'Rule':
-      events.trigger('createRules', [self.getCurGroup(), currentFocusItem]);
+      trigger('createRules', [self.getCurGroup(), currentFocusItem]);
       break;
     case 'Key':
-      events.trigger('createValues', [self.getCurGroup(), currentFocusItem]);
+      trigger('createValues', [self.getCurGroup(), currentFocusItem]);
       break;
     case 'Export':
-      events.trigger('exportData');
+      trigger('exportData', currentFocusItem);
       break;
     case 'Import':
-      events.trigger('showImportDialog');
+      trigger('showImportDialog');
       break;
     case 'Trash':
       self.showRecycleBin(name);
@@ -552,7 +558,7 @@ var List = React.createClass({
       break;
     case 'Inspect':
       if (currentFocusItem) {
-        events.trigger('showJsonViewDialog', currentFocusItem.value);
+        trigger('showJsonViewDialog', currentFocusItem.value);
       }
       break;
     case 'Help':
@@ -572,7 +578,7 @@ var List = React.createClass({
           if (currentFocusItem && value != currentFocusItem.value) {
             currentFocusItem.changed = true;
             currentFocusItem.value = value;
-            events.trigger('updateGlobal');
+            trigger('updateGlobal');
           }
         }
       });
@@ -602,7 +608,7 @@ var List = React.createClass({
     return this.isRules() ? 'collapseRulesGroups' : 'collapseValuesGroups';
   },
   onContextMenu: function (e) {
-    e.preventDefault();
+    preventBlur(e);
     var target = $(e.target).closest('a');
     if (!target.length) {
       return;
@@ -632,24 +638,24 @@ var List = React.createClass({
       8
     );
     data.className = 'w-contenxt-menu-list';
+    var copyItem = list[0];
     if (isRules) {
-      data.list[1].disabled = disabled;
-      data.list[1].name = 'Save';
+      list[1].disabled = disabled;
+      list[1].name = 'Save';
       if (item && !item.changed) {
-        if ((dataCenter.isMultiEnv() && name !== 'Default') || util.isGroup(name)) {
-          data.list[1].disabled = true;
+        if ((dataCenter.isMultiEnv() && name !== 'Default') || isGroupName(name)) {
+          list[1].disabled = true;
         } else {
-          data.list[1].name = item.selected ? 'Disable' : 'Enable';
+          list[1].name = item.selected ? 'Disable' : 'Enable';
         }
       }
       if (item && item.isDefault) {
         isDefault = true;
       }
     } else {
-      data.list[0].list[0].name = name && util.isGroup(name) ? 'Copy Name' : 'Copy Key';
-      data.list[1].disabled = !item || !item.changed;
+      copyItem.list[0].name = name && isGroupName(name) ? 'Copy Name' : 'Copy Key';
+      list[1].disabled = !item || !item.changed;
     }
-    var copyItem = data.list[0];
     copyItem.disabled = disabled;
     if (!disabled) {
       copyItem.list[0].copyText = name;
@@ -660,8 +666,8 @@ var List = React.createClass({
         copyItem.list[1].disabled = true;
       }
     }
-    data.list[3].disabled = isDefault || disabled;
-    data.list[4].disabled = isDefault || disabled;
+    list[3].disabled = isDefault || disabled;
+    list[4].disabled = isDefault || disabled;
     self.refs.contextMenu.show(data);
   },
   onAddRule: function (name) {
@@ -677,10 +683,10 @@ var List = React.createClass({
       self._pendingEnableRules = null;
     }, 2000);
     $('.w-enable-rules-menu').trigger('click');
-    events.trigger('disableAllRules');
+    trigger('disableAllRules');
   },
   showHttpsSettingsDialog: function() {
-    events.trigger('showHttpsSettingsDialog');
+    trigger('showHttpsSettingsDialog');
   },
   parseList: function() {
     var isRules = this.isRules();
@@ -704,7 +710,7 @@ var List = React.createClass({
     };
     list.forEach(function(name, i) {
       var item = data[name];
-      if (util.isGroup(item.name)) {
+      if (isGroupName(item.name)) {
         setStatus();
         item.isGroup = true;
         if (group) {
@@ -730,17 +736,17 @@ var List = React.createClass({
   },
   onFormat: function(e) {
     this.formatJson(this.props.modal.getActive());
-    e.preventDefault();
+    preventBlur(e);
   },
   onInspect: function(e) {
     var item = this.props.modal.getActive();
     if (item) {
-      events.trigger('showJsonViewDialog', item.value);
-      e.preventDefault();
+      trigger('showJsonViewDialog', item.value);
+      preventBlur(e);
     }
   },
   switchTab: function(e) {
-    var name = e.target.getAttribute('data-name');
+    var name = attr(e.target, 'data-name');
     if (!name || name === this.state.activeTab) {
       return;
     }
@@ -789,7 +795,7 @@ var List = React.createClass({
       <div className={'v-box fill' +
         (activeItem.selected && isRules ? ' w-has-selected-rules' : '') +
         (disabled ? ' w-has-selected-disabled' : '') +
-        (props.hide ? ' hide' : '')}>
+        util.getHide(props.hide)}>
         {disabled || (dataCenter.needEnableHttps() && !hideEnableHTTPSTips && !dataCenter.isPureProxy()) ? (
           <div className="w-record-status">
             {disabled ? 'All rules are currently disabled' :
@@ -814,7 +820,7 @@ var List = React.createClass({
                 (props.className || '') +
                 (disabled ? ' w-disabled' : '')
               }
-              style={{ background: filterText ? 'var(--b-filtered)' : undefined }}
+              style={{ background: filterText ? 'var(--b-filtered)' : null }}
             >
               {list.map(function (name, i) {
                 var item = data[name];
@@ -830,11 +836,11 @@ var List = React.createClass({
                     tabIndex="0"
                     ref={name}
                     data-name={i + '_' + name}
-                    onDragStart={isDefaultRule ? undefined : self.onDragStart}
+                    onDragStart={isDefaultRule ? null : self.onDragStart}
                     onDragEnter={self.onDragEnter}
                     onDragLeave={self.onDragLeave}
                     onDrop={self.onDrop}
-                    style={{ display: item.hide ? 'none' : null }}
+                    style={util.getHideStyle(item.hide)}
                     key={item.key}
                     data-key={item.key}
                     title={title}
@@ -844,7 +850,7 @@ var List = React.createClass({
                     }}
                     onDoubleClick={isGroup ? null : function (e) {
                       self.onDoubleClick(item);
-                      e.preventDefault();
+                      preventBlur(e);
                     }}
                     className={util.getClasses({
                       'w-active': !isGroup && item.active,

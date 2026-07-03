@@ -1,20 +1,22 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var QRCodeDialog = require('./qrcode-dialog');
 var TextDialog = require('./text-dialog');
 var storage = require('./storage');
 var win = require('./win');
-var events = require('./events');
 var Icon = require('./icon');
+var UploadForm = require('./upload-form');
 
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
-var NOT_EMPTY_RE = /[^\s]/;
 var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
 var MAX_SAVE_LEN = 5120;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
+var handleTab = util.handleTab;
+var EXCEED_TIPS = util.EXCEED_TIPS + ' 3MB';
+
+var notEmpty = util.notEmpty;
 
 var ToolBox = React.createClass({
   getInitialState: function () {
@@ -38,17 +40,17 @@ var ToolBox = React.createClass({
     clearTimeout(self.qrcodeTimer);
     self.qrcodeTimer = setTimeout(self._saveQRCodeValue, 1000);
   },
-  _saveJSONValue: function () {
-    var value = this.state.jsonValue;
-    if (value.length <= MAX_SAVE_LEN) {
-      storage.set('jsonValue', value);
+  _saveValue: function (name, maxLen) {
+    var value = this.state[name];
+    if (value.length <= maxLen) {
+      storage.set(name, value);
     }
   },
+  _saveJSONValue: function () {
+    this._saveValue('jsonValue', MAX_SAVE_LEN);
+  },
   _saveCodecText: function () {
-    var value = this.state.codecText;
-    if (value.length <= MAX_TEXT_LEN) {
-      storage.set('codecText', value);
-    }
+    this._saveValue('codecText', MAX_TEXT_LEN);
   },
   saveCodecText: function () {
     var self = this;
@@ -65,7 +67,7 @@ var ToolBox = React.createClass({
   },
   onForamt: function (e) {
     util.handleFormat(e, this.formatJSON);
-    util.handleTab(e);
+    handleTab(e);
   },
   onCodecChange: function (e) {
     this.setState(
@@ -79,7 +81,7 @@ var ToolBox = React.createClass({
     this.refs.qrcodeDialog.show(this.state.qrcodeValue);
   },
   parseJSON: function () {
-    events.trigger('showJsonViewDialog', this.state.jsonValue);
+    util.trigger('showJsonViewDialog', this.state.jsonValue);
   },
   formatJSON: function() {
     var self = this;
@@ -89,7 +91,7 @@ var ToolBox = React.createClass({
       return;
     }
     self.setState({
-      jsonValue: JSON.stringify(value, null, '  ')
+      jsonValue: util.stringify(value)
     }, self._saveJSONValue);
   },
   encode: function () {
@@ -111,17 +113,18 @@ var ToolBox = React.createClass({
     }
   },
   uploadFile: function () {
-    findDOMNode(this.refs.uploadFile).click();
+    this.refs.uploadForm.getInput().click();
   },
   readFile: function () {
     var self = this;
-    var file = new FormData(findDOMNode(this.refs.uploadFileForm)).get('file');
+    var uploadForm = self.refs.uploadForm;
+    var file = new FormData(uploadForm.getForm()).get('file');
     if (!(file.size <= MAX_IMAGE_SIZE)) {
-      return win.alert('Maximum file size: 3MB');
+      return win.alert(EXCEED_TIPS);
     }
     var type = 'data:' + file.type + ';base64,';
     util.readFileAsBase64(file, function (base64) {
-      findDOMNode(self.refs.uploadFile).value = '';
+      uploadForm.getInput().value = '';
       self.refs.textDialog.show(type + base64, base64, file.name);
     });
   },
@@ -144,7 +147,7 @@ var ToolBox = React.createClass({
       'downloadTargetFrame'
     );
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   render: function () {
     var self = this;
     var state = self.state;
@@ -152,21 +155,21 @@ var ToolBox = React.createClass({
     var jsonValue = state.jsonValue;
     var domainValue = state.domainValue;
     var codecText = state.codecText;
-    var emptyJson = !NOT_EMPTY_RE.test(jsonValue);
-    var emptyCodec = !NOT_EMPTY_RE.test(codecText);
+    var emptyJson = !notEmpty(jsonValue);
+    var emptyCodec = !notEmpty(codecText);
 
     return (
       <div
         className={
-          'fill v-box w-tool-box ' +
-          (self.props.hide ? 'hide' : '')
+          'fill v-box w-tool-box' +
+          util.getHide(self.props.hide)
         }
       >
         <div className="w-inspectors-title">
           <Icon name="qrcode" />QRCode
           <button
             className="btn btn-primary"
-            disabled={!NOT_EMPTY_RE.test(qrcodeValue)}
+            disabled={!notEmpty(qrcodeValue)}
             onClick={self.generageQRCode}
           >
             Show
@@ -174,7 +177,7 @@ var ToolBox = React.createClass({
         </div>
         <textarea
           onChange={self.onQRCodeChange}
-          onKeyDown={util.handleTab}
+          onKeyDown={handleTab}
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
@@ -183,10 +186,9 @@ var ToolBox = React.createClass({
         <div className="w-inspectors-title">
           <Icon name="pencil" />JSON
           <button
-            className="btn btn-primary"
+            className="btn btn-primary ml-10"
             disabled={emptyJson}
             onClick={self.parseJSON}
-            style={{marginLeft: 10}}
           >
             Inspect
           </button>
@@ -209,15 +211,13 @@ var ToolBox = React.createClass({
         <div className="w-inspectors-title" style={{ height: 20 }}>
           <Icon name="eye-close" />Base64
           <button
-            className="btn btn-primary"
-            style={{marginLeft: 10}}
+            className="btn btn-primary ml-10"
             onClick={self.uploadFile}
           >
             Upload
           </button>
           <button
-            className="btn btn-default"
-            style={{marginLeft: 10}}
+            className="btn btn-default ml-10"
             disabled={emptyCodec}
             onClick={self.encode}
           >
@@ -233,7 +233,7 @@ var ToolBox = React.createClass({
         </div>
         <textarea
           onChange={self.onCodecChange}
-          onKeyDown={util.handleTab}
+          onKeyDown={handleTab}
           value={codecText}
           className="w-tool-box-ctn"
           maxLength={MAX_TEXT_LEN}
@@ -260,18 +260,7 @@ var ToolBox = React.createClass({
         </div>
         <QRCodeDialog ref="qrcodeDialog" />
         <TextDialog ref="textDialog" />
-        <form
-          ref="uploadFileForm"
-          encType="multipart/form-data"
-          style={util.HIDE_STYLE}
-        >
-          <input
-            ref="uploadFile"
-            onChange={self.readFile}
-            name="file"
-            type="file"
-          />
-        </form>
+        <UploadForm ref="uploadForm" name="file" onChange={self.readFile} />
       </div>
     );
   }

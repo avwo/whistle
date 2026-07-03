@@ -192,29 +192,33 @@ var JSONTree = (function (_React$Component) {
     var expandMenu;
     var collapseMenu;
     var searchMenu;
-    if (props.expandAll) {
+    var expandAll = props.expandAll;
+    var collapseAll = props.collapseAll;
+    var onSearch = props.onSearch;
+    if (expandAll) {
       expandMenu = {
         name: 'Expand All',
         onClick: function() {
-          props.expandAll();
+          expandAll();
+
         }
       };
       contextMenuList.push(expandMenu);
     }
-    if (props.collapseAll) {
+    if (collapseAll) {
       collapseMenu = {
         name: 'Collapse All',
         onClick: function() {
-          props.collapseAll();
+          collapseAll();
         }
       };
       contextMenuList.push(collapseMenu);
     }
-    if (props.onSearch) {
+    if (onSearch) {
       searchMenu = {
         name: 'Search Object',
         onClick: function () {
-          props.onSearch();
+          onSearch();
         }
       };
       contextMenuList.push(searchMenu);
@@ -238,7 +242,7 @@ var JSONTree = (function (_React$Component) {
       var data = _this.props.data;
       var keyPathLen = keyPath.length;
       var showInspect = keyPathLen >= 2 || props.onSearch;
-      contextMenuList[3].copyText = data ? JSON.stringify(data, null, '  ') : '';
+      contextMenuList[3].copyText = data ? JSON.stringify(data, null, 2) : '';
       if (data) {
         for (var i = keyPathLen - 2; i >= 0; i--) {
           data = data && data[keyPath[i]];

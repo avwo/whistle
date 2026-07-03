@@ -2,7 +2,6 @@ require('../css/overview.css');
 var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var columns = require('./columns');
-var events = require('./events');
 var util = require('./util');
 var storage = require('./storage');
 var Properties = require('./properties');
@@ -10,6 +9,7 @@ var dataCenter = require('./data-center');
 var HelpIcon = require('./help-icon');
 var MatchedRule = require('./matched-rule');
 
+var getProperty = util.getProperty;
 var OVERVIEW = [
   'URL',
   'Final URL',
@@ -98,11 +98,11 @@ var Overview = React.createClass({
       showOnlyMatchRules: storage.get('showOnlyMatchRules') == 1
     };
   },
-  shouldComponentUpdate: util.shouldComponentUpdate,
+  shouldComponentUpdate: util.scu,
   componentDidMount: function () {
     var self = this;
     var container = findDOMNode(self.refs.container);
-    events.on('overviewScrollTop', function () {
+    util.on('overviewScrollTop', function () {
       if (!util.getBool(self.props.hide)) {
         container.scrollTop = 0;
       }
@@ -155,16 +155,16 @@ var Overview = React.createClass({
       OVERVIEW.forEach(function (name, i) {
         var prop = OVERVIEW_PROPS[i];
         if (prop) {
-          var value = util.getProperty(modal, prop);
+          var value = getProperty(modal, prop);
           if (value && prop === 'res.ip') {
             value = util.getServerIp(modal);
           } else if (!value && prop === 'clientId') {
-            value = util.getProperty(modal, 'req.headers.x-whistle-client-id');
+            value = getProperty(modal, 'req.headers.x-whistle-client-id');
           }
           var isFinalUrl = prop == 'realUrl';
           if (value != null) {
             if (prop == 'req.size' || prop == 'res.size') {
-              value = util.formatSize(value, value ? util.getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1);
+              value = util.formatSize(value, value ? getProperty(modal, prop.substring(0, 4) + 'unzipSize') : -1);
             } else if (isFinalUrl) {
               if (value == modal.url) {
                 value = '';
@@ -177,10 +177,10 @@ var Overview = React.createClass({
           } else if (prop == 'res.statusMessage') {
             value = util.getStatusMessage(modal.res);
           }
-          var loc = isFinalUrl && util.getProperty(modal, 'res.headers.location');
+          var loc = isFinalUrl && getProperty(modal, 'res.headers.location');
           overviewModal[name] = value;
           if (loc) {
-            var statusCode = util.getProperty(modal, 'res.statusCode');
+            var statusCode = getProperty(modal, 'res.statusCode');
             if (loc && (statusCode == 301 || statusCode == 302  || statusCode == 303 ||
               statusCode == 307 || statusCode == 308)) {
               overviewModal['Redirect URL'] = loc;
@@ -191,7 +191,7 @@ var Overview = React.createClass({
           var time;
           switch (name) {
           case OVERVIEW[lastIndex - 6]:
-            time = util.toLocaleString(new Date(modal.startTime));
+            time = util.toDateStr(modal.startTime);
             break;
           case OVERVIEW[lastIndex - 5]:
             time = modal.ttfb >= 0 ? modal.ttfb + 'ms' : '';
@@ -254,7 +254,7 @@ var Overview = React.createClass({
         ref="container"
         className={
           'fill v-box w-detail-ctn w-detail-overview' +
-          (util.getBool(self.props.hide) ? ' hide' : '')
+          util.getHide(util.getBool(self.props.hide))
         }
       >
         <Properties
@@ -266,7 +266,7 @@ var Overview = React.createClass({
         />
         <p
           className="w-detail-overview-title"
-          style={{ background: showOnlyMatchRules ? 'var(--b-filtered)' : undefined }}
+          style={{ background: showOnlyMatchRules ? 'var(--b-filtered)' : null }}
         >
           <HelpIcon docsUrl="rules/protocols.html" />
           All Rules:

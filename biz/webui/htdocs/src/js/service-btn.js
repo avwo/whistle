@@ -11,15 +11,13 @@ var ServiceBtn = React.createClass({
     if (!dataCenter.whistleId) {
       return null;
     }
-    var hasToken = dataCenter.hasWhistleToken;
     return (
       <a
         onClick={this.showService}
-        className="w-plugins-menu w-service-btn"
+        className="w-plugins-menu"
         draggable="false"
-        title={hasToken ? 'Whistle Service' : 'Whistle Service (not logged in)'}
       >
-        <Icon name="cloud" className={hasToken ? '' : 'w-disabled'} />
+        <Icon name="cloud" />
         Service
       </a>
     );

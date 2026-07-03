@@ -70,15 +70,16 @@ var FiltersRule = React.createClass({
     this.handleChange();
   },
   onDisableChange: function(e) {
-    this.setState({ disabled: !e.target.checked }, this.handleChange);
+    this.onStateChange('disabled', !e.target.checked);
   },
   onChange: function(e) {
     var self = this;
-    var name = e.target.getAttribute('data-name');
+    var name = util.attr(e.target, 'data-name');
     var data = self.getData(e);
     var filter = data.list[data.index];
     filter[name] = util.removeSpaces(e.target.value);
     self.setState({}, self.handleChange);
+    self.onStateChange(name, util.removeSpaces(e.target.value));
   },
   getFilterOptions: function(type) {
     return FILTER_OPTIONS.map(function(option) {
@@ -96,7 +97,7 @@ var FiltersRule = React.createClass({
     return (
       <div className="w-form-item w-rules-form">
         <label>
-          <input type="checkbox" className="mr-10" checked={!disabled} onChange={self.onDisableChange} />
+          {self.renderBox(!disabled, null, self.onDisableChange)}
           Filters
           <HelpIcon className="ml-10" docsUrl="rules/filters.html" />
         </label>
@@ -120,7 +121,7 @@ var FiltersRule = React.createClass({
                   </optgroup>
                 </select>
                 {keyPlaceholder && self.renderAllHeaders(filter, disabled, 'w-190 mr-10', keyPlaceholder)}
-                <input type="text"  data-name="value" value={filter.value} className="form-control w-filter-header-value" maxLength="100"
+                <input type="text" data-name="value" value={filter.value} className="form-control w-filter-header-value" maxLength="100"
                   placeholder={option.placeholder} disabled={disabled} onChange={self.onChange} />
                 {self.renderButtons(filter, disabled, len)}
               </div>

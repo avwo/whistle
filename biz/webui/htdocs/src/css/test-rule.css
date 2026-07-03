@@ -31,7 +31,7 @@
   padding-top: 10px;
 }
 
-.w-test-rule-empty-tips {
+.w-empty-tips {
   position: static;
   display: flex;
   align-items: center;

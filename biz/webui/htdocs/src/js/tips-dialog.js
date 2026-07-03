@@ -1,40 +1,31 @@
 var React = require('react');
 var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
+var util = require('./util');
 
 var TipsDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
   show: function (data) {
-    this._hideDialog = false;
+    this.refs.dialog.show();
     this.setState(data);
-    this.refs.tipsDialog.show();
   },
   hide: function () {
-    this.refs.tipsDialog.hide();
-    this._hideDialog = true;
+    this.refs.dialog.hide();
   },
-  shouldComponentUpdate: function () {
-    return this._hideDialog === false;
-  },
+  shouldComponentUpdate: util.scuDialog,
   render: function () {
     var state = this.state;
     return (
-      <Dialog ref="tipsDialog" wstyle="w-dns-servers-dialog w-tips-dialog">
-        <div className="modal-header">
-          <h4>{state.title}</h4>
-          <CloseBtn />
-        </div>
+      <Dialog ref="dialog" wstyle="w-dns-servers w-tips-dialog">
+        <ModalHeader>
+          {state.title}
+        </ModalHeader>
         <pre className="modal-body">{state.tips}</pre>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             data-dismiss="modal"

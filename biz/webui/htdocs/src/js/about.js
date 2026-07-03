@@ -4,12 +4,15 @@ var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var storage = require('./storage');
 var util = require('./util');
-var events = require('./events');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var DismissBtn = require('./dismiss-btn');
 
 var isElectron = util.isElectron;
+var compareVersion = util.compareVersion;
+var UPDATE_URL = util.UPDATE_URL;
 var clientName = isElectron ? 'electron' : 'nodejs';
+var CLIENT_CHANGELOG_URL = util.GITHUB_URL + '-client/blob/main/CHANGELOG.md';
 
 var About = React.createClass({
   getInitialState: function () {
@@ -18,14 +21,16 @@ var About = React.createClass({
   hasNewVersion: function (data) {
     var clientVersion = this.props.clientVersion;
     var state = this.state;
-    var flag = util.compareVersion(data.latestVersion, data.version);
+    var latestVersion = data.latestVersion;
+    var latestClientVersion = data.latestClientVersion;
+    var flag = compareVersion(latestVersion, data.version);
     state._hasNewWhistle = flag;
     state._hasNewClient = 0;
-    flag = flag && util.compareVersion(data.latestVersion, storage.get('latestVersion'));
-    if (!flag && clientVersion && data.latestClientVersion) {
-      state._hasNewClient = util.compareVersion(data.latestClientVersion, clientVersion);
+    flag = flag && compareVersion(latestVersion, storage.get('latestVersion'));
+    if (!flag && clientVersion && latestClientVersion) {
+      state._hasNewClient = compareVersion(latestClientVersion, clientVersion);
       return state._hasNewClient &&
-      util.compareVersion(data.latestClientVersion, storage.get('latestClientVersion'));
+      compareVersion(latestClientVersion, storage.get('latestClientVersion'));
     }
     return flag;
   },
@@ -40,7 +45,7 @@ var About = React.createClass({
       });
     };
     dataCenter.getInitialData(updateVersion);
-    events.on('updateVersion', function(_, data) {
+    util.on('updateVersion', function(_, data) {
       updateVersion(data);
     });
   },
@@ -70,27 +75,30 @@ var About = React.createClass({
 
     dataCenter.checkUpdate(function (data) {
       if (data && data.ec === 0) {
-        if (data.latestVersion) {
-          storage.set('latestVersion', data.latestVersion);
+        var latestVersion = data.latestVersion;
+        var latestClientVersion = data.latestClientVersion;
+        if (latestVersion) {
+          storage.set('latestVersion', latestVersion);
         }
-        if (data.latestClientVersion) {
-          storage.set('latestClientVersion', data.latestClientVersion);
+        if (latestClientVersion) {
+          storage.set('latestClientVersion', latestClientVersion);
         }
         self.setState({
           version: data.version,
-          latestVersion: data.latestVersion,
-          latestClientVersion: data.latestClientVersion,
+          latestVersion: latestVersion,
+          latestClientVersion: latestClientVersion,
           hasUpdate: self.checkUpdate(self.hasNewVersion(data))
         });
       }
     });
   },
   showDialog: function () {
-    this.refs.aboutDialog.show();
+    this.refs.dialog.show();
   },
   hideDialog: function () {
-    this.refs.aboutDialog.hide();
+    this.refs.dialog.hide();
   },
+  shouldComponentUpdate: util.scuDialog,
   render: function () {
     var self = this;
     var state = self.state;
@@ -100,6 +108,8 @@ var About = React.createClass({
     var clientVersion = self.props.clientVersion;
     var hasNewWhistle = state._hasNewWhistle;
     var hasNewClient = state._hasNewClient;
+    var checkUpdateClient = self.checkUpdateClient;
+    var title = 'Update Whistle' + (clientVersion ? ' Client' : '');
 
     return (
       <a
@@ -109,7 +119,7 @@ var About = React.createClass({
       >
         {state.hasUpdate ? <i className="w-new-version-icon" /> : null}
         <Icon name="info-sign" />About
-        <Dialog ref="aboutDialog" wstyle="w-about-dialog">
+        <Dialog ref="dialog" wstyle="w-about-dialog">
           <div className="modal-body w-about-has-plugins">
             <CloseBtn />
             <img alt="logo" src="img/whistle.png?v=2016" />
@@ -121,16 +131,16 @@ var About = React.createClass({
               {clientVersion ? <a
                 className="w-about-version"
                 title="View CHANGELOG"
-                href="https://github.com/avwo/whistle-client/blob/main/CHANGELOG.md"
+                href={CLIENT_CHANGELOG_URL}
                 target="_blank"
               >
                 {clientVersion}
               </a> : null}
               {hasNewClient ? <a
                 className="w-new-version"
-                title="Update Whistle Client"
-                onClick={self.checkUpdateClient}
-                href={util.UPDATE_URL}
+                title={title}
+                onClick={checkUpdateClient}
+                href={UPDATE_URL}
                 target="_blank"
               >
                 (NEW: {latestClient})
@@ -146,9 +156,9 @@ var About = React.createClass({
               </a>
               {hasNewWhistle ? <a
                 className="w-new-version"
-                title={clientVersion ? 'Update Whistle Client' : 'Update Whistle'}
-                onClick={self.checkUpdateClient}
-                href={util.UPDATE_URL}
+                title={title}
+                onClick={checkUpdateClient}
+                href={UPDATE_URL}
                 target="_blank"
               >
                 (NEW: {latest})
@@ -168,21 +178,15 @@ var About = React.createClass({
             {hasNewWhistle || hasNewClient ? (
               <a
                 className="btn btn-primary"
-                title={clientVersion ? 'Update Whistle Client' : 'Update Whistle'}
-                onClick={self.checkUpdateClient}
-                href={util.UPDATE_URL}
+                title={title}
+                onClick={checkUpdateClient}
+                href={UPDATE_URL}
                 target="_blank"
               >
                 Update Now
               </a>
             ) : null}
-            <button
-              type="button"
-              className="btn btn-default"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
+            <DismissBtn />
           </div>
         </Dialog>
       </a>

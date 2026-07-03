@@ -8,10 +8,12 @@ var JSONEditor = require('./json-editor');
 var HeaderSelect = require('./header-select');
 var TypeSelect = require('./type-select');
 var Dialog = require('./dialog');
-var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
+var DismissBtn = require('./dismiss-btn');
 
 var getInjectValue = util.getInjectValue;
 var getRandomKey = util.getRandomKey;
+var attr = util.attr;
 var MAX_COUNT = 20;
 var keyIndex = 0;
 var removeSpaces = util.removeSpaces;
@@ -49,7 +51,7 @@ function getElemValue(e) {
     return e.value;
   }
   var target = e.target;
-  return target.getAttribute('data-keep-space') ? target.value : removeSpaces(target.value);
+  return attr(target, 'data-keep-space') ? target.value : removeSpaces(target.value);
 }
 
 function getValue(value, keepSpace) {
@@ -61,7 +63,7 @@ module.exports = {
     return { type: action, label: action, value: '', index: keyIndex++ };
   },
   getData: function(e) {
-    var key =  e.target.getAttribute('data-key') || 'key';
+    var key =  attr(e.target, 'data-key') || 'key';
     var target = $(e.target).closest('.w-form-value');
     var index = +target.data('index');
     var list = this.state[target.data('name')];
@@ -85,7 +87,7 @@ module.exports = {
     var headers;
     var cookiesKey;
     var headersKey;
-    var flag = isReq ? 'q' : 's';
+    var prefix = isReq ? 'req' : 'res';
     var allActions = isReq ? HeaderSelect.REQ_HEADERS : HeaderSelect.RES_HEADERS;
     state.headerActions.forEach(function(action) {
       var key = (action.key || '').trim();
@@ -96,10 +98,10 @@ module.exports = {
       var type = action.type;
       switch(action.type) {
       case allActions[1]:
-        key && rules.push('delete://re' + flag + 'Headers.' + key);
+        key && rules.push('delete://' + prefix + 'Headers.' + key);
         break;
       case allActions[2]:
-        key && rules.push('delete://re' + flag + 'Cookies.' + key);
+        key && rules.push('delete://' + prefix + 'Cookies.' + key);
         break;
       default:
         var innerKey;
@@ -154,9 +156,9 @@ module.exports = {
         }
         if (key) {
           if (!headers) {
-            headersKey = getRandomKey('re' + flag + 'Headers_');
+            headersKey = getRandomKey(prefix + 'Headers_');
             headers = {};
-            rules.push('re' + flag + 'Headers://{' + headersKey + '}');
+            rules.push(prefix + 'Headers://{' + headersKey + '}');
           }
           if (headers[type] == null) {
             headers[type] = key;
@@ -201,21 +203,22 @@ module.exports = {
       }
     };
     if (action.value) {
-      win.confirm('Do you confirm the deletion of this item?', remove);
+      win.confirm(util.CMF_DEL_MSG + 'this item?', remove);
     } else {
       remove(true);
     }
   },
   onDisableCheckChange: function(e) {
-    var name = e.target.getAttribute('data-name');
-    var self = this;
-    self.state[name] = !e.target.checked;
-    self.setState({}, self.handleChange);
+    var target = e.target;
+    this.onStateChange(attr(target, 'data-name'), !target.checked);
   },
   onEnableCheckChange: function(e) {
-    var name = e.target.getAttribute('data-name');
+    var target = e.target;
+    this.onStateChange(attr(target, 'data-name'), target.checked);
+  },
+  onStateChange: function(name, value) {
     var self = this;
-    self.state[name] = e.target.checked;
+    self.state[name] = value;
     self.setState({}, self.handleChange);
   },
   onDataChange: function(e, key) {
@@ -253,6 +256,9 @@ module.exports = {
       cookie[name] = target.checked || undefined;
     }
     this.setState({ cookie: cookie });
+  },
+  renderBox: function(checked, name, onChange) {
+    return <input type="checkbox" className="mr-10" checked={checked} data-name={name} onChange={onChange || this.onDisableCheckChange} />;
   },
   renderButtons: function(action, disabled, len) {
     var isMax = len >= MAX_COUNT;
@@ -317,22 +323,19 @@ module.exports = {
   },
   renderKey: function(key, placeholder, disabled, keepSpace, onClick, className) {
     return <input type="text" value={getValue(key, keepSpace)} className={'form-control ' + (className || '')} maxLength="2560" readOnly={!!onClick}
-      onClick={onClick} placeholder={placeholder} disabled={disabled} onChange={this.onKeyChange} data-keep-space={keepSpace || undefined} />;
+      onClick={onClick} placeholder={placeholder} disabled={disabled} onChange={this.onKeyChange} data-keep-space={keepSpace || null} />;
   },
   renderKV: function(data, keyPlaceholder, valuePlaceholder, disabled, keepKeySpace, keepValueSpace) {
     var self = this;
     return [
       <input type="text" value={getValue(data.key, keepKeySpace)} className="form-control w-190 mr-10" maxLength="2560"
-        placeholder={keyPlaceholder} disabled={disabled} onChange={self.onKeyChange} data-keep-space={keepKeySpace || undefined} />,
+        placeholder={keyPlaceholder} disabled={disabled} onChange={self.onKeyChange} data-keep-space={keepKeySpace || null} />,
       <input type="text" value={getValue(data.value, keepValueSpace)} className="form-control" maxLength="2560"
-        placeholder={valuePlaceholder} disabled={disabled} onChange={self.onValueChange} data-keep-space={keepValueSpace || undefined} />
+        placeholder={valuePlaceholder} disabled={disabled} onChange={self.onValueChange} data-keep-space={keepValueSpace || null} />
     ];
   },
   renderFileInput: function(value, disabled) {
     return <UrlInput value={value} enableLocalFile onChange={this.onFileChange} disabled={disabled} session={this.props.session} />;
-  },
-  renderJSONEditor: function(value, disabled) {
-    return <JSONEditor value={value} disabled={disabled} onChange={this.onValueChange} />;
   },
   renderBodyAction: function(action, disabled, actions) {
     var type = action.type;
@@ -342,7 +345,7 @@ module.exports = {
       return self.renderKey(action.key, 'Enter key path, e.g. a\\.b.c.d', disabled, true);
     }
     if (type === actions[len - 2]) {
-      return self.renderJSONEditor(action.value, disabled);
+      return <JSONEditor value={action.value} disabled={disabled} onChange={this.onValueChange} />;
     }
     if (type === actions[len - 3]) {
       return self.renderKV(action, 'Enter keyword or regexp', 'Enter replacement value', disabled, true, true);
@@ -355,10 +358,9 @@ module.exports = {
 
     return (
       <Dialog ref="cookieDialog" wstyle="w-create-cookie-dialog">
-        <div className="modal-header">
+        <ModalHeader>
           Create Response Cookie
-          <CloseBtn />
-        </div>
+        </ModalHeader>
         <div className="modal-body" onChange={self.onCookieChange}>
           {
             COOKIE_OPTIONS.map(function(option) {
@@ -391,13 +393,7 @@ module.exports = {
           </div>
         </div>
         <div className="modal-footer">
-          <button
-            type="button"
-            className="btn btn-default"
-            data-dismiss="modal"
-          >
-            Close
-          </button>
+          <DismissBtn />
           <button
             type="button"
             data-dismiss="modal"

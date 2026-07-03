@@ -1,5 +1,5 @@
 var getDocUrl = require('./util').getDocUrl;
-var events = require('./events');
+var util = require('./util');
 var PROTOCOLS = [
   'rule',
   'style',
@@ -112,27 +112,6 @@ allInnerRules.splice(
 );
 allInnerRules.push('lineProps://');
 var allRules = allInnerRules;
-var groupRules = [
-  ['Map Local', ['file://', 'xfile://', 'tpl://', 'xtpl://', 'rawfile://', 'xrawfile://']],
-  ['Map Remote', ['https://', 'http://', 'wss://', 'ws://', 'tunnel://']],
-  ['DNS Spoofing', ['host://', 'xhost://', 'proxy://', 'xproxy://', 'http-proxy://', 'xhttp-proxy://',
-    'https-proxy://', 'xhttps-proxy://', 'socks://', 'xsocks://', 'pac://']],
-  ['Rewrite Request', ['urlParams://', 'pathReplace://','sniCallback://', 'method://', 'tlsOptions://', 'reqHeaders://', 'forwardedFor://',
-    'ua://', 'auth://', 'cache://', 'referer://', 'reqType://', 'reqCharset://', 'reqCookies://',
-    'reqCors://', 'reqBody://', 'reqMerge://', 'reqPrepend://', 'reqAppend://', 'reqReplace://', 'reqWrite://',
-    'reqWriteRaw://', 'reqRules://', 'reqScript://']],
-  ['Rewrite Response', ['statusCode://', 'replaceStatus://', 'redirect://', 'locationHref://', 'resHeaders://', 'responseFor://',
-    'resCharset://', 'resType://', 'resCookies://', 'attachment://', 'resCors://', 'resBody://', 'resMerge://', 'resPrepend://', 'resAppend://', 'resReplace://',
-    'htmlPrepend://', 'htmlBody://', 'htmlAppend://', 'cssPrepend://', 'cssBody://', 'cssAppend://', 'jsPrepend://', 'jsBody://',
-    'jsAppend://', 'trailers://', 'resWrite://', 'resWriteRaw://', 'resRules://', 'resScript://', 'frameScript://']],
-  ['General', ['pipe://', 'delete://', 'headerReplace://']],
-  ['Throttle', ['reqDelay://', 'resDelay://', 'reqSpeed://', 'resSpeed://']],
-  ['Tools', ['weinre://', 'log://']],
-  ['Settings', ['style://', 'enable://', 'disable://', 'lineProps://']],
-  ['Filters', ['ignore://', 'skip://', 'excludeFilter://', 'includeFilter://']],
-  ['Plugins', []]
-];
-
 var pluginsOptions = [];
 
 exports.setPlugins = function (pluginsState) {
@@ -144,7 +123,6 @@ exports.setPlugins = function (pluginsState) {
   forwardRules = innerRules.slice();
   allRules = allInnerRules.slice();
   var pluginsProtos = [];
-  groupRules[groupRules.length - 1][1] = pluginsProtos;
 
   if (!pluginsState.disabledAllPlugins) {
     pluginsOptions.forEach(function (plugin, i) {
@@ -181,14 +159,10 @@ exports.setPlugins = function (pluginsState) {
       }
     });
   }
-  events.trigger('updatePlugins');
+  util.trigger('updatePlugins');
 };
 
 exports.PROTOCOLS = PROTOCOLS;
-
-exports.getGroupRules = function() {
-  return groupRules;
-};
 
 exports.getForwardRules = function () {
   return forwardRules;
