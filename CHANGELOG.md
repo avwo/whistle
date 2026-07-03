@@ -1,5 +1,10 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+
+# v2.10.5
+1. fix: 下载 JSON 重复序列化
+2. fix: 修复多项问题，增强系统稳定性
+
 ## v2.10.4
 1. feat: https://wproxy.org/docs/gui/test-rules.html
 2. fix: https://github.com/avwo/whistle/issues/1335

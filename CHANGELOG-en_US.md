@@ -1,5 +1,9 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.0.5
+1. fix: avoid double JSON stringify on download
+2. fix: Fixed multiple issues and enhanced system stability
+
 ## v2.10.4
 1. feat: https://wproxy.org/docs/gui/test-rules.html
 2. fix: https://github.com/avwo/whistle/issues/1335
