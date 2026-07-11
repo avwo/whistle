@@ -71,47 +71,58 @@ exports.getServerInfo = function(req) {
     ipv6: [],
     mac: req.ip + (config.storage ? '\n' + config.storage : '')
   };
-  var ifaces = util.networkInterfaces();
-  Object.keys(ifaces).forEach(function(ifname) {
-    ifaces[ifname].forEach(function (iface) {
-      if (iface.internal) {
-        return;
-      }
-      info[iface.family == 'IPv4' || iface.family === 4 ? 'ipv4' : 'ipv6'].push(iface.address);
-    });
-  });
-
+  var serverInfo = util.getServerInfo();
+  info.ipv4 = serverInfo.ipv4;
+  info.ipv6 = serverInfo.ipv6;
   return info;
 };
 
 var DATA_RE = /[\r\n]\s*(\{[\s\S]*\})[\r\n]/;
 var REPLACE_RE = /[\r\n]1[\r\n]/;
+var EXCEED_SIZE_ERR = new Error('The file size can not exceed 6MB');
+var INVALID_CONTENT_ERR = new Error('The file content is not a JSON object');
+
 exports.getReqData = function(req, callback) {
-  var result = '';
+  var result = [];
+  var len = 0;
+  var done;
+  var handleCb = function(err, data) {
+    if (!done) {
+      done = true;
+      callback(err, data);
+      result = null;
+    }
+  };
   req.on('data', function(chunk) {
-    result = result ? Buffer.concat([result, chunk]) : chunk;
-    if (result.length > MAX_OBJECT_SIZE) {
-      req.removeAllListeners('data');
-      callback(new Error('The file size can not exceed 6MB'));
+    if (done) {
+      return;
+    }
+    len += chunk.length;
+    result.push(chunk);
+    if (len > MAX_OBJECT_SIZE) {
+      handleCb(EXCEED_SIZE_ERR);
     }
   });
-  req.on('error', callback);
+  req.on('error', handleCb);
   req.on('end', function() {
-    result += '';
+    if (done) {
+      return;
+    }
     var data;
+    result = Buffer.concat(result).toString();
     result = result.replace(DATA_RE, function(all, match) {
       data = match;
       return '';
     });
     if (!data) {
-      return callback(new Error('The file content is not a JSON object'));
+      return handleCb(INVALID_CONTENT_ERR);
     }
     try {
       data = JSON.parse(data);
     } catch(err) {
-      return callback(err);
+      return handleCb(err);
     }
-    callback(null, {
+    handleCb(null, {
       data: data,
       replace: REPLACE_RE.test(result)
     });

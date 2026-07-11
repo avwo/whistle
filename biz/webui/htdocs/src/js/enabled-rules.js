@@ -12,7 +12,7 @@ var EnabledRulesDialog = React.createClass({
   getInitialState: function () {
     return { list: [] };
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   handleClickLocate: function (rule) {
     this.hide();
     util.handleClickLocate(rule);

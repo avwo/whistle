@@ -38,7 +38,12 @@ var Timeline = React.createClass({
       >
         <ul>
           {list.map(function (item) {
-            var stalled = item.startTime - startTime;
+            var curStartTime = item.startTime;
+            var dnsTime = item.dnsTime;
+            var requestTime = item.requestTime;
+            var responseTime = item.responseTime;
+            var endTime = item.endTime;
+            var stalled = curStartTime - startTime;
             var stalledRate,
               ttfb,
               ttfbRate,
@@ -50,8 +55,8 @@ var Timeline = React.createClass({
               responseRate,
               load,
               loadRate;
-            if (item.dnsTime) {
-              stalled = item.startTime - startTime;
+            if (dnsTime) {
+              stalled = curStartTime - startTime;
               stalledRate = (stalled * TOTAL_RATE) / maxTotal + '%';
               stalled += 'ms';
             } else {
@@ -67,8 +72,8 @@ var Timeline = React.createClass({
               ttfb = '-';
             }
 
-            if (item.dnsTime) {
-              dns = item.dnsTime - item.startTime;
+            if (dnsTime) {
+              dns = dnsTime - curStartTime;
               dnsRate = (dns * TOTAL_RATE) / maxTotal + '%';
               dns += 'ms';
             } else {
@@ -77,12 +82,12 @@ var Timeline = React.createClass({
             }
 
             var isStream;
-            if (item.responseTime) {
+            if (responseTime) {
               isStream =
-                !item.requestTime || item.requestTime > item.responseTime;
+                !requestTime || requestTime > responseTime;
               response =
-                item.responseTime -
-                (isStream ? item.dnsTime : item.requestTime);
+                responseTime -
+                (isStream ? dnsTime : requestTime);
               responseRate = (response * TOTAL_RATE) / maxTotal + '%';
               response += 'ms';
             } else {
@@ -90,8 +95,8 @@ var Timeline = React.createClass({
               responseRate = 0;
             }
 
-            if (item.requestTime) {
-              request = item.requestTime - item.dnsTime;
+            if (requestTime) {
+              request = requestTime - dnsTime;
               requestRate = (request * TOTAL_RATE) / maxTotal + '%';
               request += 'ms';
               var protocol = item.protocol;
@@ -99,7 +104,7 @@ var Timeline = React.createClass({
                 util.isStr(protocol) &&
                 protocol.indexOf('>') !== -1
               ) {
-                var diffTime = item.httpsTime - item.startTime;
+                var diffTime = item.httpsTime - curStartTime;
                 if (diffTime > 0) {
                   request +=
                     ' - ' +
@@ -107,7 +112,7 @@ var Timeline = React.createClass({
                     'ms(' +
                     protocol +
                     ') = ' +
-                    (item.requestTime - item.httpsTime) +
+                    (requestTime - item.httpsTime) +
                     'ms';
                 }
               }
@@ -116,8 +121,8 @@ var Timeline = React.createClass({
               requestRate = 0;
             }
 
-            if (item.endTime) {
-              load = item.endTime - item.responseTime;
+            if (endTime) {
+              load = endTime - responseTime;
               loadRate = (load * TOTAL_RATE) / maxTotal + '%';
               load += 'ms';
             } else {
@@ -125,8 +130,8 @@ var Timeline = React.createClass({
               loadRate = 0;
             }
 
-            var total = item.endTime
-              ? item.endTime - item.startTime + 'ms'
+            var total = endTime
+              ? endTime - curStartTime + 'ms'
               : '-';
 
             if (len === 1) {

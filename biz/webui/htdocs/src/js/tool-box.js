@@ -14,7 +14,6 @@ var MAX_SAVE_LEN = 5120;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
 var handleTab = util.handleTab;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 3MB';
 
 var notEmpty = util.notEmpty;
 
@@ -120,7 +119,7 @@ var ToolBox = React.createClass({
     var uploadForm = self.refs.uploadForm;
     var file = new FormData(uploadForm.getForm()).get('file');
     if (!(file.size <= MAX_IMAGE_SIZE)) {
-      return win.alert(EXCEED_TIPS);
+      return win.alert(util.EXCEED_TIPS + ' 3MB');
     }
     var type = 'data:' + file.type + ';base64,';
     util.readFileAsBase64(file, function (base64) {

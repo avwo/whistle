@@ -284,7 +284,7 @@ var TestRule = React.createClass({
         </div>
         <Dialog ref="matchedRule" wstyle="w-test-rule-dialog">
           <ModalHeader>
-            Matched Rules
+            Matching Rules
           </ModalHeader>
           <MatchedRule modal={state.matchedRules} showOnlyMatchRules={true} noSource />
         </Dialog>

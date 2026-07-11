@@ -38,7 +38,6 @@ var trigger = util.trigger;
 var addEvent = util.on;
 var getHide = util.getHide;
 var getRawHeaders = dataCenter.getRawHeaders;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 20MB';
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -191,25 +190,27 @@ var Composer = React.createClass({
       }
       self.setState({ reqData: activeItem });
       activeItem.frames && dataCenter.setComposerItem(activeItem);
-      var body = getBody(activeItem.req);
+      var req = activeItem.req;
+      var body = getBody(req);
       var updateComposer = function () {
-        var headers = activeItem.req.headers;
+        var headers = req.headers;
         if (activeItem.h2Id) {
           headers = $.extend({}, headers);
           headers['x-whistle-alpn-protocol'] = activeItem.h2Id;
           activeItem = $.extend({}, activeItem);
-          activeItem.req = $.extend({}, activeItem.req);
-          activeItem.req.headers = headers;
+          req = $.extend({}, req);
+          activeItem.req = req;
+          req.headers = headers;
         }
         var state = {
           useH2: activeItem.useH2,
           headers: headers,
           result: activeItem,
           type: getType(headers),
-          method: activeItem.req.method,
+          method: req.method,
           tabName: 'Request'
         };
-        var body = getBody(activeItem.req);
+        var body = getBody(req);
         if (body) {
           state.disableBody = false;
           if (body.indexOf('\n') !== -1) {
@@ -1114,7 +1115,7 @@ var Composer = React.createClass({
     var form = new FormData(uploadForm.getForm());
     var file = form.get('localFile');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert(EXCEED_TIPS);
+      return win.alert(util.EXCEED_TIPS + ' 20MB');
     }
     self.reading = true;
     util.readFile(file, function (data) {
@@ -1263,7 +1264,7 @@ var Composer = React.createClass({
             <div
               ref="rulesCon"
               onDoubleClick={self.enableRules}
-              title={isStrictMode ? TIPS : undefined}
+              title={isStrictMode ? TIPS : null}
               className="v-box fill w-com-rules"
             >
               <div className="w-inspectors-title">

@@ -4053,7 +4053,8 @@ var Index = React.createClass({
     return name || 'network';
   },
   isHideRules: function() {
-    return this.state.networkMode || this.state.pluginsMode;
+    var state = this.state;
+    return state.networkMode || state.pluginsMode;
   },
   onClickHelpMenu: function(option, e) {
     if (option.name === 'Update' && dataCenter.showLatestClientVersion()) {
@@ -4572,7 +4573,7 @@ var Index = React.createClass({
           <Online name={name} clientVersion={clientVersion} />
           <div
             onMouseDown={preventInputBlur}
-            style={{ display: state.showCreateRules ? 'block' : 'none' }}
+            style={getHideStyle(!state.showCreateRules)}
             className="w-shadow w-input-menu-item w-create-rule-file-input"
           >
             <input
@@ -4591,7 +4592,7 @@ var Index = React.createClass({
           </div>
           <div
             onMouseDown={preventInputBlur}
-            style={{ display: state.showCreateValues ? 'block' : 'none' }}
+            style={getHideStyle(!state.showCreateValues)}
             className="w-shadow w-input-menu-item w-create-values-input"
           >
             <input
@@ -4608,7 +4609,7 @@ var Index = React.createClass({
           </div>
           <div
             onMouseDown={preventInputBlur}
-            style={{ display: state.showEditRules ? 'block' : 'none' }}
+            style={getHideStyle(!state.showEditRules)}
             className="w-shadow w-input-menu-item w-edit-rules-input"
           >
             <input
@@ -4622,7 +4623,7 @@ var Index = React.createClass({
           </div>
           <div
             onMouseDown={preventInputBlur}
-            style={{ display: state.showEditValues ? 'block' : 'none' }}
+            style={getHideStyle(!state.showEditValues)}
             className="w-shadow w-input-menu-item w-edit-values-input"
           >
             <input
@@ -4966,7 +4967,7 @@ var Index = React.createClass({
               onClick={self.donotShowAgain}
               data-dismiss="modal"
             >
-              Don't Show Again
+              Skip
             </button>
             <a
               type="button"

@@ -4,12 +4,15 @@ var Select = require('./custom-select');
 var HelpIcon = require('./help-icon');
 var util = require('./util');
 var ruleMixin = require('./rule-mixin');
+var UrlInput = require('./url-input');
 
 var PROXY_OPTIONS = [
   { value: 'proxy', label: 'HTTP Proxy' },
   { value: 'https-proxy', label: 'HTTPS Proxy' },
-  { value: 'socks', label: 'SOCKS5 Proxy' }
+  { value: 'socks', label: 'SOCKS5 Proxy' },
+  { value: 'pac', label: 'PAC Script' }
 ];
+var getHide = util.getHide;
 
 var NetworkRule = React.createClass({
   mixins: [ruleMixin],
@@ -19,10 +22,14 @@ var NetworkRule = React.createClass({
       disabledProxy: false,
       proxyName: 'proxy',
       proxyAddress: '',
-      serverAddress: ''
+      serverAddress: '',
+      pac: ''
     };
   },
   shouldComponentUpdate: util.scu,
+  onPacChange: function(url) {
+    this.onStateChange('pac', url);
+  },
   onAddrChange: function(host, name) {
     this.onStateChange(name, host);
   },
@@ -33,7 +40,7 @@ var NetworkRule = React.createClass({
     var self = this;
     var state = self.state;
     var proxyName = state.proxyName;
-    var proxyAddress = !state.disabledProxy && state.proxyAddress;
+    var proxyAddress = !state.disabledProxy && (proxyName === 'pac' ? state.pac.replace(/^file:\/\//, '') : state.proxyAddress);
     var serverAddress = !state.disabledServer && state.serverAddress;
     var rules = [];
     if (serverAddress) {
@@ -59,6 +66,7 @@ var NetworkRule = React.createClass({
     var disabledProxy = state.disabledProxy;
     var renderBox = self.renderBox;
     var onAddrChange = self.onAddrChange;
+    var isPac = proxyName === 'pac';
 
     return (
       <div className={'w-rules-form' + (self.props.hide ? ' w-hide' : '')}>
@@ -77,7 +85,8 @@ var NetworkRule = React.createClass({
             Address
             <HelpIcon docsUrl={'rules/' + proxyName + '.html'} className="ml-10" />
           </label>
-          <HostInput name="proxyAddress" className="w-form-value" onChange={onAddrChange} disabled={disabledProxy} />
+          <div className={'w-form-value' + getHide(!isPac)}><UrlInput enableFile enableService onChange={self.onPacChange} disabled={disabledProxy} /></div>
+          <HostInput name="proxyAddress" className={'w-form-value' + getHide(isPac)} onChange={onAddrChange} disabled={disabledProxy} />
         </div>
       </div>
     );

@@ -240,8 +240,7 @@
 .w-preview-rules :is(.w-pr-REQDELAY, .w-pr-REQSPEED, .w-pr-METHOD,
 .w-pr-REQHEADERS,.w-pr-REQBODY,.w-pr-HEADERREPLACE,
 .w-pr-REQCORS, .w-pr-REQPREPEND, .w-pr-REQBODY,
-.w-pr-REQAPPEND, .w-pr-REQREPLACE, .w-pr-AUTH,
-.w-pr-REQCOOKIES) {
+.w-pr-REQAPPEND, .w-pr-REQREPLACE, .w-pr-AUTH, .w-pr-PAC, .w-pr-REQCOOKIES) {
   color: #9effff;
 }
 

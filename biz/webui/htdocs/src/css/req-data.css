@@ -339,7 +339,7 @@
   text-align: center;
   background-color: var(--b-warn);
   border-bottom: 1px solid var(--c-border);
-  color: var(--c-error);
+  color: var(--c-warn);
 }
 
 .w-record-status .btn {

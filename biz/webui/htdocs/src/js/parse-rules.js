@@ -60,7 +60,8 @@ module.exports = function (str) {
   var rawValues = {};
   var rules = [];
   var map = {};
-  var addRules = function(rule) {
+  var addRules = function(rule, filters) {
+    rule = filters ? rule.concat(filters) : rule;
     var l = rule.join(' ');
     if (!map[l]) {
       map[l] = 1;
@@ -85,10 +86,11 @@ module.exports = function (str) {
     if (index === -1) {
       return addRules([line]);
     }
+    var filters = data.filters;
     if (index === 0) {
       var pattern = list.shift();
       list.forEach(function (op) {
-        addRules([pattern, op, ...data.filters]);
+        addRules([pattern, op], filters);
       });
     } else {
       var opList = [];
@@ -100,7 +102,7 @@ module.exports = function (str) {
       });
       opList.forEach(function (op) {
         patternList.forEach(function (pattern) {
-          addRules([pattern, op, ...data.filters]);
+          addRules([pattern, op], filters);
         });
       });
     }

@@ -335,7 +335,7 @@ module.exports = {
     ];
   },
   renderFileInput: function(value, disabled) {
-    return <UrlInput value={value} enableLocalFile onChange={this.onFileChange} disabled={disabled} session={this.props.session} />;
+    return <UrlInput value={value} enableFile onChange={this.onFileChange} disabled={disabled} session={this.props.session} />;
   },
   renderBodyAction: function(action, disabled, actions) {
     var type = action.type;

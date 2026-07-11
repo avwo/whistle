@@ -62,7 +62,7 @@ var PluginsMgr = React.createClass({
   hide: function () {
     this.refs.dialog.hide();
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   render: function () {
     var self = this;
     var state = self.state;

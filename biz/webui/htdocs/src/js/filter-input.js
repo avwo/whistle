@@ -10,6 +10,7 @@ var CloseBtn = require('./close-btn');
 
 var isFunc = util.isFunc;
 var preventBlur = util.preventBlur;
+var getHideStyle = util.getHideStyle;
 var MAX_LEN = 128;
 var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
 var getTitle = function (type) {
@@ -229,7 +230,8 @@ var FilterInput = React.createClass({
   },
   clearFilterText: function () {
     var self = this;
-    self.props.onChange && self.props.onChange('');
+    var onChange = self.props.onChange;
+    onChange && onChange('');
     var hintList = null;
     if (document.activeElement === findDOMNode(self.refs.input)) {
       hintList = self.filterHints();
@@ -284,7 +286,7 @@ var FilterInput = React.createClass({
         {hintKey ? (
           <div
             className="w-filter-hint"
-            style={util.getHideStyle(!(hintList && hintList.length))}
+            style={getHideStyle(!(hintList && hintList.length))}
             onMouseDown={preventBlur}
           >
             <div className="w-filter-bar">
@@ -327,7 +329,7 @@ var FilterInput = React.createClass({
         <button
           onMouseDown={preventBlur}
           onClick={self.clearFilterText}
-          style={{ display: state.filterText ? 'block' : 'none' }}
+          style={getHideStyle(!state.filterText)}
           type="button"
           className="close w-clear-input"
           title="Ctrl[Command]+D"

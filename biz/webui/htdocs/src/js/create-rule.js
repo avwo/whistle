@@ -73,7 +73,7 @@ var CreateRuleDialog = React.createClass({
   onTypeChange: function(option) {
     this.setState({ type: option.value });
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   componentDidMount: function() {
     addEvent('hideRulesDialog', this.hide);
   },

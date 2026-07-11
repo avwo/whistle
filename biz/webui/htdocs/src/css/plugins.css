@@ -35,7 +35,6 @@
 .w-plugin-tab-disabled .glyphicon-ban-circle {
   vertical-align: text-top;
   margin-right: 3px;
-  color: var(--c-disabled) !important;
 }
 
 .w-custom-tab-btn {

@@ -82,7 +82,7 @@
   border-radius: 2px;
   z-index: 101;
   top: 33px;
-  display: none;
+  display: block;
   white-space: nowrap;
 }
 .w-input-menu-item input {

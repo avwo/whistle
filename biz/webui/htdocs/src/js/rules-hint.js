@@ -33,21 +33,23 @@ var curHintProto,
   curHintOffset;
 var hintUrl, hintCgi, waitingRemoteHints;
 var extraKeys = { 'Alt-/': 'autocomplete' };
+var KW_TIPS = util.KW_TIPS;
 var FILTERS = [
-  '<keyword or regex for URL>',
-  'm:<keyword or regex for HTTP method>',
-  'b:<keyword or regex for request body>',
-  's:<keyword or regex for response status code>',
-  'clientIp:<keyword or regex for client IP address>',
-  'serverIp:<keyword or regex for server IP address>',
+  '<' + KW_TIPS + 'URL>',
+  'm:<' + KW_TIPS + 'HTTP method>',
+  'b:<' + KW_TIPS + 'request body>',
+  's:<' + KW_TIPS + 'response status code>',
+  'clientIp:<' + KW_TIPS + 'client IP address>',
+  'serverIp:<' + KW_TIPS + 'server IP address>',
   'chance:<probability between 0 and 1>',
-  'reqH.header-key:<keyword or regex for request header value>',
-  'resH.header-key:<keyword or regex for response header value>'
+  'reqH.header-key:<' + KW_TIPS + 'request header value>',
+  'resH.header-key:<' + KW_TIPS + 'response header value>'
 ];
+var HEADER_REPLACE_TIPS = '.header-key:(keyword|regexp)=<replacement>';
 var HEADERS = [
-  'reqH.header-key:(keyword|regex)=<replacement>',
-  'resH.header-key:(keyword|regex)=<replacement>',
-  'trailer.header-key:(keyword|regex)=<replacement>'
+  'reqH' + HEADER_REPLACE_TIPS,
+  'resH' + HEADER_REPLACE_TIPS,
+  'trailer' + HEADER_REPLACE_TIPS
 ];
 var DEL_HINTS = [
   'pathname.<index>',
@@ -83,38 +85,39 @@ var DISABLE_HINTS = ['301', 'abort', 'abortReq', 'abortRes', 'authCapture', 'aut
   'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepAlive', 'keepClientId', 'keepH2Session', 'safeHtml', 'strictHtml',
   'multiClient', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'secureOptions', 'servername',
   'timeout', 'trailerHeader', 'trailers', 'tunnelAuthHeader', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule'];
+var SHIFT_PREFIX = 'Shift-';
 var CHARS = [
   '-',
   '"_"',
-  'Shift-2',
+  SHIFT_PREFIX + '2',
   '.',
   ',',
-  'Shift-,',
-  'Shift-.',
-  'Shift-;',
+  SHIFT_PREFIX + ',',
+  SHIFT_PREFIX + '.',
+  SHIFT_PREFIX + ';',
   '/',
-  'Shift-/',
-  'Shift-1',
-  'Shift-4',
-  'Shift-5',
-  'Shift-6',
-  'Shift-7',
-  'Shift-8',
+  SHIFT_PREFIX + '/',
+  SHIFT_PREFIX + '1',
+  SHIFT_PREFIX + '4',
+  SHIFT_PREFIX + '5',
+  SHIFT_PREFIX + '6',
+  SHIFT_PREFIX + '7',
+  SHIFT_PREFIX + '8',
   '=',
-  'Shift-=',
+  SHIFT_PREFIX + '=',
   '\'',
-  'Shift-\'',
+  SHIFT_PREFIX + '\'',
   ';',
-  'Shift-;',
+  SHIFT_PREFIX + ';',
   '\\',
-  'Shift-\\',
-  'Shift-`',
+  SHIFT_PREFIX + '\\',
+  SHIFT_PREFIX + '`',
   '[',
   ']',
-  'Shift-[',
-  'Shift-]',
-  'Shift-9',
-  'Shift-0'
+  SHIFT_PREFIX + '[',
+  SHIFT_PREFIX + ']',
+  SHIFT_PREFIX + '9',
+  SHIFT_PREFIX + '0'
 ];
 for (var i = 0; i < 10; i++) {
   CHARS.push('\'' + i + '\'');
@@ -243,7 +246,7 @@ function getFilterHint(filter) {
   var index = filter.indexOf('<');
   var text = index === -1 ? filter : filter.substring(0, index);
   return {
-    text: text.replace('.header-key', '._headerKey_').replace('(keyword|regex)=', '_keywordOrRegEx_='),
+    text: text.replace('.header-key', '._headerKey_').replace('(keyword|regexp)=', '_keywordOrRegExp_='),
     displayText: filter
   };
 }

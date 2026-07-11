@@ -31,13 +31,14 @@ var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
 var BASE_DOM = '.ReactVirtualized__Grid:first';
 var MAX_LEN = 64;
+var KV_TIPS = util.KV_TIPS;
 var HINTS = [
-  '<keyword or regex for URL>',
-  'd:<keyword or regex for domain>',
-  'm:<keyword or regex for HTTP method>',
-  's:<keyword or regex for HTTP status code>',
-  'h:<keyword or regex for request or response headers>',
-  'b:<keyword or regex for request or response body>'
+  '<' + KV_TIPS + 'URL>',
+  'd:<' + KV_TIPS + 'domain>',
+  'm:<' + KV_TIPS + 'HTTP method>',
+  's:<' + KV_TIPS + 'HTTP status code>',
+  'h:<' + KV_TIPS + 'request or response headers>',
+  'b:<' + KV_TIPS + 'request or response body>'
 ];
 var contextMenuList = [
   {
@@ -1579,12 +1580,9 @@ var ReqData = React.createClass({
             tabIndex="0"
             onContextMenu={self.onContextMenu}
             onKeyDown={self.onReplay}
-            style={{
-              background:
-                dataCenter.hashFilterObj || filterText || state.filterType
-                  ? 'var(--b-filtered)'
-                  : null
-            }}
+            style={util.getFilteredBg(
+              dataCenter.hashFilterObj || filterText || state.filterType
+            )}
             className={
               'w-req-data-list fill' + (isTreeView ? ' w-tree-view-list' : '')
             }

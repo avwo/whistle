@@ -13,7 +13,8 @@ module.exports = function(req, res) {
   var reqList = parseArray(req.query.reqList);
   var resList = parseArray(req.query.resList);
   var result = {};
-  reqList.concat(resList).forEach(function(id) {
+  var isReq;
+  var appendResult = function(id) {
     if (result[id] != null) {
       return;
     }
@@ -22,9 +23,12 @@ module.exports = function(req, res) {
       result[id] = 0;
       return;
     }
-    if ((item.requestTime && reqList.indexOf(id) !== -1) || item.endTime) {
+    if ((item.requestTime && isReq) || item.endTime) {
       result[id] = item;
     }
-  });
+  };
+  resList.forEach(appendResult);
+  isReq = true;
+  reqList.forEach(appendResult);
   res.json(result);
 };

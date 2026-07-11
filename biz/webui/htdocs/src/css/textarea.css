@@ -35,7 +35,7 @@
   z-index: 101;
   top: 22px;
   right: 0;
-  display: none;
+  display: block;
   white-space: nowrap;
 }
 .w-textarea-input input {

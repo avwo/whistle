@@ -8,7 +8,7 @@ var getHelpUrl = protocols.getHelpUrl;
 var PROTOCOLS = protocols.PROTOCOLS;
 var DEFAULT_RULES_MODAL = {};
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
-var EMPTY = {message: 'No matched rules'};
+var EMPTY = {message: 'No matching rules'};
 
 function ignoreProtocol(name) {
   return PROXY_PROTOCOLS.indexOf(name) !== -1 || name === 'skip' || /^x/.test(name);

@@ -1,6 +1,7 @@
 var React = require('react');
 var Icon = require('./icon');
 var RulesDialog = require('./rules-dialog');
+var util = require('./util');
 
 var RulesMiniEditor = React.createClass({
   onResise: function() {
@@ -31,7 +32,7 @@ var RulesMiniEditor = React.createClass({
             onKeyDown={props.onKeyDown}
             onChange={self.onChange}
             onDoubleClick={props.onDoubleClick}
-            style={{background: !disabled && rules ? 'var(--b-filtered)' : null}}
+            style={util.getFilteredBg(!disabled && rules)}
             maxLength="33000"
             className="fill"
             placeholder={props.placeholder || 'Enter rules (Higher priority than Whistle Rules)'}

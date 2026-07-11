@@ -156,7 +156,8 @@ var HistoryData = React.createClass({
     if (!elem.length) {
       return;
     }
-    var groupList = self.props.data && self.props.data._groupList;
+    var data = self.props.data;
+    var groupList = data && data._groupList;
     var item = groupList && groupList[elem.attr('data-index')];
     if (!item) {
       return;
@@ -171,26 +172,26 @@ var HistoryData = React.createClass({
       ctxMenu.hide = isTitle;
       ctxMenu.disabled = disabled;
     }
-    var data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
+    data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
     data.className = 'w-keep-history-data';
     data.list = contextMenuList;
     self.refs.contextMenu.show(data);
   },
   onClickContextMenu: function (action) {
     var self = this;
+    var props = self.props;
+    var focusItem = self._focusItem;
     switch (action) {
     case 'Copy As cURL':
-      return self.copyAsCURL(null, self._focusItem);
+      return self.copyAsCURL(null, focusItem);
     case 'Export':
-      return self.exportItem(self._focusItem);
+      return self.exportItem(focusItem);
     case 'Replay':
-      self.props.onReplay(self._focusItem);
-      return self.scrollToTop();
     case 'Replay Times':
-      self.props.onReplay(self._focusItem, true);
+      props.onReplay(focusItem, action !== 'Replay');
       return self.scrollToTop();
     case 'Edit':
-      return self.props.onEdit(self._focusItem);
+      return props.onEdit(focusItem);
     case 'createApiTest':
       return util.showService('createApiTest');
     }

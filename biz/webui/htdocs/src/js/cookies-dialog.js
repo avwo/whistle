@@ -15,7 +15,7 @@ var CookiesDialog = React.createClass({
   hide: function () {
     this.refs.dialog.hide();
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   insert: function (e) {
     var self = this;
     var i = util.attr(e.target, 'data-index');

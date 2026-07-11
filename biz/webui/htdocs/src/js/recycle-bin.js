@@ -15,6 +15,10 @@ var addEvent = util.on;
 var attr = util.attr;
 var TIMESTAMP_RE = /^(\d+)\.([\s\S]+)$/;
 
+function getCgiModule(name) {
+  return dataCenter[name.toLowerCase()];
+}
+
 function decode(name) {
   try {
     return decodeURIComponent(name);
@@ -69,7 +73,7 @@ var RecycleBinDialog = React.createClass({
     if (data.ec === 3) {
       var self = this;
       message.error('File not found');
-      dataCenter[this.state.name.toLowerCase()].recycleList(function (
+      getCgiModule(self.state.name).recycleList(function (
         result,
         xhr
       ) {
@@ -86,7 +90,7 @@ var RecycleBinDialog = React.createClass({
   view: function (e) {
     var self = this;
     var name = attr(e.target, 'data-name');
-    dataCenter[this.state.name.toLowerCase()].recycleView(
+    getCgiModule(self.state.name).recycleView(
       { name: name },
       function (data, xhr) {
         if (!self.checkFile(data, xhr)) {
@@ -101,14 +105,15 @@ var RecycleBinDialog = React.createClass({
   },
   recover: function (item) {
     var self = this;
-    dataCenter[self.state.name.toLowerCase()].recycleView(
+    var name = self.state.name;
+    getCgiModule(name).recycleView(
       { name: item.name },
       function (data, xhr) {
         if (!self.checkFile(data, xhr)) {
           return;
         }
         item.data = data.data;
-        util.trigger('recover' + self.state.name, item);
+        util.trigger('recover' + name, item);
       }
     );
   },
@@ -120,7 +125,7 @@ var RecycleBinDialog = React.createClass({
       util.CMF_DEL_MSG + '\'' + origName + '\' completely?',
       function (sure) {
         if (sure) {
-          dataCenter[self.state.name.toLowerCase()].recycleRemove(
+          getCgiModule(self.state.name).recycleRemove(
             { name: name },
             function (data, xhr) {
               if (!data) {

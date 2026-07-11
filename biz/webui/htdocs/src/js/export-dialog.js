@@ -91,7 +91,7 @@ var ExportDialog = React.createClass({
       findDOMNode(this.refs.input).value = '';
     }
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   render: function () {
     var self = this;
     var state = self.state;
@@ -118,7 +118,7 @@ var ExportDialog = React.createClass({
           <ShareViaUrlBtn type={state.name} data={state.data} getFilename={self.getInputValue} onComplete={self.onShare} />
           <button
             type="button"
-            className="btn btn-primary w-fmt-btn"
+            className="btn btn-primary"
             data-dismiss="modal"
             onClick={self.export}
           >

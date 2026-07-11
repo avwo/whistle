@@ -18,7 +18,7 @@ var UrlInput = React.createClass({
     var protocols = ['', 'http://', 'https://', 'ws://', 'wss://', 'tunnel://'];
     if (props.hideCustom) {
       protocols = protocols.slice(1);
-    } else if (props.enableLocalFile) {
+    } else if (props.enableFile) {
       protocols = ['file://', 'http://', 'https://'];
     } else if (props.isRedirect) {
       protocols = ['', 'http://', 'https://'];
@@ -56,15 +56,21 @@ var UrlInput = React.createClass({
     var protocols = this.state.protocols;
     var protocol = '';
     if (index !== -1) {
+      var keep;
       protocol = url.substring(0, index + 3).toLowerCase();
+      if (protocol === '://') {
+        protocol = '';
+      }
       if (protocols.indexOf(protocol) === -1) {
-        protocol = protocols[0];
-      } else {
+        keep = !protocols[0];
+        protocol = keep ? '' : this.state.protocol;
+      }
+      if (!keep) {
         url = url.substring(index + 3);
       }
     }
     return {
-      protocol: protocol || protocols[0],
+      protocol: protocol,
       url: url
     };
   },
@@ -364,7 +370,6 @@ var UrlInput = React.createClass({
     var props = self.props;
     var protocol = state.protocol;
     var disabled = props.disabled;
-    var enableLocalFile = props.enableLocalFile;
     var isFile = protocol === 'file://' || protocol === 'tpl://';
 
     return (
@@ -391,7 +396,7 @@ var UrlInput = React.createClass({
           onBlur={self.hideHints}
           type="text"
           maxLength="8192"
-          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file or directory path or (value)' : 'request URL')}
+          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'request URL')}
           className={'fill form-control' + (isFile ? ' w-file-input' : '')}
         />
         <button
@@ -401,7 +406,7 @@ var UrlInput = React.createClass({
         >
           Params
         </button>
-        {enableLocalFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={self.showEditor}>
+        {props.enableFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={self.showEditor}>
           <Icon name="plus" />
           File
         </button> : null}

@@ -46,10 +46,10 @@ var HttpsSettings = React.createClass({
         util.showSysErr(xhr);
         return;
       }
-      self.refs.certsInfoDialog.show(data.certs, data.dir);
+      self.refs.certsInfo.show(data.certs, data.dir);
     });
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   componentDidMount: function() {
     util.on('showCustomCerts', this.showCustomCertsInfo);
   },
@@ -155,7 +155,7 @@ var HttpsSettings = React.createClass({
               >
                 Custom Certs Settings
               </a>
-              <CertsInfoDialog ref="certsInfoDialog" />
+              <CertsInfoDialog ref="certsInfo" />
             </div>
           </div>
           <div className="modal-footer">

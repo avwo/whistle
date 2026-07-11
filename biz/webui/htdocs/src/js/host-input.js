@@ -11,7 +11,8 @@ var HostInput = React.createClass({
   },
   handleChange: function() {
     var self = this;
-    var onChange = self.props.onChange;
+    var props = self.props;
+    var onChange = props.onChange;
     if (onChange) {
       var state = self.state;
       var host = state.host;
@@ -22,7 +23,7 @@ var HostInput = React.createClass({
         }
         host += ':' + port;
       }
-      onChange(host, self.props.name);
+      onChange(host, props.name);
     }
   },
   onHostChange: function(e) {

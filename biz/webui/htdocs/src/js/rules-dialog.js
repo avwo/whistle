@@ -176,7 +176,7 @@ var RulesDialog = React.createClass({
     var state = self.state;
     var onSave = self.props.onSave;
     if (onSave) {
-      onSave(self.state.rulesValue);
+      onSave(state.rulesValue);
       return self.refs.rulesDialog.hide();
     }
     var rulesValue = state.rulesValue;
@@ -327,7 +327,10 @@ var RulesDialog = React.createClass({
           onChange={self.onRulesValueChange}
           ref="editor"
           mode="rules"
-          {...util.getRulesTheme()}
+          theme={storage.get('rulesTheme') || 'cobalt'}
+          fontSize={storage.get('rulesFontSize') || '14px'}
+          lineNumbers={storage.get('showRulesLineNumbers') === 'true'}
+          lineWrapping={!!storage.get('autoRulesLineWrapping')}
         />
         <div className="modal-footer">
           <DismissBtn />

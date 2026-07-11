@@ -49,7 +49,7 @@ var KVDialog = React.createClass({
     var self = this;
     self.refs.dialog.hide();
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   selectHistory: function(e) {
     var onHistoryChange = this.props.onHistoryChange;
     onHistoryChange && onHistoryChange(e.target.value, this.isValues);

@@ -79,16 +79,18 @@ var Tools = React.createClass({
   onDoubleClickBar: function () {
     var refs = this.refs;
     if (BTNS[0].active) {
-      if (refs.console.container.scrollTop < 5) {
-        refs.console.autoRefresh();
+      var consoleLog = refs.console;
+      if (consoleLog.container.scrollTop < 5) {
+        consoleLog.autoRefresh();
       } else {
-        refs.console.scrollTop();
+        consoleLog.scrollTop();
       }
     } else if (BTNS[1].active) {
-      if (refs.serverLog.container.scrollTop < 5) {
-        refs.serverLog.autoRefresh();
+      var serverLog = refs.serverLog;
+      if (serverLog.container.scrollTop < 5) {
+        serverLog.autoRefresh();
       } else {
-        refs.serverLog.scrollTop();
+        serverLog.scrollTop();
       }
     }
   },

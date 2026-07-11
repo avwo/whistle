@@ -208,18 +208,20 @@ var PropsEditor = React.createClass({
   },
   onRemove: function (e) {
     var self = this;
-    if (self.props.disabled) {
+    var state = self.state;
+    var props = self.props;
+    if (props.disabled) {
       return;
     }
     var name = attr(e.target, 'data-name');
-    var opName = self.props.isHeader ? 'header' : 'param';
-    var item = self.state.modal[name];
+    var opName = props.isHeader ? 'header' : 'param';
+    var item = state.modal[name];
     win.confirm(
       util.CMF_DEL_MSG + 'this ' + opName + ' \'' + item.name + '\'?',
       function (sure) {
         if (sure) {
-          delete self.state.modal[name];
-          self.props.onChange(item.name);
+          delete state.modal[name];
+          props.onChange(item.name);
           self.setState({});
         }
       }

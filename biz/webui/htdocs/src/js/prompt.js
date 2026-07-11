@@ -14,11 +14,12 @@ var Prompt = React.createClass({
   },
   onChange: function(e) {
     var self = this;
-    var isNum = self.props.isNum;
-    var isHeader = self.props.isHeader;
+    var props = self.props;
+    var isNum = props.isNum;
+    var isHeader = props.isHeader;
     self.setState({value: e.target.value.replace(isNum ? NUM_RE : isHeader ? HEADER_RE : DEF_RE, '')});
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   show: function(callback, value) {
     var self = this;
     self.setState({ value: value || '' });

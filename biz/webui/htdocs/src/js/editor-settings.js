@@ -3,9 +3,10 @@ var React = require('react');
 var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var util = require('./util');
-var themes = require('./util').EDITOR_THEMES;
 
-var fontSizeOptions = [13];
+var themes = util.EDITOR_THEMES;
+
+var fontSizeOptions = [12, 13];
 for (var i = 14; i <= 36; i += 2) {
   fontSizeOptions.push(i);
 }

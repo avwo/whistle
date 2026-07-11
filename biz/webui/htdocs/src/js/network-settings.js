@@ -16,7 +16,6 @@ var Prompt = require('./prompt');
 var message = require('./message');
 var DismissBtn = require('./dismiss-btn');
 
-var NOT_EMPTY_STYLE = { backgroundColor: 'var(--b-filtered)' };
 var DATA_KEY_TIPS = 'e.g. res.body or res.body:/"msgno":"(\w+)"/ ...';
 var URL_DEMO = ', e.g. https://example.com/path#xxx={WHISTLE_DATA}';
 var isStr = util.isStr;
@@ -27,6 +26,7 @@ var addEvent = util.on;
 var off = util.off;
 var attr = util.attr;
 var notEmpty = util.notEmpty;
+var getFilteredBg = util.getFilteredBg;
 
 var isViewInNewWin =function() {
   return storage.get('viewAllInNewWindow') === '1';
@@ -63,7 +63,7 @@ var Settings = React.createClass({
       }
     });
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   componentDidMount: function () {
     var self = this;
     addEvent('toggleTreeView', function () {
@@ -388,7 +388,7 @@ var Settings = React.createClass({
               value={state.excludeText}
               data-name="excludeText"
               placeholder="Type filter text"
-              style={!disabledExcludeText && notEmpty(state.excludeText) ? NOT_EMPTY_STYLE : null}
+              style={getFilteredBg(!disabledExcludeText && notEmpty(state.excludeText))}
               maxLength={dataCenter.MAX_EXCLUDE_LEN}
             />
           </fieldset>
@@ -411,7 +411,7 @@ var Settings = React.createClass({
               value={state.filterText}
               data-name="filterText"
               placeholder="Type filter text"
-              style={!disabledFilterText && notEmpty(state.filterText) ? NOT_EMPTY_STYLE : null}
+              style={getFilteredBg(!disabledFilterText && notEmpty(state.filterText))}
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>

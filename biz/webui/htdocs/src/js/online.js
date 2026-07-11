@@ -395,7 +395,7 @@ var Online = React.createClass({
         var pInfo = info && info.pInfo;
         toggleDns(info);
         if (!pInfo) {
-          if (isHide) {
+          if (!isHide) {
             isHide = true;
             dialog.find('.w-online-info').hide();
           }

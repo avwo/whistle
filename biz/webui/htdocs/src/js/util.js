@@ -7,6 +7,7 @@ var message = require('./message');
 var win = require('./win');
 var storage = require('./storage');
 
+var globaWin = window;
 var events = $({});
 var toByteArray = base64JS.toByteArray;
 var fromByteArray = base64JS.fromByteArray;
@@ -22,7 +23,7 @@ var logTempId = 0;
 var RAW_CRLF_RE = /\\n|\\r/g;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
 var MAX_CURL_BODY = 1024 * 72;
-var search = (window.location.search || '').substring(1);
+var search = (globaWin.location.search || '').substring(1);
 var useCustomEditor = search.indexOf('useCustomEditor') !== -1;
 var JSON_RE = /^\s*(?:\{[\w\W]*\}|\[[\w\W]*\])\s*$/;
 var isJSONText;
@@ -42,10 +43,10 @@ exports.one = events.one.bind(events);
 exports.off = events.off.bind(events);
 exports.SOURCE_SEP = SOURCE_SEP;
 exports.CRLF_RE = CRLF_RE;
-exports.EXCEED_TIPS = 'Total file size must not exceed';
+exports.EXCEED_TIPS = 'File size not exceed';
 exports.isFunc = isFunc;
 exports.isStr = isStr;
-exports.isElectron = /Electron\//i.test(window.navigator.userAgent);
+exports.isElectron = /Electron\//i.test(globaWin.navigator.userAgent);
 exports.EDITOR_THEMES = [
   'default',
   'neat',
@@ -67,6 +68,8 @@ exports.EDITOR_THEMES = [
   'twilight',
   'midnight'
 ];
+
+exports.KW_TIPS = 'keyword or regexp for ';
 
 exports.BODY_ACTIONS = ['Prepend To Body', 'Replace Body', 'Append To Body', 'Modify Body Text', 'Modify Form/JSON', 'Delete Form/JSON'];
 
@@ -372,7 +375,7 @@ exports.hideService = function() {
 
 function getSelectedText(x, y) {
   try {
-    var selection = window.getSelection();
+    var selection = globaWin.getSelection();
     for (var i = 0, len = selection.rangeCount; i < len; i++) {
       var range = selection.getRangeAt(i);
       var pos = range.getBoundingClientRect();
@@ -429,11 +432,11 @@ exports.download = function(data, filename) {
   a.style = 'display: none';
   data = typeof data === 'string' ? data : stringify(data);
   var blob = new Blob([data], {type: 'octet/stream'});
-  var url = window.URL.createObjectURL(blob);
+  var url = globaWin.URL.createObjectURL(blob);
   a.href = url;
   a.download = filename || 'data_' + formatDate() + '.txt';
   a.click();
-  window.URL.revokeObjectURL(url);
+  globaWin.URL.revokeObjectURL(url);
   document.body.removeChild(a);
 };
 
@@ -675,7 +678,7 @@ exports.scu = function (nextProps) {
   return hide != getBool(nextProps.hide) || !hide;
 };
 
-exports.scuDialog = function () {
+exports.scuDlg = function () {
   return this.refs.dialog.isVisible();
 };
 
@@ -865,7 +868,7 @@ exports.ensureVisible = function (elem, container, init) {
 
 function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
   var result = {};
-  window.___hasFormData = false;
+  globaWin.___hasFormData = false;
   if (!str || !(str = (str + '').trim())) {
     return result;
   }
@@ -897,7 +900,7 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
       } else {
         result[key] = value;
       }
-      window.___hasFormData = true;
+      globaWin.___hasFormData = true;
     }
   });
   return result;
@@ -1020,7 +1023,7 @@ exports.getPath = getPath;
 var parseJ = function (str, resolve) {
   var result;
   if (resolve && BIG_NUM_RE.test(str)) {
-    window._$hasBigNumberJson = true;
+    globaWin._$hasBigNumberJson = true;
     result = json2.parse(str);
   } else {
     result = JSON.parse(str);
@@ -1137,7 +1140,7 @@ exports.parseJSON2 = function (str) {
 };
 
 function resolveJSON(str, decode) {
-  window._$hasBigNumberJson = false;
+  globaWin._$hasBigNumberJson = false;
   var result = parseJSON(str, true);
   if (result || !str || !decode) {
     return result;
@@ -1318,8 +1321,8 @@ exports.getValue = function(item, key) {
 function openEditor(value) {
   if (
     useCustomEditor &&
-    isFunc(window.customWhistleEditor) &&
-    window.customWhistleEditor(value) !== false
+    isFunc(globaWin.customWhistleEditor) &&
+    globaWin.customWhistleEditor(value) !== false
   ) {
     return;
   }
@@ -1344,7 +1347,7 @@ exports.getOpenUrl = function() {
 };
 
 exports.openInNewWin = function(value) {
-  var win = window.open('editor.html');
+  var win = globaWin.open('editor.html');
   win.getValue = function () {
     return value;
   };
@@ -1583,11 +1586,11 @@ function getMenuPosition(e, menuWidth, menuHeight) {
   var top = e.pageY;
   var docElem = document.documentElement;
   var clientWidth = docElem.clientWidth;
-  if (left + menuWidth - window.scrollX >= clientWidth) {
-    left = Math.max(left - menuWidth, window.scrollX + 1);
+  if (left + menuWidth - globaWin.scrollX >= clientWidth) {
+    left = Math.max(left - menuWidth, globaWin.scrollX + 1);
   }
-  if (top + menuHeight - window.scrollY >= docElem.clientHeight - 25) {
-    top = Math.max(top - menuHeight, window.scrollY + 1);
+  if (top + menuHeight - globaWin.scrollY >= docElem.clientHeight - 25) {
+    top = Math.max(top - menuHeight, globaWin.scrollY + 1);
   }
   return { top: top, left: left, marginRight: clientWidth - left };
 }
@@ -1729,6 +1732,10 @@ exports.getHide = function (hide) {
   return hide ? HIDE_CLASS : '';
 };
 
+exports.getFilteredBg = function(filtered) {
+  return filtered ? { background: 'var(--b-filtered)' } : null;
+};
+
 function checkLogText(text, keyword) {
   if (!keyword.key1) {
     return '';
@@ -1843,7 +1850,7 @@ exports.triggerListChange = function (name, data) {
   trigger(name + 'Change', data);
   try {
     var onChange =
-      window.parent[
+      globaWin.parent[
         name === 'rules' ? 'onWhistleRulesChange' : 'onWhistleValuesChange'
       ];
     if (isFunc(onChange)) {
@@ -1896,7 +1903,7 @@ var COMP_RE = /%[a-f\d]{2}|./gi;
 var CHECK_COMP_RE = /%[a-f\d]{2}/i;
 var SPACE_RE = /\+/g;
 var gbkDecoder;
-if (window.TextDecoder) {
+if (globaWin.TextDecoder) {
   try {
     gbkDecoder = new TextDecoder('GB18030');
   } catch (e) {}
@@ -1921,7 +1928,7 @@ function decodeURIComponentSafe(str, isUtf8) {
         }
       });
       if (!isUtf8(arr)) {
-        return gbkDecoder.decode(new window.Uint8Array(arr));
+        return gbkDecoder.decode(new globaWin.Uint8Array(arr));
       }
     } catch (e) {}
   }
@@ -1990,10 +1997,10 @@ function getMediaType(res) {
 var BODY_KEY = '$body';
 var HEX_KEY = '$hex';
 var JSON_KEY = '$json';
-if (window.Symbol) {
-  BODY_KEY = window.Symbol.for(BODY_KEY);
-  HEX_KEY = window.Symbol.for(HEX_KEY);
-  JSON_KEY = window.Symbol.for(JSON_KEY);
+if (globaWin.Symbol) {
+  BODY_KEY = globaWin.Symbol.for(BODY_KEY);
+  HEX_KEY = globaWin.Symbol.for(HEX_KEY);
+  JSON_KEY = globaWin.Symbol.for(JSON_KEY);
 }
 
 exports.BODY_KEY = BODY_KEY;
@@ -2060,7 +2067,7 @@ function getJson(data, isReq, decode) {
       ? {
         json: body,
         isJSONText: isJSONText,
-        str: (window._$hasBigNumberJson ? json2 : JSON).stringify(
+        str: (globaWin._$hasBigNumberJson ? json2 : JSON).stringify(
             body,
             null,
             '    '
@@ -2131,7 +2138,7 @@ exports.getPreviewUrl = getPreviewUrl;
 
 exports.openPreview = function (data) {
   var url = getPreviewUrl(data);
-  url && window.open(url);
+  url && globaWin.open(url);
 };
 
 function parseRawJson(str, quite) {
@@ -2260,7 +2267,7 @@ exports.getHexText = function (text) {
 var curPageName;
 function triggerPageChange(name) {
   try {
-    var onPageChange = window.parent.onWhistlePageChange;
+    var onPageChange = globaWin.parent.onWhistlePageChange;
     if (isFunc(onPageChange) && curPageName !== name) {
       curPageName = name;
       onPageChange(name, location.href);
@@ -2277,7 +2284,7 @@ exports.triggerRulesActiveChange = function (name) {
   }
   curActiveRules = name;
   try {
-    var onChange = window.parent.onWhistleRulesActiveChange;
+    var onChange = globaWin.parent.onWhistleRulesActiveChange;
     if (isFunc(onChange)) {
       onChange(name, location.href);
     }
@@ -2290,7 +2297,7 @@ exports.triggerValuesActiveChange = function (name) {
   }
   curActiveValues = name;
   try {
-    var onChange = window.parent.onWhistleValuesActiveChange;
+    var onChange = globaWin.parent.onWhistleValuesActiveChange;
     if (isFunc(onChange)) {
       onChange(name, location.href);
     }
@@ -2335,7 +2342,7 @@ function readFile(file, callback, type) {
     var result = reader.result;
     try {
       if (!isText) {
-        result = new window.Uint8Array(result);
+        result = new globaWin.Uint8Array(result);
         result = type === 'base64' ? fromByteArray(result) : result;
       }
       execCallback(null, result);
@@ -2529,7 +2536,7 @@ function indexOfList(list, subList, start) {
 function concatByteArray(list1, list2, list3) {
   var len = list1.length;
   var len2 = list2.length;
-  var result = new window.Uint8Array(len + len2 + (list3 ? list3.length : 0));
+  var result = new globaWin.Uint8Array(len + len2 + (list3 ? list3.length : 0));
   result.set(list1);
   result.set(list2, len);
   list3 && result.set(list3, len + len2);
@@ -3463,7 +3470,7 @@ exports.GITHUB_URL = GITHUB_URL;
 exports.openChangeLog = function() {
   var lang = isZh() ? '' : '-en_US';
   var url = GITHUB_URL + '/blob/master/CHANGELOG' + lang + '.md';
-  window.open(url);
+  globaWin.open(url);
 };
 
 exports.UPDATE_URL = getDocUrl('faq.html#update');
@@ -3563,15 +3570,6 @@ var HIDE_STYLE = { display: 'none' };
 exports.HIDE_STYLE = HIDE_STYLE;
 exports.getHideStyle = function(isHide) {
   return isHide ? HIDE_STYLE : null;
-};
-
-exports.getRulesTheme = function() {
-  return {
-    theme: storage.get('rulesTheme') || 'cobalt',
-    fontSize: storage.get('rulesFontSize') || '14px',
-    lineNumbers: storage.get('showRulesLineNumbers') === 'true',
-    lineWrapping: !!storage.get('autoRulesLineWrapping')
-  };
 };
 
 exports.isSpecPattern = function (str) {

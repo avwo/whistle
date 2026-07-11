@@ -266,7 +266,7 @@ var Overview = React.createClass({
         />
         <p
           className="w-detail-overview-title"
-          style={{ background: showOnlyMatchRules ? 'var(--b-filtered)' : null }}
+          style={util.getFilteredBg(showOnlyMatchRules)}
         >
           <HelpIcon docsUrl="rules/protocols.html" />
           All Rules:

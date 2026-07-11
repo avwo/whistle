@@ -5,6 +5,7 @@ var JSON_TYPE = 'application/json';
 var XML_TYPE = 'application/xml';
 var TEXT_TYPE = 'text/plain';
 var OCTET_STREAM = 'application/octet-stream';
+var CHARSET = ';charset=utf8';
 var REQ_TYPES = [
   JSON_TYPE,
   'application/x-www-form-urlencoded',
@@ -14,12 +15,12 @@ var REQ_TYPES = [
   OCTET_STREAM
 ];
 var RES_TYPES = [
-  'text/html;charset=utf-8',
-  'text/css;charset=utf-8',
-  TEXT_TYPE + ';charset=utf-8',
-  'application/javascript;charset=utf-8',
-  JSON_TYPE + ';charset=utf-8',
-  XML_TYPE + ';charset=utf-8',
+  'text/html' + CHARSET,
+  'text/css' + CHARSET,
+  TEXT_TYPE + CHARSET,
+  'application/javascript' + CHARSET,
+  JSON_TYPE + CHARSET,
+  XML_TYPE + CHARSET,
   OCTET_STREAM,
   'image/png',
   'image/jpeg',

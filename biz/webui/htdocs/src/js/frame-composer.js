@@ -10,7 +10,6 @@ var UploadForm = require('./upload-form');
 
 var MAX_FILE_SIZE = 1024 * 1025;
 var MAX_LENGTH = 1024 * 64;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 1MB';
 var preventBlur = util.preventBlur;
 var getHide = util.getHide;
 
@@ -93,7 +92,7 @@ var FrameComposer = React.createClass({
   uploadForm: function (form) {
     var file = form.get('uploadData');
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert(EXCEED_TIPS);
+      return win.alert(util.EXCEED_TIPS + ' 1MB');
     }
     var self = this;
     var params = {
@@ -199,9 +198,9 @@ var FrameComposer = React.createClass({
     var isCRLF = state.isCRLF;
     var closed = data.closed;
     var isHttps = data.isHttps;
-    var leftStyle = isHttps ? { left: 0 } : undefined;
+    var leftStyle = isHttps ? { left: 0 } : null;
     var displayStyle = util.getHideStyle(isHttps);
-    var tips = closed ? 'The connection is closed' : undefined;
+    var tips = closed ? 'The connection is closed' : null;
     var disabled = closed || self.sendTimer;
     closed = getHide(closed);
 

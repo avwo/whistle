@@ -3,14 +3,15 @@ var HelpIcon = require('./help-icon');
 var util = require('./util');
 var ruleMixin = require('./rule-mixin');
 
-var valuePlaceholder = 'Enter keyword (case‑insensitive) or regexp';
+var KW_TIPS = ' keyword (case-insensitive) or regexp';
+var valuePlaceholder = 'Enter' + KW_TIPS;
 var FILTER_OPTIONS = [
-  { value: '', label: 'Request URL', placeholder: 'Enter URL fragment or wldcard or regexp' },
-  { value: 'm:', label: 'Request Method', placeholder: 'Enter method keyword (case‑insensitive) or regexp' },
-  { value: 'b:', label: 'Request Body', placeholder: 'Enter request body keyword (case-insensitive) or regexp' },
-  { value: 's:', label: 'Status Code', placeholder: 'Enter status code keyword (case-insensitive) or regexp' },
-  { value: 'clientIp:', label: 'Client IP', placeholder: 'Enter client IP keyword (case-insensitive) or regexp' },
-  { value: 'serverIp:', label: 'Server IP', placeholder: 'Enter server IP keyword (case-insensitive) or regexp' },
+  { value: '', label: 'Request URL', placeholder: 'Enter URL fragment or wildcard or regexp' },
+  { value: 'm:', label: 'Request Method', placeholder: 'Enter method' + KW_TIPS },
+  { value: 'b:', label: 'Request Body', placeholder: 'Enter request body' + KW_TIPS },
+  { value: 's:', label: 'Status Code', placeholder: 'Enter status code' + KW_TIPS },
+  { value: 'clientIp:', label: 'Client IP', placeholder: 'Enter client IP' + KW_TIPS },
+  { value: 'serverIp:', label: 'Server IP', placeholder: 'Enter server IP' + KW_TIPS },
   { value: 'reqH.', keyPlaceholder: 'Select request header', label: 'Request Header',  placeholder: valuePlaceholder },
   { value: 'resH.', keyPlaceholder: 'Select response header', label: 'Response Header', placeholder: valuePlaceholder },
   { value: 'chance:', label: 'Chance', placeholder: 'Enter probability (0-1 or 0%-100%), e.g 0.5 or 50%' }

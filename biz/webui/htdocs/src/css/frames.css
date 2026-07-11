@@ -158,6 +158,10 @@
   color: var(--c-req);
 }
 
+.w-disabled :is(.glyphicon-arrow-left, .glyphicon-arrow-right, .glyphicon-ban-circle) {
+  color: var(--c-disabled) !important;
+}
+
 :is(.w-detail-inspectors, .w-frames-list, .w-com-tabs, .w-frames-com-action) .glyphicon-arrow-left {
   color: var(--c-res);
 }

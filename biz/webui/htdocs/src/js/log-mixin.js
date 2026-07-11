@@ -11,7 +11,6 @@ var MAX_FILE_SIZE = 1024 * 1024 * 2;
 var LOG_TEXT_KEY = window.Symbol ? window.Symbol('logText') : 'logText';
 var scrollAtBottom =util.scrollAtBottom;
 var trigger = util.trigger;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 2MB';
 
 module.exports = {
   LOG_TEXT_KEY: LOG_TEXT_KEY,
@@ -80,7 +79,7 @@ module.exports = {
       return win.alert('Only .log files are supported');
     }
     if (file.size > MAX_FILE_SIZE) {
-      return win.alert(EXCEED_TIPS);
+      return win.alert(util.EXCEED_TIPS + ' 2MB');
     }
     util.readFileAsText(file, this.importData);
   },

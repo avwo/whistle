@@ -372,22 +372,25 @@ function checkFilterField(str, filter, needDecode) {
 }
 
 function checkFilter(item, list) {
+  var req = item.req;
+  var url = item.url;
+  var isHttps = item.isHttps;
   for (var i = 0, len = list.length; i < len; i++) {
     var filter = list[i];
     switch (filter.type) {
     case 'method':
-      if (checkFilterField(item.req.method, filter)) {
+      if (checkFilterField(req.method, filter)) {
         return true;
       }
       break;
     case 'ip':
-      if (checkFilterField(item.req.ip || '127.0.0.1', filter)) {
+      if (checkFilterField(req.ip || '127.0.0.1', filter)) {
         return true;
       }
       break;
     case 'headers':
       if (
-          checkFilterField(util.objectToString(item.req.headers), filter, true)
+          checkFilterField(util.objectToString(req.headers), filter, true)
         ) {
         return true;
       }
@@ -395,7 +398,7 @@ function checkFilter(item, list) {
     case 'host':
       if (
           checkFilterField(
-            item.isHttps ? item.url : util.getHost(item.url),
+            isHttps ? url : util.getHost(url),
             filter
           )
         ) {
@@ -403,13 +406,13 @@ function checkFilter(item, list) {
       }
       break;
     case 'body':
-      if (checkFilterField(util.getBody(item.req, true), filter)) {
+      if (checkFilterField(util.getBody(req, true), filter)) {
         return true;
       }
       break;
     default:
       if (
-          checkFilterField((item.isHttps ? 'tunnel://' : '') + item.url, filter)
+          checkFilterField((isHttps ? 'tunnel://' : '') + url, filter)
         ) {
         return true;
       }
@@ -1147,8 +1150,9 @@ function startLoadData() {
       if (!data || data.ec !== 0) {
         return;
       }
-      if (Array.isArray(data.installErrors) && data.installErrors.length) {
-        showError(data.installErrors.join('\n'));
+      var installErrors = data.installErrors;
+      if (Array.isArray(installErrors) && installErrors.length) {
+        showError(installErrors.join('\n'));
       }
       var preCapture = exports.isCapture;
       if (preCapture === 0) {
@@ -1191,7 +1195,8 @@ function startLoadData() {
       directCallbacks.forEach(function (cb) {
         cb(data);
       });
-      var svrLen = data.svrLog.length;
+      var svrLog = data.svrLog;
+      var svrLen = svrLog.length;
       var _reqTabList = reqTabList;
       var _resTabList = resTabList;
       var _tabList = tabList;
@@ -1292,8 +1297,8 @@ function startLoadData() {
         }
       }
       if (svrLen) {
-        svrLogList.push.apply(svrLogList, data.svrLog);
-        lastSvrLogTime = data.svrLog[svrLen - 1].id;
+        svrLogList.push.apply(svrLogList, svrLog);
+        lastSvrLogTime = svrLog[svrLen - 1].id;
       }
 
       if (svrLogList.length) {
@@ -1304,7 +1309,8 @@ function startLoadData() {
       resetLogInfo(data, hasClearedSvrLogs);
       data = data.data;
       var hasChanged;
-      var framesLen = data.frames && data.frames.length;
+      var frames = data.frames;
+      var framesLen = frames && frames.length;
       var time = data.composerTime;
 
       if (time && composerReqId === exports.curComposerReqId && exports.onTakeTimeChange) {
@@ -1315,8 +1321,8 @@ function startLoadData() {
       }
 
       if (framesLen) {
-        curActiveItem.lastFrameId = data.frames[framesLen - 1].frameId;
-        curFrames.push.apply(curFrames, data.frames);
+        curActiveItem.lastFrameId = frames[framesLen - 1].frameId;
+        curFrames.push.apply(curFrames, frames);
       } else if (data.lastFrameId) {
         curActiveItem.lastFrameId = data.lastFrameId;
       }
@@ -1324,15 +1330,17 @@ function startLoadData() {
         var status = data.socketStatus;
         if (status) {
           curActiveItem.closed = undefined;
-          if (status.sendStatus > -1) {
-            hasChanged = curActiveItem.sendStatus !== status.sendStatus;
-            curActiveItem.sendStatus = status.sendStatus;
+          var sendStatus = status.sendStatus;
+          var receiveStatus = status.receiveStatus;
+          if (sendStatus > -1) {
+            hasChanged = curActiveItem.sendStatus !== sendStatus;
+            curActiveItem.sendStatus = sendStatus;
           }
-          if (status.receiveStatus > -1) {
+          if (receiveStatus > -1) {
             hasChanged =
               hasChanged ||
-              curActiveItem.receiveStatus !== status.receiveStatus;
-            curActiveItem.receiveStatus = status.receiveStatus;
+              curActiveItem.receiveStatus !== receiveStatus;
+            curActiveItem.receiveStatus = receiveStatus;
           }
         } else {
           if (!curActiveItem.closed) {
@@ -1394,12 +1402,8 @@ function startLoadData() {
       });
       if (ids.length) {
         var filter = getFilterText();
-        var excludeFilter = filter.disabledExcludeText
-          ? null
-          : resolveFilterText(filter.excludeText);
-        var includeFilter = filter.disabledFilterText
-          ? null
-          : resolveFilterText(filter.filterText);
+        var excludeFilter = !filter.disabledExcludeText && resolveFilterText(filter.excludeText);
+        var includeFilter = !filter.disabledFilterText && resolveFilterText(filter.filterText);
         exports.curNewIdList = ids.filter(function (id) {
           var item = data[id];
           if (item) {
@@ -1674,7 +1678,7 @@ function setAppName(item) {
     return;
   }
   var appName = item.appName;
-  if (!appName || !APPS.indexOf(appName) !== -1) {
+  if (!appName || APPS.indexOf(appName) === -1) {
     item.appName = getAppName(item.req.headers['user-agent']);
   }
 }
@@ -1694,10 +1698,12 @@ var NOT_BOLD_RULES = {
 
 function hasRules(rules) {
   var keys = rules && Object.keys(rules);
-  if (keys && keys.length) {
-    for (var i = 0, len = keys.length; i < len; i++) {
+  var len = keys && keys.length;
+  if (len) {
+    for (var i = 0; i < len; i++) {
       var rule = rules[keys[i]];
-      var enable = rule && rule.list && rule.list.length === 1 && rule.list[0].matcher;
+      var list = rule && rule.list;
+      var enable = list && list.length === 1 && list[0].matcher;
       if (rule && !NOT_BOLD_RULES[keys[i]] && enable !== 'enable://capture' &&  enable !== 'enable://intercept') {
         return true;
       }
@@ -1711,20 +1717,21 @@ function setReqData(item) {
   var url = item.url;
   var req = item.req;
   var res = item.res;
+  var rules = item.rules;
   item.method = req.method;
   var end = item.endTime;
   var defaultValue = end ? '' : '-';
   var resHeaders = res.headers || '';
   setAppName(item);
   item.hostIp = res.ip || defaultValue;
-  item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(item.rules);
+  item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(rules);
   item.clientIp = req.ip || '127.0.0.1';
   item.date = item.date || util.toDateStr(item.startTime);
   item.clientPort = req.port;
-  item.serverPort = item.res.port;
+  item.serverPort = res.port;
   item.contentEncoding =
     (resHeaders['content-encoding'] || '') +
-    (item.res.hasGzipError ? ' (Incorrect header)' : '');
+    (res.hasGzipError ? ' (Incorrect header)' : '');
   var reqSize = req.size == null ? defaultValue : req.size;
   var resSize = res.size == null ? defaultValue : res.size;
   var reqSizeStr = getDisplaySize(reqSize, req.unzipSize);
@@ -1742,20 +1749,24 @@ function setReqData(item) {
     item.download =
     item.time =
       defaultValue;
-  if (item.dnsTime > 0) {
-    item.dns = item.dnsTime - item.startTime + 'ms';
-    if (item.requestTime > 0) {
-      item.request = item.requestTime - item.dnsTime + 'ms';
+  var startTime = item.startTime;
+  var requestTime = item.requestTime;
+  var responseTime = item.responseTime;
+  var dnsTime = item.dnsTime;
+  if (dnsTime > 0) {
+    item.dns = dnsTime - startTime + 'ms';
+    if (requestTime > 0) {
+      item.request = requestTime - dnsTime + 'ms';
     }
-    if (item.responseTime > 0) {
-      if (!item.requestTime || item.requestTime > item.responseTime) {
-        item.response = item.responseTime - item.dnsTime + 'ms';
+    if (responseTime > 0) {
+      if (!requestTime || requestTime > responseTime) {
+        item.response = responseTime - dnsTime + 'ms';
       } else {
-        item.response = item.responseTime - item.requestTime + 'ms';
+        item.response = responseTime - requestTime + 'ms';
       }
       if (end > 0) {
-        item.download = end - item.responseTime + 'ms';
-        item.time = end - item.startTime + 'ms';
+        item.download = end - responseTime + 'ms';
+        item.time = end - startTime + 'ms';
       }
     }
   }
@@ -1765,35 +1776,39 @@ function setReqData(item) {
   res.rawHeaders = getRawHeaders(res.headers, res.rawHeaderNames);
   res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailerNames);
   setStyle(item);
-  if (item.rules && item.pipe) {
-    item.rules.pipe = item.pipe;
+  if (rules && item.pipe) {
+    rules.pipe = item.pipe;
   }
-  if (!item.path) {
-    if (item.isHttps) {
-      item.protocol =  getTransProto(res) || getTransProto(req) || 'HTTP';
+  var path = item.path;
+  var isHttps = item.isHttps;
+  var protocol = item.protocol;
+  if (!path) {
+    if (isHttps) {
+      protocol = getTransProto(res) || getTransProto(req) || 'HTTP';
     } else {
-      item.protocol =item.useH2
-        ? 'H2' : util.getProtocol(url);
+      protocol = item.useH2 ? 'H2' : util.getProtocol(url);
     }
-    item.hostname = item.isHttps ? 'Tunnel to' : util.getHost(url);
+    item.hostname = isHttps ? 'Tunnel to' : util.getHost(url);
     var pathIndex = url.indexOf('://');
     if (pathIndex !== -1) {
       pathIndex = url.indexOf('/', pathIndex + 3);
-      item.path = pathIndex === -1 ? '/' : url.substring(pathIndex);
+      path = pathIndex === -1 ? '/' : url.substring(pathIndex);
     } else {
-      item.path = url;
+      path = url;
     }
-    if (item.path.length > MAX_PATH_LEN) {
-      item.shortPath = item.path.substring(0, MAX_PATH_LEN) + '...';
+    if (path.length > MAX_PATH_LEN) {
+      item.shortPath = path.substring(0, MAX_PATH_LEN) + '...';
     }
+    item.path = path;
   } else if (item.useH2) {
-    item.protocol = 'H2';
-  } else if (item.protocol === 'H2') {
-    item.protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
+    protocol = 'H2';
+  } else if (protocol === 'H2') {
+    protocol = item.isHttps ? 'HTTP' : util.getProtocol(url);
   }
-  if (item.useHttp && (item.protocol === 'HTTPS' || item.protocol === 'WSS')) {
-    item.protocol = item.protocol + ' > ' + item.protocol.slice(0, -1);
+  if (item.useHttp && (protocol === 'HTTPS' || protocol === 'WSS')) {
+    protocol = protocol + ' > ' + protocol.slice(0, -1);
   }
+  item.protocol = protocol;
   if (!item.frames && isFrames(item)) {
     item.frames = [];
   }
@@ -1895,6 +1910,10 @@ function getStartTime() {
   return lastRowId || '0';
 }
 
+function sortIps(ips) {
+  return ips.sort().join();
+}
+
 function updateServerInfo(data) {
   if (!serverInfoCallbacks.length) {
     updateCount = 0;
@@ -1927,9 +1946,7 @@ function updateServerInfo(data) {
       curServerInfo.latestClientVersion = data.latestClientVersion;
       trigger('updateVersion', data);
     }
-  }
-  if (
-    curServerInfo &&
+    if (
     curServerInfo.version == data.version &&
     curServerInfo.rulesMode === data.rulesMode &&
     curServerInfo.cmdName === data.cmdName &&
@@ -1944,11 +1961,12 @@ function updateServerInfo(data) {
     curServerInfo.pid == data.pid &&
     curServerInfo.whistleId == data.whistleId &&
     curServerInfo.ipv6Only == data.ipv6Only &&
-    curServerInfo.ipv4.sort().join() == data.ipv4.sort().join() &&
-    curServerInfo.ipv6.sort().join() == data.ipv6.sort().join()
+    sortIps(curServerInfo.ipv4) == sortIps(data.ipv4) &&
+    sortIps(curServerInfo.ipv6) == sortIps(data.ipv6)
   ) {
-    curServerInfo = data;
-    return;
+      curServerInfo = data;
+      return;
+    }
   }
   curServerInfo = data;
   serverInfoCallbacks.forEach(function (cb) {

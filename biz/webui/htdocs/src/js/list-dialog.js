@@ -36,7 +36,7 @@ var ListDialog = React.createClass({
       ]
     };
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   onChange: function (e) {
     var target = e.target;
     var name = target.parentNode.title;
@@ -178,7 +178,7 @@ var ListDialog = React.createClass({
       }
       self.setState({ checkedItems: checkedItems });
     }
-    !self.props.onConfirm && setTimeout(function () {
+    !props.onConfirm && setTimeout(function () {
       var input = findDOMNode(self.refs.filename);
       input.focus();
       input.select();

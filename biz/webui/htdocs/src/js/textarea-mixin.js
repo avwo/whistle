@@ -101,7 +101,7 @@ module.exports = {
     return (
       <div
         onMouseDown={preventBlur}
-        style={{ display: state.showNameInput ? 'block' : 'none' }}
+        style={util.getHideStyle(!state.showNameInput)}
         className="w-shadow w-textarea-input"
       >
         <input

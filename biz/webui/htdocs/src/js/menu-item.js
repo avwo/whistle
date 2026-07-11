@@ -50,7 +50,7 @@ var MenuItem = React.createClass({
               return (
                 <a
                   key={name}
-                  className={disabled ? 'w-disabled' : undefined}
+                  className={disabled ? 'w-disabled' : null}
                   title={option.title}
                   onClick={function (e) {
                     if (disabled) {
@@ -61,8 +61,8 @@ var MenuItem = React.createClass({
                   onDoubleClick={function () {
                     onDoubleClickOption(option);
                   }}
-                  href={option.href || undefined}
-                  target={option.href ? option.target || '_blank' : undefined}
+                  href={option.href || null}
+                  target={option.href ? option.target || '_blank' : null}
                   draggable="false"
                 >
                   {icon == 'checkbox' ? (

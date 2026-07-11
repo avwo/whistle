@@ -10,7 +10,7 @@ var QRCodeDialog = React.createClass({
   getInitialState: function () {
     return {};
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   show: function (url) {
     this.refs.dialog.show();
     this.setState({ url: url });

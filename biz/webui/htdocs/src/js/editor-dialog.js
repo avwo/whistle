@@ -15,7 +15,6 @@ var isStr = util.isStr;
 var trigger = util.trigger;
 var addEvent = util.on;
 var stringify = util.stringify;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 10MB';
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var iframeStyle = {
@@ -60,7 +59,7 @@ function getText(item, key) {
   case 'reqHeaders':
     return stringify(req.headers);
   case 'resHeaders':
-    return item.res.headers ? stringify(res.headers) : '';
+    return res.headers ? stringify(res.headers) : '';
   case 'reqBody':
     return util.getBody(req, true);
   case 'resBody':
@@ -104,15 +103,13 @@ var EditorDialog = React.createClass({
   onChange: function (e) {
     this.setState({ value: e.target.value });
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   componentDidMount: function() {
     var self = this;
-    if (!self.props.textEditor) {
+    var props = self.props;
+    if (!props.textEditor) {
       return;
     }
-    addEvent('uploadTempFile', function(_, file) {
-      self.readFile(file);
-    });
     var iframe = findDOMNode(self.refs.iframe);
     var initTextArea = function() {
       var textarea = iframe.contentWindow.document.querySelector('textarea');
@@ -142,53 +139,59 @@ var EditorDialog = React.createClass({
     };
     iframe.onload = initTextArea;
     initTextArea();
-    this.props.standalone && addEvent('showEditorDialog', function(_, data, elem) {
-      self.onClose();
-      var state = self.state;
-      state.textSrc = '';
-      state.callback = null;
-      var text = data && (data.text || data.value) || '';
-      if (!data || text || data.session !== undefined) {
-        var filename = data && data.filename;
-        self._session = data && data.session;
-        state.callback = data && data.callback;
-        self.show({
-          hasChanged: !!(text || self._textarea.value.trim()),
-          value: text,
-          title: 'Create Temp File',
-          isTempFile: true
-        });
-        filename && getTempFile(filename, function(value) {
-          self._textarea.value = value;
-        });
-      } else if (data.name) {
-        var item = dataCenter.valuesModal.get(data.name);
-        var value = item && item.value || '';
-        self._keyName = data.name;
-        self.show({
-          value: value,
-          title: item ? 'Update value for key \'' + data.name + '\' in Values' : 'Create a new key \'' + data.name + '\' to Values',
-          isTempFile: false
-        });
-      } else {
-        var rulesItem = elem && dataCenter.rulesModal.get(data.ruleName);
-        if (rulesItem) {
-          var tempFile = data.tempFile;
-          self._tempFile = tempFile;
-          self._fileElem = elem;
-          self._rulesItem = rulesItem;
-          tempFile = tempFile || 'blank';
-          var isBlank = tempFile === 'blank' || /[\\/]/.test(tempFile);
-          getTempFile(tempFile, function(value) {
-            self.show({
-              value: value,
-              title: (isBlank ? 'Create' : 'Edit') + ' Temp File' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
-              isTempFile: true
-            });
+    if (props.standalone) {
+      addEvent('uploadTempFile', function(_, file) {
+        self.readFile(file);
+      });
+      addEvent('showEditorDialog', function(_, data, elem) {
+        self.onClose();
+        var state = self.state;
+        state.textSrc = '';
+        state.callback = null;
+        var text = data && (data.text || data.value) || '';
+        if (!data || text || data.session !== undefined) {
+          var filename = data && data.filename;
+          var textarea = self._textarea;
+          self._session = data && data.session;
+          state.callback = data && data.callback;
+          self.show({
+            hasChanged: !!(text || textarea.value.trim()),
+            value: text,
+            title: 'Create Temp File',
+            isTempFile: true
           });
+          filename && getTempFile(filename, function(value) {
+            textarea.value = value;
+          });
+        } else if (data.name) {
+          var item = dataCenter.valuesModal.get(data.name);
+          var value = item && item.value || '';
+          self._keyName = data.name;
+          self.show({
+            value: value,
+            title: item ? 'Update value for key \'' + data.name + '\' in Values' : 'Create a new key \'' + data.name + '\' to Values',
+            isTempFile: false
+          });
+        } else {
+          var rulesItem = elem && dataCenter.rulesModal.get(data.ruleName);
+          if (rulesItem) {
+            var tempFile = data.tempFile;
+            self._tempFile = tempFile;
+            self._fileElem = elem;
+            self._rulesItem = rulesItem;
+            tempFile = tempFile || 'blank';
+            var isBlank = tempFile === 'blank' || /[\\/]/.test(tempFile);
+            getTempFile(tempFile, function(value) {
+              self.show({
+                value: value,
+                title: (isBlank ? 'Create' : 'Edit') + ' Temp File' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
+                isTempFile: true
+              });
+            });
+          }
         }
-      }
-    });
+      });
+    }
   },
   getValue: function() {
     var self = this;
@@ -233,8 +236,9 @@ var EditorDialog = React.createClass({
       }
       var elem = self._fileElem;
       if (!elem) {
-        if (self.state.callback) {
-          self.state.callback(result.filepath);
+        var callback = self.state.callback;
+        if (callback) {
+          callback(result.filepath);
         } else {
           win.alert('Temp file created:\n' + result.filepath, result.filepath, 'Copy Temp File Path', 'alert-info');
         }
@@ -332,7 +336,7 @@ var EditorDialog = React.createClass({
     var form = new FormData(uploadForm.getForm());
     var file = form.get('localFile');
     if (file.size > MAX_LEN) {
-      return win.alert(EXCEED_TIPS);
+      return win.alert(util.EXCEED_TIPS + ' 10MB');
     }
     self.readFile(file);
     uploadForm.getInput().value = '';
@@ -340,17 +344,18 @@ var EditorDialog = React.createClass({
   onTextChange: function(e) {
     var self = this;
     var textSrc = e.target.value;
+    var textarea = self._textarea;
     var updateValue = function() {
       self.setState({ textSrc: textSrc, hasChanged: false }, self.updateRules);
       if (textSrc[0] === '{') {
         var valuesModal = dataCenter.valuesModal;
         var item = valuesModal.getItem(textSrc.slice(1, -1));
-        self._textarea.value = item && item.value || '';
+        textarea.value = item && item.value || '';
       } else if (self._session) {
-        self._textarea.value = getText(self._session, textSrc);
+        textarea.value = getText(self._session, textSrc);
       }
     };
-    if (!self.state.hasChanged || !self._textarea.value.trim()) {
+    if (!self.state.hasChanged || !textarea.value.trim()) {
       return updateValue();
     }
     win.confirm('Unsaved changes will be lost. Continue?', function(sure) {

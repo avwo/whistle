@@ -25,7 +25,7 @@ var IframeDialog = React.createClass({
   hide: function() {
     this.refs.dialog.hide();
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   render: function() {
     var state = this.state;
     var disabled = state.disabled;

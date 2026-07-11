@@ -135,11 +135,11 @@ var FrameList = React.createClass({
   },
   clear: function () {
     var self = this;
-    self.props.modal.clear();
+    var props = self.props;
+    var onUpdate = props.onUpdate;
+    props.modal.clear();
     self.setState({});
-    if (self.props.onUpdate) {
-      self.props.onUpdate();
-    }
+    onUpdate && onUpdate();
   },
   compose: function () {
     this.props.framesCtx.trigger('composeFrame', this.props.modal.getActive());
@@ -379,7 +379,7 @@ var FrameList = React.createClass({
         <div
           tabIndex="0"
           onKeyDown={self.onClear}
-          style={{ background: keyword ? 'var(--b-filtered)' : null }}
+          style={util.getFilteredBg(keyword)}
           onScroll={self.shouldScrollToBottom}
           ref={self.setContainer}
           className="fill w-frames-list"

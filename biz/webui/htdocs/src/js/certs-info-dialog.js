@@ -13,7 +13,6 @@ var CloseBtn = require('./close-btn');
 var DismissBtn = require('./dismiss-btn');
 
 var MAX_CERT_SIZE = 128 * 1024;
-var EXCEED_TIPS = util.EXCEED_TIPS + ' 128KB';
 
 function getCertName(cert, filename) {
   filename = filename || cert.filename;
@@ -123,13 +122,13 @@ var CertsInfoDialog = React.createClass({
       }
     );
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   formatFiles: function (fileList) {
     var certs;
     for (var i = 0, len = fileList.length; i < len; i++) {
       var cert = fileList[i];
       if (cert.size > MAX_CERT_SIZE || !(cert.size > 0)) {
-        message.error(EXCEED_TIPS);
+        message.error(util.EXCEED_TIPS + ' 128KB');
         return;
       }
       var { name } = cert;

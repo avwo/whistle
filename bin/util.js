@@ -185,15 +185,15 @@ exports.getDefaultPort = function () {
 };
 
 exports.getBody = function (res, callback) {
-  var resBody;
+  var resBody = [];
   res.on('data', function(data) {
-    resBody = resBody ? Buffer.concat([resBody, data]) : data;
+    resBody.push(data);
   });
   res.on('end', function() {
     if (res.statusCode != 200) {
       callback('Bad response (' + res.statusCode + ')');
     } else {
-      callback(null, JSON.parse(resBody + ''));
+      callback(null, JSON.parse(Buffer.concat(resBody).toString()));
     }
   });
 };

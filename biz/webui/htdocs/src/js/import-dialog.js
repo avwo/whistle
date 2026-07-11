@@ -94,7 +94,7 @@ var ImportDialog = React.createClass({
       self.handleFile(file);
     });
   },
-  shouldComponentUpdate: util.scuDialog,
+  shouldComponentUpdate: util.scuDlg,
   uploadFile: function() {
     var self = this;
     var fileInput = self.refs.uploadForm.getInput();
@@ -177,7 +177,7 @@ var ImportDialog = React.createClass({
           </button>
           <button
             type="button"
-            className="btn btn-primary w-fmt-btn"
+            className="btn btn-primary"
             onMouseDown={util.preventBlur}
             onClick={self.importRemoteUrl}
           >

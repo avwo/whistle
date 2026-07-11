@@ -25,7 +25,8 @@ var addEvent = util.on;
 var preventBlur = util.preventBlur;
 var attr = util.attr;
 var loc = window.location;
-var hideEnableHTTPSTips = loc.href.indexOf('hideEnableHTTPSTips=1') !== -1;
+var TIPS_KEY = 'hideEnableHTTPSTips';
+var hideEnableHTTPSTips = loc.href.indexOf(TIPS_KEY + '=1') !== -1 || storage.get(TIPS_KEY);
 var disabledEditor = loc.href.indexOf('disabledEditor=1') !== -1;
 var SERVICE_CTX_MENU = util.SERVICE_CTX;
 var rulesCtxMenuList = [
@@ -288,7 +289,7 @@ var List = React.createClass({
     self.curListLen = curListLen;
     self.curActiveItem = curActiveItem;
     if (self.props.hide) {
-      self.refs.recycleBinDialog.hide();
+      self.refs.recycleBin.hide();
     }
   },
   ensureVisible: function (init, activeItem) {
@@ -302,11 +303,12 @@ var List = React.createClass({
   },
   onClick: function (item) {
     var self = this;
+    var props = self.props;
     if (
-      !isFunc(self.props.onActive) ||
-      self.props.onActive(item) !== false
+      !isFunc(props.onActive) ||
+      props.onActive(item) !== false
     ) {
-      var modal = self.props.modal;
+      var modal = props.modal;
       self.setState({ activeItem: item });
       if (item.rules) {
         modal.clearAllActive();
@@ -456,7 +458,7 @@ var List = React.createClass({
   },
   reloadRecycleBin: function (name) {
     var self = this;
-    if (self.refs.recycleBinDialog.isVisible()) {
+    if (self.refs.recycleBin.isVisible()) {
       self._pendingRecycle = false;
       self.showRecycleBin(name);
     }
@@ -476,7 +478,7 @@ var List = React.createClass({
       if (!data.list.length) {
         return message.info('Trash is empty');
       }
-      self.refs.recycleBinDialog.show({ name: name, list: data.list });
+      self.refs.recycleBin.show({ name: name, list: data.list });
     });
   },
   getGroupByName: function(name) {
@@ -688,6 +690,11 @@ var List = React.createClass({
   showHttpsSettingsDialog: function() {
     trigger('showHttpsSettingsDialog');
   },
+  gotIt: function() {
+    storage.set(TIPS_KEY, '1');
+    hideEnableHTTPSTips = true;
+    this.setState({});
+  },
   parseList: function() {
     var isRules = this.isRules();
     var modal = this.props.modal;
@@ -803,6 +810,9 @@ var List = React.createClass({
             <button className="btn btn-primary" onClick={disabled ? self.enableAllRules : self.showHttpsSettingsDialog}>
               {disabled ? 'Enable' : 'Settings'}
             </button>
+            {disabled ? null : <button className="btn btn-default ml-10" onClick={self.gotIt}>
+              Got it
+            </button>}
           </div>
         ) : null}
         <Divider leftWidth="230">
@@ -820,13 +830,14 @@ var List = React.createClass({
                 (props.className || '') +
                 (disabled ? ' w-disabled' : '')
               }
-              style={{ background: filterText ? 'var(--b-filtered)' : null }}
+              style={util.getFilteredBg(filterText)}
             >
               {list.map(function (name, i) {
                 var item = data[name];
                 var isDefaultRule = isRules && i === 0;
                 var isGroup = item.isGroup;
                 var title = isGroup ? name.substring(1) : name;
+                var count = item.selectedCount;
                 isSub = isSub || isGroup;
                 if (isGroup) {
                   isHide = !filterText && self.collapseGroups.indexOf(name) !== -1;
@@ -867,15 +878,15 @@ var List = React.createClass({
                     {title}
                     {isGroup ? <span className={util.getClasses({
                       'w-group-child-num': true,
-                      'w-exists-selected': item.selectedCount > 0
-                    })}>({item.selectedCount > 0 ? item.selectedCount + '/' : ''}{item.childCount})</span> : <Icon name="ok" />}
+                      'w-exists-selected': count > 0
+                    })}>({count > 0 ? count + '/' : ''}{item.childCount})</span> : <Icon name="ok" />}
                   </a>
                 );
               })}
             </div>
             <FilterInput ref="filterInput" onChange={self.onFilterChange} />
             <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
-            <RecycleBinDialog ref="recycleBinDialog" />
+            <RecycleBinDialog ref="recycleBin" />
             <EnabledRulesDialog ref="enabledRulesDialog" />
           </div>
           <Editor
@@ -883,7 +894,7 @@ var List = React.createClass({
             onChange={self.onChange}
             readOnly={!activeItem || activeItem.hide || disabledEditor}
             value={activeItem.hide ? '' : activeItem.value}
-            mode={isRules ? 'rules' : getSuffix(activeItem.name)}
+            mode={isRules ? 'rules' : getSuffix(activeName)}
             onFormat={isRules ? null : self.onFormat}
             onInspect={isRules ? null : self.onInspect}
           />
