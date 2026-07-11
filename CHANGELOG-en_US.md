@@ -1,7 +1,11 @@
 [中文](./CHANGELOG.md) · English
 
-## v2.0.5
-1. fix: avoid double JSON stringify on download
+## v2.10.6 
+1. perf: Reduce the frequency of `Buffer.concat` calls to improve performance
+2. fix: Resolve multiple issues to enhance overall system stability
+
+## v2.10.5
+1. fix: Avoid double JSON stringify on download
 2. fix: Fixed multiple issues and enhanced system stability
 
 ## v2.10.4

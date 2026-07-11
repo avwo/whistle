@@ -1,7 +1,10 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.6
+1. perf: 减少使用的 `Buffer.concat` 的频率 ，提升性能
+2. fix: 修复多项问题，增强系统稳定性
 
-# v2.10.5
+## v2.10.5
 1. fix: 下载 JSON 重复序列化
 2. fix: 修复多项问题，增强系统稳定性
 
