@@ -54,7 +54,7 @@ var UrlInput = React.createClass({
     url = util.notEStr(url) ? url.replace(/[\s#]+/g, '') : '';
     var index = url.indexOf('://');
     var protocols = this.state.protocols;
-    var protocol = '';
+    var protocol = protocols[0];
     if (index !== -1) {
       var keep;
       protocol = url.substring(0, index + 3).toLowerCase();
@@ -396,7 +396,7 @@ var UrlInput = React.createClass({
           onBlur={self.hideHints}
           type="text"
           maxLength="8192"
-          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'request URL')}
+          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'URL')}
           className={'fill form-control' + (isFile ? ' w-file-input' : '')}
         />
         <button

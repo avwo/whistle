@@ -37,7 +37,7 @@
   margin-right: 3px;
 }
 
-.w-custom-tab-btn {
+.w-custom-tab-btn, .w-inline-middle {
   display: inline-flex;
   align-items: center;
 }

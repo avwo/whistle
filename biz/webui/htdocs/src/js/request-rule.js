@@ -13,7 +13,6 @@ var HEADER_ACTIONS = HeaderSelect.REQ_HEADERS;
 var BODY_ACTIONS = util.BODY_ACTIONS;
 var getRandomKey = util.getRandomKey;
 var getInjectValue = util.getInjectValue;
-var getFilepath = util.getFilepath;
 var removeSpaces = util.removeSpaces;
 
 var RequestRule = React.createClass({
@@ -103,7 +102,7 @@ var RequestRule = React.createClass({
       default:
         var data = {};
         data[removeSpaces(key)] = removeSpaces(value);
-        rules.push('pathReplace://(' + JSON.stringify(data) + ')');
+        rules.push('pathReplace://(' + util.strfy(data) + ')');
       }
     });
     rules = rules.join(' ');
@@ -121,24 +120,23 @@ var RequestRule = React.createClass({
     var reqReplace;
     var reqReplaceKey;
     var values = [];
+    var addRule = function(p, val) {
+      if (val) {
+        rules.push(p + '://' + util.getFilepath(val));
+      }
+    };
     state.bodyActions.forEach(function(action) {
       var key = (action.key || '').trim();
       var value = (action.value || '').trim();
       switch(action.type) {
       case BODY_ACTIONS[0]:
-        if (value) {
-          rules.push('reqPrepend://' + getFilepath(value));
-        }
+        addRule('reqPrepend', value);
         break;
       case BODY_ACTIONS[1]:
-        if (value) {
-          rules.push('reqBody://' + getFilepath(value));
-        }
+        addRule('reqBody', value);
         break;
       case BODY_ACTIONS[2]:
-        if (value) {
-          rules.push('reqAppend://' + getFilepath(value));
-        }
+        addRule('reqAppend', value);
         break;
       case BODY_ACTIONS[3]:
         if (key) {

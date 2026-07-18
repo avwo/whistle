@@ -36,7 +36,6 @@ var uploadJsonParser = bodyParser.json(UPLOAD_PARSE_CONF);
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
 var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
-var SPECIAL_PATHS = ['/cgi-bin/rules/project'];
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/plugins/is-enable', '/cgi-bin/plugins/get-plugins',
   '/preview.html', '/cgi-bin/rootca', '/cgi-bin/check-update', '/cgi-bin/log/set', '/cgi-bin/status'];
 var GUEST_PATHS = ['/cgi-bin/composer', '/cgi-bin/socket/data', '/cgi-bin/abort', '/cgi-bin/socket/abort',
@@ -196,8 +195,7 @@ function checkAuth(req, res) {
   if (verifyLogin(req, res, auth)) {
     return true;
   }
-  if (config.specialAuth && SPECIAL_PATHS.indexOf(req.path) !== -1 &&
-    config.specialAuth === req.headers['x-whistle-special-auth']) {
+  if (config.specialAuth && config.specialAuth === req.headers['x-whistle-special-auth']) {
     return true;
   }
   requireLogin(req, res);

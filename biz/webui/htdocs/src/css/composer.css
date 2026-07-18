@@ -530,29 +530,6 @@
   position: relative;
 }
 
-.w-com-history-ctn pre .w-load-tips {
-  position: absolute;
-  z-index: 1;
-  background: var(--b-rgba30);
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  color: var(--c-active);
-  font-size: 14px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-}
-
-.w-com-history-ctn pre.w-show-loading {
-  overflow: hidden;
-}
-
-.w-com-history-ctn pre.w-show-loading .w-load-tips {
-  display: flex;
-}
-
 .w-com-history-footer {
   line-height: 33px;
   white-space: nowrap;

@@ -1466,7 +1466,7 @@ var ReqData = React.createClass({
     }
     var list = self._sessionsList;
     self._pendingSave = true;
-    dataCenter.saveSessions(JSON.stringify({
+    dataCenter.saveSessions(util.strfy({
       filename: self.state.sessionsName.trim(),
       sessions: list
     }), function (data, xhr) {

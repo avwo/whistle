@@ -217,7 +217,7 @@ var CertsInfoDialog = React.createClass({
     var target = e.target;
     var checked = target.checked;
     var filename = util.attr(target, 'data-filename');
-    var data = JSON.stringify({ filename: filename, disabled: !checked });
+    var data = util.strfy({ filename: filename, disabled: !checked });
     dataCenter.certs.active(data, this.handleCgi);
   },
   showUpload: function () {

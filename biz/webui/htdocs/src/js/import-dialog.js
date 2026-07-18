@@ -142,7 +142,7 @@ var ImportDialog = React.createClass({
             ref="input"
             maxLength="2048"
             onKeyDown={self.importRemoteUrl}
-            placeholder="Enter request URL or file path"
+            placeholder="Enter URL or file path"
           />
         </div>
         <div className="modal-footer">

@@ -125,6 +125,9 @@ program.setConfig({
 });
 
 program
+  .command('root')
+  .description('Output the install root (code directory) of Whistle');
+program
   .command('status')
   .description('Display running status');
 program
@@ -190,7 +193,9 @@ var removeItem = function(list, name) {
 if (argv.indexOf('--init') !== -1) {
   process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|persistentCapture';
 }
-if (cmd === 'status') {
+if (cmd === 'root') {
+  process.stdout.write(path.join(__dirname, '../'));
+} else if (cmd === 'status') {
   var all = argv[3] === '--all' || argv[3] === '-l';
   if (argv[3] === '-S') {
     storage = argv[4];

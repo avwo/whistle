@@ -230,7 +230,7 @@ var EditorDialog = React.createClass({
     }
     var params = {  clientId: dataCenter.getPageId() };
     params[isBase64 ? 'base64' : 'value'] = value;
-    dataCenter.createTempFile(JSON.stringify(params), function (result, xhr) {
+    dataCenter.createTempFile(util.strfy(params), function (result, xhr) {
       if (!result || result.ec !== 0) {
         return showSysErr(xhr);
       }

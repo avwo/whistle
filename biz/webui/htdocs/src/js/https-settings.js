@@ -56,14 +56,7 @@ var HttpsSettings = React.createClass({
   render: function() {
     var self = this;
     var props = self.props;
-    var caHash = props.caHash;
-    var port = props.port;
-    var caUrlList = props.caUrlList;
     var multiEnv = props.multiEnv;
-    var interceptHttpsConnects = props.interceptHttpsConnects;
-    var enableHttp2 = props.enableHttp2;
-    var onEnableHttps = props.onEnableHttps;
-    var onEnableHttp2 = props.onEnableHttp2;
     var state = self.state;
     var caType = state.caType;
     var caFullUrl = state.caFullUrl;
@@ -98,8 +91,8 @@ var HttpsSettings = React.createClass({
             <div className="w-root-ca-url-wrap">
               <select className="w-root-ca-url" value={caFullUrl} onChange={self.selectCAUrl}>
                 <option value="">{caShortUrl} (PROXY REQUIRED)</option>
-                {caUrlList.map(function (url) {
-                  url = url[0] === 'h' ? url : 'http://' + url + ':' + port;
+                {props.caUrlList.map(function (url) {
+                  url = url[0] === 'h' ? url : 'http://' + url + ':' + props.port;
                   url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
                   return <option value={url}>{url}</option>;
                 })}
@@ -110,7 +103,7 @@ var HttpsSettings = React.createClass({
               href={caUrl}
               target="downloadTargetFrame"
             >
-              <QRCodeImg url={caFullUrl || caShortUrl + caHash} />
+              <QRCodeImg url={caFullUrl || caShortUrl + props.caHash} />
             </a>
             <div className="w-https-settings">
               <p>
@@ -123,8 +116,8 @@ var HttpsSettings = React.createClass({
                 >
                   <input
                     disabled={multiEnv}
-                    checked={interceptHttpsConnects}
-                    onChange={onEnableHttps}
+                    checked={props.interceptHttpsConnects}
+                    onChange={props.onEnableHttps}
                     type="checkbox"
                     className="w-vm"
                   />
@@ -136,8 +129,8 @@ var HttpsSettings = React.createClass({
               <p>
                 <label>
                   <input
-                    checked={dataCenter.supportH2 && enableHttp2}
-                    onChange={onEnableHttp2}
+                    checked={dataCenter.supportH2 && props.enableHttp2}
+                    onChange={props.onEnableHttp2}
                     type="checkbox"
                     className="w-vm"
                   />

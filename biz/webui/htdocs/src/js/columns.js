@@ -408,7 +408,7 @@ exports.getDragger = function () {
 
 exports.setWidth = function(name, width) {
   colWidthData[name] = parseInt(width);
-  storage.set('networkColumnsWidth', JSON.stringify(colWidthData));
+  storage.set('networkColumnsWidth', util.strfy(colWidthData));
 };
 
 exports.getWidth = function(col) {

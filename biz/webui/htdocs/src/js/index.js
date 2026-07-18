@@ -92,6 +92,7 @@ var preventBlur = util.preventBlur;
 var getBool = util.getBool;
 var triggerChange = util.triggerListChange;
 var attr = util.attr;
+var strfy = util.strfy;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -258,7 +259,7 @@ var ABORT_OPTIONS = [
 
 function getJsonForm(data, name) {
   var form = new FormData();
-  var file = new File([JSON.stringify(data)], 'data.json', { type: 'application/json' });
+  var file = new File([strfy(data)], 'data.json', { type: 'application/json' });
   form.append(name || 'rules', file);
   return form;
 }
@@ -2081,9 +2082,9 @@ var Index = React.createClass({
         curNetworkSettings = curRulesSettings = curValuesSettings = null;
         curWhistleId = dataCenter.whistleId;
       }
-      var networkSettings = JSON.stringify(self.refs.networkSettings.getSettings());
-      var rulesSettings = JSON.stringify(self.getRulesSettings());
-      var valuesSettings = JSON.stringify(self.getValuesSettings());
+      var networkSettings = strfy(self.refs.networkSettings.getSettings());
+      var rulesSettings = strfy(self.getRulesSettings());
+      var valuesSettings = strfy(self.getValuesSettings());
       var data;
       if (curNetworkSettings !== networkSettings) {
         data = { networkSettings: networkSettings };
@@ -2759,7 +2760,7 @@ var Index = React.createClass({
     tabs = tabs.map(function(tab) {
       return tab.name;
     });
-    storage.set('activePluginTabList', JSON.stringify(tabs));
+    storage.set('activePluginTabList', strfy(tabs));
     active && storage.set('activePluginTabName', active);
   },
   activePluginTab: function (e) {
@@ -4782,7 +4783,7 @@ var Index = React.createClass({
                     checked={!multiEnv && state.allowMultipleChoice}
                     onChange={self.allowMultipleChoice}
                   />{' '}
-                  Use multiple rules
+                  Allow multi-select
                 </label>
               </p>
             )}
@@ -4794,7 +4795,7 @@ var Index = React.createClass({
                     checked={state.backRulesFirst}
                     onChange={self.enableBackRulesFirst}
                   />{' '}
-                The later rules first
+                Later rules first
                 </label>
               </p>
             )}

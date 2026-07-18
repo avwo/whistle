@@ -180,7 +180,7 @@ var ToolBox = React.createClass({
           value={qrcodeValue}
           className="w-tool-box-ctn"
           maxLength={MAX_QRCODE_LEN}
-          placeholder="Enter request URL or any plain text"
+          placeholder="Enter URL or any plain text"
         />
         <div className="w-inspectors-title">
           <Icon name="pencil" />JSON

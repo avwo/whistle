@@ -302,6 +302,9 @@ textarea {
   border-bottom: none !important;
   padding: 20px 0 !important;
 }
+.w-kv-operation .w-empty {
+  padding: 0 !important;
+}
 .w-empty-data {
   position: absolute;
   width: 100px;
@@ -525,13 +528,8 @@ a {
   margin: -3px 6px 0 0;
 }
 
-.inline-align-items {
-  display: inline-flex;
-  align-items: center;
-}
-
 .w-shake-horizontal {
-    animation: shakeHorizontal 0.5s ease-in-out;
+  animation: shakeHorizontal 0.5s ease-in-out;
 }
 
 @keyframes shakeHorizontal {

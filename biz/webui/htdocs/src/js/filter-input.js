@@ -12,7 +12,7 @@ var isFunc = util.isFunc;
 var preventBlur = util.preventBlur;
 var getHideStyle = util.getHideStyle;
 var MAX_LEN = 128;
-var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'captureError'];
 var getTitle = function (type) {
   return 'Show only ' + type.toLowerCase() + ' requests';
 };
@@ -89,7 +89,7 @@ var FilterInput = React.createClass({
       }
       list.push(value);
       try {
-        storage.set(self.props.hintKey, JSON.stringify(list));
+        storage.set(self.props.hintKey, util.strfy(list));
       } catch (e) {}
     }
   },
@@ -268,6 +268,7 @@ var FilterInput = React.createClass({
         {TYPES.map(function (type) {
           return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : null}>{type}</span>;
         })}
+        <span className={filterType ? null : 'w-active'}>All</span>
       </div>
     );
   },

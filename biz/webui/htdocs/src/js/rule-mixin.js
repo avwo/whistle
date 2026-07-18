@@ -284,7 +284,7 @@ module.exports = {
   },
   saveCookie: function() {
     var self = this;
-    self._cookieAction.key = JSON.stringify(self.state.cookie);
+    self._cookieAction.key = util.strfy(self.state.cookie);
     self.setState({}, self.handleChange);
   },
   renderHeaderAction: function(action, disabled, isReq) {
@@ -337,17 +337,18 @@ module.exports = {
   renderFileInput: function(value, disabled) {
     return <UrlInput value={value} enableFile onChange={this.onFileChange} disabled={disabled} session={this.props.session} />;
   },
-  renderBodyAction: function(action, disabled, actions) {
+  renderBodyAction: function(action, disabled, actions, startIndex) {
     var type = action.type;
     var len = actions.length;
     var self = this;
-    if (type === actions[len - 1]) {
+    startIndex = startIndex || 0;
+    if (type === actions[len - 1 - startIndex]) {
       return self.renderKey(action.key, 'Enter key path, e.g. a\\.b.c.d', disabled, true);
     }
-    if (type === actions[len - 2]) {
+    if (type === actions[len - 2 - startIndex]) {
       return <JSONEditor value={action.value} disabled={disabled} onChange={this.onValueChange} />;
     }
-    if (type === actions[len - 3]) {
+    if (type === actions[len - 3 - startIndex]) {
       return self.renderKV(action, 'Enter keyword or regexp', 'Enter replacement value', disabled, true, true);
     }
     return self.renderFileInput(action.value, disabled);

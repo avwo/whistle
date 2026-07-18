@@ -250,7 +250,7 @@
 .w-pr-RESCORS, .w-pr-RESPREPEND, .w-pr-RESBODY, .w-pr-RESAPPEND,
 .w-pr-RESREPLACE, .w-pr-RESMERGE, .w-pr-HTMLPREPEND, .w-pr-HTMLBODY,
 .w-pr-HTMLAPPEND, .w-pr-CSSPREPEND, .w-pr-CSSBODY, .w-pr-CSSAPPEND,
-.w-pr-JSPREPEND, .w-pr-JSBODY, .w-pr-JSAPPEND, .w-pr-RESCOOKIES) {
+.w-pr-JSPREPEND, .w-pr-JSBODY, .w-pr-JSAPPEND, .w-pr-RESCOOKIES, .w-pr-FRAMESCRIPT) {
   color: #292;
 }
 

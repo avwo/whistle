@@ -22,7 +22,6 @@ var HEADER_ACTIONS = HeaderSelect.RES_HEADERS;
 var BODY_ACTIONS = util.BODY_ACTIONS;
 var getInjectValue = util.getInjectValue;
 var getRandomKey = util.getRandomKey;
-var getFilepath = util.getFilepath;
 BODY_ACTIONS = [
   BODY_ACTIONS[0],
   'Prepend HTML To Body',
@@ -36,7 +35,7 @@ BODY_ACTIONS = [
   'Append HTML To Body',
   'Append CSS To Body',
   'Append JS To Body'
-].concat(BODY_ACTIONS.slice(-3));
+].concat(BODY_ACTIONS.slice(-3)).concat(['Modify Socket Frame Script']);
 
 var ResponseRule = React.createClass({
   mixins: [ruleMixin],
@@ -121,69 +120,50 @@ var ResponseRule = React.createClass({
     var resReplace;
     var resReplaceKey;
     var values = [];
+    var addRule = function(p, val) {
+      if (val) {
+        rules.push(p + '://' + util.getFilepath(val));
+      }
+    };
     state.bodyActions.forEach(function(action) {
       var key = (action.key || '').trim();
       var value = (action.value || '').trim();
       switch(action.type) {
       case BODY_ACTIONS[0]:
-        if (value) {
-          rules.push('resPrepend://' + getFilepath(value));
-        }
+        addRule('resPrepend', value);
         break;
       case BODY_ACTIONS[1]:
-        if (value) {
-          rules.push('htmlPrepend://' + getFilepath(value));
-        }
+        addRule('htmlPrepend', value);
         break;
       case BODY_ACTIONS[2]:
-        if (value) {
-          rules.push('cssPrepend://' + getFilepath(value));
-        }
+        addRule('cssPrepend', value);
         break;
       case BODY_ACTIONS[3]:
-        if (value) {
-          rules.push('jsPrepend://' + getFilepath(value));
-        }
+        addRule('jsPrepend', value);
         break;
       case BODY_ACTIONS[4]:
-        if (value) {
-          rules.push('resBody://' + getFilepath(value));
-        }
+        addRule('resBody', value);
         break;
       case BODY_ACTIONS[5]:
-        if (value) {
-          rules.push('htmlBody://' + getFilepath(value));
-        }
+        addRule('htmlBody', value);
         break;
       case BODY_ACTIONS[6]:
-        if (value) {
-          rules.push('cssBody://' + getFilepath(value));
-        }
+        addRule('cssBody', value);
         break;
       case BODY_ACTIONS[7]:
-        if (value) {
-          rules.push('jsBody://' + getFilepath(value));
-        }
+        addRule('jsBody', value);
         break;
       case BODY_ACTIONS[8]:
-        if (value) {
-          rules.push('resAppend://' + getFilepath(value));
-        }
+        addRule('resAppend', value);
         break;
       case BODY_ACTIONS[9]:
-        if (value) {
-          rules.push('htmlAppend://' + getFilepath(value));
-        }
+        addRule('htmlAppend', value);
         break;
       case BODY_ACTIONS[10]:
-        if (value) {
-          rules.push('cssAppend://' + getFilepath(value));
-        }
+        addRule('cssAppend', value);
         break;
       case BODY_ACTIONS[11]:
-        if (value) {
-          rules.push('jsAppend://' + getFilepath(value));
-        }
+        addRule('jsAppend', value);
         break;
       case BODY_ACTIONS[12]:
         if (key) {
@@ -212,6 +192,9 @@ var ResponseRule = React.createClass({
         if (key) {
           rules.push('delete://resBody.' + key.replace(/\s/g, '\\s'));
         }
+        break;
+      case BODY_ACTIONS[15]:
+        addRule('frameScript', value);
         break;
       }
     });
@@ -279,7 +262,7 @@ var ResponseRule = React.createClass({
                   <div data-name="bodyActions" className="w-form-value" data-index={action.index} key={action.index}>
                     <Select className="w-190" disabled={disabledBody} value={action.type} data={action} options={BODY_ACTIONS}
                       onChange={self.onActionChange} key={action.index} />
-                    {self.renderBodyAction(action, disabledBody, BODY_ACTIONS)}
+                    {self.renderBodyAction(action, disabledBody, BODY_ACTIONS, 1)}
                     {self.renderButtons(action, disabledBody, bodyCount)}
                   </div>
                 );

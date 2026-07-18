@@ -53,7 +53,7 @@ var ListDialog = React.createClass({
     var input = findDOMNode(refs.filename);
     var form = findDOMNode(refs.exportData);
     findDOMNode(refs.exportName).value = input.value.trim();
-    findDOMNode(refs.data).value = JSON.stringify(data);
+    findDOMNode(refs.data).value = util.strfy(data);
     form.submit();
     input.value = '';
   },

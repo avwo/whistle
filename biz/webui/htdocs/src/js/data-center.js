@@ -16,6 +16,7 @@ var getDisplaySize = util.getDisplaySize;
 var toRegExp = util.toRegExp;
 var getTransProto = util.getTransProto;
 var trigger = util.trigger;
+var strfy = util.strfy;
 var MAX_INCLUDE_LEN = 5120;
 var MAX_EXCLUDE_LEN = 5120;
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
@@ -230,7 +231,7 @@ function setFilterText(settings) {
   settings = settings || {};
   storage.set(
     'filterText',
-    JSON.stringify({
+    strfy({
       disabledFilterText: settings.disabledFilterText,
       filterText: settings.filterText,
       disabledExcludeText: settings.disabledExcludeText,
@@ -263,7 +264,7 @@ exports.getFilterText = getFilterText;
 function setNetworkColumns(settings) {
   storage.set(
     'networkColumns',
-    JSON.stringify({
+    strfy({
       columns: (settings || {}).columns
     })
   );
@@ -484,7 +485,7 @@ exports.certs = certs;
 
 exports.uploadCerts = function (data, cb) {
   if (!isStr(data)) {
-    data = JSON.stringify(data);
+    data = strfy(data);
   }
   return certs.upload(data, function (data, xhr) {
     if (!data) {
@@ -623,7 +624,7 @@ var composeInner = createCompose(true);
 
 function handleCompose(data, cb, options, handler) {
   if (!isStr(data)) {
-    data = JSON.stringify(data);
+    data = strfy(data);
   }
   return handler(data, cb, options);
 }
@@ -1788,7 +1789,7 @@ function setReqData(item) {
     } else {
       protocol = item.useH2 ? 'H2' : util.getProtocol(url);
     }
-    item.hostname = isHttps ? 'Tunnel to' : util.getHost(url);
+    item.hostname = isHttps ? 'Tunnel to' + (item.servername ? ' (' + item.servername + ')' : '') : util.getHost(url);
     var pathIndex = url.indexOf('://');
     if (pathIndex !== -1) {
       pathIndex = url.indexOf('/', pathIndex + 3);
@@ -2208,7 +2209,7 @@ exports.showLatestClientVersion = function() {
 };
 
 function toString(options) {
-  return isStr(options) ? options : JSON.stringify(options);
+  return isStr(options) ? options : strfy(options);
 }
 
 function updateWhistleId(server) {

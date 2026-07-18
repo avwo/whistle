@@ -172,7 +172,7 @@ getBridge.getServiceBridge = function(closeDialog) {
   var bridgeApi = getBridge(null, {
     login: function(data, cb) {
       if (!isStr(data)) {
-        data = JSON.stringify(data);
+        data = util.strfy(data);
       }
       dataCenter.login(data, cb);
     },

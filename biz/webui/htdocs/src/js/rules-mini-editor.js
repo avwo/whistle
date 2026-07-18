@@ -35,7 +35,7 @@ var RulesMiniEditor = React.createClass({
             style={util.getFilteredBg(!disabled && rules)}
             maxLength="33000"
             className="fill"
-            placeholder={props.placeholder || 'Enter rules (Higher priority than Whistle Rules)'}
+            placeholder={props.placeholder || 'Enter rules (Higher priority than Global Rules)'}
           />
           <RulesDialog ref="rulesDialog" onSave={self.onChange} />
         </div>

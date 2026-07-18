@@ -24,6 +24,7 @@ var trigger = util.trigger;
 var addEvent = util.on;
 var preventBlur = util.preventBlur;
 var attr = util.attr;
+var strfy = util.strfy;
 var loc = window.location;
 var TIPS_KEY = 'hideEnableHTTPSTips';
 var hideEnableHTTPSTips = loc.href.indexOf(TIPS_KEY + '=1') !== -1 || storage.get(TIPS_KEY);
@@ -257,7 +258,7 @@ var List = React.createClass({
         } else {
           self.collapseGroups[index] = newName;
         }
-        storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+        self.updateGroup();
       }
     });
     addEvent('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
@@ -265,12 +266,16 @@ var List = React.createClass({
     });
     self.ensureVisible(true);
   },
+  updateGroup: function() {
+    var self = this;
+    storage.set(self.getCollapseKey(), strfy(self.collapseGroups));
+  },
   expandGroup: function(groupName) {
     var self = this;
     var index = self.collapseGroups.indexOf(groupName);
     if (index !== -1) {
       self.collapseGroups.splice(index, 1);
-      storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+      self.updateGroup();
     }
   },
   shouldComponentUpdate: util.scu,
@@ -326,7 +331,7 @@ var List = React.createClass({
     } else {
       self.collapseGroups.splice(index, 1);
     }
-    storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+    self.updateGroup();
     self.setState({});
   },
   onClickGroup: function (e) {

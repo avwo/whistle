@@ -144,6 +144,12 @@ exports.attr = function (el, name) {
   return el.getAttribute(name);
 };
 
+function strfy(obj) {
+  return JSON.stringify(obj);
+}
+
+exports.strfy = strfy;
+
 function stringify(obj) {
   return JSON.stringify(obj, null, 2);
 }
@@ -1634,7 +1640,7 @@ exports.asCURL = function (item) {
   var req = item.req;
   var url = item.url.replace(/^ws/, 'http');
   var method = req.method;
-  var result = ['curl', '-X', method, JSON.stringify(url)];
+  var result = ['curl', '-X', method, strfy(url)];
   var headers = req.headers;
   var rawHeaderNames = req.rawHeaderNames || {};
   Object.keys(headers).forEach(function (key) {
@@ -1647,7 +1653,7 @@ exports.asCURL = function (item) {
     }
     result.push(
       '-H',
-      JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key])
+      strfy((rawHeaderNames[key] || key) + ': ' + headers[key])
     );
   });
   var body = getBody(req, true);
@@ -3304,7 +3310,7 @@ function getSimplePluginName(plugin) {
 exports.getSimplePluginName = getSimplePluginName;
 
 exports.showJSONDialog = function(data, keyPath) {
-  var str = data && JSON.stringify(data);
+  var str = data && strfy(data);
   if (str) {
     trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
   }
@@ -3501,7 +3507,7 @@ shortcutsSettings = shortcutsSettings || {};
 exports.shortcutsSettings = shortcutsSettings;
 
 exports.saveShortcutsSettings = function() {
-  storage.set('shortcutsSettings', JSON.stringify(shortcutsSettings));
+  storage.set('shortcutsSettings', strfy(shortcutsSettings));
 };
 
 var EDITOR_SHORTCUTS = ['switchTabReverse', 'switchTab'];
