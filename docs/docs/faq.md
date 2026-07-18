@@ -81,7 +81,7 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
 
 ## Q：Rules 如何支持多选？
 
-在 Rules 界面中打开 Settings 对话框，勾选 `Use multiple rules` 即可
+在 Rules 界面中打开 Settings 对话框，勾选 `Allow multi-select` 即可
 
 ## Q：如何根据请求内容匹配规则？
 
