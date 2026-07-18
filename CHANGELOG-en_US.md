@@ -1,5 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.7
+
+1. fix: Resolved the issue reported in https://github.com/avwo/whistle/issues/1338
+2. feat: When an error occurs while parsing a Tunnel request and the target domain does not match the SNI, the `Host` field will now display `Tunnel to (servername)` to clearly indicate the intended server name
+
 ## v2.10.6 
 1. perf: Reduce the frequency of `Buffer.concat` calls to improve performance
 2. fix: Resolve multiple issues to enhance overall system stability

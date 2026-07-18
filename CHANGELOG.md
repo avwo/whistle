@@ -1,5 +1,9 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.7
+1. fix: https://github.com/avwo/whistle/issues/1338
+2. feat: 解析 Tunnel 请求出错且目标地址的域名与 SNI 不一致时，会在 `Host` 里面显示 `Tunnel to (servername)`
+
 ## v2.10.6
 1. perf: 减少使用的 `Buffer.concat` 的频率 ，提升性能
 2. fix: 修复多项问题，增强系统稳定性
