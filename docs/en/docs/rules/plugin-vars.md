@@ -41,7 +41,7 @@ If the configuration items via plugin variables are fixed, you can configure opt
   ...
 }
 ```
-After completing the above configuration, when you type the `%` character in the Whistle Rules editor, a plugin variable in the following format will be automatically suggested:
+After completing the above configuration, when you type the `%` character in the Global Rules editor, a plugin variable in the following format will be automatically suggested:
 ``` txt
 %test-plugin-vars=
 ```

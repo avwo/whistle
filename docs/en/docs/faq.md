@@ -84,7 +84,7 @@ http://127.0.0.1:8899/xxx https://www.test.com/xxx
 
 ## Q: How do Rules support multiple selections?
 
-Open the Settings dialog box in the Rules interface and check `Use multiple rules`.
+Open the Settings dialog box in the Rules interface and check `Allow multi-select`.
 
 ## Q: How do I match rules based on request content?
 
@@ -195,7 +195,7 @@ npm run docs:dev
 - This default behavior can be disabled using `disable://captureStream`.
 
 **Ordinary HTTP/HTTPS Requests**  
-If you want the body of an ordinary HTTP/HTTPS request or response to be displayed in chunks within the Frames panel (similar to SSE), you need to manually configure whistle rules to force stream capture and specify a custom frame separator.
+If you want the body of an ordinary HTTP/HTTPS request or response to be displayed in chunks within the Frames panel (similar to SSE), you need to manually configure Whistle rules to force stream capture and specify a custom frame separator.
 
 ### Example Configuration
 
