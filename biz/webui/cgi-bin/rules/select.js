@@ -11,6 +11,6 @@ module.exports = function(req, res) {
       changed = true;
     }
   }
-  rules.select(req.body.name);
+  rules.select(body.name);
   res.json({ec: 0, defaultRulesIsDisabled: rules.defaultRulesIsDisabled(), list: rules.getSelectedList(), changed: changed});
 };

@@ -1,6 +1,6 @@
 var fs = require('fs');
 
-function importModle(filepath, callback) {
+function importModule(filepath, callback) {
   return import(filepath).then(callback);
 }
 
@@ -11,11 +11,11 @@ module.exports = function(filepath, callback) {
     var code =e && e.code;
     if (code === 'ERR_REQUIRE_ESM') {
       // ignore eslint & fix type=module
-      return importModle(filepath, callback);
+      return importModule(filepath, callback);
     } else if (code === 'MODULE_NOT_FOUND' && /\.js$/i.test(filepath)) {
       filepath = filepath.slice(0, -3) + '.mjs';
       if (fs.existsSync(filepath)) {
-        return importModle(filepath, callback);
+        return importModule(filepath, callback);
       }
     }
     throw e;

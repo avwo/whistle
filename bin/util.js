@@ -184,16 +184,21 @@ exports.getDefaultPort = function () {
   return port > 0 ? port : 8899;
 };
 
-exports.getBody = function (res, callback) {
+exports.getBody = function (res, callback, isRaw) {
+  if (res.statusCode != 200) {
+    res.destroy();
+    return callback('Bad response (' + res.statusCode + ')');
+  }
   var resBody = [];
   res.on('data', function(data) {
     resBody.push(data);
   });
   res.on('end', function() {
-    if (res.statusCode != 200) {
-      callback('Bad response (' + res.statusCode + ')');
-    } else {
-      callback(null, JSON.parse(Buffer.concat(resBody).toString()));
+    resBody = Buffer.concat(resBody);
+    try {
+      callback(null, isRaw ? resBody : JSON.parse(resBody.toString()));
+    } catch(e) {
+      callback(e);
     }
   });
 };

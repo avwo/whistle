@@ -27,9 +27,6 @@ function handleRules(options, filepath, callback) {
       port: options.port,
       existsPlugin: existsPlugin
     };
-    if (options && options.host) {
-      opts.host = options.host;
-    }
     getRules(callback, opts);
   });
 }
@@ -74,19 +71,24 @@ function getHost(options) {
   return util.joinIpPort(options.host || DEFAULT_OPTIONS.host, options.port);
 }
 
-function getReqOptions(options) {
-  var reqOptions = url.parse('http://' + getHost(options) + '/cgi-bin/rules/project');
+function getReqOpts(options, path, jsJson) {
+  var reqOptions = url.parse('http://' + getHost(options) + '/cgi-bin/' + path);
   reqOptions.headers = {
-    'content-type': 'application/x-www-form-urlencoded'
+    'content-type': 'application/' + (jsJson ? 'json' : 'x-www-form-urlencoded')
   };
   if (options.specialAuth) {
     reqOptions.headers['x-whistle-special-auth'] = options.specialAuth;
   }
-  reqOptions.method = 'POST';
   if (options.username || options.password) {
     var auth = [options.username || '', options.password || ''].join(':');
-    reqOptions.headers.authorization = 'Basic ' + new Buffer.from(auth).toString('base64');
+    reqOptions.headers.authorization = 'Basic ' + Buffer.from(auth).toString('base64');
   }
+  return reqOptions;
+}
+
+function getReqOptions(options) {
+  var reqOptions = getReqOpts(options, 'rules/project');
+  reqOptions.method = 'POST';
   return reqOptions;
 }
 
@@ -198,6 +200,7 @@ function getConfig(filepath, storage, force, isClient, cb) {
     force = storage;
     storage = temp;
   }
+  // getConfig(options, callback)
   if (typeof storage === 'function') {
     callback = storage;
     storage = '';
@@ -315,6 +318,17 @@ module.exports = function(filepath, storage, force, isClient) {
   });
 };
 
+module.exports.getConfig = function(options, cb) {
+  if (typeof options === 'function') {
+    cb = options;
+    options = {};
+  } else if (options === true) {
+    options = { client: true };
+  }
+  return getConfig(options, null, null, null, cb);
+};
+
+module.exports.getReqOpts = getReqOpts;
 module.exports.existsPlugin = existsPlugin;
 module.exports.getOptions = function(cb, storage, isClient) {
   if (typeof cb !== 'function') {

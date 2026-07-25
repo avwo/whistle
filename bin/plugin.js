@@ -252,15 +252,11 @@ function installPlugins(cmd, plugins, argv, pluginsCache, deep, handleError) {
           });
         }
         try {
-          if (REGISTRY_LIST.length > MAX_REG_COUNT) {
-            REGISTRY_LIST = REGISTRY_LIST.slice(0, MAX_REG_COUNT);
+          if (result.length > MAX_REG_COUNT) {
+            result = result.slice(0, MAX_REG_COUNT);
           }
           fse.writeJsonSync(REGISTRY_LIST, result);
-        } catch (e) {
-          try {
-            fse.writeJsonSync(REGISTRY_LIST, result);
-          } catch (e) {}
-        }
+        } catch (e) {}
       }
     }
     if (--count <= 0 && deep < 16) {
@@ -311,7 +307,7 @@ exports.run = function(cmd, argv) {
   var newPath = [];
   fse.ensureDirSync(CUSTOM_PLUGIN_PATH);
   fs.readdirSync(CUSTOM_PLUGIN_PATH).forEach(function(name) {
-    if (!name.indexOf('whistle.')) {
+    if (name.indexOf('whistle.') === 0) {
       newPath.push(path.join(CUSTOM_PLUGIN_PATH, name, 'node_modules/.bin'));
     } else if (name[0] === '@') {
       try {

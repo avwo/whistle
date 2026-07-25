@@ -156,3 +156,17 @@ exports.sendError = sendError;
 exports.sendGzip = util.sendGzip;
 
 exports.sendGzipText = util.sendGzipText;
+
+function compare(v1, v2) {
+  return v1 == v2 ? 0 : v1 > v2 ? -1 : 1;
+}
+
+exports.sortPlugins = function(plugins) {
+  return Object.keys(plugins).sort(function(k1, k2) {
+    var p1 = plugins[k1];
+    var p2 = plugins[k2];
+    return compare(p1.priority, p2.priority) || compare(p2.mtime, p1.mtime) || (k1 > k2 ? 1 : (k1 == k2 ? 0 : -1));
+  }).map(function(name) {
+    return plugins[name];
+  });
+};
