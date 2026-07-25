@@ -194,7 +194,12 @@ if (argv.indexOf('--init') !== -1) {
   process.env.WHISTLE_MODE = (process.env.WHISTLE_MODE || '') + '|persistentCapture';
 }
 if (cmd === 'root') {
-  process.stdout.write(path.join(__dirname, '../'));
+  var root = path.join(__dirname, '../');
+  var file = typeof argv[3] === 'string' ? argv[3].trim() : '';
+  if (file) {
+    root = path.join(root, file);
+  }
+  process.stdout.write(root);
 } else if (cmd === 'status') {
   var all = argv[3] === '--all' || argv[3] === '-l';
   if (argv[3] === '-S') {

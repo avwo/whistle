@@ -93,6 +93,24 @@ exports.getFile = function(filepath) {
 
 exports.network = {
   /**
+   * 获取 whistle 相关配置信息
+   * @returns {Object} 包含存储目录名称、应用名称和版本号的对象
+   * @property {boolean} client - 是否为客户端
+   * @property {string} storage - 自定义的存储目录名称
+   * @property {string} name - 应用名称，固定为 'whistle'
+   * @property {string} version - 当前安装的 whistle 版本号
+   * @example
+   * // 返回值示例
+   * {
+   *   storage: '',
+   *   name: 'whistle',
+   *   version: '2.10.7'
+   * }
+   */
+  getStatus: function() {
+    return request('status');
+  },
+  /**
    * 查询抓包数据的请求参数
    * @description
    * 用于按条件检索 HTTP/WebSocket 等协议的抓包记录。支持基于游标、时间、资源类型、URL 关键词、请求方法、状态码以及请求/响应头的组合筛选。
@@ -516,6 +534,12 @@ exports.utils = {
   getUtf8Buf: getUtf8Buf,
   getReqBody: getReqBody,
   getResBody: getResBody,
+  getReqJson: function(session) {
+    return JSON.parse(getReqBody(session));
+  },
+  getResJson: function(session) {
+    return JSON.parse(getResBody(session));
+  },
   getRawReq: getRawReq,
   getRawRes: getRawRes,
   getRules: getRules,
