@@ -1,7 +1,6 @@
 require('../css/json-viewer.css');
 var React = require('react');
 var $ = require('jquery');
-var findDOMNode = require('react-dom').findDOMNode;
 var TextView = require('./textview');
 var CopyBtn = require('./copy-btn');
 var ContextMenu = require('./context-menu');
@@ -74,7 +73,7 @@ var JsonViewer = React.createClass({
   },
   download: function () {
     var self = this;
-    var target = findDOMNode(self.refs.nameInput);
+    var target = self.refs.nameInput;
     var name = target.value.trim() || 'json_' + util.formatDate() + '.txt';
     var data = self.props.data || {};
     target.value = '';
@@ -86,7 +85,7 @@ var JsonViewer = React.createClass({
     self.setState({ viewSource: !self.state.viewSource });
   },
   componentDidMount: function () {
-    var viewer = $(findDOMNode(this.refs.jsonViewer));
+    var viewer = $(this.refs.jsonViewer);
     viewer
       .on('mouseenter', STR_SELECTOR, function (e) {
         if (!(e.ctrlKey || e.metaKey)) {

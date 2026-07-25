@@ -17,7 +17,7 @@
   padding-left: 10px;
   line-height: 32px;
   position: relative;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   color: var(--c-default);
   text-decoration: none;
   white-space: nowrap;
@@ -37,8 +37,8 @@
 }
 
 .w-list-content {
-  border-bottom: 1px solid var(--c-border);
-  border-right: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
+  border-right: var(--v-border);
   cursor: text;
 }
 
@@ -144,7 +144,7 @@
   align-items: center;
   justify-content: center;
   background: var(--b-title);
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   cursor: pointer;
   font-weight: bold;
 }

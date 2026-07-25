@@ -41,7 +41,7 @@
   margin: 0;
 }
 
-.w-test-rule .w-rules-form  > label{
+.w-test-rule .w-rules-form > label {
   display: inline-flex;
   align-items: center;
 }

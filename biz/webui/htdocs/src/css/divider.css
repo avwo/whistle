@@ -21,11 +21,11 @@
 }
 .w-divider-con.box > .w-divider-left > .w-divider {
   right: 0;
-  border-right: 1px solid var(--c-border);
+  border-right: var(--v-border);
 }
 .w-divider-con.box > .w-divider-right > .w-divider {
   left: 0;
-  border-left: 1px solid var(--c-border);
+  border-left: var(--v-border);
 }
 .w-divider-con.v-box > div > .w-divider {
   left: 0;
@@ -35,9 +35,9 @@
 }
 .w-divider-con.v-box > .w-divider-left > .w-divider {
   bottom: 0;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 .w-divider-con.v-box > .w-divider-right > .w-divider {
   top: 0;
-  border-top: 1px solid var(--c-border);
+  border-top: var(--v-border);
 }

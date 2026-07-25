@@ -30,7 +30,7 @@
   display: block;
   position: absolute;
   background: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 2px;
   z-index: 101;
   top: 22px;
@@ -41,7 +41,7 @@
 .w-textarea-input input {
   width: 246px;
   height: 32px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 2px;
   padding: 0 5px;
   vertical-align: middle;

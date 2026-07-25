@@ -48,7 +48,7 @@
   margin-right: 5px;
 }
 
-.w-certs-dialog td {
+:is(.w-kv-dialog, .w-certs-dialog) :is(th, td) {
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: middle !important;

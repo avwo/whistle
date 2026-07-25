@@ -1,5 +1,5 @@
 .w-detail {
-  border-left: 1px solid var(--c-border);
+  border-left: var(--v-border);
   overflow-x: auto;
   overflow-y: hidden;
 }
@@ -49,18 +49,18 @@
   max-width: calc(100% - 450px);
 }
 
-.w-plugins-tabs-list {
+.w-plugins-tabs {
   width: 106px;
-  border-right: 1px solid var(--c-border);
+  border-right: var(--v-border);
   overflow-x: hidden;
   overflow-y: auto;
   background-color: var(--b-title);
 }
 
-.w-plugins-tabs-list .btn {
+.w-plugins-tabs .btn {
   border-radius: 0;
   border: none;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
@@ -81,7 +81,7 @@ div.w-detail-inspectors-tabs {
 
 .w-detail-inspectors-tabs button {
   border: none;
-  border-right: 1px solid var(--c-border);
+  border-right: var(--v-border);
   height: 20px;
   line-height: 16px;
   font-size: 12px;

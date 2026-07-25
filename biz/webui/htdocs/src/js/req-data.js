@@ -589,7 +589,7 @@ var ReqData = React.createClass({
       self._pendingSave = false;
       self.refs.saveSessions.show();
       setTimeout(function () {
-        var input = findDOMNode(self.refs.sessionsName);
+        var input = self.refs.sessionsName;
         input.focus();
         input.select();
       }, 500);
@@ -608,10 +608,10 @@ var ReqData = React.createClass({
       self.setState({});
     };
     var render = function () {
-      timer && clearTimeout(timer);
+      clearTimeout(timer);
       timer = setTimeout(update, 60);
     };
-    self.container = $(findDOMNode(self.refs.container));
+    self.container = $(self.refs.container);
     self.content = findDOMNode(self.refs.content);
     var clickedCount = 0;
     self.$content = $(self.content)
@@ -1466,7 +1466,7 @@ var ReqData = React.createClass({
     }
     var list = self._sessionsList;
     self._pendingSave = true;
-    dataCenter.saveSessions(JSON.stringify({
+    dataCenter.saveSessions(util.strfy({
       filename: self.state.sessionsName.trim(),
       sessions: list
     }), function (data, xhr) {

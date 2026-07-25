@@ -9,7 +9,7 @@
   background: var(--b-title);
   font-size: 12px;
   padding: 0 10px;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 .w-inspectors-title {
   padding: 0 5px !important;

@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var dataCenter = require('./data-center');
 var util = require('./util');
 var message = require('./message');
@@ -36,7 +35,7 @@ var FrameComposer = React.createClass({
         }
         self.setTextarea(body);
         setTimeout(function() {
-          findDOMNode(self.refs.textarea).focus();
+          self.refs.textarea.focus();
         }, 60);
       }
     });

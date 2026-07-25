@@ -1,7 +1,6 @@
 require('../css/plugins.css');
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -156,7 +155,6 @@ function parsePluginName(list, registry) {
 var Home = React.createClass({
   componentDidMount: function () {
     var self = this;
-    var pluginsElem = $(findDOMNode(self.refs.plugins));
     self.setUpdateAllBtnState();
     addEvent('openPluginOption', function(_, plugin) {
       if (!plugin) {
@@ -193,7 +191,7 @@ var Home = React.createClass({
       if (!name) {
         return;
       }
-      var elem = pluginsElem.find('.w-plugins-item[data-name="' + name + '"]');
+      var elem = $(self.refs.plugins).find('.w-plugins-item[data-name="' + name + '"]');
       if (elem.length) {
         util.shakeElem(elem);
       }
@@ -333,7 +331,7 @@ var Home = React.createClass({
     self.refs.operatePlugin.show();
     if (self.state.install) {
       setTimeout(function() {
-        findDOMNode(self.refs.textarea).focus();
+        self.refs.textarea.focus();
       }, 600);
     }
   },
@@ -353,7 +351,7 @@ var Home = React.createClass({
     var registry = e.target.value;
     var self = this;
     if (registry === '+Add') {
-      var textarea = findDOMNode(self.refs.textarea);
+      var textarea = self.refs.textarea;
       var pkgs = [];
       var regs = [];
       var regCmdName = '--registry=';
@@ -822,7 +820,7 @@ function getPluginInfo(plugin) {
 var Tabs = React.createClass({
   componentDidMount: function () {
     var self = this;
-    var tabPanel = findDOMNode(self.refs.tabPanel);
+    var tabPanel = self.refs.tabPanel;
     var wrapper = tabPanel.parentNode;
     var timer;
 
@@ -985,26 +983,27 @@ var Tabs = React.createClass({
           {tabs.map(function (tab) {
             var disd;
             var favicon;
-            if (util.pluginIsDisabled(props, tab.name)) {
+            var tabName = tab.name;
+            if (util.pluginIsDisabled(props, tabName)) {
               disd = true;
             } else {
-              favicon = util.getPluginIcon(dataCenter.getPlugin(tab.name + ':'));
+              favicon = util.getPluginIcon(dataCenter.getPlugin(tabName + ':'));
             }
             return (
-              <li key={tab.name} className={activeName == tab.name ? ' active' : ''}>
+              <li key={tabName} className={activeName == tabName ? ' active' : ''}>
                 <a
-                  data-name={tab.name}
-                  title={tab.name}
+                  data-name={tabName}
+                  title={tabName}
                   onClick={props.onActive}
                   draggable="false"
                   className={'w-plugins-tab' + (disd ? ' w-plugin-tab-disabled' : '')}
                 >
                   {disd ? (
-                    <Icon data-name={tab.name} name="ban-circle" />
+                    <Icon data-name={tabName} name="ban-circle" />
                   ) : (favicon ? <img src={favicon} /> : null)}
-                  {tab.name}
+                  {tabName}
                   <span
-                    data-name={tab.name}
+                    data-name={tabName}
                     className="w-close-icon"
                     onClick={self.onClose}
                   >
@@ -1024,10 +1023,11 @@ var Tabs = React.createClass({
               onOpen={props.onOpen}
             />
             {tabs.map(function (tab) {
+              var tabName = tab.name;
               return (
-                <LazyInit key={tab.name} inited={activeName == tab.name}>
+                <LazyInit key={tabName} inited={activeName == tabName}>
                   <iframe
-                    style={{ display: activeName == tab.name ? '' : 'none' }}
+                    style={{ display: activeName == tabName ? '' : 'none' }}
                     src={tab.url}
                     onLoad={dataCenter.handleIframeLoad}
                   />

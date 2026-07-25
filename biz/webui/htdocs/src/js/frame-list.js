@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var util = require('./util');
 var FilterInput = require('./filter-input');
@@ -128,7 +127,8 @@ var FrameList = React.createClass({
     self.props.framesCtx.trigger('replayFrame', self.props.modal.getActive());
   },
   stopRefresh: function () {
-    this.container.scrollTop = this.container.scrollTop - 10;
+    var container = this.container;
+    container.scrollTop = container.scrollTop - 10;
   },
   autoRefresh: function () {
     this.container.scrollTop = 100000000;
@@ -243,10 +243,10 @@ var FrameList = React.createClass({
     return atBottom;
   },
   setContainer: function (container) {
-    this.container = findDOMNode(container);
+    this.container = container;
   },
   setContent: function (content) {
-    this.content = findDOMNode(content);
+    this.content = content;
   },
   handleAction: function (type) {
     var self = this;

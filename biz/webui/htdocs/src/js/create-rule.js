@@ -283,7 +283,7 @@ var CreateRuleDialog = React.createClass({
           <Icon name="eye-open" />
           Preview Rules
           {text ? <CopyBtn value={text} className="btn btn-default w-copy-rules" /> : null}
-          {text ? <button className="btn btn-default w-copy-rules" onClick={this.showTestRule}>Test</button> : null}
+          {text ? <a className="btn btn-default w-copy-rules" onClick={this.showTestRule}>Test</a> : null}
         </label>
         <pre className={'w-preview-rules ' + (isMulti ? ' w-preview-rules-multi' : '')}>
           {rules}

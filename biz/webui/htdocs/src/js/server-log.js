@@ -1,6 +1,5 @@
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
 var dataCenter = require('./data-center');
@@ -49,17 +48,15 @@ var ServerLog = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var container = (self.container = findDOMNode(
-      self.refs.svrContainer
-    ));
-    self.content = findDOMNode(self.refs.svrContent);
+    self.container = self.refs.svrContainer;
+    self.content = self.refs.svrContent;
 
     addEvent('uploadLogs', self.handleImport);
     dataCenter.on('log', function(_, logs) {
       self.updateLogs(logs);
     });
 
-    $(container).on('scroll', self.handleScroll);
+    $(self.container).on('scroll', self.handleScroll);
 
     addEvent('serverImportFile', function (_, file) {
       self.importFile(file);

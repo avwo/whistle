@@ -3,7 +3,7 @@
 }
 
 .nav-tabs {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 
 .nav-tabs>li>a:hover {
@@ -14,27 +14,27 @@
 .nav-tabs>li.active>:is(a, a:focus, a:hover) {
   color: var(--c-thin);
   background: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-bottom-color: transparent;
 }
 
 .modal-header {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 
 .modal-content {
   position: relative;
   background-color: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 
 .modal-footer {
-  border-top: 1px solid var(--c-border);
+  border-top: var(--v-border);
 }
 
 .form-control {
   background-color: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   color: var(--c-thin);
   padding: 0 6px;
 }
@@ -64,11 +64,11 @@
 }
 
 .table>tbody>tr>:is(td, th), .table>thead>tr>:is(td, th) {
-    border-top: 1px solid var(--c-border);
+    border-top: var(--v-border);
 }
 
 .table>thead>tr>th {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 
 legend, pre {
@@ -104,7 +104,7 @@ a:focus, a:hover {
 
 .dropdown-menu {
   background-color: var(--c-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   box-shadow: 0 6px 9pt var(--s-rgba15);
 }
 
@@ -236,7 +236,7 @@ a:focus, a:hover {
 }
 
 .modal-content {
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   box-shadow: 0 5px 15px var(--s-rgba50);
 }
 

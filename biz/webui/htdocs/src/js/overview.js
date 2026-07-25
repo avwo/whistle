@@ -1,6 +1,5 @@
 require('../css/overview.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var columns = require('./columns');
 var util = require('./util');
 var storage = require('./storage');
@@ -9,6 +8,18 @@ var dataCenter = require('./data-center');
 var HelpIcon = require('./help-icon');
 var MatchedRule = require('./matched-rule');
 
+
+var getCss = function(val) {
+  return {
+    className: 'w-overview-timeline',
+    style: {
+      '--overview-bg': 'var(' + val + ')'
+    }
+  };
+};
+var WIDTH_VAR = '--overview-width';
+var LEFT_VAR = '--overview-left';
+var MATCH_RULES_KEY = 'showOnlyMatchRules';
 var getProperty = util.getProperty;
 var OVERVIEW = [
   'URL',
@@ -50,36 +61,11 @@ var OVERVIEW_PROPS = [
   'contentEncoding'
 ];
 var CSS_MAP = {
-  'TTFB': {
-    className: 'w-overview-timeline',
-    style: {
-      '--overview-bg': 'var(--b-active)'
-    }
-  },
-  'DNS': {
-    className: 'w-overview-timeline',
-    style: {
-      '--overview-bg': 'var(--b-tl-dns)'
-    }
-  },
-  'Request': {
-    className: 'w-overview-timeline',
-    style: {
-      '--overview-bg': 'var(--b-tl-req)'
-    }
-  },
-  'Response': {
-    className: 'w-overview-timeline',
-    style: {
-      '--overview-bg': 'var(--b-tl-res)'
-    }
-  },
-  'Download': {
-    className: 'w-overview-timeline',
-    style: {
-      '--overview-bg': 'var(--b-tl-load)'
-    }
-  }
+  'TTFB': getCss('--b-active'),
+  'DNS': getCss('--b-tl-dns'),
+  'Request': getCss('--b-tl-req'),
+  'Response': getCss('--b-tl-res'),
+  'Download': getCss('--b-tl-load')
 };
 var DEFAULT_OVERVIEW_MODAL = {};
 
@@ -95,13 +81,13 @@ OVERVIEW.forEach(function (name) {
 var Overview = React.createClass({
   getInitialState: function () {
     return {
-      showOnlyMatchRules: storage.get('showOnlyMatchRules') == 1
+      showOnlyMatchRules: storage.get(MATCH_RULES_KEY) == 1
     };
   },
   shouldComponentUpdate: util.scu,
   componentDidMount: function () {
     var self = this;
-    var container = findDOMNode(self.refs.container);
+    var container = self.refs.container;
     util.on('overviewScrollTop', function () {
       if (!util.getBool(self.props.hide)) {
         container.scrollTop = 0;
@@ -110,38 +96,43 @@ var Overview = React.createClass({
   },
   showOnlyMatchRules: function (e) {
     var showOnlyMatchRules = e.target.checked;
-    storage.set('showOnlyMatchRules', showOnlyMatchRules ? 1 : 0);
+    storage.set(MATCH_RULES_KEY, showOnlyMatchRules ? 1 : 0);
     this.setState({
       showOnlyMatchRules: showOnlyMatchRules
     });
   },
   updateCssMap: function () {
     Object.keys(CSS_MAP).forEach(function (name) {
-      CSS_MAP[name].style['--overview-width'] = 0;
+      CSS_MAP[name].style[WIDTH_VAR] = 0;
     });
     var modal = this.props.modal;
     if (!modal || !modal.url) {
       return;
     }
-    var total = modal.endTime - modal.startTime;
+    var startTime = modal.startTime;
+    var total = modal.endTime - startTime;
     if (!(total > 0)) {
       return;
     }
-    CSS_MAP['TTFB'].style['--overview-width'] = modal.ttfb * 100 / total + '%';
-    var width = (modal.dnsTime - modal.startTime) * 100 / total + '%';
-    CSS_MAP['DNS'].style['--overview-width'] = width;
+    var requestTime = modal.requestTime;
+    var responseTime = modal.responseTime;
+    var dnsTime = modal.dnsTime;
 
-    var reqStyle = CSS_MAP['Request'].style;
-    reqStyle['--overview-left'] = width;
-    reqStyle['--overview-width'] = (modal.requestTime - modal.dnsTime) * 100 / total + '%';
+    CSS_MAP['TTFB'].style[WIDTH_VAR] = modal.ttfb * 100 / total + '%';
+    var width = (dnsTime - startTime) * 100 / total + '%';
+    CSS_MAP['DNS'].style[WIDTH_VAR] = width;
 
-    reqStyle = CSS_MAP['Response'].style;
-    reqStyle['--overview-left'] = (modal.requestTime - modal.startTime) * 100 / total + '%';
-    reqStyle['--overview-width'] = (modal.responseTime - modal.requestTime) * 100 / total + '%';
+    var style = CSS_MAP['Request'].style;
+    style[LEFT_VAR] = width;
+    style[WIDTH_VAR] = (requestTime - dnsTime) * 100 / total + '%';
 
-    reqStyle = CSS_MAP['Download'].style;
-    reqStyle['--overview-left'] = (modal.responseTime - modal.startTime) * 100 / total + '%';
-    reqStyle['--overview-width'] = (modal.endTime - modal.responseTime) * 100 / total + '%';
+    style = CSS_MAP['Response'].style;
+    style[LEFT_VAR] = (requestTime - startTime) * 100 / total + '%';
+    style[WIDTH_VAR] = (responseTime - requestTime) * 100 / total + '%';
+
+    style = CSS_MAP['Download'].style;
+    style[LEFT_VAR] = (responseTime - startTime) * 100 / total + '%';
+    style[WIDTH_VAR] = (modal.endTime - responseTime) * 100 / total + '%';
   },
   render: function () {
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
@@ -253,7 +244,7 @@ var Overview = React.createClass({
       <div
         ref="container"
         className={
-          'fill v-box w-detail-ctn w-detail-overview' +
+          'fill v-box w-detail-ctn w-overview' +
           util.getHide(util.getBool(self.props.hide))
         }
       >
@@ -265,7 +256,7 @@ var Overview = React.createClass({
           cssMap={CSS_MAP}
         />
         <p
-          className="w-detail-overview-title"
+          className="w-overview-title"
           style={util.getFilteredBg(showOnlyMatchRules)}
         >
           <HelpIcon docsUrl="rules/protocols.html" />
@@ -274,6 +265,7 @@ var Overview = React.createClass({
             <input
               checked={showOnlyMatchRules}
               onChange={self.showOnlyMatchRules}
+              className="mr-5"
               type="checkbox"
             />
             Show matching rules only

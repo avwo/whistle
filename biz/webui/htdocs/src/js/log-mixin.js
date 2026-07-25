@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var win = require('./win');
 var CopyBtn = require('./copy-btn');
@@ -126,11 +125,7 @@ module.exports = {
     if (self.props.hide) {
       return true;
     }
-    var btn = self._importBtn;
-    if (!btn) {
-      btn = findDOMNode(self.refs.importBtn);
-      self._importBtn = btn;
-    }
+    var btn = self.refs.importBtn;
     return !btn || !btn.offsetWidth;
   },
   updateLogs: function(newLogs) {

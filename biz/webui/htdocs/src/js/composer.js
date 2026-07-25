@@ -38,6 +38,7 @@ var trigger = util.trigger;
 var addEvent = util.on;
 var getHide = util.getHide;
 var getRawHeaders = dataCenter.getRawHeaders;
+var strfy = util.strfy;
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -280,10 +281,11 @@ var Composer = React.createClass({
   },
   loadHistory: function () {
     var self = this;
-    if (self.state.loading === 2) {
+    var state = self.state;
+    if (state.loading === 2) {
       return;
     }
-    self.state.loading = 2;
+    state.loading = 2;
     dataCenter.getHistory(function (data) {
       if (Array.isArray(data)) {
         self.setState({
@@ -387,7 +389,7 @@ var Composer = React.createClass({
     var self = this;
     var data = self.getComposerData();
     self.state.headers = data.headers;
-    storage.set('composerData', JSON.stringify(data));
+    storage.set('composerData', strfy(data));
     if (self.hasBody != hasReqBody(data.method, data.url, data.headers)) {
       self.setState({});
     }
@@ -406,6 +408,7 @@ var Composer = React.createClass({
         item.body === params.body
       ) {
         params.selected = item.selected;
+        params.key = item.key;
         historyData.splice(i, 1);
         break;
       }
@@ -422,10 +425,28 @@ var Composer = React.createClass({
     var histroyUrls = [];
     var groupList = [];
     var map = {};
+    var keyMap = {};
     var hasSelected;
+    var historyData = this.state.historyData;
+    var selectedKey = historyData && historyData._selectedKey;
     data.forEach(function (item) {
       if (!notEStr(item.url)) {
         return;
+      }
+      if (!item.key) {
+        var date = item.date;
+        var key = keyMap[date];
+        if (!key) {
+          item.key = date;
+          keyMap[date] = 1;
+        } else {
+          item.key = date + '_' + key;
+          ++keyMap[date];
+        }
+      }
+      if (item.selected || item.key === selectedKey) {
+        item.selected = !hasSelected;
+        hasSelected = true;
       }
       if (histroyUrls.indexOf(item.url) === -1) {
         histroyUrls.push(item.url);
@@ -437,13 +458,6 @@ var Composer = React.createClass({
         group = { title: host, list: [] };
         groupList.push(group);
         map[host] = group;
-      }
-      if (item.selected) {
-        if (hasSelected) {
-          item.selected = false;
-        } else {
-          hasSelected = true;
-        }
       }
       group.list.push(item);
       item.path = opts ? opts.path : item.url;
@@ -695,7 +709,7 @@ var Composer = React.createClass({
         result[field.name] = value == null ? filedValue : [value, filedValue];
       }
     });
-    storage.set('composerUploadBody', JSON.stringify(result));
+    storage.set('composerUploadBody', strfy(result));
   },
   onProxyRules: function (e) {
     var enable = e.target.checked;
@@ -1254,7 +1268,7 @@ var Composer = React.createClass({
               disabled={pending}
               onClick={execute}
               onContextMenu={self.onContextMenu}
-              title={enableProxyRules ? null : 'Whistle Rules IGNORED'}
+              title={enableProxyRules ? null : 'Global Rules IGNORED'}
               className={'btn w-com-execute btn-' + (enableProxyRules ? 'primary' : 'info')}
             >
               <Icon name="send" />
@@ -1284,7 +1298,7 @@ var Composer = React.createClass({
                     onChange={self.onProxyRules}
                     checked={enableProxyRules}
                   />
-                  Whistle Rules
+                  Global Rules
                 </label>
                 <label className="w-com-use-h2">
                   <input

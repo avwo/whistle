@@ -1,6 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
-var $ = require('jquery');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -140,7 +138,7 @@ var RecycleBinDialog = React.createClass({
     );
   },
   isVisible: function () {
-    return $(findDOMNode(this.refs.recycleBinBody)).is(':visible');
+    return this.refs.dialog.isVisible();
   },
   render: function () {
     var self = this;
@@ -151,7 +149,7 @@ var RecycleBinDialog = React.createClass({
         <ModalHeader>
           {state.name} Trash
         </ModalHeader>
-        <div className="modal-body" ref="recycleBinBody">
+        <div className="modal-body">
           <table className="table">
             <thead>
               <th className="w-files-order">#</th>

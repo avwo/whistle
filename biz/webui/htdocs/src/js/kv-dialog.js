@@ -9,6 +9,14 @@ var DismissBtn = require('./dismiss-btn');
 
 var isStr = util.isStr;
 
+function wrapValue(value, name, sep) {
+  var list = new Array(12);
+  sep = list.join(sep || '>');
+  sep += ' ' + sep + ' ' + sep;
+  sep += ' ' + name + ' (' + value.length + ' chars) ' + sep;
+  return sep + '\n\n' + value + '\n\n' + sep;
+}
+
 var KVDialog = React.createClass({
   getInitialState: function () {
     return { list: [], history: [] };
@@ -119,12 +127,10 @@ var KVDialog = React.createClass({
     var state = self.state;
     var list = state.list || [];
     var history = state.history;
-    var selectedHistory = state.selectedHistory || '';
     var len = list.length;
     var noData = !len;
     var checkedCount = 0;
     var modal = state.modal;
-    var hideDefaultOption = state.hideDefaultOption;
     var checkedAll = !noData && list.every(function (item) {
       return item.checked;
     });
@@ -139,11 +145,11 @@ var KVDialog = React.createClass({
           {history.length ? <label>
             History:
             <select
-              value={selectedHistory}
+              value={state.selectedHistory || ''}
               onChange={this.selectHistory}
               className="form-control w-history-record-list"
             >
-              {hideDefaultOption ? null : <option value="">
+              {state.hideDefaultOption ? null : <option value="">
                 Select history
               </option>}
               {
@@ -174,7 +180,8 @@ var KVDialog = React.createClass({
                 </tr>
               ) : (
                 list.map(function (item, i) {
-                  var isGroup = util.isGroup(item.name);
+                  var name = item.name;
+                  var isGroup = util.isGroup(name);
                   var value = isStr(item.value) ? item.value : '';
                   var exceed = value.length > 128;
                   if (item.checked) {
@@ -183,13 +190,9 @@ var KVDialog = React.createClass({
                   var curValue;
                   var showConflict = item.isConflict && !isGroup;
                   if (showConflict) {
-                    var oldItem = modal && modal.get(item.name);
+                    var oldItem = modal && modal.get(name);
                     curValue = oldItem && oldItem.value;
-                    if (curValue) {
-                      curValue = '<<<<<<<<<<< <<<<<<<<<<< <<<<<<<<<<< OLD <<<<<<<<<<< <<<<<<<<<<< <<<<<<<<<<<\n\n' +
-                      curValue + '\n\n=========== ========== ========== BOUNDARY ========== ========== ==========\n\n' +
-                      value + '\n\n>>>>>>>>>>> >>>>>>>>>>> >>>>>>>>>>> NEW >>>>>>>>>>> >>>>>>>>>>> >>>>>>>>>>>';
-                    }
+                    curValue = curValue && wrapValue(curValue, 'Current') + '\n\n\n' + wrapValue(value, 'Incoming', '<');
                   }
 
                   return (
@@ -200,13 +203,13 @@ var KVDialog = React.createClass({
                       <th className="w-kv-box"><input type="checkbox" checked={item.checked} onChange={function(e) {
                         self.checkItem(e, item);
                       }} /></th>
-                      <td title={item.name} className="w-kv-name">
-                        {isGroup ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}{item.name}
+                      <td title={name} className="w-kv-name">
+                        {isGroup ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}{name}
                         {showConflict ? <strong onClick={self.viewContent} title={curValue}>[Conflict]</strong> : null}
                       </td>
                       <td className="w-kv-operation">
                         <pre>
-                          {exceed ? value.substring(0, 100) + '...' : value}
+                          {value ? (exceed ? value.substring(0, 100) + '...' : value) : <span className="w-empty">No content</span>}
                         </pre>
                         {exceed ? <a title={value} onClick={self.viewContent}>
                             View all

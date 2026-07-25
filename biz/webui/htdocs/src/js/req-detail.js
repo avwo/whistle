@@ -123,7 +123,7 @@ var ReqDetail = React.createClass({
       } else if (json && json.isJSONText) {
         form = json;
       }
-      headersStr = util.getReqRawHeaders(modal);
+      headersStr = util.getRawReqHeaders(modal);
       raw = headersStr + '\r\n\r\n' + body;
       if (modal.frames && (!modal.isSse || modal.isCse)) {
         tips = { isFrames: true };

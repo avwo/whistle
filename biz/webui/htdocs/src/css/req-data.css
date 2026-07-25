@@ -50,7 +50,7 @@
 
 .w-req-data-headers {
   height: 29px;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   overflow: hidden;
 }
 .w-req-data-headers .table {
@@ -79,7 +79,7 @@
 }
 .w-req-data-list :is(th, td) {
   border-top: none !important;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   font-weight: normal;
   font-size: 12px;
   padding: 3px 0 3px 6px !important;
@@ -212,7 +212,7 @@
 }
 
 .w-qrcode-dialog input {
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   padding: 3px;
   display: block;
   width: 320px;
@@ -338,7 +338,7 @@
   font-size: 14px;
   text-align: center;
   background-color: var(--b-warn);
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   color: var(--c-warn);
 }
 
@@ -365,7 +365,7 @@
   font-size: 12px;
   color: var(--c-link);
   background-color: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 20px;
   width: 26px;
   height: 26px;

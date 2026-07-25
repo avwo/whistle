@@ -164,7 +164,7 @@
 
 .w-rules-form {
   padding: 10px 10px 15px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 5px;
   background: var(--b-bar);
   margin-bottom: 10px;
@@ -181,7 +181,7 @@
 
 .w-preview-rules {
   margin-top: 10px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 5px;
   background: var(--b-cobalt);
   padding: 10px;
@@ -250,7 +250,7 @@
 .w-pr-RESCORS, .w-pr-RESPREPEND, .w-pr-RESBODY, .w-pr-RESAPPEND,
 .w-pr-RESREPLACE, .w-pr-RESMERGE, .w-pr-HTMLPREPEND, .w-pr-HTMLBODY,
 .w-pr-HTMLAPPEND, .w-pr-CSSPREPEND, .w-pr-CSSBODY, .w-pr-CSSAPPEND,
-.w-pr-JSPREPEND, .w-pr-JSBODY, .w-pr-JSAPPEND, .w-pr-RESCOOKIES) {
+.w-pr-JSPREPEND, .w-pr-JSBODY, .w-pr-JSAPPEND, .w-pr-RESCOOKIES, .w-pr-FRAMESCRIPT) {
   color: #292;
 }
 

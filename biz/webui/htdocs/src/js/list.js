@@ -3,7 +3,6 @@ require('../css/files-dialog.css');
 var $ = require('jquery');
 var util = require('./util');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var message = require('./message');
 var Divider = require('./divider');
 var Editor = require('./editor');
@@ -24,6 +23,7 @@ var trigger = util.trigger;
 var addEvent = util.on;
 var preventBlur = util.preventBlur;
 var attr = util.attr;
+var strfy = util.strfy;
 var loc = window.location;
 var TIPS_KEY = 'hideEnableHTTPSTips';
 var hideEnableHTTPSTips = loc.href.indexOf(TIPS_KEY + '=1') !== -1 || storage.get(TIPS_KEY);
@@ -115,7 +115,7 @@ function getName(name) {
 function getDragInfo(e, list) {
   var target = getTarget(e);
   if (list && !target) {
-    target = $(findDOMNode(list)).find('a:last')[0];
+    target = $(list).find('a:last')[0];
   }
   var name = target && attr(target, 'data-name');
   if (!name) {
@@ -192,7 +192,7 @@ var List = React.createClass({
     var modal = self.props.modal;
     this.curListLen = modal.list.length;
     this.curActiveItem = modal.getActive();
-    $(findDOMNode(self.refs.container))
+    $(self.refs.container)
       .focus()
       .on('keydown', function (e) {
         var item;
@@ -238,16 +238,10 @@ var List = React.createClass({
       self.setState({});
     });
     var scrollToBottom = function() {
-      findDOMNode(self.refs.list).scrollTop = 1000000000;
-    };
-    var focusList = function() {
-      findDOMNode(self.refs.list).focus();
+      self.refs.list.scrollTop = 1000000000;
     };
     addEvent('scroll' + comName + 'Bottom', function() {
       scrollToBottom();
-    });
-    addEvent('focus' + comName + 'List', function() {
-      focusList();
     });
     addEvent(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
       var index = name === newName ? - 1 : self.collapseGroups.indexOf(name);
@@ -257,7 +251,7 @@ var List = React.createClass({
         } else {
           self.collapseGroups[index] = newName;
         }
-        storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+        self.updateGroup();
       }
     });
     addEvent('focus' + (self.isRules() ? 'Rules' : 'Values') + 'FilterInput', function() {
@@ -265,12 +259,16 @@ var List = React.createClass({
     });
     self.ensureVisible(true);
   },
+  updateGroup: function() {
+    var self = this;
+    storage.set(self.getCollapseKey(), strfy(self.collapseGroups));
+  },
   expandGroup: function(groupName) {
     var self = this;
     var index = self.collapseGroups.indexOf(groupName);
     if (index !== -1) {
       self.collapseGroups.splice(index, 1);
-      storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+      self.updateGroup();
     }
   },
   shouldComponentUpdate: util.scu,
@@ -296,8 +294,8 @@ var List = React.createClass({
     var self = this;
     activeItem = activeItem || self.props.modal.getActive();
     if (activeItem) {
-      var elem = findDOMNode(self.refs[activeItem.name]);
-      var con = findDOMNode(self.refs.list);
+      var elem = self.refs[activeItem.name];
+      var con = self.refs.list;
       util.ensureVisible(elem, con, init);
     }
   },
@@ -326,7 +324,7 @@ var List = React.createClass({
     } else {
       self.collapseGroups.splice(index, 1);
     }
-    storage.set(self.getCollapseKey(), JSON.stringify(self.collapseGroups));
+    self.updateGroup();
     self.setState({});
   },
   onClickGroup: function (e) {

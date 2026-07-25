@@ -1,12 +1,11 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 
 var ACTIVE_COL = { width: 55 };
 
 var OrderTable = React.createClass({
   scrollToTop: function() {
-    findDOMNode(this.refs.body).scrollTop = 0;
+    this.refs.body.scrollTop = 0;
   },
   onChange: function(e) {
     var index = util.attr(e.target, 'data-index');

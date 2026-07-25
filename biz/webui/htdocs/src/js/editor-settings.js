@@ -1,7 +1,5 @@
 require('../css/editor-settings.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
-var $ = require('jquery');
 var util = require('./util');
 
 var themes = util.EDITOR_THEMES;
@@ -15,7 +13,12 @@ var EditorSettings = React.createClass({
   componentDidMount: function () {
     var self = this;
     util.on('toggle' + (self.props.name === 'rules' ? 'Rules' : 'Values') + 'LineNumbers', function () {
-      $(findDOMNode(self.refs.showLineNumbers)).trigger('click');
+      var props = self.props;
+      props.onLineNumberChange({
+        target: {
+          checked: !props.lineNumbers
+        }
+      });
     });
   },
   render: function () {

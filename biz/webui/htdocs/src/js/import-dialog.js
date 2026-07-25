@@ -1,6 +1,5 @@
 require('../css/import-dialog.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -44,7 +43,7 @@ var ImportDialog = React.createClass({
     var self = this;
     self.refs.dialog.show();
     setTimeout(function () {
-      var input = findDOMNode(self.refs.input);
+      var input = self.refs.input;
       input.focus();
       input.select();
     }, 500);
@@ -67,7 +66,7 @@ var ImportDialog = React.createClass({
       return;
     }
     var self = this;
-    var input = findDOMNode(self.refs.input);
+    var input = self.refs.input;
     var url = input.value.trim();
     if (!url) {
       showError('The url or file path is required');
@@ -142,7 +141,7 @@ var ImportDialog = React.createClass({
             ref="input"
             maxLength="2048"
             onKeyDown={self.importRemoteUrl}
-            placeholder="Enter request URL or file path"
+            placeholder="Enter URL or file path"
           />
         </div>
         <div className="modal-footer">

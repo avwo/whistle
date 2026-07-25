@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var win = require('./win');
 var message = require('./message');
 var dataCenter = require('./data-center');
@@ -17,7 +16,7 @@ module.exports = {
     state.showDownloadInput = /w-download/.test(e.target.className);
     state.showNameInput = true;
     self.forceUpdate(function () {
-      var nameInput = findDOMNode(self.refs.nameInput);
+      var nameInput = self.refs.nameInput;
       var defaultName = !nameInput.value && self.props.defaultName;
       if (defaultName) {
         nameInput.value = defaultName;
@@ -30,7 +29,7 @@ module.exports = {
     var self = this;
     self.state.showNameInput = false;
     self.forceUpdate(function () {
-      var nameInput = findDOMNode(self.refs.nameInput);
+      var nameInput = self.refs.nameInput;
       var defaultName = self.props.defaultName;
       if (defaultName === nameInput.value) {
         nameInput.value = '';
@@ -46,7 +45,7 @@ module.exports = {
       return;
     }
     var self = this;
-    var target = findDOMNode(self.refs.nameInput);
+    var target = self.refs.nameInput;
     var name = target.value.trim();
     if (self.state.showDownloadInput) {
       self.download();

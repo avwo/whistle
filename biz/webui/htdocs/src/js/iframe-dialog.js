@@ -32,14 +32,13 @@ var IframeDialog = React.createClass({
     var name = state.name;
     var url = state.url;
     var favicon = state.favicon ? <img src={state.favicon} /> : null;
-    var className = 'w-plugins-tab inline-align-items' + (disabled ? ' w-plugin-tab-disabled' : '');
 
     window.onWhistlePluginOptionModalReady = onWhistlePluginOptionModalReady;
 
     return (
       <Dialog ref="dialog" wstyle="w-iframe-dialog" width={state.width || 'max(calc(100% - 240px), 720px)'}>
         <ModalHeader>
-          <span className={className}>
+          <span className={'w-plugins-tab w-inline-middle' + (disabled ? ' w-plugin-tab-disabled' : '')}>
             {disabled ? <Icon data-name={name} name="ban-circle" /> : favicon}
             {name || 'Untitled'}
           </span>

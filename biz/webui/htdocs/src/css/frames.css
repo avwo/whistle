@@ -5,7 +5,7 @@
 .w-frames-action {
   background: var(--b-title);
   position: relative;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   height: 22px;
   line-height: 20px;
   min-width: 560px;
@@ -61,7 +61,7 @@
   height: 24px;
   line-height: 23px;
   list-style: none;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   background: var(--b-default);
 }
 .w-frames-list li[class=""]:hover {
@@ -100,7 +100,7 @@
 
 .w-frames-action .w-filter-con {
   margin-right: 160px;
-  border-right: 1px solid var(--c-border);
+  border-right: var(--v-border);
 }
 
 .w-frames-list .w-frames-send {
@@ -127,7 +127,7 @@
 }
 
 .w-frames-com-action {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   position: relative;
   text-indent: 10px;
   line-height: 22px;

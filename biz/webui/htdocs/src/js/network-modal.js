@@ -267,92 +267,48 @@ function checkFilterType(item, filterType) {
   if (!filterType) {
     return true;
   }
-  var isOther = filterType === 'Other';
-  if (isOther || filterType === 'WS') {
-    if (WS_RE.test(item.url)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'captureError') {
+    return item.captureError;
   }
-  if (isOther || filterType === 'Tunnel') {
-    if (item.isHttps) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'WS') {
+    return WS_RE.test(item.url);
   }
-  if (isOther || filterType === 'Rules') {
-    if (item[dataCenter.HAS_RULES_KEY]) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'Tunnel') {
+    return item.isHttps;
+  }
+  if (filterType === 'Rules') {
+    return item[dataCenter.HAS_RULES_KEY];
   }
   var rawType = util.getRawType(item.res.headers);
   var type;
   for (var i = 0, len = RAW_TYPES.length; i < len; i++) {
     type = RAW_TYPES[i];
-    if (isOther || filterType === type) {
+    if (filterType === type) {
       var p = type === 'Font' ? FONT_RE : type === 'Media' ? MEDIA_RE : WASM_RE;
-      if (p.test(rawType)) {
-        return !isOther;
-      }
-      if (!isOther) {
-        return false;
-      }
+      return p.test(rawType);
     }
   }
 
   var curType = util.getContentType(rawType);
   for (i = 0, len = TYPES.length; i < len; i++) {
     type = TYPES[i];
-    if (isOther || filterType === type) {
-      if (curType === (i ? type : 'IMG')) {
-        return !isOther;
-      }
-      if (!isOther) {
-        return false;
-      }
+    if (filterType === type) {
+      return curType === (i ? type : 'IMG');
     }
   }
-  if (isOther || filterType === 'Error') {
-    if (hasError(item)) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'Error') {
+    return hasError(item);
   }
-  if (isOther || filterType === 'Mock') {
+  if (filterType === 'Mock') {
     var rules = item.rules || '';
-    if (rules.rule && rules.rule.isLoc) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+    return rules.rule && rules.rule.isLoc;
   }
-  if (isOther || filterType === 'Import') {
-    if (item.importedData) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'Import') {
+    return item.importedData;
   }
-  if (isOther || filterType === 'Composer') {
-    if (item.fc) {
-      return !isOther;
-    }
-    if (!isOther) {
-      return false;
-    }
+  if (filterType === 'Composer') {
+    return item.fc;
   }
-  return true;
 }
 
 proto.filter = function () {

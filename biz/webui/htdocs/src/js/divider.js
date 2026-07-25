@@ -1,7 +1,6 @@
 require('../css/divider.css');
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 
 var getHideStyle = util.getHideStyle;
@@ -39,7 +38,7 @@ var Divider = React.createClass({
   },
   reset: function () {
     var self = this;
-    var divider = findDOMNode(self.refs.divider);
+    var divider = self.refs.divider;
     if (!divider.offsetHeight) {
       self._needReset = true;
       return;

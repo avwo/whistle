@@ -77,7 +77,7 @@ var RuleList = React.createClass({
             var checked = checkedList.indexOf(line) !== -1;
 
             return (
-              <label key={line} className={'w-rule-list-item' + (checked ? ' w-bold' : '')}>
+              <label key={line} className={'w-rule-item' + (checked ? ' w-bold' : '')}>
                 <span><input type="checkbox" checked={checked} onChange={function(e) {
                   self.onChange(e, line, rule, activeItem.rawValues);
                 }} /></span>

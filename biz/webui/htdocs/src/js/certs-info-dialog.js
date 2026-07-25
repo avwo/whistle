@@ -1,6 +1,5 @@
 require('../css/certs.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var Dialog = require('./dialog');
 var TipsDialog = require('./tips-dialog');
@@ -181,7 +180,7 @@ var CertsInfoDialog = React.createClass({
   },
   handleChange: function (e) {
     var self = this;
-    var input = findDOMNode(self.refs.uploadCerts);
+    var input = self.refs.uploadCerts;
     var files = input.files && self.formatFiles(input.files);
     input.value = '';
     if (!files) {
@@ -217,11 +216,11 @@ var CertsInfoDialog = React.createClass({
     var target = e.target;
     var checked = target.checked;
     var filename = util.attr(target, 'data-filename');
-    var data = JSON.stringify({ filename: filename, disabled: !checked });
+    var data = util.strfy({ filename: filename, disabled: !checked });
     dataCenter.certs.active(data, this.handleCgi);
   },
   showUpload: function () {
-    findDOMNode(this.refs.uploadCerts).click();
+    this.refs.uploadCerts.click();
   },
   showService: function () {
     util.showService('certs/history');

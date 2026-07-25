@@ -1,6 +1,5 @@
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var JSONTree = require('./components/react-json-tree')['default'];
 var ExpandCollapse = require('./expand-collapse');
 var util = require('./util');
@@ -110,10 +109,8 @@ var Console = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    var container = (self.container = findDOMNode(
-      self.refs.container
-    ));
-    self.content = findDOMNode(self.refs.logContent);
+    self.container = self.refs.container;
+    self.content = self.refs.logContent;
 
     addEvent('uploadLogs', self.handleImport);
     dataCenter.on('log', self.updateLogs);
@@ -125,7 +122,7 @@ var Console = React.createClass({
       self.importData(data);
     });
 
-    $(container).on('scroll', self.handleScroll);
+    $(self.container).on('scroll', self.handleScroll);
   },
   changeLogId: function (option) {
     this.showLogId(option.value);

@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -110,7 +109,7 @@ var EditorDialog = React.createClass({
     if (!props.textEditor) {
       return;
     }
-    var iframe = findDOMNode(self.refs.iframe);
+    var iframe = self.refs.iframe;
     var initTextArea = function() {
       var textarea = iframe.contentWindow.document.querySelector('textarea');
       var style = textarea && textarea.style;
@@ -230,7 +229,7 @@ var EditorDialog = React.createClass({
     }
     var params = {  clientId: dataCenter.getPageId() };
     params[isBase64 ? 'base64' : 'value'] = value;
-    dataCenter.createTempFile(JSON.stringify(params), function (result, xhr) {
+    dataCenter.createTempFile(util.strfy(params), function (result, xhr) {
       if (!result || result.ec !== 0) {
         return showSysErr(xhr);
       }

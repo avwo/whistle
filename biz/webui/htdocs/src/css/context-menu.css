@@ -10,7 +10,7 @@
   padding: 0;
   width: 100%;
   box-sizing: border-box;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   box-shadow: 2px 2px 2px var(--s-rgba15);
   background: var(--b-default);
   min-width: 110px;
@@ -83,7 +83,7 @@ body .w-ctx-list .w-ctx-gap {
 }
 
 .w-ctx-item-sep {
-  border-top: 1px solid var(--c-border);
+  border-top: var(--v-border);
   margin-top: 5px;
 }
 

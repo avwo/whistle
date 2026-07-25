@@ -21,7 +21,7 @@ var HelpIcon = React.createClass({
     var self = this;
     var className = self.props.className;
     var name = self.props['data-name'];
-    return <a data-name={name} className={'glyphicon glyphicon-question-sign w-help-icon' + (className ? ' ' + className : '')} onClick={self.onClick} />;
+    return <a data-name={name} className={'glyphicon glyphicon-question-sign w-help-icon ' + (className || '')} onClick={self.onClick} />;
   }
 });
 

@@ -8,7 +8,7 @@
 
 .w-props-editor :is(th, td) {
   border: none;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   border-top: none !important;
   padding: 0 !important;
   font-weight: normal;
@@ -105,7 +105,7 @@
   line-height: 120px;
   vertical-align: middle;
   cursor: pointer;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 4px;
   white-space: nowrap;
   overflow: hidden;

@@ -1,5 +1,5 @@
 .w-ns-dialog fieldset {
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   padding-bottom: 10px;
 }
 .w-ns-dialog legend {
@@ -73,7 +73,7 @@
 .w-ns-dialog textarea {
   width: 578px;
   height: 90px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   overflow: auto;
   margin: 0;
   padding: 5px 10px;
@@ -152,6 +152,6 @@
   height: 20px;
   color: var(--c-thin);
   margin-left: 5px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 3px;
 }

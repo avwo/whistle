@@ -15,6 +15,7 @@ var showSysErr = util.showSysErr;
 var isStr = util.isStr;
 var isGroupName = util.isGroup;
 var trigger = util.trigger;
+var strfy = util.strfy;
 var TEMP_FILE_RE = /\btemp\/current_file_hash_placeholder\b/;
 var TEMP_FILE_RE_G = /\btemp\/current_file_hash_placeholder\b/g;
 var LINE_RE = /^(?:[^\n\r\S]*(```+)[^\n\r\S]*(\S+)[^\n\r\S]*[\r\n]([\s\S]+?)[\r\n][^\n\r\S]*\1\s*|[^\r\n]*)$/gm;
@@ -119,7 +120,7 @@ var RulesDialog = React.createClass({
     }
     var hasError;
     var createFile = function(base64, value, init) {
-      dataCenter.createTempFile(JSON.stringify({
+      dataCenter.createTempFile(strfy({
         clientId: dataCenter.getPageId(),
         value: value,
         base64: base64
@@ -210,7 +211,7 @@ var RulesDialog = React.createClass({
       } else {
         values = self._values;
       }
-      dataCenter.addRulesAndValues(JSON.stringify({
+      dataCenter.addRulesAndValues(strfy({
         clientId: dataCenter.getPageId(),
         rules: {
           name: filename,

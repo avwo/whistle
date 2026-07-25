@@ -1,7 +1,6 @@
 require('../css/network-settings.css');
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var NetworkModal = require('./network-modal');
 var Dialog = require('./dialog');
 var columns = require('./columns');
@@ -192,7 +191,7 @@ var Settings = React.createClass({
       },
       function () {
         setTimeout(function () {
-          var input = findDOMNode(self.refs.newColumnName);
+          var input = self.refs.newColumnName;
           input.select();
           input.focus();
         }, 360);

@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -25,7 +24,7 @@ var FilterBtn = React.createClass({
     });
     addEvent('shakeSettings', function () {
       setTimeout(function () {
-        util.shakeElem($(findDOMNode(self.refs.settings)));
+        util.shakeElem($(self.refs.settings));
       }, 100);
     });
   },

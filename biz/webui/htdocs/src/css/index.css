@@ -1,6 +1,6 @@
 .w-menu {
   height: 34px;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   background: var(--b-title);
   padding-right: 80px;
   position: relative;
@@ -74,27 +74,27 @@
   font-weight: bold;
 }
 
-.w-input-menu-item {
+.w-input-menu {
   display: block;
   position: absolute;
   background: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 2px;
   z-index: 101;
   top: 33px;
   display: block;
   white-space: nowrap;
 }
-.w-input-menu-item input {
+.w-input-menu input {
   width: 246px;
   height: 32px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 0!important;
   border-radius: 2px;
   padding: 0 5px;
   vertical-align: middle;
 }
-.w-input-menu-item .btn {
+.w-input-menu .btn {
   height: 32px;
   padding: 0 12px;
   vertical-align: middle;
@@ -145,7 +145,7 @@
   color: var(--c-disabled) !important;
 }
 
-.w-rules-settings-dialog .modal-dialog {
+.w-rules-settings .modal-dialog {
   width: 400px;
 }
 .w-values-settings-dialog .modal-dialog {
@@ -214,8 +214,8 @@
 }
 .w-left-menu {
   background: var(--b-title);
-  border-left: 1px solid var(--c-border);
-  border-right: 1px solid var(--c-border);
+  border-left: var(--v-border);
+  border-right: var(--v-border);
   display: none;
 }
 .w-show-left-menu .w-left-menu {
@@ -262,7 +262,7 @@
   color: var(--c-default);
   background-color: var(--b-title);
   font-weight: bold;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 .w-left-menu a .w-left-menu-tips:hover,
 .w-menu :is(.w-import-menu, .w-export-menu, .w-remove-menu-list) {
@@ -303,7 +303,7 @@
   height: 30px;
   line-height: 30px;
   padding: 5px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 
 .w-enable-https-btn, .w-https-menu .glyphicon-lock {
@@ -318,7 +318,7 @@
   position: absolute;
   z-index: 1;
   height: auto;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   min-height: 0;
 }
 
@@ -332,7 +332,7 @@
 }
 
 .w-https-dialog select {
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 3px;
   height: 24px;
   font-size: 12px;
@@ -367,7 +367,7 @@
   padding: 10px;
 }
 .w-fieldset {
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 .w-fieldset legend {
   font-size: 12px;

@@ -18,7 +18,7 @@
   padding-bottom: 3px !important;
 }
 .w-props tr {
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
 }
 .w-props th {
   width: 124px;
@@ -84,7 +84,8 @@
 }
 
 .w-src-info {
-  margin-left: 30px;
+  margin-left: 15px;
+  white-space: nowrap;
 }
 
 span.w-src-info {

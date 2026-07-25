@@ -1,6 +1,5 @@
 require('../css/large-dialog.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var CloseBtn = require('./close-btn');
@@ -22,7 +21,7 @@ var LargeDialog = React.createClass({
     this.refs.dialog.hide();
   },
   getIframe: function() {
-    return findDOMNode(this.refs.iframe);
+    return this.refs.iframe;
   },
   getWindow: function() {
     return this.getIframe().contentWindow;

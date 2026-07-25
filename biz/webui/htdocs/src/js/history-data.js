@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var Divider = require('./divider');
 var ContextMenu = require('./context-menu');
@@ -18,29 +17,19 @@ var contextMenuList = [
 ].concat(util.NETWORK_ACTIONS);
 var RULES_KEY = /^\s*x-whistle-rule-value:/mi;
 var curItem;
-var curDisabled;
 var curRaw;
 
-function noData(item) {
-  return !!(item && item.body == null && (item.dataHash || item.base64Hash));
-}
-
-function getRaw(item, disabled) {
-  if (curItem === item && curDisabled === disabled) {
+function getRaw(item) {
+  if (curItem === item) {
     return curRaw;
   }
   var raw = [
     item.method + ' ' + item.url + ' HTTP/' + (item.useH2 ? '2.0' : '1.1')
   ];
-  if (disabled) {
-    raw.push('// Loading data, please wait...');
-  } else {
-    item.headers && raw.push(item.headers);
-    raw.push('\n', item.body || (item.base64 && util.base64Decode(item.base64))) || '';
-  }
+  item.headers && raw.push(item.headers);
+  raw.push('\n', item.body || (item.base64 && util.base64Decode(item.base64))) || '';
   curRaw = raw.join('\n');
   curItem = item;
-  curDisabled = disabled;
   return curRaw;
 }
 
@@ -59,9 +48,6 @@ var HistoryData = React.createClass({
         return item;
       }
     }
-  },
-  scrollToTop: function() {
-    findDOMNode(this.refs.list).scrollTop = 0;
   },
   copyAsCURL: function(_, item) {
     item = item || this.getItem();
@@ -91,16 +77,16 @@ var HistoryData = React.createClass({
   },
   onReplay: function () {
     this.props.onReplay(this.getItem());
-    this.scrollToTop();
   },
   onReplayTimes: function() {
     this.props.onReplay(this.getItem(), true);
-    this.scrollToTop();
   },
   handleClick: function(item) {
-    this.props.data.forEach(function(item) {
+    var data = this.props.data;
+    data.forEach(function(item) {
       item.selected = false;
     });
+    data._selectedKey = item.key;
     item.selected = true;
     this.setState({});
   },
@@ -162,7 +148,6 @@ var HistoryData = React.createClass({
     if (!item) {
       return;
     }
-    var disabled = noData(item);
     self._focusItem = item;
     contextMenuList[0].name = isTitle ? 'Copy' : 'Copy URL';
     contextMenuList[0].copyText = elem.attr('title');
@@ -170,7 +155,6 @@ var HistoryData = React.createClass({
     for (var i = 1; i < 6; i++) {
       var ctxMenu = contextMenuList[i];
       ctxMenu.hide = isTitle;
-      ctxMenu.disabled = disabled;
     }
     data = util.getMenuPosition(e, 130, 185 - (isTitle ? 150 : 0));
     data.className = 'w-keep-history-data';
@@ -188,13 +172,23 @@ var HistoryData = React.createClass({
       return self.exportItem(focusItem);
     case 'Replay':
     case 'Replay Times':
-      props.onReplay(focusItem, action !== 'Replay');
-      return self.scrollToTop();
+      return props.onReplay(focusItem, action !== 'Replay');
     case 'Edit':
       return props.onEdit(focusItem);
     case 'createApiTest':
       return util.showService('createApiTest');
     }
+  },
+  renderBtn: function (name, onClick) {
+    return (
+      <button
+        type="button"
+        className="btn btn-default"
+        onClick={onClick}
+      >
+        {name}
+      </button>
+    );
   },
   render: function () {
     var self = this;
@@ -203,7 +197,6 @@ var HistoryData = React.createClass({
     var data = props.data || [];
     var groupList = data._groupList || [];
     var selectedItem;
-    var disabled;
     return (
       <div ref="historyDialog" className={'w-layer box w-com-history-data' + (show ? ' w-show' : '')}>
         {data.length ? null : <CloseBtn onClick={props.onClose} />}
@@ -211,15 +204,15 @@ var HistoryData = React.createClass({
         <Divider leftWidth="170">
           <div ref="list" className="w-com-history-list" onContextMenu={self.onContextMenu}>
             {groupList.map(function(item, i) {
-              if (item.title) {
-                return <div className="w-history-title" title={item.title} data-index={i}>{item.title}</div>;
+              var title = item.title;
+              if (title) {
+                return <div key={title} className="w-history-title" title={title} data-index={i}>{title}</div>;
               }
               if (item.selected) {
                 selectedItem = item;
-                disabled = noData(item);
               }
               return (
-                <div className={'w-history-item' + (item.selected ? ' w-selected' : '')}
+                <div key={item.key} className={'w-history-item' + (item.selected ? ' w-selected' : '')}
                   title={item.url} onClick={function () { self.handleClick(item); }} data-index={i}>
                   <div>{item.url}</div>
                   <p>
@@ -233,34 +226,12 @@ var HistoryData = React.createClass({
           </div>
           <div className="fill v-box w-com-history-ctn">
             {selectedItem ? <div className="w-com-history-footer">
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={disabled}
-                  onClick={self.copyAsCURL}
-                >
-                  As cURL
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={disabled}
-                  onClick={self.onReplay}
-                >
-                  Replay
-                </button>
-                <button
-                  type="button"
-                  className="btn btn-default"
-                  disabled={disabled}
-                  onClick={self.onReplayTimes}
-                >
-                  Replay Times
-                </button>
+                {self.renderBtn('As cURL', self.copyAsCURL)}
+                {self.renderBtn('Replay', self.onReplay)}
+                {self.renderBtn('Replay Times', self.onReplayTimes)}
                 <button
                   type="button"
                   className="btn btn-info"
-                  disabled={disabled}
                   onClick={self.export}
                 >
                   Export
@@ -268,7 +239,6 @@ var HistoryData = React.createClass({
                 <button
                   type="button"
                   className="btn btn-primary"
-                  disabled={disabled}
                   onClick={self.onEdit}
                 >
                   <Icon name="send" />
@@ -276,9 +246,8 @@ var HistoryData = React.createClass({
                 </button>
                 <CloseBtn onClick={props.onClose} />
               </div> : null}
-              {selectedItem ? <pre className={disabled ? 'w-show-loading fill' : 'fill'}>
-                {getRaw(selectedItem, disabled)}
-                <div className="w-load-tips">Loading...</div>
+              {selectedItem ? <pre className="fill">
+                {getRaw(selectedItem)}
               </pre> : null}
           </div>
         </Divider> : <div className="w-empty-data">No data</div>}

@@ -151,6 +151,8 @@
   --b-rgba70: rgba(0, 0, 0, 0.7);
   --b-rgba15: rgba(0, 0, 0, 0.15);
   --b-rgba30: rgba(0, 0, 0, 0.3);
+
+  --v-border: 1px solid var(--c-border);
 }
 
 html,
@@ -243,11 +245,11 @@ input[type='radio'] {
   color: var(--c-cobalt);
   padding: 2px 5px;
   border: none;
-  border-top: 1px solid var(--c-border);
-  border-bottom: 1px solid var(--c-border);
+  border-top: var(--v-border);
+  border-bottom: var(--v-border);
 }
 .w-shadow {
-  border: 1px solid var(--c-border) !important;
+  border: var(--v-border) !important;
   -webkit-box-shadow: 0 6px 12px var(--s-rgba20) !important;
   box-shadow: 0 6px 12px var(--s-rgba20) !important;
   border-radius: 1px !important;
@@ -301,6 +303,9 @@ textarea {
   color: var(--c-disabled);
   border-bottom: none !important;
   padding: 20px 0 !important;
+}
+.w-kv-operation .w-empty {
+  padding: 0 !important;
 }
 .w-empty-data {
   position: absolute;
@@ -423,7 +428,7 @@ a {
   height: 520px;
   padding: 5px;
   border-radius: 3px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 
 .w-win-dialog {
@@ -525,13 +530,8 @@ a {
   margin: -3px 6px 0 0;
 }
 
-.inline-align-items {
-  display: inline-flex;
-  align-items: center;
-}
-
 .w-shake-horizontal {
-    animation: shakeHorizontal 0.5s ease-in-out;
+  animation: shakeHorizontal 0.5s ease-in-out;
 }
 
 @keyframes shakeHorizontal {

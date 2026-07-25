@@ -144,6 +144,12 @@ exports.attr = function (el, name) {
   return el.getAttribute(name);
 };
 
+function strfy(obj) {
+  return JSON.stringify(obj);
+}
+
+exports.strfy = strfy;
+
 function stringify(obj) {
   return JSON.stringify(obj, null, 2);
 }
@@ -940,30 +946,32 @@ function getRealUrl(modal) {
 
 exports.getRealUrl = getRealUrl;
 
-function getReqRawHeaders(modal) {
+function getHttpMeta(f1, f2, f3, obj) {
+  var status = [f1, f2, f3].join(' ');
+  var headers = objectToString(obj.headers, obj.rawHeaderNames);
+  return headers ? status + '\r\n' +  headers : status;
+}
+
+function getRawReqHeaders(modal) {
   var req = modal.req;
   var realUrl = getRealUrl(modal);
-  var headers = objectToString(req.headers, req.rawHeaderNames);
-  req = [req.method, req.method == 'CONNECT' ? headers.host : getPath(realUrl),
-    'HTTP/' + (req.httpVersion || '1.1')].join(' ');
-  return headers ? req  + '\r\n' +  headers : req;
+  var path = req.method == 'CONNECT' ? req.headers.host : getPath(realUrl);
+  return getHttpMeta(req.method, path, 'HTTP/' + (req.httpVersion || '1.1'), req);
 }
 
-function getResRawHeaders(modal) {
+function getRawResHeaders(modal) {
   var res = modal.res || '';
-  var headers = objectToString(res.headers, res.rawHeaderNames);
   var status = res.statusCode;
   var msg = status === 'captureError' ? '(Most likely caused by SSL pinning)' : getStatusMessage(res);
-  res = ['HTTP/' + (modal.req.httpVersion || '1.1'), status, msg].join(' ');
-  return headers ? res + '\r\n' + headers : res;
+  return getHttpMeta('HTTP/' + (modal.req.httpVersion || '1.1'), status, msg, res);
 }
 
-exports.getReqRawHeaders = getReqRawHeaders;
+exports.getRawReqHeaders = getRawReqHeaders;
 
-exports.getResRawHeaders = getResRawHeaders;
+exports.getRawResHeaders = getRawResHeaders;
 
 exports.getRawReq = function(modal) {
-  return modal ? (getReqRawHeaders(modal) + '\r\n\r\n' + getBody(modal.req, true)) : '';
+  return modal ? (getRawReqHeaders(modal) + '\r\n\r\n' + getBody(modal.req, true)) : '';
 };
 
 exports.getRawRes = function(modal) {
@@ -973,7 +981,7 @@ exports.getRawRes = function(modal) {
     return '';
   }
   var trailer = res.trailers && objectToString(res.trailers, res.rawTrailerNames);
-  return getResRawHeaders(modal) + '\r\n\r\n' + getBody(res) + (trailer ? '\r\n\r\n' + trailer : '');
+  return getRawResHeaders(modal) + '\r\n\r\n' + getBody(res) + (trailer ? '\r\n\r\n' + trailer : '');
 };
 
 function toLowerCase(str) {
@@ -1634,7 +1642,7 @@ exports.asCURL = function (item) {
   var req = item.req;
   var url = item.url.replace(/^ws/, 'http');
   var method = req.method;
-  var result = ['curl', '-X', method, JSON.stringify(url)];
+  var result = ['curl', '-X', method, strfy(url)];
   var headers = req.headers;
   var rawHeaderNames = req.rawHeaderNames || {};
   Object.keys(headers).forEach(function (key) {
@@ -1647,7 +1655,7 @@ exports.asCURL = function (item) {
     }
     result.push(
       '-H',
-      JSON.stringify((rawHeaderNames[key] || key) + ': ' + headers[key])
+      strfy((rawHeaderNames[key] || key) + ': ' + headers[key])
     );
   });
   var body = getBody(req, true);
@@ -3304,7 +3312,7 @@ function getSimplePluginName(plugin) {
 exports.getSimplePluginName = getSimplePluginName;
 
 exports.showJSONDialog = function(data, keyPath) {
-  var str = data && JSON.stringify(data);
+  var str = data && strfy(data);
   if (str) {
     trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
   }
@@ -3501,7 +3509,7 @@ shortcutsSettings = shortcutsSettings || {};
 exports.shortcutsSettings = shortcutsSettings;
 
 exports.saveShortcutsSettings = function() {
-  storage.set('shortcutsSettings', JSON.stringify(shortcutsSettings));
+  storage.set('shortcutsSettings', strfy(shortcutsSettings));
 };
 
 var EDITOR_SHORTCUTS = ['switchTabReverse', 'switchTab'];

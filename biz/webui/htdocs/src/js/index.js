@@ -92,6 +92,7 @@ var preventBlur = util.preventBlur;
 var getBool = util.getBool;
 var triggerChange = util.triggerListChange;
 var attr = util.attr;
+var strfy = util.strfy;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -258,7 +259,7 @@ var ABORT_OPTIONS = [
 
 function getJsonForm(data, name) {
   var form = new FormData();
-  var file = new File([JSON.stringify(data)], 'data.json', { type: 'application/json' });
+  var file = new File([strfy(data)], 'data.json', { type: 'application/json' });
   form.append(name || 'rules', file);
   return form;
 }
@@ -1213,7 +1214,6 @@ var Index = React.createClass({
               self.setState({ activeRules: item });
               self.triggerRulesChange('create');
               trigger('rulesRecycleList', result);
-              trigger('focusRulesList');
             } else {
               showSysErr(xhr);
             }
@@ -2081,9 +2081,9 @@ var Index = React.createClass({
         curNetworkSettings = curRulesSettings = curValuesSettings = null;
         curWhistleId = dataCenter.whistleId;
       }
-      var networkSettings = JSON.stringify(self.refs.networkSettings.getSettings());
-      var rulesSettings = JSON.stringify(self.getRulesSettings());
-      var valuesSettings = JSON.stringify(self.getValuesSettings());
+      var networkSettings = strfy(self.refs.networkSettings.getSettings());
+      var rulesSettings = strfy(self.getRulesSettings());
+      var valuesSettings = strfy(self.getValuesSettings());
       var data;
       if (curNetworkSettings !== networkSettings) {
         data = { networkSettings: networkSettings };
@@ -2283,7 +2283,7 @@ var Index = React.createClass({
     var baseDom = $('.w-req-data-list .ReactVirtualized__Grid:first').scroll(
       function () {
         var modal = self.state.network;
-        scrollTimeout && clearTimeout(scrollTimeout);
+        clearTimeout(scrollTimeout);
         scrollTimeout = null;
         if (atBottom()) {
           scrollTimeout = setTimeout(function () {
@@ -2573,7 +2573,6 @@ var Index = React.createClass({
             self.setState({
               activeValues: item
             });
-            trigger('focusValuesList');
           } else {
             showSysErr(xhr);
           }
@@ -2759,7 +2758,7 @@ var Index = React.createClass({
     tabs = tabs.map(function(tab) {
       return tab.name;
     });
-    storage.set('activePluginTabList', JSON.stringify(tabs));
+    storage.set('activePluginTabList', strfy(tabs));
     active && storage.set('activePluginTabName', active);
   },
   activePluginTab: function (e) {
@@ -3413,7 +3412,6 @@ var Index = React.createClass({
         nextItem && trigger('expandRulesGroup', nextItem.name);
         self.setState(nextItem ? { activeRules: nextItem } : {});
         self.triggerRulesChange('remove');
-        trigger('focusRulesList');
       } else {
         showSysErr(xhr);
       }
@@ -3437,7 +3435,6 @@ var Index = React.createClass({
         nextItem && trigger('expandValuesGroup', nextItem.name);
         self.setState(nextItem ? { activeValues: nextItem } : {});
         self.triggerValuesChange('remove');
-        trigger('focusValuesList');
       } else {
         showSysErr(xhr);
       }
@@ -4574,7 +4571,7 @@ var Index = React.createClass({
           <div
             onMouseDown={preventInputBlur}
             style={getHideStyle(!state.showCreateRules)}
-            className="w-shadow w-input-menu-item w-create-rule-file-input"
+            className="w-shadow w-input-menu w-create-rule-file-input"
           >
             <input
               ref="createRulesInput"
@@ -4593,7 +4590,7 @@ var Index = React.createClass({
           <div
             onMouseDown={preventInputBlur}
             style={getHideStyle(!state.showCreateValues)}
-            className="w-shadow w-input-menu-item w-create-values-input"
+            className="w-shadow w-input-menu w-create-values-input"
           >
             <input
               ref="createValuesInput"
@@ -4610,7 +4607,7 @@ var Index = React.createClass({
           <div
             onMouseDown={preventInputBlur}
             style={getHideStyle(!state.showEditRules)}
-            className="w-shadow w-input-menu-item w-edit-rules-input"
+            className="w-shadow w-input-menu w-edit-rules-input"
           >
             <input
               ref="editRulesInput"
@@ -4624,7 +4621,7 @@ var Index = React.createClass({
           <div
             onMouseDown={preventInputBlur}
             style={getHideStyle(!state.showEditValues)}
-            className="w-shadow w-input-menu-item w-edit-values-input"
+            className="w-shadow w-input-menu w-edit-values-input"
           >
             <input
               ref="editValuesInput"
@@ -4759,7 +4756,7 @@ var Index = React.createClass({
             />
           ) : null}
         </div>
-        <Dialog ref="rulesSettingsDialog" wstyle="w-rules-settings-dialog">
+        <Dialog ref="rulesSettingsDialog" wstyle="w-rules-settings">
           <div className="modal-body">
             <CloseBtn />
             <EditorSettings
@@ -4782,7 +4779,7 @@ var Index = React.createClass({
                     checked={!multiEnv && state.allowMultipleChoice}
                     onChange={self.allowMultipleChoice}
                   />{' '}
-                  Use multiple rules
+                  Allow multi-select
                 </label>
               </p>
             )}
@@ -4794,7 +4791,7 @@ var Index = React.createClass({
                     checked={state.backRulesFirst}
                     onChange={self.enableBackRulesFirst}
                   />{' '}
-                The later rules first
+                Later rules first
                 </label>
               </p>
             )}

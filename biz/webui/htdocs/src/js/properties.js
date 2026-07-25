@@ -1,6 +1,5 @@
 require('../css/properties.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var util = require('./util');
 var CopyBtn = require('./copy-btn');
@@ -38,7 +37,7 @@ var Properties = React.createClass({
   componentDidMount: function() {
     var self = this;
     if (self.props.name === 'Rules') {
-      $(findDOMNode(self.refs.properties)).on('mouseenter', 'td pre', function (e) {
+      $(self.refs.properties).on('mouseenter', 'td pre', function (e) {
         if (!e.ctrlKey && !e.metaKey) {
           return;
         }

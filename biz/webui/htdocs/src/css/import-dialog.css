@@ -16,7 +16,7 @@
   height: 36px;
   line-height: 36px;
   padding: 5px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
 }
 
 .w-ie-dialog .modal-footer {

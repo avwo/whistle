@@ -194,24 +194,28 @@ function getPlugin(rule) {
   }
 }
 
+function getRuleDocUrl(html) {
+  return getDocUrl('rules/' + html);
+}
+
 exports.getHelpUrl = function (rule) {
   if (!rule || rule === 'rule') {
-    return getDocUrl('rules/protocols.html');
+    return getRuleDocUrl('protocols.html');
   }
   if (rule === 'includeFilter' || rule === 'excludeFilter') {
-    return getDocUrl('rules/filters.html');
+    return getRuleDocUrl('filters.html');
   }
   if (rule === 'skip') {
-    return getDocUrl('rules/skip.html');
+    return getRuleDocUrl('skip.html');
   }
   if (rule === 'lineProps') {
-    return getDocUrl('rules/lineProps.html');
+    return getRuleDocUrl('lineProps.html');
   }
   if (rule === 'reqRules') {
-    return getDocUrl('rules/reqRules.html');
+    return getRuleDocUrl('reqRules.html');
   }
   if (rule === 'resRules') {
-    return getDocUrl('rules/resRules.html');
+    return getRuleDocUrl('resRules.html');
   }
   if (innerRules.indexOf(rule) !== -1 || webProtocols.indexOf(rule) !== -1 || PROTOCOLS.indexOf(rule) !== -1) {
     if (rule === 'http-proxy') {
@@ -221,13 +225,13 @@ exports.getHelpUrl = function (rule) {
     } else if (rule === 'tlsOptions') {
       rule = 'cipher';
     }
-    return getDocUrl('rules/' + rule + '.html');
+    return getRuleDocUrl(rule + '.html');
   }
   rule = getPlugin(rule);
   if (rule && rule.homepage) {
     return rule.homepage;
   }
-  return getDocUrl('rules/protocols.html');
+  return getRuleDocUrl('protocols.html');
 };
 
 exports.getPlugin = getPlugin;

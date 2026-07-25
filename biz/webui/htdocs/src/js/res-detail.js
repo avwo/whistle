@@ -162,7 +162,7 @@ var ResDetail = React.createClass({
       var status = res.statusCode;
       var showImg = name === btns[2].name;
       if (status != null) {
-        headersStr = util.getResRawHeaders(modal);
+        headersStr = util.getRawResHeaders(modal);
         trailerStr = trailers ? util.objectToString(trailers, res.rawTrailerNames) : '';
         raw = headersStr + '\r\n\r\n' + body;
         var rawType = !modal.resError && util.getRawType(headers);
@@ -263,7 +263,7 @@ var ResDetail = React.createClass({
         {state.initedHeaders ? (
           <div
             className={
-              'fill w-detail-res-headers' +
+              'fill w-auto' +
               getHide(name != btns[1].name)
             }
           >
@@ -308,7 +308,7 @@ var ResDetail = React.createClass({
         {state.initedCookies ? (
           <div
             className={
-              'fill w-detail-res-cookies' +
+              'fill w-auto w-detail-res-cookies' +
               getHide(name != btns[6].name)
             }
           >
@@ -318,7 +318,7 @@ var ResDetail = React.createClass({
         {state.initedTrailers ? (
           <div
             className={
-              'fill w-detail-res-headers' +
+              'fill w-auto' +
               getHide(name != btns[7].name)
             }
           >

@@ -181,12 +181,12 @@ var PropsEditor = React.createClass({
     self.execCallback(e);
   },
   hideDialog: function () {
-    this.refs.composerDialog.hide();
+    this.refs.composer.hide();
   },
   showDialog: function (data) {
     var self = this;
     var refs = self.refs;
-    refs.composerDialog.show();
+    refs.composer.show();
     var nameInput = findDOMNode(refs.name);
     if (data) {
       nameInput.value = data.name || '';
@@ -386,7 +386,7 @@ var PropsEditor = React.createClass({
             {isHeader ? '+Header' : '+Param'}
           </button>
         )}
-        <Dialog ref="composerDialog" wstyle="w-com-dialog">
+        <Dialog ref="composer" wstyle="w-com-dialog">
           <div className="modal-body">
             <CloseBtn />
             <label>

@@ -26,7 +26,7 @@
   line-height: 6px;
   padding: 4px 3px 8px;
   border-radius: 20px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   background: var(--b-default);
   position: absolute;
   top: -9px;

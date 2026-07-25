@@ -1,5 +1,4 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var ShareViaUrlBtn = require('./share-via-url-btn');
 var util = require('./util');
@@ -14,7 +13,7 @@ var ExportDialog = React.createClass({
     var self = this;
     self.refs.dialog.show();
     setTimeout(function () {
-      var input = findDOMNode(self.refs.input);
+      var input = self.refs.input;
       input.focus();
       input.select();
     }, 500);
@@ -27,7 +26,7 @@ var ExportDialog = React.createClass({
     });
   },
   getInputValue: function() {
-    return util.formatFilename(findDOMNode(this.refs.input).value.trim());
+    return util.formatFilename(this.refs.input.value.trim());
   },
   getFilename: function () {
     var name = this.state.name;
@@ -80,7 +79,7 @@ var ExportDialog = React.createClass({
     }
     self.hide();
     util.download(data, self.getFilename());
-    findDOMNode(self.refs.input).value = '';
+    self.refs.input.value = '';
   },
   filterFilename: function (e) {
     this.setState({ filename: util.formatFilename(e.target.value) });
@@ -88,7 +87,7 @@ var ExportDialog = React.createClass({
   onShare: function(err) {
     if (!err) {
       this.hide();
-      findDOMNode(this.refs.input).value = '';
+      this.refs.input.value = '';
     }
   },
   shouldComponentUpdate: util.scuDlg,

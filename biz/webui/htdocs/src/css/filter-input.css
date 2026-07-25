@@ -102,7 +102,7 @@
 
 .w-filter-type-bar span {
   margin-left: 10px;
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   border-radius: 3px;
   padding: 0 6px;
   height: 18px;

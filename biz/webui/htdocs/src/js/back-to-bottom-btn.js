@@ -1,17 +1,16 @@
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Icon = require('./icon');
 var getHide = require('./util').getHide;
 
 var BackToBottomBtn = React.createClass({
-  componentDidMount: function() {
-    this.btn = findDOMNode(this.refs.backBtn);
+  setDisplay: function(display) {
+    this.refs.backBtn.style.display = display;
   },
   show: function() {
-    this.btn.style.display = 'flex';
+    this.setDisplay('flex');
   },
   hide: function() {
-    this.btn.style.display = 'none';
+    this.setDisplay('none');
   },
   render() {
     var props = this.props;

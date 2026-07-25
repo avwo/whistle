@@ -2,10 +2,7 @@
   padding: 5px;
   border: none;
 }
-.w-detail-res-headers,
-.w-detail-res-cookies {
-  overflow: auto;
-}
+
 .w-detail-res-cookies table {
   table-layout: auto;
 }

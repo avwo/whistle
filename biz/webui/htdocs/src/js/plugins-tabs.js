@@ -30,8 +30,8 @@ var PluginsTabs = React.createClass({
       }
     }
     return (
-      <div className={'fill box w-plugins-tabs' + getHide(hide)}>
-        <div className={'w-plugins-tabs-list' + getHide(single)}>
+      <div className={'fill box' + getHide(hide)}>
+        <div className={'w-plugins-tabs' + getHide(single)}>
           {tabs.map(function (tab) {
             var plugin = tab.plugin;
             var name = tab.name;

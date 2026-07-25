@@ -6,12 +6,11 @@
   color: var(--c-default);
 }
 
-.w-table th,
-.w-table td {
+.w-table :is(th, td) {
   font-size: 12px;
   padding: 3px 5px !important;
   border-top: none;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   word-break: break-word;
 }
 
@@ -23,9 +22,9 @@
   background: var(--b-bar);
 }
 
-.w-order-table .table td, .w-order-table .table th {
+.w-order-table .table :is(td, th) {
   border-top: none;
-  border-bottom: 1px solid var(--c-border);
+  border-bottom: var(--v-border);
   vertical-align: middle;
 }
 
@@ -38,7 +37,7 @@
   overflow-y: auto;
 }
 
-.w-order-table-body td, .w-order-table-body th {
+.w-order-table-body :is(td, th) {
   font-size: 13px;
   font-weight: 400;
 }

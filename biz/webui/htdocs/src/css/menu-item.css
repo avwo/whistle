@@ -1,7 +1,7 @@
 .w-menu-item {
   position: absolute;
   background: var(--b-default);
-  border: 1px solid var(--c-border);
+  border: var(--v-border);
   z-index: var(--z-menu);
   top: 31px;
   border-radius: 2px;

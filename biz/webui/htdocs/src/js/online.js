@@ -1,7 +1,6 @@
 require('../css/online.css');
 var $ = require('jquery'); //for bootstrap
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
@@ -578,7 +577,7 @@ var Online = React.createClass({
   setTitle: function () {
     var self = this;
     var server = dataCenter.getServerInfo() || self.state.server;
-    findDOMNode(self.refs.onlineMenu).title = self.getTitle(server) || '';
+    self.refs.onlineMenu.title = self.getTitle(server) || '';
   },
   render: function () {
     var self = this;

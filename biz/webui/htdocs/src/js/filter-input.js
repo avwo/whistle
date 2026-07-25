@@ -12,7 +12,8 @@ var isFunc = util.isFunc;
 var preventBlur = util.preventBlur;
 var getHideStyle = util.getHideStyle;
 var MAX_LEN = 128;
-var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'Other'];
+var ACTIVE_CLASS = 'w-active';
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'captureError'];
 var getTitle = function (type) {
   return 'Show only ' + type.toLowerCase() + ' requests';
 };
@@ -28,6 +29,10 @@ var TITLES = {
 TYPES.forEach(function (type) {
   TITLES[type] = TITLES[type] || getTitle(type);
 });
+
+function getActive(active) {
+  return active ? ACTIVE_CLASS : null;
+}
 
 var FilterInput = React.createClass({
   getInitialState: function () {
@@ -89,7 +94,7 @@ var FilterInput = React.createClass({
       }
       list.push(value);
       try {
-        storage.set(self.props.hintKey, JSON.stringify(list));
+        storage.set(self.props.hintKey, util.strfy(list));
       } catch (e) {}
     }
   },
@@ -125,7 +130,8 @@ var FilterInput = React.createClass({
   changeInput: function (value) {
     var self = this;
     var props = self.props;
-    props.onChange && props.onChange(value);
+    var onChange = props.onChange;
+    onChange && onChange(value);
     var hintKey = props.hintKey;
     hintKey && clearTimeout(self.timer);
     self.state.filterText = value;
@@ -167,40 +173,40 @@ var FilterInput = React.createClass({
       }
     } else if (e.keyCode === 38) {
       // up
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       if (state.hintList === null) {
         self.showHints();
       }
       if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.prev('li').addClass('w-active');
+        elem.removeClass(ACTIVE_CLASS);
+        elem = elem.prev('li').addClass(ACTIVE_CLASS);
       }
 
       if (!elem.length) {
         elem = self.hintElem.find('li:last');
-        elem.addClass('w-active');
+        elem.addClass(ACTIVE_CLASS);
       }
       util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 40) {
       // down
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       if (state.hintList === null) {
         self.showHints();
       }
       if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.next('li').addClass('w-active');
+        elem.removeClass(ACTIVE_CLASS);
+        elem = elem.next('li').addClass(ACTIVE_CLASS);
       }
 
       if (!elem.length) {
         elem = self.hintElem.find('li:first');
-        elem.addClass('w-active');
+        elem.addClass(ACTIVE_CLASS);
       }
       util.ensureVisible(elem, self.hintElem);
       e.preventDefault();
     } else if (e.keyCode === 13) {
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       var value = elem.attr('title');
       if (value) {
         self.changeInput(value);
@@ -262,12 +268,14 @@ var FilterInput = React.createClass({
     if (TYPES.indexOf(filterType) === -1) {
       filterType = '';
     }
+    var className = getActive(!filterType);
     return (
       <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
-        <span className={filterType ? null : 'w-active'}>All</span>
+        <span className={className}>All</span>
         {TYPES.map(function (type) {
-          return <span key={type} title={TITLES[type] || type} className={filterType === type ? 'w-active' : null}>{type}</span>;
+          return <span key={type} title={TITLES[type] || type} className={getActive(filterType === type)}>{type}</span>;
         })}
+        <span className={className}>All</span>
       </div>
     );
   },

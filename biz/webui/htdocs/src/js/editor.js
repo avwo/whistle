@@ -24,7 +24,6 @@ require('../css/editor.css');
 
 var $ = require('jquery');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var CodeMirror = require('codemirror');
 var message = require('./message');
 var util = require('./util');
@@ -67,12 +66,6 @@ var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
 var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
 var SEARCH_OPTIONS = { caseFold: true, multiline: true };
-
-function hasSelector(selector) {
-  return document.querySelector
-    ? document.querySelector(selector)
-    : $(selector).length;
-}
 
 var Editor = React.createClass({
   getThemes: function () {
@@ -166,7 +159,7 @@ var Editor = React.createClass({
     var self = this;
     fontSize = self._fontSize = fontSize || DEFAULT_FONT_SIZE;
     if (self._editor) {
-      findDOMNode(self.refs.editor).style.fontSize = fontSize;
+      self.refs.editor.style.fontSize = fontSize;
     }
   },
   showLineNumber: function (show) {
@@ -198,7 +191,7 @@ var Editor = React.createClass({
     if (_byDelete || code === 13) {
       var editor = self._editor;
       self._timer = setTimeout(function () {
-        if (!hasSelector('.CodeMirror-hints')) {
+        if (!document.querySelector('.CodeMirror-hints')) {
           editor._byDelete = true;
           editor._byEnter = !_byDelete;
           editor.execCommand('autocomplete');
@@ -243,7 +236,7 @@ var Editor = React.createClass({
     var timeout;
     var timer;
     var self = this;
-    var elem = findDOMNode(self.refs.editor);
+    var elem = self.refs.editor;
     var $elem = $(elem);
     var editor = CodeMirror(elem);
     var preKeyeord;
@@ -296,7 +289,7 @@ var Editor = React.createClass({
 
     addEvent('updatePlugins', function() {
       if (self.isRulesEditor()) {
-        timer && clearTimeout(timer);
+        clearTimeout(timer);
         if (self.props.hide) {
           timer = null;
           self._waitingUpdate = true;
@@ -348,7 +341,7 @@ var Editor = React.createClass({
       var height = elem.offsetHeight || 0;
       var width = elem.offsetWidth || 0;
       if (height < 10 || width < 10) {
-        timeout && clearTimeout(timeout);
+        clearTimeout(timeout);
         timeout = setTimeout(resize, 300);
       } else {
         editor.setSize(width, height);

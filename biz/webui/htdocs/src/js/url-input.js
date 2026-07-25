@@ -10,7 +10,7 @@ var PROTOCOL_RE = /^[\w-]+:\/\//;
 var getHideStyle = util.getHideStyle;
 var preventBlur = util.preventBlur;
 var CMF_DEL_MSG = util.CMF_DEL_MSG;
-
+var ACTIVE_CLASS = 'w-active';
 
 var UrlInput = React.createClass({
   getInitialState: function() {
@@ -54,7 +54,7 @@ var UrlInput = React.createClass({
     url = util.notEStr(url) ? url.replace(/[\s#]+/g, '') : '';
     var index = url.indexOf('://');
     var protocols = this.state.protocols;
-    var protocol = '';
+    var protocol = protocols[0];
     if (index !== -1) {
       var keep;
       protocol = url.substring(0, index + 3).toLowerCase();
@@ -176,7 +176,7 @@ var UrlInput = React.createClass({
   },
   hideHints: function() {
     this.setState({ showHints: false });
-    this.hintElem.find('.w-active').removeClass('w-active');
+    this.hintElem.find('.' + ACTIVE_CLASS).removeClass(ACTIVE_CLASS);
   },
   clickHints: function(e) {
     var value = e.target.title;
@@ -197,40 +197,40 @@ var UrlInput = React.createClass({
     var elem;
     if (e.keyCode === 38) {
         // up
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       if (!self.state.showHints) {
         self.showHints();
       }
       if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.prev('li').addClass('w-active');
+        elem.removeClass(ACTIVE_CLASS);
+        elem = elem.prev('li').addClass(ACTIVE_CLASS);
       }
 
       if (!elem.length) {
         elem = self.hintElem.find('li:last');
-        elem.addClass('w-active');
+        elem.addClass(ACTIVE_CLASS);
       }
       util.ensureVisible(elem, self.hintElem);
       preventBlur(e);
     } else if (e.keyCode === 40) {
         // down
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       if (!self.state.showHints) {
         self.showHints();
       }
       if (elem.length) {
-        elem.removeClass('w-active');
-        elem = elem.next('li').addClass('w-active');
+        elem.removeClass(ACTIVE_CLASS);
+        elem = elem.next('li').addClass(ACTIVE_CLASS);
       }
 
       if (!elem.length) {
         elem = self.hintElem.find('li:first');
-        elem.addClass('w-active');
+        elem.addClass(ACTIVE_CLASS);
       }
       util.ensureVisible(elem, self.hintElem);
       preventBlur(e);
     } else if (e.keyCode === 13) {
-      elem = self.hintElem.find('.w-active');
+      elem = self.hintElem.find('.' + ACTIVE_CLASS);
       var value = elem.attr('title');
       value && self.setUrl(value);
     } else {
@@ -341,7 +341,7 @@ var UrlInput = React.createClass({
       <div
         className="w-layer w-filter-hint w-url-hints"
         style={getHideStyle(!self.state.showHints)}
-        onMouseDown={util.preventBlur}
+        onMouseDown={preventBlur}
       >
         <div className="w-filter-bar">
           <CloseBtn onClick={self.hideHints} className="w-clear-hints" />
@@ -396,7 +396,7 @@ var UrlInput = React.createClass({
           onBlur={self.hideHints}
           type="text"
           maxLength="8192"
-          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'request URL')}
+          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'URL')}
           className={'fill form-control' + (isFile ? ' w-file-input' : '')}
         />
         <button
