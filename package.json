@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.10.6",
+  "version": "2.10.7",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -15,14 +15,17 @@
   },
   "homepage": "https://wproxy.org",
   "keywords": [
-    "proxy",
-    "fiddler",
-    "charles",
+    "http-proxy",
+    "https-proxy",
+    "web-debugging",
+    "network-debugging",
+    "http-interceptor",
+    "api-mocking",
     "websocket",
     "http2",
-    "hosts",
-    "debug",
-    "mock"
+    "mitm",
+    "fiddler-alternative",
+    "charles-alternative"
   ],
   "bin": {
     "whistle": "./bin/whistle.js",
