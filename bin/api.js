@@ -61,13 +61,13 @@ exports.getRootCA = async function() {
   return request({ url: 'rootca', type: 'raw' });
 };
 
-exports.isEnabledHTTPS = function() {
+exports.isEnabledHTTPS = exports.isEnabledHttps = function() {
   return request({ url: 'is-enabled-https' }).then(function(data) {
     return data.enabled;
   });
 };
 
-exports.setEnableHTTPS = async function (enabled) {
+exports.setEnableHTTPS = exports.setEnableHttps = async function (enabled) {
   await request({ url: 'intercept-https-connects', data: 'interceptHttpsConnects=' + (enabled ? 1 : 0) });
 };
 
