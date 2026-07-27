@@ -4,6 +4,7 @@
 1. fix: https://github.com/avwo/whistle/issues/1338
 2. fix: https://github.com/avwo/whistle/pull/1340
 3. feat: 解析 Tunnel 请求出错且目标地址的域名与 SNI 不一致时，会在 `Host` 里面显示 `Tunnel to (servername)`
+4. feat: 提供 API 给本地 Agent 调用，参考：https://wproxy.org/docs/extensions/api.html
 
 ## v2.10.6
 1. perf: 减少使用的 `Buffer.concat` 的频率 ，提升性能

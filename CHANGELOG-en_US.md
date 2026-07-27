@@ -5,6 +5,7 @@
 1. fix: Resolved the issue reported in https://github.com/avwo/whistle/issues/1338
 2. fix: https://github.com/avwo/whistle/pull/1340
 3. feat: When an error occurs while parsing a Tunnel request and the target domain does not match the SNI, the `Host` field will now display `Tunnel to (servername)` to clearly indicate the intended server name
+4. feat: provide API for local Agent invocation. Reference: https://wproxy.org/docs/extensions/api.html
 
 ## v2.10.6 
 1. perf: Reduce the frequency of `Buffer.concat` calls to improve performance
