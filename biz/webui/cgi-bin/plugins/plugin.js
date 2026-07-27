@@ -4,12 +4,17 @@ var extend = require('extend');
 
 module.exports = function(req, res) {
   var name = req.query.name;
-  var plugin = pluginMgr.getPluginByName(name);
-  if (plugin) {
-    var disabledPlugins = properties.get('disabledPlugins');
-    if (disabledPlugins) {
-      plugin = extend({}, plugin);
-      plugin.selected = !disabledPlugins[name];
+  var plugin;
+  if (typeof name === 'string') {
+    name = name.trim();
+    name = name.substring(name.lastIndexOf('.') + 1);
+    plugin = pluginMgr.getPluginByName(name);
+    if (plugin) {
+      var disabledPlugins = properties.get('disabledPlugins');
+      if (disabledPlugins) {
+        plugin = extend({}, plugin);
+        plugin.selected = !disabledPlugins[name];
+      }
     }
   }
   res.json({ ec: 0, plugin: plugin || undefined });

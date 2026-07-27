@@ -11,6 +11,7 @@ var getConfig = use.getConfig;
 var getReqOpts = use.getReqOpts;
 var isUtf8 = common.isUtf8;
 var getHttpMeta = common.getHttpMeta;
+var isString = common.isString;
 
 function getOptions() {
   return new Promise((resolve, reject) => {
@@ -31,7 +32,7 @@ function getOptions() {
 }
 
 async function request(options) {
-  if (common.isString(options)) {
+  if (isString(options)) {
     options = { url: options };
   }
   var opts = await getOptions();
@@ -71,9 +72,6 @@ exports.setEnableHTTPS = exports.setEnableHttps = async function (enabled) {
   await request({ url: 'intercept-https-connects', data: 'interceptHttpsConnects=' + (enabled ? 1 : 0) });
 };
 
-exports.setLaterRulesFirst = async function (laterRulesFirst) {
-  await request({ url: 'rules/enable-back-rules-first', data: 'backRulesFirst=' + (laterRulesFirst ? 1 : 0) });
-};
 
 exports.createFile = function(data) {
   if (Buffer.isBuffer(data)) {
@@ -93,7 +91,7 @@ exports.getFile = function(filepath) {
 
 exports.network = {
   /**
-   * 获取 whistle 相关配置信息
+   * @async 获取 whistle 相关配置信息
    * @returns {Object} 包含存储目录名称、应用名称和版本号的对象
    * @property {boolean} client - 是否为客户端
    * @property {string} storage - 自定义的存储目录名称
@@ -111,7 +109,7 @@ exports.network = {
     return request('status');
   },
   /**
-   * 查询抓包数据的请求参数
+   * @async 获取抓包数据
    * @description
    * 用于按条件检索 HTTP/WebSocket 等协议的抓包记录。支持基于游标、时间、资源类型、URL 关键词、请求方法、状态码以及请求/响应头的组合筛选。
    *
@@ -167,23 +165,25 @@ exports.network = {
    *
    * @example
    * // 使用游标增量拉取（不限制类型）
-   * getSessions({ reqId: '1784905385369-123', startId: '1784905385300-003' });
+   * getSessions({ startId: '1784905385300-003' });
    *
    * @example
    * // 直接获取最新数据（需外部指定 count）
-   * getSessions({ reqId: '1784905385369-123', latest: true });
+   * getSessions({ latest: true });
    *
    * @example
    * // 组合过滤：查询状态码为 200 或 304 的 GET 请求，且 URL 包含 "/v1"，同时要求存在特定请求头
    * getSessions({
-   *   reqId: '1784905385369-789',
    *   subUrl: '/v1',
    *   method: 'GET',
    *   statusCode: [200, 304],
-   *   reqHeader: { key: 'X-Token', subValue: 'abc' }
+   *   reqHeader: { name: 'X-Token', subValue: 'abc' }
    * });
    */
   getSessions: function(options) {
+    if (isString(options)) {
+      options = { subUrl: options };
+    }
     return request({ url: 'sessions', data: options || {} });
   },
   saveSessions: async function(sessions, name) {
@@ -192,7 +192,7 @@ exports.network = {
     }
     return request({ url: 'saved/save', data: {
       sessions: sessions,
-      filename: common.isString(name) ? name.trim() : ''
+      filename: isString(name) ? name.trim() : ''
     }}).then(function(data) {
       if (data.ec !== 0) {
         throw new Error(data.em || 'Failed to save sessions');
@@ -225,10 +225,10 @@ exports.network = {
     });
   },
   /**
-   * WebSocket/Socket 帧数据查询请求参数
+   * @async 获取 WebSocket/Socket 的帧数据
    * @param {Object} options - 配置对象
    * @param {string} options.reqId - 请求唯一标识 ID，用于链路追踪
-   * @param {number} {options.count} - 本次查询返回的最大记录数。取值范围：1 ~ 120（含），默认为 120
+   * @param {number} [options.count] - 本次查询返回的最大记录数。取值范围：1 ~ 120（含），默认为 120
    * @param {boolean} [options.latest=false] - 是否仅获取最新的 count 条数据（需外部定义 count）
    *                                           - true：配合 startId 或 startTime 返回最新数据
    *                                           - false：配合 startId 或 startTime 进行增量拉取
@@ -236,7 +236,7 @@ exports.network = {
    *                                            若同时存在 startTime，取离最新数据最近的那个
    * @param {number} [options.startTime] - 起始时间戳（Unix 毫秒级），获取生成时间大于此值的增量数据
    *                                       若同时存在 startId，取离最新数据最近的那个
-   * @param {string} {options.from} - 过滤从哪里发出的请求，默认为全部
+   * @param {string} [options.from] - 过滤从哪里发出的请求，默认为全部
    *                                - client：表示只获取从客户端发出的帧数据
    *                                - server：表示只获取从服务端发出的帧数据
    *                                - 其它：表示获取该连接的所有帧数据
@@ -247,10 +247,10 @@ exports.network = {
    *
    * @example
    * // 直接获取最新数据（需配合 count）
-   * getFrames({ reqId: '1784885309943-086', startId: '1784903620142-000', startTime: 1784903620156 latest: true });
+   * getFrames({ reqId: '1784885309943-086', startId: '1784903620142-000', startTime: 1784903620156, latest: true });
    */
   getFrames: function(options) {
-    if (common.isString(options)) {
+    if (isString(options)) {
       options = { reqId: options };
     } else if (!options || !options.reqId) {
       throw new Error('reqId is required');
@@ -326,6 +326,9 @@ exports.rules = {
   setMultiSelect: async function(multiSelect) {
     await request({ url: 'rules/allow-multiple-choice', data: 'allowMultipleChoice=' + (multiSelect ? 1 : 0) });
   },
+  setLaterFirst: async function (laterRulesFirst) {
+    await request({ url: 'rules/enable-back-rules-first', data: 'backRulesFirst=' + (laterRulesFirst ? 1 : 0) });
+  },
   getList: function() {
     return request('rules/list').then(function(data) {
       return data.list.map(function(item) {
@@ -357,7 +360,7 @@ exports.rules = {
     return request({ url: 'rules/unselect2', data: data }).then(checkSuccess);
   },
   moveToTop: function(name) {
-    return common.isString(name) && request({ url: 'rules/move-top', data: { name: name } })
+    return isString(name) && request({ url: 'rules/move-top', data: { name: name } })
       .then(checkSuccess);
   }
 };
@@ -402,13 +405,7 @@ exports.plugins = {
     return disableAllPlugins(false);
   },
   getList: function() {
-    return request('plugins/list').then(function(list) {
-      return list.map(function(item) {
-        var name = item.moduleName;
-        item.name = name.substring(name.lastIndexOf('.') + 1);
-        return item;
-      });
-    });
+    return request('plugins/list');
   },
   get: function(name) {
     return name ? request('plugins/plugin?name=' + encodeURIComponent(name)).then(function(data) {
@@ -428,9 +425,9 @@ function getText(data, charset) {
     return '';
   }
   if (!Buffer.isBuffer(data)) {
-    if (!common.isString(data)) {
+    if (!isString(data)) {
       data = data.base64;
-      if (!common.isString(data)) {
+      if (!isString(data)) {
         return '';
       }
     }
@@ -440,7 +437,7 @@ function getText(data, charset) {
 }
 
 function getUtf8Buf(data, charset) {
-  if (common.isString(data)) {
+  if (isString(data)) {
     data = Buffer.from(data, 'base64');
   } else if (!Buffer.isBuffer(data)) {
     return Buffer.from(common.toString(data));
@@ -486,8 +483,9 @@ function getRules(rules) {
     return result;
   }
   var addRule = function(rule) {
-    if (result.indexOf(rule.raw) === -1) {
-      result.push(rule.raw);
+    var raw = rule && rule.raw;
+    if (isString(raw) && result.indexOf(raw) === -1) {
+      result.push(raw);
     }
   };
   Object.keys(rules).forEach(function(name) {
