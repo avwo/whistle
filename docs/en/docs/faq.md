@@ -213,6 +213,9 @@ pattern disable://gzip enable://captureStream reqHeaders://(x-whistle-custom-fra
 > By default, the separator is not displayed in the Frames panel. If you need the separator to be visible, prefix the separator value with `/`. For example:  
 > `x-whistle-custom-frame-separator=/%A0`
 
+## Q: How to make an AI Agent operate Whistle? {#agent}
+Reference: [Local API](./extensions/api)
+
 ## Q: How can I report an issue?
 
 New issue: https://github.com/avwo/whistle/issues

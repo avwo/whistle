@@ -227,7 +227,8 @@ export default defineConfig({
             items: [
               { text: 'Plugin Usage', link: '/en/docs/extensions/usage' },
               { text: 'Plugin Development', link: '/en/docs/extensions/dev' },
-              { text: 'NPM Modules', link: '/en/docs/extensions/npm' }
+              { text: 'NPM Modules', link: '/en/docs/extensions/npm' },
+              { text: 'Local Agent API', link: '/en/docs/extensions/api' }
             ]
           },
           { text: 'CLI', link: '/en/docs/cli' },
@@ -440,7 +441,8 @@ export default defineConfig({
         items: [
           { text: '插件使用', link: '/docs/extensions/usage' },
           { text: '插件开发', link: '/docs/extensions/dev' },
-          { text: 'NPM 模块', link: '/docs/extensions/npm' }
+          { text: 'NPM 模块', link: '/docs/extensions/npm' },
+          { text: '本地 Agent API', link: '/docs/extensions/api' }
         ]
       },
       { text: '命令行操作', link: '/docs/cli' },

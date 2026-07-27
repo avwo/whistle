@@ -210,6 +210,10 @@ pattern disable://gzip enable://captureStream reqHeaders://(x-whistle-custom-fra
 > `x-whistle-custom-frame-separator=/%A0`
 
 
+## Q：如何让 AI Agent 操作 Whistle {#agent}
+
+参考：[本地 API](./extensions/api)
+
 ## Q：如何反馈问题？
 
 New issue：https://github.com/avwo/whistle/issues
