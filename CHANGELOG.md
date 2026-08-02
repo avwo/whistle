@@ -1,5 +1,9 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.8
+1. feat: 在 `Create Rule`（创建规则）界面中，增加了“包含关键词”（Contains Keyword）匹配选项，方便您更灵活地定义规则条件
+2. refactor: 移除了存在安全漏洞的旧依赖库，替换为更稳定、安全的版本，提升整体系统安全性
+
 ## v2.10.7
 1. fix: https://github.com/avwo/whistle/issues/1338
 2. fix: https://github.com/avwo/whistle/pull/1340

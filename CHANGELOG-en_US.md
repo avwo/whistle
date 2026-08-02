@@ -1,7 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
-## v2.10.7
+## v2.10.8
+1. feat: Added a "Contains Keyword" match option in the `Create Rule` interface, allowing you to define rule conditions more flexibly.  
+2. refactor: Removed outdated dependency libraries with known security vulnerabilities and replaced them with more stable, secure versions, enhancing overall system security.
 
+## v2.10.7
 1. fix: Resolved the issue reported in https://github.com/avwo/whistle/issues/1338
 2. fix: https://github.com/avwo/whistle/pull/1340
 3. feat: When an error occurs while parsing a Tunnel request and the target domain does not match the SNI, the `Host` field will now display `Tunnel to (servername)` to clearly indicate the intended server name
