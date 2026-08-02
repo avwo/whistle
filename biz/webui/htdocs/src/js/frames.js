@@ -73,7 +73,7 @@ var Frames = React.createClass({
             <FrameData framesCtx={framesCtx} data={reqData} frame={curFrame} />
           </Divider>
         </LazyInit>
-        <div className={'w-no-frames' + getHide(frames)}>No Frames</div>
+        <div className={'w-no-frames' + getHide(frames)}>No frames</div>
       </div>
     );
   }

@@ -48,7 +48,7 @@ var ShareBtn = React.createClass({
     return (
       <button
         onClick={this.save}
-        className="btn btn-warning w-save-to-service-btn"
+        className="btn btn-warning"
         draggable="false"
         disabled={this.props.disabled}
       >

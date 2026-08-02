@@ -15,10 +15,10 @@
   width: 36px;
 }
 
-.w-kv-operation pre {
+.w-kv-op pre {
   max-height: 70px;
 }
-.w-kv-operation a {
+.w-kv-op a {
   display: block;
   width: 50px;
   margin-top: 3px;

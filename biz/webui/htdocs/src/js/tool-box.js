@@ -10,25 +10,20 @@ var UploadForm = require('./upload-form');
 var URL_RE = /^(?:(?:[\w.-]+:)?\/\/)?([\w.-]+)/i;
 var MAX_QRCODE_LEN = 2048;
 var MAX_JSON_LEN = 32768;
-var MAX_SAVE_LEN = 5120;
+var MAX_SAVE_LEN = 10240;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
 var handleTab = util.handleTab;
+var toString = util.toString;
 
 var notEmpty = util.notEmpty;
 
 var ToolBox = React.createClass({
   getInitialState: function () {
     return {
-      qrcodeValue: util
-        .toString(storage.get('qrcodeValue'))
-        .substring(0, MAX_QRCODE_LEN),
-      jsonValue: util
-        .toString(storage.get('jsonValue'))
-        .substring(0, MAX_SAVE_LEN),
-      codecText: util
-        .toString(storage.get('codecText'))
-        .substring(0, MAX_TEXT_LEN)
+      qrcodeValue: toString(storage.get('qrcodeValue')).substring(0, MAX_QRCODE_LEN),
+      jsonValue: toString(storage.get('jsonValue')).substring(0, MAX_SAVE_LEN),
+      codecText: toString(storage.get('codecText')).substring(0, MAX_TEXT_LEN)
     };
   },
   _saveQRCodeValue: function () {
@@ -64,7 +59,7 @@ var ToolBox = React.createClass({
       this._saveJSONValue
     );
   },
-  onForamt: function (e) {
+  onFormat: function (e) {
     util.handleFormat(e, this.formatJSON);
     handleTab(e);
   },
@@ -143,7 +138,7 @@ var ToolBox = React.createClass({
   generateCert: function () {
     window.open(
       'cgi-bin/create-cert?domain=' + encodeURIComponent(this.state.domainValue),
-      'downloadTargetFrame'
+      'dlFrame'
     );
   },
   shouldComponentUpdate: util.scu,
@@ -164,7 +159,7 @@ var ToolBox = React.createClass({
           util.getHide(self.props.hide)
         }
       >
-        <div className="w-inspectors-title">
+        <div className="w-detail-title">
           <Icon name="qrcode" />QRCode
           <button
             className="btn btn-primary"
@@ -182,7 +177,7 @@ var ToolBox = React.createClass({
           maxLength={MAX_QRCODE_LEN}
           placeholder="Enter URL or any plain text"
         />
-        <div className="w-inspectors-title">
+        <div className="w-detail-title">
           <Icon name="pencil" />JSON
           <button
             className="btn btn-primary ml-10"
@@ -205,9 +200,9 @@ var ToolBox = React.createClass({
           className="w-tool-box-ctn"
           maxLength={MAX_JSON_LEN}
           placeholder="Enter JSON text"
-          onKeyDown={self.onForamt}
+          onKeyDown={self.onFormat}
         />
-        <div className="w-inspectors-title" style={{ height: 20 }}>
+        <div className="w-detail-title" style={{ height: 20 }}>
           <Icon name="eye-close" />Base64
           <button
             className="btn btn-primary ml-10"
@@ -238,7 +233,7 @@ var ToolBox = React.createClass({
           maxLength={MAX_TEXT_LEN}
           placeholder="Enter text"
         />
-        <div className="w-inspectors-title">
+        <div className="w-detail-title">
           <Icon name="certificate" />Certificate
         </div>
         <div className="box w-generate-cert">

@@ -42,7 +42,7 @@ var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
 var CreateRuleDialog = require('./create-rule');
 var TestRuleDialog = require('./test-rule');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var TEMP_LINK_RE = /^(?:[\w-]+:\/\/)?<?temp(?:\/([\da-z]{64}|blank))?(?:\.[\w-]+)?>?$/;
 var FILE_PATH_RE = /^(?:[\w-]+:\/\/)?<?((?:[a-z]:[\\/]|\/).+)>?$/i;
@@ -62,7 +62,8 @@ var OPTIONS_WITH_SELECTED = [
 var HIDE_STYLE = util.HIDE_STYLE;
 var trigger = util.trigger;
 var VER_RE = /^(?:\d+)\.(?:\d+)\.(?:\d+)(?:-[\w-]+)?$/;
-var search = window.location.search;
+var globalWin = window;
+var search = globalWin.location.search;
 var query = util.getQuery();
 var isClient = query.mode === 'client';
 var clientVersion = isClient && util.isElectron && VER_RE.test(query.v) ? query.v : '';
@@ -93,6 +94,8 @@ var getBool = util.getBool;
 var triggerChange = util.triggerListChange;
 var attr = util.attr;
 var strfy = util.strfy;
+var isArr = util.isArr;
+var noModal = util.noModal;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -139,20 +142,20 @@ function isTextFile(url) {
   if (!TEXT_SUFFIX_RE.test(url)) {
     return false;
   }
-  var PATH_RE;
+  var pathRe;
   if (RegExp.$1) {
-    PATH_RE = dataCenter.isWin ? /^(?:[\w-]+:\/\/)?<[a-z]:[\\/]/i : /^(?:[\w-]+:\/\/)?<\//i;
+    pathRe = dataCenter.isWin ? /^(?:[\w-]+:\/\/)?<[a-z]:[\\/]/i : /^(?:[\w-]+:\/\/)?<\//i;
   } else {
-    PATH_RE = dataCenter.isWin ? /^(?:[\w-]+:\/\/)?[a-z]:[\\/]/i : /^(?:[\w-]+:\/\/)?\//i;
+    pathRe = dataCenter.isWin ? /^(?:[\w-]+:\/\/)?[a-z]:[\\/]/i : /^(?:[\w-]+:\/\/)?\//i;
   }
-  return PATH_RE.test(url);
+  return pathRe.test(url);
 }
 
 function preventInputBlur(e) {
   e.target.nodeName != 'INPUT' && preventBlur(e);
 }
 
-window.setWhistleDataUrl = function(url) {
+globalWin.setWhistleDataUrl = function(url) {
   if (url = trimStr(url)) {
     if (dataCenter.handleDataUrl) {
       dataCenter.handleDataUrl(url);
@@ -164,24 +167,24 @@ window.setWhistleDataUrl = function(url) {
   return false;
 };
 
-window.showWhistleMessage = function(options) {
+globalWin.showWhistleMessage = function(options) {
   message[options.level || options.type || 'info'](options.text || options.msg || options.message);
 };
 
-window.showWhistleWebUI = function(name) {
+globalWin.showWhistleWebUI = function(name) {
   if (TABS.indexOf(name) !== -1) {
     trigger('show' + name);
   }
 };
-
-if (/[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.test(search)) {
-  showTreeView = RegExp.$1 === '1' || RegExp.$1 === 'true';
+var match = /[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.exec(search);
+if (match) {
+  showTreeView = match[1] === '1' || match[1] === 'true';
 }
 
-if (/[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
-  hideLeftMenu = RegExp.$1 === '1' || RegExp.$1 === 'true';
-} else if (/[&#?]showLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.test(search)) {
-  hideLeftMenu = RegExp.$1 === '0' || RegExp.$1 === 'false';
+if (match = /[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.exec(search)) {
+  hideLeftMenu = match[1] === '1' || match[1] === 'true';
+} else if (match = /[&#?]showLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.exec(search)) {
+  hideLeftMenu = match[1] === '0' || match[1] === 'false';
 }
 
 var TOP_BAR_MENUS = [
@@ -668,7 +671,7 @@ var Index = React.createClass({
       activeTabs = JSON.parse(storage.get('activePluginTabList'));
       activeName = storage.get('activePluginTabName');
     } catch (e) {}
-    if (!Array.isArray(activeTabs)) {
+    if (!isArr(activeTabs)) {
       return;
     }
     var map = {};
@@ -823,7 +826,7 @@ var Index = React.createClass({
   },
   reloadData: function (quite) {
     var self = this;
-    var dialog = $('.w-reload-data-tips').closest('.w-confirm-reload-dialog');
+    var dialog = $('.w-reload-data-tips').closest('.w-confirm-reload');
     var name = dialog.find('.w-reload-data-tips').attr('data-name');
     var isRules = name === 'rules';
     quite = quite === true;
@@ -994,7 +997,7 @@ var Index = React.createClass({
         trigger(prev ? 'findEditorPrev' : 'findEditorNext', keyword);
         return dataCenter.editorMatchedCount;
       };
-      window.__findWhistleCodeMirrorEditor_ = findEditor;
+      globalWin.__findWhistleCodeMirrorEditor_ = findEditor;
     }
 
     var composerDidMount;
@@ -1047,7 +1050,7 @@ var Index = React.createClass({
       var homepage = plugin.pluginHomepage;
       var url =  homepage || 'plugin.' + name + '/';
       if ((homepage || plugin.openExternal) && !plugin.openInPlugins && !plugin.openInModal) {
-        return window.open(url);
+        return globalWin.open(url);
       }
       var modal = plugin.openInModal || plugin.openInDialog || '';
       if (modal && !homepage) {
@@ -1137,17 +1140,17 @@ var Index = React.createClass({
         text = text || '';
         var url = util.getOpenUrl();
         if (url) {
-          return window.open(url.replace('{WHISTLE_DATA}', encodeURIComponent(text)));
+          return globalWin.open(url.replace('{WHISTLE_DATA}', encodeURIComponent(text)));
         }
         return util.openInNewWin(text);
       }
       try {
         if (editorWin && isFunc(editorWin.setValue)) {
-          window.getTextFromWhistle_ = null;
+          globalWin.getTextFromWhistle_ = null;
           self.refs.editorWin.show();
           return editorWin.setValue(text);
         }
-        window._initWhistleTextEditor_ = function(win) {
+        globalWin._initWhistleTextEditor_ = function(win) {
           editorWin = win;
           editorWin.setValue(text);
         };
@@ -1420,7 +1423,7 @@ var Index = React.createClass({
           }
         }
       })
-      .on('contextmenu', '.w-textarea-bar', preventBlur);
+      .on('contextmenu', '.w-bar', preventBlur);
     var removeItem = function (e) {
       var target = e.target;
       if (
@@ -1432,7 +1435,7 @@ var Index = React.createClass({
       preventBlur(e);
     };
 
-    $(window)
+    $(globalWin)
       .on('hashchange', self.showTab)
       .on('keyup', function (e) {
         if (e.keyCode == 27) {
@@ -1450,7 +1453,7 @@ var Index = React.createClass({
         if (!e.ctrlKey && !e.metaKey) {
           if (code === 112) {
             preventBlur(e);
-            window.open(util.getDocUrl('gui/' + name + '.html'));
+            globalWin.open(util.getDocUrl('gui/' + name + '.html'));
           } else if (code === 116) {
             preventBlur(e);
           }
@@ -1538,11 +1541,11 @@ var Index = React.createClass({
               return;
             }
             preventBlur(e);
-            util.noModal() && trigger('saveSessions');
+            noModal() && trigger('saveSessions');
             return;
           }
           preventBlur(e);
-          if (!util.noModal()) {
+          if (!noModal()) {
             if (self.refs.chooseFileType.isVisible()) {
               self.exportBySave();
             }
@@ -1563,7 +1566,7 @@ var Index = React.createClass({
             return;
           }
           preventBlur(e);
-          return util.noModal() && self.exportData();
+          return noModal() && self.exportData();
         }
         if (code === 190) {
           if (!hasShortcut(isNetwork ? 'openNetworkSettings' : name === 'rules' ? 'openRulesSettings' : 'openValuesSettings')) {
@@ -1574,12 +1577,12 @@ var Index = React.createClass({
         }
         var isService = code === 74;
         if (isService || code === 73) {
-          if (util.noModal()) {
+          if (noModal()) {
             if (isService) {
               if (!dataCenter.whistleId || !hasShortcut('openService')) {
                 return;
               }
-              self.showService();
+              util.showService(self.state.name);
             } else if (isNetwork || name === 'rules' || name === 'values') {
               if (!hasShortcut(isNetwork ? 'importNetwork' : name === 'rules' ? 'importRules' : 'importValues')) {
                 return;
@@ -1645,15 +1648,16 @@ var Index = React.createClass({
         }
         var elem = $(this);
         var text = elem.text();
+        var match;
         if (elem.hasClass('cm-js-at')) {
-          if (AT_LINK_RE.test(text)) {
-            window.open((RegExp.$1 || 'http:') + RegExp.$2);
+          if (match = AT_LINK_RE.exec(text)) {
+            globalWin.open((match[1] || 'http:') + match[2]);
           }
           return;
         }
         if (elem.hasClass('cm-string')) {
-          if (LINK_RE.test(text)) {
-            window.open((RegExp.$1 || 'http:') + RegExp.$2);
+          if (match = LINK_RE.exec(text)) {
+            globalWin.open((match[1] || 'http:') + match[2]);
           }
           return;
         }
@@ -1667,7 +1671,7 @@ var Index = React.createClass({
           if (!/^https?:\/\//i.test(text)) {
             text = 'http:' + (text[0] === '/' ? '' : '//') + text;
           }
-          window.open(text);
+          globalWin.open(text);
           return;
         }
         if (TEMP_LINK_RE.test(text) || (isTextFile(text) && FILE_PATH_RE.test(text))) {
@@ -1740,7 +1744,7 @@ var Index = React.createClass({
         var list = LEFT_BAR_MENUS;
         list[3].checked = !state.disabledAllRules;
         list[4].checked = !state.disabledAllPlugins;
-        self.refs.contextMenu.update();
+        self.refs.ctxMenu.update();
         return self.setState({});
       }
       if (hasChanged) {
@@ -1772,7 +1776,7 @@ var Index = React.createClass({
     });
 
     var getFocusItemList = function (curItem) {
-      if (Array.isArray(curItem)) {
+      if (isArr(curItem)) {
         return curItem;
       }
       if (!curItem || curItem.selected) {
@@ -1793,7 +1797,7 @@ var Index = React.createClass({
         self.replayList = list;
         self.refs.setReplayCount.show();
         setTimeout(function () {
-          var input = findDOMNode(self.refs.replayCount);
+          var input = self.refs.replayCount;
           input.select();
           input.focus();
         }, 300);
@@ -1952,7 +1956,7 @@ var Index = React.createClass({
               latestVersion: data.latestVersion
             },
             function () {
-              self.refs.showUpdateTipsDialog.show();
+              self.refs.showUpdateTips.show();
             }
           );
         }
@@ -2031,7 +2035,7 @@ var Index = React.createClass({
       self.setState(pluginsState);
     });
     try {
-      var onReady = window.parent.onWhistleReady;
+      var onReady = globalWin.parent.onWhistleReady;
       if (isFunc(onReady)) {
         var selectItem = function(item) {
           var modal = item && self.state.network;
@@ -2145,12 +2149,12 @@ var Index = React.createClass({
   },
   importAnySessions: function (data) {
     if (data && !handleImportData(data)) {
-      var isArr = Array.isArray(data);
-      if (!isArr && !Array.isArray(data.log && data.log.entries)) {
-        isArr = true;
+      var isArray = isArr(data);
+      if (!isArray && !isArr(data.log && data.log.entries)) {
+        isArray = true;
         data = [data];
       }
-      if (Array.isArray(data)) {
+      if (isArr(data)) {
         dataCenter.addNetworkList(data);
       } else {
         this.importHarSessions(data);
@@ -2161,7 +2165,7 @@ var Index = React.createClass({
     dataCenter.donotShowAgain();
   },
   hideUpdateTipsDialog: function () {
-    this.refs.showUpdateTipsDialog.hide();
+    this.refs.showUpdateTips.hide();
   },
   getAllRulesText: function () {
     var text = ' ' + this.getAllRulesValue();
@@ -2472,7 +2476,7 @@ var Index = React.createClass({
     this.refs.exportDialog.show('valuesSettings', this.getValuesSettings());
   },
   getInputValue: function () {
-    return util.formatFilename(findDOMNode(this.refs.sessionsName).value.trim());
+    return util.formatFilename(this.refs.sessionsName.value.trim());
   },
   filterFilename: function (e) {
     this.setState({ filename: util.formatFilename(e.target.value) });
@@ -2497,9 +2501,6 @@ var Index = React.createClass({
       self.showAndActiveValues({ id: 'exportValues', selectedList: getExportNames(state.values, curItem) });
       break;
     }
-  },
-  showService: function () {
-    util.showService(this.state.name);
   },
   importSessionsFromUrl: function (url) {
     var self = this;
@@ -2740,7 +2741,7 @@ var Index = React.createClass({
       active = name;
       var homepage = plugin.pluginHomepage;
       if (homepage && !plugin.openInPlugins) {
-        return window.open(homepage);
+        return globalWin.open(homepage);
       }
       tabs.push({
         name: name,
@@ -2803,7 +2804,7 @@ var Index = React.createClass({
       return;
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
-    util.shakeElem($(findDOMNode(self.refs.weinreMenuItem)));
+    util.shakeElem($(findDOMNode(self.refs.weinreMenu)));
   },
   showWeinreOptions: function (e) {
     var self = this;
@@ -2850,31 +2851,19 @@ var Index = React.createClass({
   },
   showCreateRules: function (_, group, focusItem) {
     var self = this;
-    var createRulesInput = findDOMNode(self.refs.createRulesInput);
     self._curFocusRulesGroup = group;
     self._curFocusRulesItem = focusItem;
-    self.setState(
-      {
-        showCreateRules: true
-      },
-      function () {
-        createRulesInput.focus();
-      }
-    );
+    self.setState({ showCreateRules: true }, function () {
+      self.refs.createRulesInput.focus();
+    });
   },
   showCreateValues: function (_, group, focusItem) {
     var self = this;
-    var createValuesInput = findDOMNode(self.refs.createValuesInput);
     self._curFocusValuesGroup = group;
     self._curFocusValuesItem = focusItem;
-    self.setState(
-      {
-        showCreateValues: true
-      },
-      function () {
-        createValuesInput.focus();
-      }
-    );
+    self.setState({ showCreateValues: true }, function () {
+      self.refs.createValuesInput.focus();
+    });
   },
   showHttpsSettingsDialog: function () {
     this.refs.httpsSettings.show();
@@ -2903,7 +2892,7 @@ var Index = React.createClass({
       confirmMsg(
         'HTTP/2 requires Node.js LTS version v16+. Please upgrade',
         function (sure) {
-          sure && window.open('https://nodejs.org/');
+          sure && globalWin.open('https://nodejs.org/');
           self.setState({});
         }
       );
@@ -2927,7 +2916,7 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var target = findDOMNode(self.refs.createRulesInput);
+    var target = self.refs.createRulesInput;
     var name = target.value.trim();
     if (!name) {
       showError(EMPTY_TIPS);
@@ -2993,7 +2982,7 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var target = findDOMNode(self.refs.createValuesInput);
+    var target = self.refs.createValuesInput;
     var name = target.value.trim();
     if (!name) {
       showError(EMPTY_TIPS);
@@ -3067,7 +3056,7 @@ var Index = React.createClass({
     if (!activeItem || activeItem.isDefault) {
       return;
     }
-    var editRulesInput = findDOMNode(self.refs.editRulesInput);
+    var editRulesInput = self.refs.editRulesInput;
     editRulesInput.value = activeItem.name;
     self.setState(
       {
@@ -3092,7 +3081,7 @@ var Index = React.createClass({
       return;
     }
 
-    var editValuesInput = findDOMNode(self.refs.editValuesInput);
+    var editValuesInput = self.refs.editValuesInput;
     editValuesInput.value = activeItem.name;
     self.setState(
       {
@@ -3115,7 +3104,7 @@ var Index = React.createClass({
     if (!activeItem) {
       return;
     }
-    var target = findDOMNode(self.refs.editRulesInput);
+    var target = self.refs.editRulesInput;
     var isGroup = isGroupName(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
@@ -3155,7 +3144,7 @@ var Index = React.createClass({
     if (!activeItem) {
       return;
     }
-    var target = findDOMNode(self.refs.editValuesInput);
+    var target = self.refs.editValuesInput;
     var isGroup = isGroupName(activeItem.name);
     var name = (isGroup ? '\r' : '') + target.value.trim();
     if (!name) {
@@ -3197,7 +3186,7 @@ var Index = React.createClass({
     this.openWeinre(options.name);
   },
   openWeinre: function (name) {
-    window.open('weinre/client/#' + (name || 'anonymous'));
+    globalWin.open('weinre/client/#' + (name || 'anonymous'));
     this.setState({
       showWeinreOptions: false
     });
@@ -3331,7 +3320,7 @@ var Index = React.createClass({
   },
   replay: function (e, list, count) {
     var modal = this.state.network;
-    list = Array.isArray(list) ? list : modal.getSelectedList();
+    list = isArr(list) ? list : modal.getSelectedList();
     if (!list || !list.length) {
       return;
     }
@@ -3416,7 +3405,7 @@ var Index = React.createClass({
         showSysErr(xhr);
       }
     });
-    this.refs.deleteRulesDialog.hide();
+    this.refs.deleteRules.hide();
   },
   removeValuesBatch: function(list) {
     var self = this;
@@ -3439,20 +3428,20 @@ var Index = React.createClass({
         showSysErr(xhr);
       }
     });
-    this.refs.deleteValuesDialog.hide();
+    this.refs.deleteValues.hide();
   },
   removeRules: function (item) {
     var modal = this.state.rules;
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
-      this.refs.deleteRulesDialog.show(activeItem.name);
+      this.refs.deleteRules.show(activeItem.name);
     }
   },
   removeValues: function (item) {
     var modal = this.state.values;
     var activeItem = item || modal.getActive();
     if (activeItem && !activeItem.isDefault) {
-      this.refs.deleteValuesDialog.show(activeItem.name);
+      this.refs.deleteValues.show(activeItem.name);
     }
   },
   setRulesActive: function (name, modal) {
@@ -3466,10 +3455,10 @@ var Index = React.createClass({
     modal.setActive(name);
   },
   showRulesSettings: function () {
-    this.refs.rulesSettingsDialog.show();
+    this.refs.rulesSettings.show();
   },
   showValuesSettings: function () {
-    this.refs.valuesSettingsDialog.show();
+    this.refs.valuesSettings.show();
   },
   toggleLeftMenu: function () {
     var showLeftMenu = !this.state.showLeftMenu;
@@ -3683,7 +3672,7 @@ var Index = React.createClass({
     this.setPluginState($(target).attr('data-name'), !target.checked);
   },
   abort: function (list) {
-    if (!Array.isArray(list)) {
+    if (!isArr(list)) {
       var modal = this.state.network;
       list = modal.getSelectedList();
     }
@@ -3741,7 +3730,7 @@ var Index = React.createClass({
   },
   showChooseFileType: function (filename) {
     this.refs.chooseFileType.show();
-    var input = findDOMNode(this.refs.sessionsName);
+    var input = this.refs.sessionsName;
     if (notEStr(filename)) {
       input.value = filename;
     }
@@ -3848,8 +3837,9 @@ var Index = React.createClass({
   },
   hideChooseFileTypeDialog: function(failed) {
     if (!failed) {
-      this.refs.chooseFileType.hide();
-      findDOMNode(this.refs.sessionsName).value = '';
+      var refs = this.refs;
+      refs.chooseFileType.hide();
+      refs.sessionsName.value = '';
     }
   },
   exportBySave: function (e) {
@@ -3857,7 +3847,7 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var input = findDOMNode(self.refs.sessionsName);
+    var input = this.refs.sessionsName;
     var name = input.value.trim();
     input.value = '';
     self.exportSessions(self.state.exportFileType, name, self.state.selectedSessions);
@@ -3892,7 +3882,7 @@ var Index = React.createClass({
     preventBlur(e);
     var data = util.getMenuPosition(e, 110, 100);
     data.list = TOP_BAR_MENUS;
-    this.refs.topContextMenu.show(data);
+    this.refs.topCtxMenu.show(data);
   },
   onContextMenu: function (e) {
     var count = 0;
@@ -3926,7 +3916,7 @@ var Index = React.createClass({
           list[1].disabled = !state.values.hasChanged();
         }
       }
-      this.refs.contextMenu.show(data);
+      this.refs.ctxMenu.show(data);
     }
     preventBlur(e);
   },
@@ -3976,7 +3966,7 @@ var Index = React.createClass({
       self.saveRulesOrValues();
       return;
     }
-    this.refs.contextMenu.show({});
+    this.refs.ctxMenu.show({});
   },
   forceToggleLeftMenu: function(show) {
     var self = this;
@@ -4254,7 +4244,6 @@ var Index = React.createClass({
               Network
             </a>
             <MenuItem
-              ref="networkMenuItem"
               options={state.networkOptions}
               className="w-network-menu-item"
               onClickOption={self.handleNetwork}
@@ -4281,7 +4270,6 @@ var Index = React.createClass({
               Rules
             </a>
             <MenuItem
-              ref="rulesMenuItem"
               name={isRules ? null : 'Open'}
               options={rulesOptions}
               checkedOptions={uncheckedRules}
@@ -4312,7 +4300,6 @@ var Index = React.createClass({
               <Icon name="folder-close" />Values
             </a>
             <MenuItem
-              ref="valuesMenuItem"
               name={isValues ? null : 'Open'}
               options={state.valuesOptions}
               className="w-values-menu-item"
@@ -4322,7 +4309,6 @@ var Index = React.createClass({
           </div>
           <div
             style={pluginsStyle}
-            ref="pluginsMenu"
             onMouseEnter={self.showPluginsOptions}
             onMouseLeave={self.hidePluginsOptions}
             className={
@@ -4341,7 +4327,6 @@ var Index = React.createClass({
               Plugins
             </a>
             <MenuItem
-              ref="pluginsMenuItem"
               name={isPlugins ? null : 'Open'}
               options={pluginsOptions}
               checkedOptions={state.disabledPlugins}
@@ -4513,7 +4498,7 @@ var Index = React.createClass({
               <span className="w-weinre-name">Weinre</span>
             </a>
             <MenuItem
-              ref="weinreMenuItem"
+              ref="weinreMenu"
               name="anonymous"
               icon="console"
               options={state.weinreOptions}
@@ -4553,7 +4538,6 @@ var Index = React.createClass({
               <span className="w-help-name">Help</span>
             </a>
             <MenuItem
-              ref="helpMenuItem"
               options={state.helpOptions}
               onClickOption={self.onClickHelpMenu}
               name={
@@ -4634,8 +4618,8 @@ var Index = React.createClass({
           </div>
         </div>
         <div className="w-container box fill">
-          <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
-          <ContextMenu onClick={self.onClickTopMenu} ref="topContextMenu" />
+          <ContextMenu onClick={self.onClickContextMenu} ref="ctxMenu" />
+          <ContextMenu onClick={self.onClickTopMenu} ref="topCtxMenu" />
           <div
             onContextMenu={self.onContextMenu}
             onDoubleClick={self.onContextMenu}
@@ -4707,7 +4691,6 @@ var Index = React.createClass({
           </div>
           {state.hasRules ? (
             <List
-              ref="rules"
               disabled={disabledAllRules}
               theme={rulesTheme}
               lineWrapping={autoRulesLineWrapping}
@@ -4738,7 +4721,6 @@ var Index = React.createClass({
           ) : null}
           {state.hasNetwork ? (
             <Network
-              ref="network"
               hide={!isNetwork}
               modal={modal}
               rulesModal={state.rules}
@@ -4751,12 +4733,11 @@ var Index = React.createClass({
               onClose={self.closePluginTab}
               onActive={self.activePluginTab}
               onChange={self.disablePlugin}
-              ref="plugins"
               hide={!isPlugins}
             />
           ) : null}
         </div>
-        <Dialog ref="rulesSettingsDialog" wstyle="w-rules-settings">
+        <Dialog ref="rulesSettings" wstyle="w-rules-settings">
           <div className="modal-body">
             <CloseBtn />
             <EditorSettings
@@ -4796,8 +4777,7 @@ var Index = React.createClass({
               </p>
             )}
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             {renderBtn(self.importRulesSettings, 'Import')}
             <button
               type="button"
@@ -4806,9 +4786,9 @@ var Index = React.createClass({
             >
               Export
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
-        <Dialog ref="valuesSettingsDialog" wstyle="w-values-settings-dialog">
+        <Dialog ref="valuesSettings" wstyle="w-values-settings">
           <div className="modal-body">
             <CloseBtn />
             <EditorSettings
@@ -4832,8 +4812,7 @@ var Index = React.createClass({
               </label>
             </p>
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             {renderBtn(self.importValuesSettings, 'Import')}
             <button
               type="button"
@@ -4842,7 +4821,7 @@ var Index = React.createClass({
             >
               Export
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
         {rulesMode ? null : <NetworkSettings ref="networkSettings" />}
         <HttpsSettings
@@ -4881,8 +4860,7 @@ var Index = React.createClass({
               </select>
             </label>
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             <button
               type="button"
               tabIndex="0"
@@ -4910,7 +4888,7 @@ var Index = React.createClass({
             >
               Export Selected ({selectedCount})
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
         <LargeDialog ref="editorWin" className="w-editor-win" openInNewWin={self.openEditorInNewWin} />
         <LargeDialog ref="innerWin" className="w-inner-win" />
@@ -4941,7 +4919,7 @@ var Index = React.createClass({
             </button>
           </div>
         </Dialog>
-        <Dialog ref="showUpdateTipsDialog" wstyle="w-show-update-tips-dialog">
+        <Dialog ref="showUpdateTips" wstyle="w-show-update-tips-dialog">
           <div className="modal-body">
             <CloseBtn />
             <p className="w-show-update-tips">
@@ -4977,8 +4955,8 @@ var Index = React.createClass({
             </a>
           </div>
         </Dialog>
-        <Dialog ref="confirmReload" wstyle="w-confirm-reload-dialog">
-          <div className="modal-body w-confirm-reload">
+        <Dialog ref="confirmReload" wstyle="w-confirm-reload">
+          <div className="modal-body">
             <CloseBtn />
             <div className="w-reload-data-tips"></div>
           </div>
@@ -5001,7 +4979,7 @@ var Index = React.createClass({
           </div>
         </Dialog>
         <ListDialog
-          ref="deleteRulesDialog"
+          ref="deleteRules"
           title="Delete Rules"
           tips={DEL_RULES}
           onConfirm={self.removeRulesBatch}
@@ -5010,7 +4988,7 @@ var Index = React.createClass({
           list={state.rules.list}
         />
         <ListDialog
-          ref="deleteValuesDialog"
+          ref="deleteValues"
           title="Delete Values"
           tips={DEL_VALUE}
           onConfirm={self.removeValuesBatch}
@@ -5029,13 +5007,13 @@ var Index = React.createClass({
           name="values"
           list={state.values.list}
         />
-        <iframe name="downloadTargetFrame" style={HIDE_STYLE} />
+        <iframe name="dlFrame" style={HIDE_STYLE} />
         <form
           ref="exportSessionsForm"
           action="cgi-bin/sessions/export"
           style={HIDE_STYLE}
           method="post"
-          target="downloadTargetFrame"
+          target="dlFrame"
         >
           <input ref="exportFilename" name="exportFilename" type="hidden" />
           <input ref="exportFileType" name="exportFileType" type="hidden" />
@@ -5050,7 +5028,7 @@ var Index = React.createClass({
           action="cgi-bin/download"
           style={HIDE_STYLE}
           method="post"
-          target="downloadTargetFrame"
+          target="dlFrame"
         >
           <input ref="dataType" name="type" type="hidden" />
           <input ref="filename" name="filename" type="hidden" />

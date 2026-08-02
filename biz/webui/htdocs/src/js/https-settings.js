@@ -7,7 +7,6 @@ var util = require('./util');
 var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
 var Dialog = require('./dialog');
 
 function getCAType(type) {
@@ -43,8 +42,7 @@ var HttpsSettings = React.createClass({
     dataCenter.certs.all(function (data, xhr) {
       self.loadingCerts = false;
       if (!data) {
-        util.showSysErr(xhr);
-        return;
+        return util.showSysErr(xhr);
       }
       self.refs.certsInfo.show(data.certs, data.dir);
     });
@@ -69,7 +67,7 @@ var HttpsSettings = React.createClass({
     }
 
     return (
-      <Dialog ref="dialog" wstyle="w-https-dialog">
+      <Dialog ref="dialog" wstyle="w-https-dialog" closable>
           <div className="modal-body">
             <CloseBtn />
             <div style={{marginBottom: 10}}>
@@ -78,7 +76,7 @@ var HttpsSettings = React.createClass({
                 className="w-download-rootca"
                 title={caShortUrl}
                 href={caUrl}
-                target="downloadTargetFrame"
+                target="dlFrame"
               >
                 Download RootCA
               </a>
@@ -101,7 +99,7 @@ var HttpsSettings = React.createClass({
             </div>
             <a
               href={caUrl}
-              target="downloadTargetFrame"
+              target="dlFrame"
             >
               <QRCodeImg url={caFullUrl || caShortUrl + props.caHash} />
             </a>
@@ -110,7 +108,7 @@ var HttpsSettings = React.createClass({
                 <label
                   title={
                     multiEnv
-                      ? 'Use \'pattern enable://capture\' in rules to enable HTTPS'
+                      ? 'Use \'domain enable://capture\' in Rules to enable HTTPS'
                       : null
                   }
                 >
@@ -150,9 +148,6 @@ var HttpsSettings = React.createClass({
               </a>
               <CertsInfoDialog ref="certsInfo" />
             </div>
-          </div>
-          <div className="modal-footer">
-            <DismissBtn />
           </div>
         </Dialog>
     );

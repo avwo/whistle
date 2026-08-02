@@ -1,8 +1,8 @@
 var React = require('react');
 var Dialog = require('./dialog');
-var DismissBtn = require('./dismiss-btn');
 var util = require('./util');
 var ModalHeader = require('./modal-header');
+var ModalFooter = require('./modal-footer');
 
 var DNSDialog = React.createClass({
   getInitialState: function () {
@@ -51,8 +51,7 @@ var DNSDialog = React.createClass({
       <Dialog ref="dialog" wstyle="w-dns-servers">
         <ModalHeader>{title}</ModalHeader>
         <pre className="modal-body">{servers}</pre>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             data-dismiss="modal"
@@ -61,7 +60,7 @@ var DNSDialog = React.createClass({
           >
             Copy
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
     );
   }

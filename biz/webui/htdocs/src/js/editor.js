@@ -34,6 +34,7 @@ var isFunc = util.isFunc;
 var preventAll = util.preventAll;
 var trigger = util.trigger;
 var addEvent = util.on;
+var globalWin = window;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
   'CodeMirror-linenumbers',
@@ -66,6 +67,10 @@ var JS_COMMENT_RE = /^(\s*)\/\/+\s?/;
 var NO_SPACE_RE = /\S/;
 var FOLD_MODE = ['javascript', 'htmlmixed', 'css'];
 var SEARCH_OPTIONS = { caseFold: true, multiline: true };
+
+function isTrue(flag) {
+  return flag !== false && flag !== 'false';
+}
 
 var Editor = React.createClass({
   getThemes: function () {
@@ -147,41 +152,29 @@ var Editor = React.createClass({
   getValue: function () {
     return this._editor ? this._editor.getValue() : '';
   },
-  setTheme: function (theme) {
-    var self = this;
-    theme = self._theme = theme || DEFAULT_THEME;
-    if (!self._editor) {
-      return;
+  setOpt: function (name, value) {
+    var editor = this._editor;
+    if (editor) {
+      editor.setOption(name, value);
     }
-    self._editor.setOption('theme', theme);
+  },
+  setTheme: function (theme) {
+    this.setOpt('theme', theme || DEFAULT_THEME);
   },
   setFontSize: function (fontSize) {
     var self = this;
-    fontSize = self._fontSize = fontSize || DEFAULT_FONT_SIZE;
     if (self._editor) {
-      self.refs.editor.style.fontSize = fontSize;
+      self.refs.editor.style.fontSize = fontSize || DEFAULT_FONT_SIZE;
     }
   },
   showLineNumber: function (show) {
-    var self = this;
-    show = self._showLineNumber = show !== false;
-    if (self._editor) {
-      self._editor.setOption('lineNumbers', show);
-    }
+    this.setOpt('lineNumbers', isTrue(show));
   },
   showLineWrapping: function (show) {
-    var self = this;
-    show = self._showLineWrapping = show !== false;
-    if (self._editor) {
-      self._editor.setOption('lineWrapping', show);
-    }
+    this.setOpt('lineWrapping', isTrue(show));
   },
   setReadOnly: function (readOnly) {
-    var self = this;
-    readOnly = self._readOnly = readOnly !== false && readOnly !== 'false';
-    if (self._editor) {
-      self._editor.setOption('readOnly', readOnly);
-    }
+    this.setOpt('readOnly', isTrue(readOnly));
   },
   handleKeyUp: function(_, e) {
     var self = this;
@@ -203,7 +196,7 @@ var Editor = React.createClass({
     var self = this;
     var isRules = self.isRulesEditor();
     var option = isRules && !self.props.readOnly ? rulesHint.getExtraKeys() : {};
-    if (!/\(Macintosh;/i.test(window.navigator.userAgent)) {
+    if (!/\(Macintosh;/i.test(globalWin.navigator.userAgent)) {
       option['Ctrl-F'] = 'findPersistent';
     }
     option['Cmd-F'] = 'findPersistent';
@@ -334,7 +327,7 @@ var Editor = React.createClass({
     self._init(true);
     $(elem).find('.CodeMirror').addClass('fill');
     setTimeout(resize, 10);
-    $(window).on('resize', resetThrottle);
+    $(globalWin).on('resize', resetThrottle);
     addEvent('editorResize', resetThrottle);
     function resize() {
       timeout = null;
@@ -424,7 +417,7 @@ var Editor = React.createClass({
           return true;
         }
         try {
-          var onKeyDown = window.parent.onWhistleRulesEditorKeyDown;
+          var onKeyDown = globalWin.parent.onWhistleRulesEditorKeyDown;
           if (
             isFunc(onKeyDown) &&
             onKeyDown(e, options) === false

@@ -5,7 +5,7 @@ var storage = require('./storage');
 var util = require('./util');
 
 var settings = dataCenter.getNetworkColumns();
-var sortedCols = Array.isArray(settings.columns) ? settings.columns : [];
+var sortedCols = util.isArr(settings.columns) ? settings.columns : [];
 var pluginColList = dataCenter.getPluginColumns();
 var pluginColsMap = {};
 var appNameMap = {};

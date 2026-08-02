@@ -91,7 +91,7 @@
   background-color: var(--b-hover) !important;
 }
 
-.w-filter-type-bar {
+.w-type-bar {
   display: flex;
   height: 26px;
   align-items: center;
@@ -100,7 +100,7 @@
   background: var(--b-bar);
 }
 
-.w-filter-type-bar span {
+.w-type-bar span {
   margin-left: 10px;
   border: var(--v-border);
   border-radius: 3px;
@@ -115,12 +115,12 @@
   min-width: 32px;
 }
 
-.w-filter-type-bar span:hover {
+.w-type-bar span:hover {
   border-color: var(--b-btn-hover);
   background: var(--b-btn-hover);
 }
 
-.w-filter-type-bar span:is(:active, .w-active) {
+.w-type-bar span:is(:active, .w-active) {
   border-color: var(--b-btn-active);
   background: var(--b-btn-active);
   color: var(--c-default);

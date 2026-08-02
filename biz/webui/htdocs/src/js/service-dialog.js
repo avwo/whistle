@@ -14,15 +14,15 @@ var ServiceDialog = React.createClass({
   },
   showService: function (_, path) {
     var self = this;
-    var dialog = self.refs.serviceDialog;
+    var dialog = self.refs.dialog;
     bridgeApi = bridgeApi || getServiceBridge(self.hideService);
     dialog.show(util.getServiceUrl(dialog.getWindow(), path, bridgeApi));
   },
   hideService: function () {
-    this.refs.serviceDialog.hide();
+    this.refs.dialog.hide();
   },
   render: function () {
-    return <LargeDialog className="w-service-dialog" ref="serviceDialog" hideButton="1" />;
+    return <LargeDialog className="w-service-dialog" ref="dialog" hideButton="1" />;
   }
 });
 

@@ -6,7 +6,7 @@ var storage = require('./storage');
 var util = require('./util');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var isElectron = util.isElectron;
 var compareVersion = util.compareVersion;
@@ -174,7 +174,7 @@ var About = React.createClass({
               </a>
             </span>
           </div>
-          <div className="modal-footer">
+          <ModalFooter>
             {hasNewWhistle || hasNewClient ? (
               <a
                 className="btn btn-primary"
@@ -186,8 +186,7 @@ var About = React.createClass({
                 Update Now
               </a>
             ) : null}
-            <DismissBtn />
-          </div>
+          </ModalFooter>
         </Dialog>
       </a>
     );

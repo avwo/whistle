@@ -169,7 +169,7 @@ var ListDialog = React.createClass({
         selectedList = [selectedList];
       }
       var checkedItems = {};
-      if (Array.isArray(selectedList)) {
+      if (util.isArr(selectedList)) {
         selectedList.forEach(function(name) {
           if (list.indexOf(name) !== -1) {
             checkedItems[name] = 1;
@@ -346,7 +346,7 @@ var ListDialog = React.createClass({
           action={'cgi-bin/' + pageName + '/export'}
           ref="exportData"
           style={util.HIDE_STYLE}
-          target="downloadTargetFrame"
+          target="dlFrame"
         >
           <input ref="exportName" type="hidden" name="filename" />
           <input ref="data" type="hidden" name={pageName} />

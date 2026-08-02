@@ -32,7 +32,7 @@ var Timeline = React.createClass({
     return (
       <div
         className={
-          'fill v-box w-detail-ctn w-timeline' +
+          'fill v-box w-detail-ctn w-tl' +
           util.getHide(util.getBool(this.props.hide))
         }
       >
@@ -137,56 +137,56 @@ var Timeline = React.createClass({
             if (len === 1) {
               return (
                 <li
-                  key="w-timeline-one"
-                  className="w-timeline-one"
+                  key="w-tl-one"
+                  className="w-tl-one"
                 >
                   <ul>
                     <li>
-                      <span className="w-timeline-url">URL:</span>
+                      <span className="w-tl-url">URL:</span>
                       <span
-                        className="w-timeline-full-url"
+                        className="w-tl-full-url"
                         title={item.url}
                       >
                         {item.url}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">TTFB:</span>
+                      <span className="w-tl-url">TTFB:</span>
                       <span
                         style={{ width: ttfbRate }}
-                        className="w-timeline-ttfb"
+                        className="w-tl-ttfb"
                       />
-                      <span title={title} className="w-timeline-time">
+                      <span title={title} className="w-tl-time">
                         {ttfb}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">DNS:</span>
+                      <span className="w-tl-url">DNS:</span>
                       <span
                         style={{ width: dnsRate }}
-                        className="w-timeline-dns"
+                        className="w-tl-dns"
                       />
-                      <span title={title} className="w-timeline-time">
+                      <span title={title} className="w-tl-time">
                         {dns}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">
+                      <span className="w-tl-url">
                         Request:
                       </span>
                       <span style={{ width: dnsRate }} />
                       <span
                         style={{ width: requestRate }}
-                        className="w-timeline-request"
+                        className="w-tl-request"
                       >
                         {' '}
                       </span>
-                      <span title={title} className="w-timeline-time">
+                      <span title={title} className="w-tl-time">
                         {request}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">
+                      <span className="w-tl-url">
                         Response:
                       </span>
                       <span style={{ width: dnsRate }} />
@@ -195,14 +195,14 @@ var Timeline = React.createClass({
                       )}
                       <span
                         style={{ width: responseRate }}
-                        className="w-timeline-response"
+                        className="w-tl-response"
                       />
-                      <span title={title} className="w-timeline-time">
+                      <span title={title} className="w-tl-time">
                         {response}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">
+                      <span className="w-tl-url">
                         Download:
                       </span>
                       <span style={{ width: dnsRate }} />
@@ -212,15 +212,15 @@ var Timeline = React.createClass({
                       <span style={{ width: responseRate }} />
                       <span
                         style={{ width: loadRate }}
-                        className="w-timeline-load"
+                        className="w-tl-load"
                       />
-                      <span title={title} className="w-timeline-time">
+                      <span title={title} className="w-tl-time">
                         {load}
                       </span>
                     </li>
                     <li>
-                      <span className="w-timeline-url">Total Duration:</span>
-                      <span title={title} className="w-timeline-time">
+                      <span className="w-tl-url">Total Duration:</span>
+                      <span title={title} className="w-tl-time">
                         {total}
                       </span>
                     </li>
@@ -252,25 +252,25 @@ var Timeline = React.createClass({
               <li
                 key={item.id}
                 title={title}
-                className={'w-timeline-multi' + (resStream ? ' w-timeline-stream' : '')}
+                className={'w-tl-multi' + (resStream ? ' w-tl-stream' : '')}
               >
-                <span title={item.url} className="w-timeline-url">
+                <span title={item.url} className="w-tl-url">
                   {util.getFilename(item)}
                 </span>
                 <span
                   style={{ width: stalledRate }}
-                  className="w-timeline-stalled"
+                  className="w-tl-stalled"
                 />
                 <span
                   style={{ width: dnsRate }}
-                  className="w-timeline-dns"
+                  className="w-tl-dns"
                 />
                 <span
                   style={{
                     width: requestRate,
                     marginBottom: resStream ? '5px' : null
                   }}
-                  className="w-timeline-request"
+                  className="w-tl-request"
                 />
                 <span
                   style={{
@@ -279,7 +279,7 @@ var Timeline = React.createClass({
                     marginBottom: reqStream ? '-5px' : null,
                     height: reqStream ? '15px' : null
                   }}
-                  className="w-timeline-response"
+                  className="w-tl-response"
                 />
                 <span
                   style={{
@@ -288,9 +288,9 @@ var Timeline = React.createClass({
                     marginBottom: reqStream ? '-5px' : null,
                     height: reqStream ? '15px' : null
                   }}
-                  className="w-timeline-load"
+                  className="w-tl-load"
                 />
-                <span title={title} className="w-timeline-time">
+                <span title={title} className="w-tl-time">
                   {total}
                 </span>
               </li>

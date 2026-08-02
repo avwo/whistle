@@ -12,7 +12,7 @@ var message = require('./message');
 var ShortcutsSettings = require('./shortcuts-settings');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var showSysErr = util.showSysErr;
 var isFunc = util.isFunc;
@@ -183,9 +183,9 @@ function createDialog() {
       '<h5 class="w-theme-option"><strong>Theme:</strong><select class="form-control"><option value="auto">Auto</option>' +
       '<option value="dark">Dark</option><option value="light">Light</option></select></h5>'+
       '<h5 class="w-dns-order-option"><strong>DNS Order:</strong><select class="form-control"></select></h5>' +
-      '<p><a class="w-online-clear-dns">Clear DNS Cache</a></p>' +
+      '<p><a class="w-view-dns">Clear DNS Cache</a></p>' +
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
-      '<a class="w-online-shortcuts-settings">Shortcuts Settings</a>' +
+      '<a class="w-shortcuts-settings">Shortcuts Settings</a>' +
       '</div>' +
       '<div class="modal-footer">' + win.DISSMISS_BTN +
       '</div></div></div></div>'
@@ -353,13 +353,13 @@ var Online = React.createClass({
       var curServerInfo;
       var isHide = true;
       var dnsElem = dialog.find('.w-online-dns');
-      var shortcutsElem = dialog.find('.w-online-shortcuts-settings');
+      var shortcutsElem = dialog.find('.w-shortcuts-settings');
       var hideDns = true;
 
       dnsElem.on('click', function () {
         self.refs.dnsDialog.show(dataCenter.getServerInfo());
       });
-      dialog.find('.w-online-clear-dns').on('click', function() {
+      dialog.find('.w-view-dns').on('click', function() {
         win.confirm('Do you confirm clearing the DNS cache?', function(sure) {
           if (sure) {
             dataCenter.rules.clearDnsCache(function (data, xhr) {
@@ -373,7 +373,7 @@ var Online = React.createClass({
         });
       });
       shortcutsElem.on('click', function () {
-        self.refs.shortcutsSettings.show();
+        self.refs.shortcuts.show();
       });
       var toggleDns = function (svrInfo) {
         if (svrInfo && svrInfo.dns) {
@@ -597,16 +597,15 @@ var Online = React.createClass({
         ) : (server.ipv6Only ? '(IPv6)' : null)}
         <Dialog
           ref="confirmReload"
-          wstyle="w-confirm-reload-dialog w-confirm-reload-global"
+          wstyle="w-confirm-reload w-confirm-reload-global"
         >
-          <div className="modal-body w-confirm-reload">
+          <div className="modal-body">
             <CloseBtn />
             The proxy has been modified.
             <br />
             Do you want to reload this page?
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             <button
               type="button"
               className="btn btn-primary"
@@ -614,10 +613,10 @@ var Online = React.createClass({
             >
               Reload
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
         <DNSDialog ref="dnsDialog" />
-        <ShortcutsSettings ref="shortcutsSettings" />
+        <ShortcutsSettings ref="shortcuts" />
       </a>
     );
   }

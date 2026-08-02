@@ -1,8 +1,8 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var util = require('./util');
-var DismissBtn = require('./dismiss-btn');
 var ModalHeader = require('./modal-header');
+var ModalFooter = require('./modal-footer');
 
 var DEF_RE = /\s+/g;
 var NUM_RE = /(^0+|\D+)/g;
@@ -54,8 +54,7 @@ var Prompt = React.createClass({
         <input ref="value" className="form-control" maxLength={props.maxLength || 64}
           onChange={self.onChange} value={value} placeholder={props.placeholder || 'Enter new option'} />
       </div>
-      <div className="modal-footer">
-        <DismissBtn />
+      <ModalFooter>
         <button
           type="button"
           className="btn btn-primary"
@@ -64,7 +63,7 @@ var Prompt = React.createClass({
         >
           Confirm
         </button>
-      </div>
+      </ModalFooter>
     </Dialog>
     );
   }

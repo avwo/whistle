@@ -34,12 +34,12 @@ var Textarea = React.createClass({
     var self = this;
     var props = self.props;
     var hide = getBool(props.hide);
-    var nextHide = getBool(nextProps.hide);
-    if (self._isCaptured !== dataCenter.isCapture) {
-      self._isCaptured = dataCenter.isCapture;
+    var isCapture = dataCenter.isCapture;
+    if (self._isCaptured !== isCapture) {
+      self._isCaptured = isCapture;
       return true;
     }
-    if (hide !== nextHide || !props.value) {
+    if (hide !== getBool(nextProps.hide) || !props.value) {
       return true;
     }
     if (hide) {
@@ -61,8 +61,7 @@ var Textarea = React.createClass({
     findDOMNode(refs.filename).value = name;
     findDOMNode(refs.type).value = base64 ? 'base64' : '';
     findDOMNode(refs.headers).value = props.headers || '';
-    findDOMNode(refs.content).value =
-      base64 != null ? base64 : props.value || '';
+    findDOMNode(refs.content).value = base64 != null ? base64 : props.value || '';
     findDOMNode(refs.downloadForm).submit();
     self.hideNameInput();
   },
@@ -90,7 +89,7 @@ var Textarea = React.createClass({
         }
       >
         <Tips data={props.tips} />
-        <div ref="bar" className={'w-textarea-bar' + getHide(!value)}>
+        <div ref="bar" className={'w-bar' + getHide(!value)}>
           {props.reqType === 'reqRaw' ? <a onClick={props.onEdit}>
             <Icon name="send" />
             Edit
@@ -117,7 +116,7 @@ var Textarea = React.createClass({
           action="cgi-bin/download"
           style={util.HIDE_STYLE}
           method="post"
-          target="downloadTargetFrame"
+          target="dlFrame"
         >
           <input ref="filename" name="filename" type="hidden" />
           <input ref="type" name="type" type="hidden" />

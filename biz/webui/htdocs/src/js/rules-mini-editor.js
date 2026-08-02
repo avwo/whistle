@@ -9,7 +9,7 @@ var RulesMiniEditor = React.createClass({
     self.showRules(self.props.value);
   },
   showRules: function(rules) {
-    this.refs.rulesDialog.show(rules);
+    this.refs.dialog.show(rules);
   },
   onChange: function(e) {
     var onChange = this.props.onChange;
@@ -37,7 +37,7 @@ var RulesMiniEditor = React.createClass({
             className="fill"
             placeholder={props.placeholder || 'Enter rules (Higher priority than Global Rules)'}
           />
-          <RulesDialog ref="rulesDialog" onSave={self.onChange} />
+          <RulesDialog ref="dialog" onSave={self.onChange} />
         </div>
       );
   }

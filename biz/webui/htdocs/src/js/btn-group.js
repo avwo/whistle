@@ -48,7 +48,6 @@ var BtnGroup = React.createClass({
       >
         {list.map(function (btn) {
           btn.disabled = disabled;
-          var className = btn.className;
           btn.key = btn.key || util.getKey();
 
           return (
@@ -65,7 +64,7 @@ var BtnGroup = React.createClass({
               className={
                 'btn btn-default' +
                 (btn.active && !disabled ? ' active' : '') +
-                (className ? ' ' + className : '')
+                (btn.className ? ' ' + btn.className : '')
               }
             >
               {btn.icon ? <Icon name={btn.icon} /> : null}

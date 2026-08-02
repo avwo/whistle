@@ -1,7 +1,6 @@
 require('../css/filter-input.css');
 var util = require('./util');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var $ = require('jquery');
 var storage = require('./storage');
 var win = require('./win');
@@ -42,7 +41,7 @@ var FilterInput = React.createClass({
     if (hintKey) {
       try {
         var hintList = JSON.parse(storage.get(hintKey));
-        if (Array.isArray(hintList)) {
+        if (util.isArr(hintList)) {
           var map = {};
           self.allHintList = hintList
             .map(function (key) {
@@ -63,7 +62,7 @@ var FilterInput = React.createClass({
   },
   componentDidMount: function () {
     var self = this;
-    self.hintElem = $(findDOMNode(self.refs.hints));
+    self.hintElem = $(self.refs.hints);
     $(document.body).on('mousedown', function(e) {
       if (self.state.hintList !== null && !$(e.target).closest('.w-filter-con').length) {
         self.hideHints();
@@ -75,7 +74,7 @@ var FilterInput = React.createClass({
     }
   },
   focus: function() {
-    var input = findDOMNode(this.refs.input);
+    var input = this.refs.input;
     input.select();
     input.focus();
   },
@@ -157,8 +156,8 @@ var FilterInput = React.createClass({
     self.setState({ hintList: self.filterHints(self.state.filterText) }, e && function() {
       self.hintElem.scrollTop(1000000000);
     });
-    var top = findDOMNode(self.refs.input).getBoundingClientRect().y - 130;
-    findDOMNode(self.refs.hints).style.setProperty('--h-hints', Math.max(Math.min(top, 360), 200) + 'px');
+    var top = self.refs.input.getBoundingClientRect().y - 130;
+    self.refs.hints.style.setProperty('--h-hints', Math.max(Math.min(top, 360), 200) + 'px');
   },
   onFilterKeyDown: function (e) {
     var elem;
@@ -239,14 +238,12 @@ var FilterInput = React.createClass({
     var onChange = self.props.onChange;
     onChange && onChange('');
     var hintList = null;
-    if (document.activeElement === findDOMNode(self.refs.input)) {
+    if (document.activeElement === self.refs.input) {
       hintList = self.filterHints();
     }
     var hasChanged = self.state.filterText;
     self.setState({ filterText: '', hintList: hintList }, function() {
-      if (hasChanged) {
-        self.onFilterChange();
-      }
+      hasChanged && self.onFilterChange();
     });
   },
   handleFilterType: function (e) {
@@ -270,7 +267,7 @@ var FilterInput = React.createClass({
     }
     var className = getActive(!filterType);
     return (
-      <div className="w-filter-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
+      <div className="w-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
         <span className={className}>All</span>
         {TYPES.map(function (type) {
           return <span key={type} title={TITLES[type] || type} className={getActive(filterType === type)}>{type}</span>;

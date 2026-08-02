@@ -8,7 +8,7 @@
 .w-props-view-parsed .w-props-source {
   display: none;
 }
-:is(.w-props-view-source, .w-props-view-parsed) .w-textarea-bar {
+:is(.w-props-view-source, .w-props-view-parsed) .w-bar {
   right: 5px !important;
 }
 .w-props :is(th, td) {

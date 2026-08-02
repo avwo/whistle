@@ -1,8 +1,8 @@
-.w-sync-dialog .modal-dialog {
+.w-sync .modal-dialog {
   width: 420px;
 }
 
-.w-sync-dialog .modal-body .btn {
+.w-sync .modal-body .btn {
   display: block;
   width: 398px;
   line-height: 40px;
@@ -10,7 +10,7 @@
   margin: 10px 0;
 }
 
-.w-sync-dialog .modal-body .btn span {
+.w-sync .modal-body .btn span {
   margin-right: 10px;
 }
 

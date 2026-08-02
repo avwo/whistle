@@ -5,7 +5,6 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var KVDialog = require('./kv-dialog');
 var Icon = require('./icon');
-var DismissBtn = require('./dismiss-btn');
 
 var isStr = util.isStr;
 
@@ -34,7 +33,7 @@ var SyncDialog = React.createClass({
     }
     if (plugin.rulesUrl || plugin.valuesUrl) {
       self.setState(plugin, util.isFunc(cb) ? cb : function () {
-        self.refs.syncDialog.show();
+        self.refs.dialog.show();
       });
     }
   },
@@ -56,7 +55,7 @@ var SyncDialog = React.createClass({
         return util.showSysErr(xhr);
       }
       self.plugin.selectedRulesHistory = history;
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, false, history);
+      self.refs.kv.show(data, self.rulesModal, self.valuesModal, false, history);
     });
     self.setState({});
   },
@@ -78,12 +77,12 @@ var SyncDialog = React.createClass({
         return util.showSysErr(xhr);
       }
       self.plugin.selectedValuesHistory = history;
-      self.refs.kvDialog.show(data, self.rulesModal, self.valuesModal, true, history);
+      self.refs.kv.show(data, self.rulesModal, self.valuesModal, true, history);
     });
     self.setState({});
   },
   showKVDialog: function (data, rulesModal, valuesModal, isValues) {
-    this.refs.kvDialog.show(data, rulesModal, valuesModal, isValues);
+    this.refs.kv.show(data, rulesModal, valuesModal, isValues);
   },
   syncRules: function () {
     this._syncRules(this.plugin.selectedRulesHistory);
@@ -104,7 +103,7 @@ var SyncDialog = React.createClass({
     var loadingRules = self.loadingRules;
     var loadingValues = self.loadingValues;
     return (
-      <Dialog ref="syncDialog" wstyle="w-sync-dialog">
+      <Dialog ref="dialog" wstyle="w-sync" closable>
         <div className="modal-body">
           <button
             onClick={self.syncRules}
@@ -125,10 +124,7 @@ var SyncDialog = React.createClass({
             {showLoading(loadingValues) ? 'Loading' : 'Sync'} Values
           </button>
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
-        </div>
-        <KVDialog onHistoryChange={self.onHistoryChange} ref="kvDialog" />
+        <KVDialog onHistoryChange={self.onHistoryChange} ref="kv" />
       </Dialog>
     );
   }
@@ -139,19 +135,19 @@ var SyncDialogWrap = React.createClass({
     return false;
   },
   show: function (plugin, rulesModal, valuesModal, cb) {
-    this.refs.syncDialog.show(plugin, rulesModal, valuesModal, cb);
+    this.refs.dialog.show(plugin, rulesModal, valuesModal, cb);
   },
   syncRules: function() {
-    this.refs.syncDialog.syncRules();
+    this.refs.dialog.syncRules();
   },
   syncValues: function() {
-    this.refs.syncDialog.syncValues();
+    this.refs.dialog.syncValues();
   },
   showKVDialog: function (data, rulesModal, valuesModal, isValues) {
-    this.refs.syncDialog.showKVDialog(data, rulesModal, valuesModal, isValues);
+    this.refs.dialog.showKVDialog(data, rulesModal, valuesModal, isValues);
   },
   render: function () {
-    return <SyncDialog ref="syncDialog" />;
+    return <SyncDialog ref="dialog" />;
   }
 });
 

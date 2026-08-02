@@ -32,7 +32,7 @@ var Inspector = React.createClass({
           <ReqDetail modal={modal} />
         </div>
         <div className="fill v-box">
-          <div className="w-inspectors-title w-detail-inspectors-res">
+          <div className="w-detail-title w-detail-inspectors-res">
             <Icon name="arrow-left" />Response
           </div>
           <ResDetail modal={modal} />

@@ -40,11 +40,10 @@ var LargeDialog = React.createClass({
   },
   render: function() {
     var props = this.props;
-    var className = props.className;
     var hideButton = props.hideButton;
 
     return (
-      <Dialog ref="dialog" wstyle={'w-large-dialog' + (className ? ' ' + className : '')}>
+      <Dialog ref="dialog" wstyle={'w-large-dialog ' + (props.className || '')}>
         {hideButton ? null : <Icon className="w-open-win-btn" onClick={this.openInNewWin} name="new-window" title="Open in new window" />}
         <CloseBtn />
         <div className="modal-body w-fix-drag">

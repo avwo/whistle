@@ -31,12 +31,13 @@ var handleTab = util.handleTab;
 var parseHeaders = util.parseHeaders;
 var getBase64FromHexText = util.getBase64FromHexText;
 var handleEditorKeydown = util.handleEditorKeydown;
-var getHexFromBase64 = util.getHexFromBase64;
+var getBase64Hex = util.getBase64Hex;
 var getBody = util.getBody;
 var getHexText = util.getHexText;
 var trigger = util.trigger;
 var addEvent = util.on;
 var getHide = util.getHide;
+var isArr = util.isArr;
 var getRawHeaders = dataCenter.getRawHeaders;
 var strfy = util.strfy;
 var SEND_CTX_MENU = [
@@ -82,7 +83,7 @@ function hexToStr(str) {
 
 function strToHex(str) {
   var base64 = util.toBase64(str);
-  return getHexText(getHexFromBase64(base64));
+  return getHexText(getBase64Hex(base64));
 }
 
 function getStatus(statusCode) {
@@ -97,7 +98,7 @@ function getStatus(statusCode) {
 
 function parseValue(value) {
   if (util.isObj(value)) {
-    value.data = util.base64ToByteArray(value.base64) || util.EMPTY_BUF;
+    value.data = util.base64ToBytes(value.base64) || util.EMPTY_BUF;
     delete value.base64;
   }
 }
@@ -136,7 +137,7 @@ var Composer = React.createClass({
       if (uploadBodyData) {
         Object.keys(uploadBodyData).forEach(function(name) {
           var value = uploadBodyData[name];
-          if (Array.isArray(value)) {
+          if (isArr(value)) {
             value.forEach(parseValue);
           } else {
             parseValue(value);
@@ -287,7 +288,7 @@ var Composer = React.createClass({
     }
     state.loading = 2;
     dataCenter.getHistory(function (data) {
-      if (Array.isArray(data)) {
+      if (isArr(data)) {
         self.setState({
           loading: 0,
           historyData: self.formatHistory(data)
@@ -510,7 +511,7 @@ var Composer = React.createClass({
     this.setState({ isCRLF: isCRLF });
   },
   updateRules: function(rules) {
-    if (Array.isArray(rules)) {
+    if (isArr(rules)) {
       rules = rules.join('\n');
     }
     if (notEStr(rules)) {
@@ -572,7 +573,7 @@ var Composer = React.createClass({
       isHexText = true;
     }
     var body = isHexText && item.base64
-      ? getHexText(getHexFromBase64(item.base64))
+      ? getHexText(getBase64Hex(item.base64))
       : util.getText(item.body) || '';
     state.tabName = 'Request';
     state.result = '';
@@ -703,7 +704,7 @@ var Composer = React.createClass({
     fields.forEach(function (field) {
       var value = result[field.name];
       var filedValue = getValue(field);
-      if (Array.isArray(value)) {
+      if (isArr(value)) {
         value.push(filedValue);
       } else {
         result[field.name] = value == null ? filedValue : [value, filedValue];
@@ -1281,7 +1282,7 @@ var Composer = React.createClass({
               title={isStrictMode ? TIPS : null}
               className="v-box fill w-com-rules"
             >
-              <div className="w-inspectors-title">
+              <div className="w-detail-title">
                 <label className="w-com-rules-label">
                   <input
                     disabled={pending}
@@ -1334,7 +1335,7 @@ var Composer = React.createClass({
               />
             </div>
             <div className="v-box fill">
-              <div className="w-inspectors-title w-com-tabs">
+              <div className="w-detail-title w-com-tabs">
                 <button
                   onClick={onTabChange}
                   name="Request"

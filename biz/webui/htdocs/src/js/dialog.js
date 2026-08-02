@@ -1,6 +1,7 @@
-var $ = (window.jQuery = require('jquery'));
+var $ = require('jquery');
 var React = require('react');
 var ReactDOM = require('react-dom');
+var ModalFooter = require('./modal-footer');
 var isFunc = require('./util').isFunc;
 
 var Dialog = React.createClass({
@@ -46,7 +47,6 @@ var Dialog = React.createClass({
   },
   getDialogElement: function () {
     var props = this.props;
-    var className = props.wclassName;
     var style;
     if (props.width) {
       style = style || {};
@@ -59,9 +59,12 @@ var Dialog = React.createClass({
     return (
       <div
         style={style}
-        className={'modal-dialog ' + (className || '')}
+        className={'modal-dialog ' + (props.wclassName || '')}
       >
-        <div className="modal-content">{props.children}</div>
+        <div className="modal-content">
+          {props.children}
+          {props.closable ? <ModalFooter /> : null}
+        </div>
       </div>
     );
   },

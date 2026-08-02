@@ -17,7 +17,7 @@ var message = require('./message');
 var Icon = require('./icon');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var Dialog = require('./dialog');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var trigger = util.trigger;
 var addEvent = util.on;
@@ -25,6 +25,7 @@ var preventBlur = util.preventBlur;
 var getHide = util.getHide;
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
+var globalWin = window;
 var columnState = {};
 var columnKeys = {};
 var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
@@ -32,6 +33,7 @@ var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
 var BASE_DOM = '.ReactVirtualized__Grid:first';
 var MAX_LEN = 64;
 var KV_TIPS = util.KV_TIPS;
+var ERROR_STYLE = 'w-error-status';
 var HINTS = [
   '<' + KV_TIPS + 'URL>',
   'd:<' + KV_TIPS + 'domain>',
@@ -229,12 +231,13 @@ function getStatusClass(data) {
   }
 
   var statusCode = data.res && data.res.statusCode;
-  if (data.reqError || data.resError || (data.customData && data.customData.error)) {
-    type += ' danger w-error-status';
+  var customData = data.customData;
+  if (data.reqError || data.resError || (customData && customData.error)) {
+    type += ' danger ' + ERROR_STYLE;
   } else if (statusCode == 403) {
     type += ' w-forbidden';
   } else if (statusCode && (!/^\d+$/.test(statusCode) || statusCode >= 400)) {
-    type += ' w-error-status';
+    type += ' ' + ERROR_STYLE;
   }
 
   if (data.mark) {
@@ -245,7 +248,7 @@ function getStatusClass(data) {
 }
 
 function getType(className) {
-  if (className.indexOf('w-error-status') !== -1) {
+  if (className.indexOf(ERROR_STYLE) !== -1) {
     return 'ERROR';
   }
   if (className.indexOf('warning') !== -1) {
@@ -276,16 +279,16 @@ function getValue(item, key, name) {
   var regex;
   var decode;
   var index = key.indexOf(':/');
-  var hasRegex = index !== -1 && END_RE.test(key);
-  if (hasRegex) {
+  var match = index !== -1 && END_RE.exec(key);
+  if (match) {
     var cache = cacheKeys[key];
     if (cache && cache.rawKey === key) {
       key = cache.key;
       regex = cache.regex;
       decode = cache.decode;
     } else {
-      var pattern = RegExp.$1;
-      var flags = RegExp.$2 || '';
+      var pattern = match[1];
+      var flags = match[2] || '';
       if (flags.indexOf('d') !== -1) {
         decode = true;
         flags = flags.split('d').join('');
@@ -307,7 +310,7 @@ function getValue(item, key, name) {
   } else {
     value = util.getValue(item, key);
   }
-  if (!value || !hasRegex) {
+  if (!value || !match) {
     return value;
   }
   if (!regex || !regex.test(value)) {
@@ -458,14 +461,15 @@ var ReqData = React.createClass({
     for (var i = self.startIndex; i <= self.endIndex; i++) {
       item = list[i];
       if (item) {
+        var itemData = item.data;
         if (!item.parent) {
           $.extend(leafMap, item.map);
           visibleMap[item.path] = 1;
-        } else if (!item.data) {
+        } else if (!itemData) {
           visibleMap[item.path] = 1;
         } else if (isVisibleInTree(item)) {
-          visibleLeafMap[item.data.id] = 1;
-          if (curNewIdList.indexOf(item.data.id) !== -1) {
+          visibleLeafMap[itemData.id] = 1;
+          if (curNewIdList.indexOf(itemData.id) !== -1) {
             lightList.push(item);
           }
         }
@@ -535,12 +539,7 @@ var ReqData = React.createClass({
     }
     lightList = lightList
       .map(function (item) {
-        var elem;
-        if (item.data) {
-          elem = $('tr[data-id="' + item.data.id + '"]:not(.highlight)');
-        } else {
-          elem = $('tr[data-tree="' + item.path + '"]:not(.highlight)');
-        }
+        var elem = $('tr' + (item.data ? '[data-id="' + item.data.id : '[data-tree="' + item.path) + '"]:not(.highlight)');
         if (elem.length) {
           return elem.addClass('highlight');
         }
@@ -580,7 +579,7 @@ var ReqData = React.createClass({
       self.refs.filterInput.focus();
     });
     addEvent('saveSessions', function (_, item) {
-      var list = Array.isArray(item) && item.length ? item : self.getActivedList(item);
+      var list = util.isArr(item) && item.length ? item : self.getActivedList(item);
       var len = list && list.length;
       if (!len) {
         return;
@@ -670,7 +669,7 @@ var ReqData = React.createClass({
       .on('mouseover', toggleDraggable)
       .on('mouseleave', toggleDraggable);
 
-    $(window).on('resize', render);
+    $(globalWin).on('resize', render);
     addEvent('ensureSelectedItemVisible', function () {
       var modal = self.props.modal;
       var selected = modal.getSelectedList()[0];
@@ -711,7 +710,7 @@ var ReqData = React.createClass({
       trigger('importSessionsFromUrl', url);
     };
     importRemoteUrl();
-    $(window).on('hashchange', importRemoteUrl);
+    $(globalWin).on('hashchange', importRemoteUrl);
     var hideBackBtn = function() {
       if (self.isShownBtn) {
         self.isShownBtn = false;
@@ -896,7 +895,7 @@ var ReqData = React.createClass({
     self.currentFocusItem = null;
     switch (parentAction || action) {
     case 'New Tab':
-      curUrl && window.open(curUrl);
+      curUrl && globalWin.open(curUrl);
       break;
     case 'QR Code':
       self.refs.qrcodeDialog.show(curUrl);
@@ -1270,9 +1269,9 @@ var ReqData = React.createClass({
     var self = this;
     var modal = self.props.modal;
     var filterBody = BODY_FILTER.test(keyword);
-    clearTimeout(self.networkStateChangeTimer);
+    clearTimeout(self.filterTImer);
     !filterBody && modal.search(keyword);
-    self.networkStateChangeTimer = setTimeout(function () {
+    self.filterTImer = setTimeout(function () {
       filterBody && modal.search(keyword);
       self.setState({ filterText: keyword }, self.updateList);
       trigger('networkStateChange');
@@ -1317,7 +1316,7 @@ var ReqData = React.createClass({
     this.hideBackBtn();
   },
   orderBy: function (e) {
-    var target = this.willResort && $(e.target).closest('th')[0];
+    var target = $(e.target).closest('th')[0];
     if (!target) {
       return;
     }
@@ -1354,9 +1353,6 @@ var ReqData = React.createClass({
   onColumnsResort: function () {
     this.setState({ columns: settings.getSelectedColumns() });
   },
-  onMouseDown: function (e) {
-    this.willResort = e.target.className !== 'w-header-drag-block';
-  },
   onReplay: function (e) {
     if (!e.metaKey && !e.ctrlKey) {
       return;
@@ -1388,7 +1384,6 @@ var ReqData = React.createClass({
     }
     return (
       <th
-        onMouseDown={this.onMouseDown}
         {...this.state.dragger}
         data-name={name}
         draggable={true}
@@ -1659,8 +1654,7 @@ var ReqData = React.createClass({
               />
             </label>
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             <button
               type="button"
               onKeyDown={self.saveSessions}
@@ -1671,7 +1665,7 @@ var ReqData = React.createClass({
             >
               Save
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
       </div>
     );

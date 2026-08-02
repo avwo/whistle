@@ -17,8 +17,9 @@ var toRegExp = util.toRegExp;
 var getTransProto = util.getTransProto;
 var trigger = util.trigger;
 var strfy = util.strfy;
-var MAX_INCLUDE_LEN = 5120;
-var MAX_EXCLUDE_LEN = 5120;
+var isArr = util.isArr;
+var MAX_FILTER_LEN = 5120;
+var LOCAL_IP = '127.0.0.1';
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
 var TIMEOUT = 1000 * 36;
 var LONG_TIMEOUT = TIMEOUT + 1000 * 10;
@@ -79,9 +80,19 @@ var DEFAULT_CONF = {
 };
 var composerItem;
 var hasUpdater;
-var HAS_RULES_KEY = window.Symbol ? window.Symbol('hasRules') : '__hasRules';
+var globalWin = window;
+var HAS_RULES_KEY = globalWin.Symbol ? globalWin.Symbol('hasRules') : '__hasRules';
 var clearedLogs;
 var clearedSvrLogs;
+var CGI_URL = 'cgi-bin/';
+var RULES_URL = CGI_URL + 'rules/';
+var VALUES_URL = CGI_URL + 'values/';
+var PLUGINS_URL = CGI_URL + 'plugins/';
+var CERTS_URL = CGI_URL + 'certs/';
+var SERVICE_URL = CGI_URL + 'service/';
+var SOCKET_URL = CGI_URL + 'socket/';
+var JSON_TYPE = 'application/json';
+var decode = decodeURIComponent;
 
 exports.HAS_RULES_KEY = HAS_RULES_KEY;
 exports.enabledRulesCount = 0;
@@ -97,9 +108,9 @@ exports.checkPluginUpdates = function (plugin, callback) {
   callback(true);
 };
 
-exports.clientIp = '127.0.0.1';
-exports.MAX_INCLUDE_LEN = MAX_INCLUDE_LEN;
-exports.MAX_EXCLUDE_LEN = MAX_EXCLUDE_LEN;
+exports.clientIp = LOCAL_IP;
+exports.MAX_INCLUDE_LEN = MAX_FILTER_LEN;
+exports.MAX_EXCLUDE_LEN = MAX_FILTER_LEN;
 exports.changeLogId = function (id) {
   logId = id;
 };
@@ -181,7 +192,7 @@ function handleHashFilterChanged(e) {
       hash.substring(index + 1),
       null,
       null,
-      decodeURIComponent
+      decode
     );
     var curRuleName = obj.rulesName || obj.ruleName;
     var curValueName = obj.valuesName || obj.valueName;
@@ -225,7 +236,7 @@ function handleHashFilterChanged(e) {
   hashFilterObj = filter;
 }
 handleHashFilterChanged();
-$(window).on('hashchange', handleHashFilterChanged);
+$(globalWin).on('hashchange', handleHashFilterChanged);
 
 function setFilterText(settings) {
   settings = settings || {};
@@ -248,11 +259,11 @@ function getFilterText() {
       disabledFilterText: settings.disabledFilterText,
       filterText: util
           .toString(settings.filterText)
-          .substring(0, MAX_INCLUDE_LEN),
+          .substring(0, MAX_FILTER_LEN),
       disabledExcludeText: settings.disabledExcludeText,
       excludeText: util
           .toString(settings.excludeText)
-          .substring(0, MAX_EXCLUDE_LEN)
+          .substring(0, MAX_FILTER_LEN)
     }
     : {
       filterText: '',
@@ -361,7 +372,7 @@ function checkFilterField(str, filter, needDecode) {
   } else {
     if (needDecode) {
       try {
-        var text = decodeURIComponent(str);
+        var text = decode(str);
         if (text !== str) {
           str += '\n' + text;
         }
@@ -385,7 +396,7 @@ function checkFilter(item, list) {
       }
       break;
     case 'ip':
-      if (checkFilterField(req.ip || '127.0.0.1', filter)) {
+      if (checkFilterField(req.ip || LOCAL_IP, filter)) {
         return true;
       }
       break;
@@ -436,10 +447,10 @@ var GET_CONF = $.extend(
 );
 var cgi = createCgiObj(
   {
-    getData: 'cgi-bin/get-data',
-    getLogs: 'cgi-bin/log/get',
-    getInitial: 'cgi-bin/init',
-    getMatchedRules: 'cgi-bin/get-matched-rules'
+    getData: CGI_URL + 'get-data',
+    getLogs: CGI_URL + 'log/get',
+    getInitial: CGI_URL + 'init',
+    getMatchedRules: CGI_URL + 'get-matched-rules'
   },
   GET_CONF
 );
@@ -464,17 +475,17 @@ function toLowerCase(str) {
 
 var certs = createCgiObj(
   {
-    remove: 'cgi-bin/certs/remove',
+    remove: CERTS_URL + 'remove',
     active: {
-      url:'cgi-bin/certs/active',
-      contentType: 'application/json'
+      url: CERTS_URL + 'active',
+      contentType: JSON_TYPE
     },
     upload: {
-      url: 'cgi-bin/certs/upload',
-      contentType: 'application/json'
+      url: CERTS_URL + 'upload',
+      contentType: JSON_TYPE
     },
     all: {
-      url: 'cgi-bin/certs/all',
+      url: CERTS_URL + 'all',
       type: 'get'
     }
   },
@@ -503,36 +514,36 @@ exports.values = createCgiObj(
   {
     recycleList: {
       type: 'get',
-      url: 'cgi-bin/values/recycle/list'
+      url: VALUES_URL + 'recycle/list'
     },
     recycleView: {
       type: 'get',
-      url: 'cgi-bin/values/recycle/view'
+      url: VALUES_URL + 'recycle/view'
     },
-    recycleRemove: 'cgi-bin/values/recycle/remove',
+    recycleRemove: VALUES_URL + 'recycle/remove',
     moveTo: {
       mode: 'chain',
-      url: 'cgi-bin/values/move-to'
+      url: VALUES_URL + 'move-to'
     },
     list: {
       type: 'get',
-      url: 'cgi-bin/values/list'
+      url: VALUES_URL + 'list'
     },
-    add: 'cgi-bin/values/add',
-    remove: 'cgi-bin/values/remove',
-    rename: 'cgi-bin/values/rename'
+    add: VALUES_URL + 'add',
+    remove: VALUES_URL + 'remove',
+    rename: VALUES_URL + 'rename'
   },
   POST_CONF
 );
 
 exports.plugins = createCgiObj(
   {
-    disablePlugin: 'cgi-bin/plugins/disable-plugin',
-    disableAllPlugins: 'cgi-bin/plugins/disable-all-plugins',
-    getRegistryList: 'cgi-bin/plugins/registry-list',
-    installPlugins: 'cgi-bin/plugins/install',
-    uninstallPlugins: 'cgi-bin/plugins/uninstall',
-    addRegistry: 'cgi-bin/plugins/add-registry'
+    disablePlugin: PLUGINS_URL + 'disable-plugin',
+    disableAllPlugins: PLUGINS_URL + 'disable-all-plugins',
+    getRegistryList: PLUGINS_URL + 'registry-list',
+    installPlugins: PLUGINS_URL + 'install',
+    uninstallPlugins: PLUGINS_URL + 'uninstall',
+    addRegistry: PLUGINS_URL + 'add-registry'
   },
   POST_CONF
 );
@@ -541,7 +552,7 @@ exports.installPluginsFromService = function (plugins, registry) {
   if (!plugins || !curWhistleId) {
     return;
   }
-  plugins = isStr(plugins) ? plugins.trim().split(/\s*,\s*/) : (Array.isArray(plugins) ? plugins : []);
+  plugins = isStr(plugins) ? plugins.trim().split(/\s*,\s*/) : (isArr(plugins) ? plugins : []);
   plugins = plugins.map(function(p) {
     return p.indexOf('/') === -1 ? curWhistleId + '/' + p : p;
   }).join();
@@ -556,45 +567,45 @@ exports.installPluginsFromService = function (plugins, registry) {
 
 exports.rules = createCgiObj(
   {
-    disableAllRules: 'cgi-bin/rules/disable-all-rules',
-    clearDnsCache: 'cgi-bin/rules/clear-dns-cache',
+    disableAllRules: RULES_URL + 'disable-all-rules',
+    clearDnsCache: RULES_URL + 'clear-dns-cache',
     recycleList: {
       type: 'get',
-      url: 'cgi-bin/rules/recycle/list'
+      url: RULES_URL + 'recycle/list'
     },
     recycleView: {
       type: 'get',
-      url: 'cgi-bin/rules/recycle/view'
+      url: RULES_URL + 'recycle/view'
     },
-    recycleRemove: 'cgi-bin/rules/recycle/remove',
+    recycleRemove: RULES_URL + 'recycle/remove',
     moveTo: {
       mode: 'chain',
-      url: 'cgi-bin/rules/move-to'
+      url: RULES_URL + 'move-to'
     },
     getEnabledRules: {
-      url: 'cgi-bin/rules/enabled',
+      url: RULES_URL + 'enabled',
       mode: 'cancel'
     },
     list: {
       type: 'get',
-      url: 'cgi-bin/rules/list'
+      url: RULES_URL + 'list'
     },
-    add: 'cgi-bin/rules/add',
-    disableDefault: 'cgi-bin/rules/disable-default',
-    enableDefault: 'cgi-bin/rules/enable-default',
-    remove: 'cgi-bin/rules/remove',
-    rename: 'cgi-bin/rules/rename',
-    select: 'cgi-bin/rules/select',
-    unselect: 'cgi-bin/rules/unselect',
+    add: RULES_URL + 'add',
+    disableDefault: RULES_URL + 'disable-default',
+    enableDefault: RULES_URL + 'enable-default',
+    remove: RULES_URL + 'remove',
+    rename: RULES_URL + 'rename',
+    select: RULES_URL + 'select',
+    unselect: RULES_URL + 'unselect',
     allowMultipleChoice: {
       mode: 'ignore',
-      url: 'cgi-bin/rules/allow-multiple-choice'
+      url: RULES_URL + 'allow-multiple-choice'
     },
     enableBackRulesFirst: {
       mode: 'ignore',
-      url: 'cgi-bin/rules/enable-back-rules-first'
+      url: RULES_URL + 'enable-back-rules-first'
     },
-    setSysHosts: 'cgi-bin/rules/set-sys-hosts'
+    setSysHosts: RULES_URL + 'set-sys-hosts'
   },
   POST_CONF
 );
@@ -602,7 +613,7 @@ exports.rules = createCgiObj(
 var COMPOSE_CONF = $.extend(
   {
     type: 'post',
-    contentType: 'application/json',
+    contentType: JSON_TYPE,
     processData: false
   },
     DEFAULT_CONF
@@ -611,7 +622,7 @@ var COMPOSE_CONF = $.extend(
 function createCompose(cancel) {
   return createCgiObj( {
     _: {
-      url: 'cgi-bin/composer',
+      url: CGI_URL + 'composer',
       mode: cancel ? 'cancel' : null
     }
   }, COMPOSE_CONF)._;
@@ -649,34 +660,34 @@ $.extend(
   exports,
   createCgiObj(
     {
-      interceptHttpsConnects: 'cgi-bin/intercept-https-connects',
-      enableHttp2: 'cgi-bin/enable-http2',
-      abort: 'cgi-bin/abort',
-      setCustomColumn: 'cgi-bin/set-custom-column',
+      interceptHttpsConnects: CGI_URL + 'intercept-https-connects',
+      enableHttp2: CGI_URL + 'enable-http2',
+      abort: CGI_URL + 'abort',
+      setCustomColumn: CGI_URL + 'set-custom-column',
       addRulesAndValues: {
-        url: 'cgi-bin/add-rules-values',
-        contentType: 'application/json'
+        url: CGI_URL + 'add-rules-values',
+        contentType: JSON_TYPE
       },
       createTempFile: {
-        url: 'cgi-bin/temp/create',
-        contentType: 'application/json'
+        url: CGI_URL + 'temp/create',
+        contentType: JSON_TYPE
       },
       saveSessions: {
-        url: 'cgi-bin/saved/save',
-        contentType: 'application/json'
+        url: CGI_URL + 'saved/save',
+        contentType: JSON_TYPE
       },
       removeSavedSessions: {
-        url: 'cgi-bin/saved/remove',
-        contentType: 'application/json'
+        url: CGI_URL + 'saved/remove',
+        contentType: JSON_TYPE
       },
-      setDnsOrder: 'cgi-bin/set-dns-order',
+      setDnsOrder: CGI_URL + 'set-dns-order',
       save: {
-        url: 'cgi-bin/service/save',
-        contentType: 'application/json'
+        url: SERVICE_URL + 'save',
+        contentType: JSON_TYPE
       },
-      login: 'cgi-bin/service/login',
-      logout: 'cgi-bin/service/logout',
-      updateClient: 'cgi-bin/update'
+      login: SERVICE_URL + 'login',
+      logout: SERVICE_URL + 'logout',
+      updateClient: CGI_URL + 'update'
     },
     POST_CONF
   )
@@ -685,15 +696,15 @@ $.extend(
   exports,
   createCgiObj(
     {
-      donotShowAgain: 'cgi-bin/do-not-show-again',
-      checkUpdate: 'cgi-bin/check-update',
-      importRemote: 'cgi-bin/import-remote',
-      getHistory: 'cgi-bin/history',
-      getCookies: 'cgi-bin/cookies',
-      getTempFile: 'cgi-bin/temp/get',
-      getComposeData: 'cgi-bin/compose-data',
-      getSavedList: 'cgi-bin/saved/list',
-      getSavedSessions: 'cgi-bin/saved/sessions'
+      donotShowAgain: CGI_URL + 'do-not-show-again',
+      checkUpdate: CGI_URL + 'check-update',
+      importRemote: CGI_URL + 'import-remote',
+      getHistory: CGI_URL + 'history',
+      getCookies: CGI_URL + 'cookies',
+      getTempFile: CGI_URL + 'temp/get',
+      getComposeData: CGI_URL + 'compose-data',
+      getSavedList: CGI_URL + 'saved/list',
+      getSavedSessions: CGI_URL + 'saved/sessions'
     },
     GET_CONF
   )
@@ -728,15 +739,15 @@ exports.socket = $.extend(
     {
       changeStatus: {
         mode: 'cancel',
-        url: 'cgi-bin/socket/change-status'
+        url: SOCKET_URL + 'change-status'
       },
       abort: {
         mode: 'ignore',
-        url: 'cgi-bin/socket/abort'
+        url: SOCKET_URL + 'abort'
       },
       send: {
         mode: 'ignore',
-        url: 'cgi-bin/socket/data'
+        url: SOCKET_URL + 'data'
       }
     },
     POST_CONF
@@ -861,9 +872,9 @@ exports.getInitialData = function (callback) {
         exports.disableInstaller = data.disableInstaller;
         exports.upload = createCgiObj(
           {
-            importSessions: 'cgi-bin/sessions/import?clientId=' + clientId,
-            importRules: 'cgi-bin/rules/import?clientId=' + clientId,
-            importValues: 'cgi-bin/values/import?clientId=' + clientId
+            importSessions: CGI_URL + 'sessions/import?clientId=' + clientId,
+            importRules: RULES_URL + 'import?clientId=' + clientId,
+            importValues: VALUES_URL + 'import?clientId=' + clientId
           },
           $.extend(
             {
@@ -1152,7 +1163,7 @@ function startLoadData() {
         return;
       }
       var installErrors = data.installErrors;
-      if (Array.isArray(installErrors) && installErrors.length) {
+      if (isArr(installErrors) && installErrors.length) {
         showError(installErrors.join('\n'));
       }
       var preCapture = exports.isCapture;
@@ -1452,7 +1463,7 @@ function getRawHeaders(headers, rawHeaderNames) {
 
 exports.getRawHeaders = getRawHeaders;
 
-window.getWhistlePageId = window.getWhistleClientId = function () {
+globalWin.getWhistlePageId = globalWin.getWhistleClientId = function () {
   return clientId;
 };
 
@@ -1546,7 +1557,7 @@ function getCustomValue(style, isFirst) {
   style = index === -1 ? style : style.substring(0, index);
   if (style.indexOf('%') !== -1) {
     try {
-      return decodeURIComponent(style);
+      return decode(style);
     } catch (e) {}
   }
   return style;
@@ -1726,7 +1737,7 @@ function setReqData(item) {
   setAppName(item);
   item.hostIp = res.ip || defaultValue;
   item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(rules);
-  item.clientIp = req.ip || '127.0.0.1';
+  item.clientIp = req.ip || LOCAL_IP;
   item.date = item.date || util.toDateStr(item.startTime);
   item.clientPort = req.port;
   item.serverPort = res.port;
@@ -1829,7 +1840,7 @@ function checkUrl(data) {
 }
 
 exports.addNetworkList = function (list) {
-  if (!Array.isArray(list) || !list.length) {
+  if (!isArr(list) || !list.length) {
     return;
   }
   var hasData;
@@ -1859,7 +1870,7 @@ exports.addNetworkList = function (list) {
     if (!isStr(data.fwdHost)) {
       delete data.fwdHost;
     }
-    if (Array.isArray(data.frames)) {
+    if (isArr(data.frames)) {
       data.frames = data.frames.filter(function (frame) {
         if (frame) {
           delete frame.json;
@@ -1975,7 +1986,7 @@ function updateServerInfo(data) {
   });
 }
 
-exports.isDiableCustomCerts = function () {
+exports.noCustomCerts = function () {
   return curServerInfo && curServerInfo.dcc;
 };
 
@@ -2086,7 +2097,7 @@ exports.setDisabledPlugins = function(plugins) {
 
 function getMenus(menuName) {
   var list = account && account[menuName];
-  if (!Array.isArray(list)) {
+  if (!isArr(list)) {
     list = [];
   }
   if (disabledAllPlugins) {
@@ -2209,10 +2220,6 @@ exports.showLatestClientVersion = function() {
   return true;
 };
 
-function toString(options) {
-  return isStr(options) ? options : strfy(options);
-}
-
 function updateWhistleId(server) {
   curWhistleId = server && server.whistleId;
   exports.whistleId = curWhistleId;
@@ -2227,7 +2234,7 @@ exports.getRulesMFlag = function() {
 };
 
 exports.saveToService = function(options, callback) {
-  curWhistleId && exports.save(toString(options), callback);
+  curWhistleId && exports.save(isStr(options) ? options : strfy(options), callback);
 };
 
 setDataCenter(exports);

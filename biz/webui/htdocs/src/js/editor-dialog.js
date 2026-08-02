@@ -4,7 +4,7 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var win = require('./win');
 var Icon = require('./icon');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 var ModalHeader = require('./modal-header');
 var UploadForm = require('./upload-form');
 var showError = require('./message').error;
@@ -145,6 +145,7 @@ var EditorDialog = React.createClass({
       addEvent('showEditorDialog', function(_, data, elem) {
         self.onClose();
         var state = self.state;
+        var name;
         state.textSrc = '';
         state.callback = null;
         var text = data && (data.text || data.value) || '';
@@ -162,13 +163,13 @@ var EditorDialog = React.createClass({
           filename && getTempFile(filename, function(value) {
             textarea.value = value;
           });
-        } else if (data.name) {
-          var item = dataCenter.valuesModal.get(data.name);
+        } else if (name = data.name) {
+          var item = dataCenter.valuesModal.get(name);
           var value = item && item.value || '';
-          self._keyName = data.name;
+          self._keyName = name;
           self.show({
             value: value,
-            title: item ? 'Update value for key \'' + data.name + '\' in Values' : 'Create a new key \'' + data.name + '\' to Values',
+            title: item ? 'Update value for key \'' + name + '\' in Values' : 'Create a new key \'' + name + '\' to Values',
             isTempFile: false
           });
         } else {
@@ -438,8 +439,7 @@ var EditorDialog = React.createClass({
               <textarea onChange={self.onChange} value={value} />
           }
         </div>
-        {textEditor ? <div className="modal-footer">
-          <DismissBtn />
+        {textEditor ? <ModalFooter className="modal-footer">
           {hasConfirm ? null : <button
             type="button"
             className="btn btn-info"
@@ -455,18 +455,17 @@ var EditorDialog = React.createClass({
           >
             {hasConfirm ? 'Confirm' : (self._fileElem ? 'Save' : 'Create')}
           </button>
-        </div> : <div className="modal-footer">
-          <DismissBtn />
+        </ModalFooter> : <ModalFooter>
           <button
             type="button"
             data-dismiss="modal"
             className="btn btn-primary w-copy-text-with-tips"
-            data-clipboard-text={state.value}
+            data-clipboard-text={value}
             disabled={!value}
           >
             Copy
           </button>
-        </div>}
+        </ModalFooter>}
         <UploadForm ref="uploadForm" onChange={self.readLocalFile} />
       </Dialog>
     );

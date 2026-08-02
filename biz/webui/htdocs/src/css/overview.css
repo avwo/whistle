@@ -18,16 +18,16 @@
   margin-right: 5px;
 }
 
-.w-overview-timeline {
+.w-overview-tl {
   position: relative;
 }
 
-.w-overview-timeline > pre {
+.w-overview-tl > pre {
   z-index: 1;
   position: relative;
 }
 
-.w-overview-timeline::before {
+.w-overview-tl::before {
   position: absolute;
   content: '';
   display: block;

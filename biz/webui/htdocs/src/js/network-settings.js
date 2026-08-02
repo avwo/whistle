@@ -13,7 +13,7 @@ var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
 var Prompt = require('./prompt');
 var message = require('./message');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var DATA_KEY_TIPS = 'e.g. res.body or res.body:/"msgno":"(\w+)"/ ...';
 var URL_DEMO = ', e.g. https://example.com/path#xxx={WHISTLE_DATA}';
@@ -179,7 +179,7 @@ var Settings = React.createClass({
   editCustomCol: function (e) {
     preventBlur(e);
     var self = this;
-    self.refs.editCustomColumn.show();
+    self.refs.editCol.show();
     var name = attr(e.target, 'data-name');
     var lname = name.toLowerCase();
     self.setState(
@@ -224,7 +224,7 @@ var Settings = React.createClass({
           util.showSysErr(xhr);
           return;
         }
-        self.refs.editCustomColumn.hide();
+        self.refs.editCol.hide();
         var lname = name.toLowerCase();
         dataCenter[lname] = value || name;
         dataCenter[lname + 'Key'] = key;
@@ -280,7 +280,7 @@ var Settings = React.createClass({
     checkChanged('filterText', isStr);
 
     var list = settings.columns;
-    if (Array.isArray(list)) {
+    if (util.isArr(list)) {
       state.columns.forEach(function(col) {
         var selected = list.indexOf(col.name) !== -1;
         if (col.selected !== selected) {
@@ -414,7 +414,7 @@ var Settings = React.createClass({
               maxLength={dataCenter.MAX_INCLUDE_LEN}
             />
           </fieldset>
-          <fieldset className="w-ns-columns">
+          <fieldset className="w-ns-cols">
             <legend>
               <label>Network Columns</label>
               <label onClick={self.resetColumns} className="btn btn-default">
@@ -523,8 +523,7 @@ var Settings = React.createClass({
             </label>
           ) : null}
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             className="btn btn-primary"
@@ -539,8 +538,8 @@ var Settings = React.createClass({
           >
             Export
           </button>
-        </div>
-        <Dialog ref="editCustomColumn" wstyle="w-ns-edit">
+        </ModalFooter>
+        <Dialog ref="editCol" wstyle="w-ns-edit">
           <div onChange={onNetworkSettingsChange} className="modal-body">
             <CloseBtn />
             <label>
@@ -565,8 +564,7 @@ var Settings = React.createClass({
               />
             </label>
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             <button
               disabled={!state.nameChanged}
               onClick={self.changeName}
@@ -575,7 +573,7 @@ var Settings = React.createClass({
             >
               Confirm
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
         <Prompt ref="prompt" title="Custom URL Opening" placeholder={'Enter URL' + URL_DEMO} allowEmpty />
       </Dialog>

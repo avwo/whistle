@@ -6,7 +6,7 @@ var ruleMixin = require('./rule-mixin');
 var KW_TIPS = ' keyword (case-insensitive) or regexp';
 var valuePlaceholder = 'Enter' + KW_TIPS;
 var FILTER_OPTIONS = [
-  { value: '', label: 'Request URL', placeholder: 'Enter URL fragment or wildcard or regexp' },
+  { value: '', label: 'Request URL', placeholder: 'Enter URL part or wildcard or regexp' },
   { value: 'm:', label: 'Request Method', placeholder: 'Enter method' + KW_TIPS },
   { value: 'b:', label: 'Request Body', placeholder: 'Enter request body' + KW_TIPS },
   { value: 's:', label: 'Status Code', placeholder: 'Enter status code' + KW_TIPS },

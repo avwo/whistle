@@ -47,7 +47,7 @@ var ImageView = React.createClass({
         className={'fill w-image-view' + (previewUrl ? ' w-image-webview' : '') +
           util.getHide(props.hide) + (isImg ? ' w-image-bg' : '')}
       >
-        {previewUrl || props.imgSrc ? <div className="w-textarea-bar">
+        {previewUrl || props.imgSrc ? <div className="w-bar">
           <a onClick={self.preview}>Open in new window</a>
         </div> : null}
         {self.getPreviewElem(previewUrl)}

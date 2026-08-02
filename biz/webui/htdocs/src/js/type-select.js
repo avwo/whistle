@@ -1,14 +1,15 @@
 var React = require('react');
 var Select = require('./custom-select');
 
-var JSON_TYPE = 'application/json';
-var XML_TYPE = 'application/xml';
+var APP_TYPE = 'application/';
+var JSON_TYPE = APP_TYPE + 'json';
+var XML_TYPE = APP_TYPE + 'xml';
 var TEXT_TYPE = 'text/plain';
-var OCTET_STREAM = 'application/octet-stream';
+var OCTET_STREAM = APP_TYPE + 'octet-stream';
 var CHARSET = ';charset=utf8';
 var REQ_TYPES = [
   JSON_TYPE,
-  'application/x-www-form-urlencoded',
+  APP_TYPE + 'x-www-form-urlencoded',
   'multipart/form-data',
   TEXT_TYPE,
   XML_TYPE,
@@ -18,7 +19,7 @@ var RES_TYPES = [
   'text/html' + CHARSET,
   'text/css' + CHARSET,
   TEXT_TYPE + CHARSET,
-  'application/javascript' + CHARSET,
+  APP_TYPE + 'javascript' + CHARSET,
   JSON_TYPE + CHARSET,
   XML_TYPE + CHARSET,
   OCTET_STREAM,

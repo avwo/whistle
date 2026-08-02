@@ -16,16 +16,16 @@
 .w-online-ctn p {
   margin: -23px 0 5px 36px;
 }
-.w-confirm-reload-dialog {
+.w-confirm-reload {
   z-index: var(--z-max);
 }
 .w-confirm-reload-global {
   z-index: calc(var(--z-max) + 1);
 }
-.w-confirm-reload-dialog .modal-dialog {
+.w-confirm-reload .modal-dialog {
   width: 310px;
 }
-.w-confirm-reload-dialog .w-confirm-reload {
+.w-confirm-reload .modal-body {
   font-weight: bold;
   line-height: 1.8;
   padding: 10px 20px;

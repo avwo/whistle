@@ -108,7 +108,7 @@ var ResDetail = React.createClass({
       json = util.getJson(res);
       if (headers && headers['set-cookie']) {
         cookies = headers['set-cookie'];
-        if (!Array.isArray(cookies)) {
+        if (!util.isArr(cookies)) {
           cookies = util.isStr(cookies) ? [cookies] : [];
         }
         cookies = cookies.map(function (cookie) {
@@ -206,8 +206,9 @@ var ResDetail = React.createClass({
         if (res.size < 5120) {
           tips.message = 'No response body';
         } else {
-          raw += '(Response body exceeds display limit)';
-          tips.message = 'Response body exceeds display limit';
+          var exceedTips = util.getExceedTips();
+          raw += '(' + exceedTips + ')';
+          tips.message = exceedTips;
         }
       }
       if (trailerStr) {

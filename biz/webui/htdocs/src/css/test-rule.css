@@ -2,8 +2,8 @@
   width: 900px;
 }
 
-.w-test-rule-dialog .modal-content {
-  min-height: 200px;
+.w-test-rule-dialog .w-props-wrap {
+  min-height: 120px;
 }
 
 .w-test-rule-dialog textarea {

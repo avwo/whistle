@@ -54,26 +54,9 @@ var TabMgr = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
-    var tabs = props.tabs;
     var hide = props.hide;
     var active = props.active;
     var hideAll = true;
-    tabs = tabs.map(function (tab) {
-      var hideTab = hide || active !== tab.plugin;
-      if (!hideTab) {
-        hideAll = false;
-      }
-      return (
-        self.isInited(tab) && (
-          <TabFrame
-            ref={tab.plugin}
-            key={tab.plugin}
-            src={tab.action}
-            hide={hideTab}
-          />
-        )
-      );
-    });
     return (
       <div
         className={
@@ -82,7 +65,23 @@ var TabMgr = React.createClass({
           util.getHide(hideAll)
         }
       >
-        {tabs}
+        {props.tabs.map(function (tab) {
+          var plugin = tab.plugin;
+          var hideTab = hide || active !== plugin;
+          if (!hideTab) {
+            hideAll = false;
+          }
+          return (
+            self.isInited(tab) && (
+              <TabFrame
+                ref={plugin}
+                key={plugin}
+                src={tab.action}
+                hide={hideTab}
+              />
+            )
+          );
+        })}
       </div>
     );
   }

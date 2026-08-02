@@ -11,7 +11,7 @@ var MatchedRule = require('./matched-rule');
 
 var getCss = function(val) {
   return {
-    className: 'w-overview-timeline',
+    className: 'w-overview-tl',
     style: {
       '--overview-bg': 'var(' + val + ')'
     }

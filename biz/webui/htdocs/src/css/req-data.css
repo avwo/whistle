@@ -257,16 +257,6 @@
   visibility: hidden;
 }
 
-.w-header-drag-block {
-  position: absolute;
-  top: 0;
-  right: -2px;
-  height: 28px;
-  width: 12px;
-  cursor: col-resize;
-  z-index: 1;
-}
-
 .tree-node {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -356,7 +346,7 @@
   font-weight: normal!important;
 }
 
-.w-back-to-the-bottom {
+.w-back-to-bottom {
   position: absolute;
   align-items: center;
   justify-content: center;
@@ -374,11 +364,11 @@
   cursor: pointer;
   z-index: 1;
 }
-.w-back-to-the-bottom:hover {
+.w-back-to-bottom:hover {
   opacity: 1;
 }
 
-.w-back-to-the-bottom .glyphicon {
+.w-back-to-bottom .glyphicon {
   margin: 0!important;
 }
 

@@ -98,13 +98,13 @@ var ReqData = React.createClass({
       })
       .on('toggleDetailTab', function () {
         var tab = self.state.tab;
+        var index = 0;
         if (tab === tabs[0]) {
-          self.toggleTab(tabs[1]);
+          index = 1;
         } else if (tab === tabs[1]) {
-          self.toggleTab(tabs[2]);
-        } else {
-          self.toggleTab(tabs[0]);
+          index = 2;
         }
+        self.toggleTab(tabs[index]);
       }).on('shakeSavedTab', self.shakeSavedTab);
   },
   shakeSavedTab: function() {
@@ -172,13 +172,13 @@ var ReqData = React.createClass({
     self.setState({ tab: tab }, callback);
   },
   selectTab: function (tab) {
-    var self = this;
-    self.state.tabs.forEach(function (tab) {
+    var state = this.state;
+    state.tabs.forEach(function (tab) {
       tab.active = false;
     });
     tab.active = true;
-    self.state.tab = tab;
-    self.state['inited' + tab.name] = true;
+    state.tab = tab;
+    state['inited' + tab.name] = true;
   },
   shakeComposerTab: function() {
     util.shakeElem($(findDOMNode(this.refs.tabs)).find('button[data-name="Composer"]'));
@@ -207,19 +207,24 @@ var ReqData = React.createClass({
         }
       };
       selectedList.forEach(function (item) {
-        if (overview.startTime == null || overview.startTime > item.startTime) {
-          overview.startTime = item.startTime;
-        }
-        if (overview.endTime == null || overview.endTime < item.endTime) {
-          overview.endTime = item.endTime;
-        }
+        var startTime = item.startTime;
+        var startTime2 = overview.startTime;
+        var endTime = item.endTime;
+        var endTime2 = overview.endTime;
         var req = item.req;
+        var res = item.res;
+
+        if (startTime2 == null || startTime2 > startTime) {
+          overview.startTime = startTime;
+        }
+        if (endTime2 == null || endTime2 < endTime) {
+          overview.endTime = endTime;
+        }
         if (req.size > 0) {
           overview.req.size += req.size;
           overview.req.unzipSize +=
             req.unzipSize == null ? req.size : req.unzipSize;
         }
-        var res = item.res;
         if (res.size > 0) {
           overview.res.size += res.size;
           overview.res.unzipSize +=
@@ -245,6 +250,9 @@ var ReqData = React.createClass({
     var name = curTab && curTab.name;
     var frames = activeItem && activeItem.frames;
     var dockToBottom = props.dockToBottom;
+    var isHide = function(i) {
+      return name != tabs[i].name;
+    };
 
     return (
       <div
@@ -273,26 +281,26 @@ var ReqData = React.createClass({
           tabs={tabs}
         />
         {state.initedOverview ? (
-          <Overview modal={overview} rulesModal={props.rulesModal} hide={name != tabs[0].name} />
+          <Overview modal={overview} rulesModal={props.rulesModal} hide={isHide(0)} />
         ) : null}
         {state.initedInspectors ? (
           <Inspectors
             modal={activeItem}
             frames={frames}
-            hide={name != tabs[1].name}
+            hide={isHide(1)}
           />
         ) : null}
         {state.initedTimeline ? (
-          <Timeline data={data} modal={modal} hide={name != tabs[2].name} />
+          <Timeline data={data} modal={modal} hide={isHide(2)} />
         ) : null}
         {state.initedComposer ? (
           <ComposerList
             modal={state.activeItem}
-            hide={name != tabs[3].name}
+            hide={isHide(3)}
           />
         ) : null}
-        {state.initedTools ? <Tools ref="tools" hide={name != tabs[4].name} /> : null}
-        {state.initedSaved ? <Saved hide={name != tabs[5].name} /> : null}
+        {state.initedTools ? <Tools ref="tools" hide={isHide(4)} /> : null}
+        {state.initedSaved ? <Saved hide={isHide(5)} /> : null}
       </div>
     );
   }

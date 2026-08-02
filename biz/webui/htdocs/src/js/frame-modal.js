@@ -32,9 +32,10 @@ proto.search = function (keyword) {
     if (not) {
       key = key.substring(1).trim();
     }
-    if (KW_RE.test(key)) {
-      type = RegExp.$1.toLowerCase();
-      key = RegExp.$2;
+    var match = KW_RE.exec(key);
+    if (match) {
+      type = match[1].toLowerCase();
+      key = match[2];
       if (key[0] === '!') {
         not = true;
         key = key.substring(1);

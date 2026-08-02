@@ -27,7 +27,7 @@ var KVDialog = React.createClass({
     self.refs.dialog.show();
     var history = [];
     var hideDefaultOption = data && data.hideDefaultOption;
-    if (data && Array.isArray(data.list) && typeof data.data === 'object') {
+    if (data && util.isArr(data.list) && typeof data.data === 'object') {
       var count = 0;
       data.list.forEach(function(name) {
         if (name && count < 360 && isStr(name) && name.length <= 256) {
@@ -169,7 +169,7 @@ var KVDialog = React.createClass({
               <th className="w-kv-name">
                 Name
               </th>
-              <th className="w-kv-operation">Content</th>
+              <th className="w-kv-op">Content</th>
             </thead>
             <tbody className="w-hover-body">
               {noData ? (
@@ -207,7 +207,7 @@ var KVDialog = React.createClass({
                         {isGroup ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}{name}
                         {showConflict ? <strong onClick={self.viewContent} title={curValue}>[Conflict]</strong> : null}
                       </td>
-                      <td className="w-kv-operation">
+                      <td className="w-kv-op">
                         <pre>
                           {value ? (exceed ? value.substring(0, 100) + '...' : value) : <span className="w-empty">No content</span>}
                         </pre>

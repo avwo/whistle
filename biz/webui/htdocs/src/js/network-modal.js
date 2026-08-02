@@ -54,7 +54,7 @@ var proto = NetworkModal.prototype;
  */
 
 function parseKeyword(keyword) {
-  keyword = util.trimStr(keyword);
+  keyword = keyword && keyword.trim();
   if (!keyword) {
     return;
   }
@@ -63,9 +63,10 @@ function parseKeyword(keyword) {
     keyword = keyword.substring(1);
   }
   var type;
-  if (KW_RE.test(keyword)) {
-    type = RegExp.$1.toLowerCase();
-    keyword = RegExp.$2.trim();
+  var match = KW_RE.exec(keyword);
+  if (match) {
+    type = match[1].toLowerCase();
+    keyword = match[2].trim();
     if (keyword[0] === '!') {
       not = true;
       keyword = keyword.substring(1);
@@ -94,13 +95,11 @@ function parseKeywordList(keyword) {
       result.push(kw);
     }
   };
-  if (KW_LIST_RE.test(keyword)) {
-    var k1 = RegExp.$1;
-    var k2 = RegExp.$2;
-    var k3 = RegExp.$3;
-    addKw(parseKeyword(k1));
-    addKw(parseKeyword(k2));
-    addKw(parseKeyword(k3));
+  var match = KW_LIST_RE.exec(keyword);
+  if (match) {
+    addKw(parseKeyword(match[1]));
+    addKw(parseKeyword(match[2]));
+    addKw(parseKeyword(match[3]));
   } else {
     addKw(parseKeyword(keyword));
   }
@@ -119,7 +118,7 @@ proto.setFilterType = function (type) {
   return type;
 };
 
-function checkKeywork(str, opts) {
+function checkKeyword(str, opts) {
   if (!str) {
     return false;
   }
@@ -132,11 +131,11 @@ function checkKeywork(str, opts) {
 }
 
 function checkUrl(item, opts) {
-  if (checkKeywork((item.isHttps ? 'tunnel://' : '') + item.url, opts)) {
+  if (checkKeyword((item.isHttps ? 'tunnel://' : '') + item.url, opts)) {
     return true;
   }
   var rawUrl = util.getRawUrl(item);
-  return checkKeywork(rawUrl, opts);
+  return checkKeyword(rawUrl, opts);
 }
 
 function checkData(item, opts) {
@@ -148,7 +147,7 @@ function checkData(item, opts) {
   if (len) {
     for (var i = 0; i < len; i++) {
       var value = util.getProperty(item, keys[i]);
-      if (value != null && setNot(checkKeywork(String(value), opts), opts.not)) {
+      if (value != null && setNot(checkKeyword(String(value), opts), opts.not)) {
         return false;
       }
     }
@@ -187,10 +186,13 @@ function checkItem(item, opts) {
   case 'content':
   case 'b':
   case 'body':
+    if (!opts.keyword) {
+      return false;
+    }
     var reqBody = util.getBody(req, true);
     var resBody = util.getBody(res);
     return setNot(
-        !checkKeywork(reqBody, opts) && !checkKeywork(resBody, opts),
+        !checkKeyword(reqBody, opts) && !checkKeyword(resBody, opts),
         opts.not
       );
   case 'headers':
@@ -203,16 +205,16 @@ function checkItem(item, opts) {
   case 't':
     var type = res.headers;
     type = type && type['content-type'];
-    return setNot(!(isStr(type) && checkKeywork(type, opts)), opts.not);
+    return setNot(!(isStr(type) && checkKeyword(type, opts)), opts.not);
   case 'domain':
   case 'host':
   case 'd':
   case 'H':
-    return setNot(!checkKeywork(item.isHttps ? item.url : util.getHost(item.url), opts), opts.not);
+    return setNot(!checkKeyword(item.isHttps ? item.url : util.getHost(item.url), opts), opts.not);
   case 'ip':
   case 'i':
     return setNot(
-        !checkKeywork(req.ip, opts) && !checkKeywork(res.ip, opts),
+        !checkKeyword(req.ip, opts) && !checkKeyword(res.ip, opts),
         opts.not
       );
   case 'status':
@@ -221,15 +223,15 @@ function checkItem(item, opts) {
   case 'r':
     var status = res.statusCode;
     return setNot(
-        !checkKeywork(status == null ? '-' : String(status), opts),
+        !checkKeyword(status == null ? '-' : String(status), opts),
         opts.not
       );
   case 'method':
   case 'm':
-    return setNot(!checkKeywork(req.method, opts), opts.not);
+    return setNot(!checkKeyword(req.method, opts), opts.not);
   case 'app':
   case 'a':
-    return setNot(!checkKeywork(item.appName, opts), opts.not);
+    return setNot(!checkKeyword(item.appName, opts), opts.not);
   case 'e':
   case 'error':
     return !hasError(item) || checkData(item, opts);
@@ -406,11 +408,11 @@ function _compare(prev, next, name) {
 
 function inObject(obj, opts) {
   for (var i in obj) {
-    if (checkKeywork(i, opts)) {
+    if (checkKeyword(i, opts)) {
       return true;
     }
     var value = obj[i];
-    if (checkKeywork(value == null ? '' : String(value), opts)) {
+    if (checkKeyword(value == null ? '' : String(value), opts)) {
       return true;
     }
   }

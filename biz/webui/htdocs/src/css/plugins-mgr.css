@@ -1,12 +1,12 @@
-.w-plugins-mgr-dialog {
+.w-plugins-mgr {
   z-index: var(--z-modal-max);
 }
 
-.w-plugins-mgr-dialog .modal-content {
+.w-plugins-mgr .modal-content {
   width: 380px;
 }
 
-.w-plugins-mgr-dialog .plugin-mgr-btn {
+.w-plugins-mgr .plugin-mgr-btn {
   display: block;
   line-height: 1.5;
   width: 320px;
@@ -20,7 +20,7 @@
   font-weight: 500;
 }
 
-.w-plugins-mgr-dialog .plugin-mgr-btn span {
+.w-plugins-mgr .plugin-mgr-btn span {
   opacity: 0.66;
   font-weight: 400;
 }

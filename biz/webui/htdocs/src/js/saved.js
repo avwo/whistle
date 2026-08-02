@@ -98,7 +98,7 @@ var Saved = React.createClass({
       if (!data) {
         return util.showSysErr(xhr);
       }
-      if (!Array.isArray(data)) {
+      if (!util.isArr(data)) {
         return message.error('Error occurred when loading saved sessions');
       }
       callback(data);
@@ -119,7 +119,7 @@ var Saved = React.createClass({
         item.date = util.toDateStr(item.time);
         item.key = filename + '_' + item.count + '_' + item.time;
         item.displayName = (filename ? filename + ' ' : '') + '(' + item.count + ')';
-        item.operation = (<div className="w-order-table-operation" data-index={i}>
+        item.operation = (<div className="w-order-table-op" data-index={i}>
           <a onClick={self.onImport}>Import</a>
           <a onClick={self.onExport}>Export</a>
           <a onClick={self.onRemove} className="w-delete">Delete</a>

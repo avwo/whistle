@@ -5,7 +5,6 @@ var dataCenter = require('./data-center');
 var util = require('./util');
 var storage = require('./storage');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
 
 var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
@@ -71,7 +70,7 @@ var PluginsMgr = React.createClass({
     var actionText = isUpdate ? 'Update' : 'Install';
 
     return (
-      <Dialog ref="dialog" wstyle="w-plugins-mgr-dialog">
+      <Dialog ref="dialog" wstyle="w-plugins-mgr" closable>
         <ModalHeader>
           Select {isUpdate ? 'Updater' : 'Installer'}
         </ModalHeader>
@@ -90,9 +89,6 @@ var PluginsMgr = React.createClass({
               );
             })
           }
-        </div>
-        <div className="modal-footer">
-          <DismissBtn />
         </div>
       </Dialog>
     );

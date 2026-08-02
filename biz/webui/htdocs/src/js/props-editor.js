@@ -1,13 +1,12 @@
 require('../css/props-editor.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var Dialog = require('./dialog');
 var util = require('./util');
 var win = require('./win');
 var ContextMenu = require('./context-menu');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 var UploadForm = require('./upload-form');
 var showError = require('./message').error;
 
@@ -20,6 +19,8 @@ var W2_HEADER_RE = /^x-whistle-/;
 var EXCEED_TIPS = util.EXCEED_TIPS + ' 20MB';
 var getHide = util.getHide;
 var attr = util.attr;
+var toString = util.toString;
+var encodeCom = util.encodeURIComponent;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -37,7 +38,7 @@ var PropsEditor = React.createClass({
     var result = { name: shortName };
     if (allowUploadFile && field && field.value != null) {
       result.value = decode(
-        util.toString(field.value).substring(0, MAX_VALUE_LEN),
+        toString(field.value).substring(0, MAX_VALUE_LEN),
         isHeader
       );
       result.data = field.data;
@@ -45,7 +46,7 @@ var PropsEditor = React.createClass({
       result.type = field.type;
     } else {
       result.value = decode(
-        util.toString(field).substring(0, MAX_VALUE_LEN),
+        toString(field).substring(0, MAX_VALUE_LEN),
         isHeader
       );
     }
@@ -63,7 +64,7 @@ var PropsEditor = React.createClass({
       }
       keys.forEach(function (name) {
         var value = data[name];
-        if (!Array.isArray(value)) {
+        if (!util.isArr(value)) {
           modal[name + '_0'] = self.getValue(name, value);
           return;
         }
@@ -108,15 +109,26 @@ var PropsEditor = React.createClass({
       this.props.callback();
     }
   },
+  resetDialog: function(e, self, nameInput, valueInput) {
+    self.setState({
+      fileData: null,
+      fileSize: null,
+      filename: null,
+      fileType: null
+    });
+    self.hideDialog();
+    nameInput.value = valueInput.value = '';
+    self.execCallback(e);
+  },
   edit: function (e) {
     var self = this;
-    var nameInput = findDOMNode(self.refs.name);
+    var nameInput = self.refs.name;
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return showError('The name is required');
     }
-    var valueInput = findDOMNode(self.refs.valueInput);
+    var valueInput = self.refs.valueInput;
     var value = valueInput.value.trim();
     var state = self.state;
     var data = state.data;
@@ -131,28 +143,20 @@ var PropsEditor = React.createClass({
       data.value = value;
     }
     self.props.onChange(origName, name);
-    self.setState({
-      fileData: null,
-      fileSize: null,
-      filename: null,
-      fileType: null
-    });
-    self.hideDialog();
-    nameInput.value = valueInput.value = '';
-    self.execCallback(e);
+    self.resetDialog(e, self, nameInput, valueInput);
   },
   add: function (e) {
     var self = this;
-    var nameInput = findDOMNode(self.refs.name);
+    var nameInput = self.refs.name;
     var name = nameInput.value.trim();
     if (!name) {
       nameInput.focus();
       return showError('The name is required');
     }
-    var valueInput = findDOMNode(self.refs.valueInput);
+    var valueInput = self.refs.valueInput;
     var value = valueInput.value.trim();
-    var modal = self.state.modal;
     var state = self.state;
+    var modal = self.state.modal;
     if (!modal) {
       modal = {};
       state.modal = modal;
@@ -170,15 +174,7 @@ var PropsEditor = React.createClass({
         value: value
       };
     self.props.onChange(name);
-    self.setState({
-      fileData: null,
-      fileSize: null,
-      filename: null,
-      fileType: null
-    });
-    self.hideDialog();
-    nameInput.value = valueInput.value = '';
-    self.execCallback(e);
+    self.resetDialog(e, self, nameInput, valueInput);
   },
   hideDialog: function () {
     this.refs.composer.hide();
@@ -187,7 +183,7 @@ var PropsEditor = React.createClass({
     var self = this;
     var refs = self.refs;
     refs.composer.show();
-    var nameInput = findDOMNode(refs.name);
+    var nameInput = refs.name;
     if (data) {
       nameInput.value = data.name || '';
       if (data.data) {
@@ -198,7 +194,7 @@ var PropsEditor = React.createClass({
           fileType: data.type
         });
       } else {
-        findDOMNode(refs.valueInput).value = data.value || '';
+        refs.valueInput.value = data.value || '';
       }
     }
     setTimeout(function () {
@@ -247,11 +243,7 @@ var PropsEditor = React.createClass({
     return keys
       .map(function (key) {
         var obj = modal[key];
-        return (
-          util.encodeURIComponent(obj.name) +
-          '=' +
-          util.encodeURIComponent(obj.value)
-        );
+        return encodeCom(obj.name) + '=' + encodeCom(obj.value);
       })
       .join('&');
   },
@@ -297,7 +289,7 @@ var PropsEditor = React.createClass({
         fileData: null
       },
       function () {
-        var valueInput = findDOMNode(self.refs.valueInput);
+        var valueInput = self.refs.valueInput;
         valueInput.select();
         valueInput.focus();
       }
@@ -321,6 +313,7 @@ var PropsEditor = React.createClass({
     var text = data ? 'Modify' : 'Add';
     var btnText = text + (isHeader ? ' Header' : ' Param');
     var cbBtnText = props.callback ? text + ' & Send' : null;
+    var handle = data ? self.edit : self.add;
 
     return (
       <div
@@ -393,7 +386,7 @@ var PropsEditor = React.createClass({
               Name:
               <input
                 ref="name"
-                placeholder="Enter key name"
+                placeholder="Enter name"
                 className="form-control mt-5"
                 maxLength="128"
               />
@@ -420,7 +413,7 @@ var PropsEditor = React.createClass({
                 <textarea
                   ref="valueInput"
                   maxLength={MAX_VALUE_LEN}
-                  placeholder="Enter key value"
+                  placeholder="Enter value"
                   className={'form-control' + getHide(filename)}
                   onKeyDown={util.handleTab}
                 />
@@ -434,15 +427,14 @@ var PropsEditor = React.createClass({
               </div>
             </div>
           </div>
-          <div className="modal-footer">
-            <DismissBtn />
+          <ModalFooter>
             {
               cbBtnText ?
               <button
                 type="button"
                 className="btn btn-default"
                 data-action="callback"
-                onClick={data ? self.edit : self.add}
+                onClick={handle}
               >
                 {cbBtnText}
               </button> : null
@@ -450,11 +442,11 @@ var PropsEditor = React.createClass({
             <button
               type="button"
               className="btn btn-primary"
-              onClick={data ? self.edit : self.add}
+              onClick={handle}
             >
               {btnText}
             </button>
-          </div>
+          </ModalFooter>
         </Dialog>
         <UploadForm ref="uploadForm" onChange={self.readLocalFile} />
         <ContextMenu ref="contextMenu" />

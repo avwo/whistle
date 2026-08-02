@@ -3,7 +3,6 @@ var Dialog = require('./dialog');
 var QRCodeImg = require('./qrcode');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
 var util = require('./util');
 
 var QRCodeDialog = React.createClass({
@@ -19,7 +18,7 @@ var QRCodeDialog = React.createClass({
     var url = this.state.url;
 
     return (
-      <Dialog ref="dialog" wstyle="w-qrcode-dialog">
+      <Dialog ref="dialog" wstyle="w-qrcode-dialog" closable>
         <div className="modal-body">
           <h4>QR Code</h4>
           <CloseBtn />
@@ -28,9 +27,6 @@ var QRCodeDialog = React.createClass({
             <Icon name="copy" className="w-copy-text-with-tips" data-clipboard-text={url} />
           </div>
           <QRCodeImg url={this.state.url} />
-        </div>
-        <div className="modal-footer">
-          <DismissBtn />
         </div>
       </Dialog>
     );

@@ -3,7 +3,6 @@ var util = require('./util');
 var Properties = require('./properties');
 var Dialog = require('./dialog');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
 var PanelTips = require('./panel-tips');
 
 var EMPTY = { message: 'No enabled rules' };
@@ -28,7 +27,7 @@ var EnabledRulesDialog = React.createClass({
     var list = this.state.list || [];
 
     return (
-      <Dialog ref="dialog" wstyle="w-enabled-rules-dialog">
+      <Dialog ref="dialog" wstyle="w-enabled-rules-dialog" closable>
           <ModalHeader>
             Enabled Rules
           </ModalHeader>
@@ -38,9 +37,6 @@ var EnabledRulesDialog = React.createClass({
             onClickLocate={this.handleClickLocate}
             modal={list}
           /> : <PanelTips data={EMPTY} className="w-empty-tips" />}
-          <div className="modal-footer">
-            <DismissBtn />
-          </div>
       </Dialog>
     );
   }

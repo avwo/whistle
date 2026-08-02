@@ -136,16 +136,16 @@
 .w-plugins-date {
   width: 190px;
 }
-.w-plugins-operation {
+.w-plugins-op {
   width: 360px;
 }
-.w-plugins-operation :is(a, span.disabled) {
+.w-plugins-op :is(a, span.disabled) {
   margin-right: 20px;
 }
-.w-plugins-operation :is(a:last-child, span.disabled:last-child) {
+.w-plugins-op :is(a:last-child, span.disabled:last-child) {
   margin-right: 0;
 }
-.w-plugins-operation :is(span.disabled) {
+.w-plugins-op :is(span.disabled) {
   color: var(--c-disabled);
 }
 
@@ -245,6 +245,6 @@
   color: var(--c-default);
 }
 
-.w-dialog-for-plguin .modal-header {
+.w-dialog-for-plugin .modal-header {
   display: none;
 }

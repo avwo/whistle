@@ -24,7 +24,8 @@ var addEvent = util.on;
 var preventBlur = util.preventBlur;
 var attr = util.attr;
 var strfy = util.strfy;
-var loc = window.location;
+var globalWin = window;
+var loc = globalWin.location;
 var TIPS_KEY = 'hideEnableHTTPSTips';
 var hideEnableHTTPSTips = loc.href.indexOf(TIPS_KEY + '=1') !== -1 || storage.get(TIPS_KEY);
 var disabledEditor = loc.href.indexOf('disabledEditor=1') !== -1;
@@ -121,22 +122,18 @@ function getDragInfo(e, list) {
   if (!name) {
     return;
   }
-  var fromName = getNameFromTypes(e);
-  if (fromName && name.toLowerCase() !== fromName) {
-    return {
-      target: target,
-      toName: getName(name)
-    };
-  }
-}
-
-function getNameFromTypes(e) {
   var type = util.findArray(e.dataTransfer.types, function (type) {
     if (type.indexOf(NAME_PREFIX) === 0) {
       return true;
     }
   });
-  return type && type.substring(NAME_PREFIX.length);
+  type = type && type.substring(NAME_PREFIX.length);
+  if (type && name.toLowerCase() !== type) {
+    return {
+      target: target,
+      toName: getName(name)
+    };
+  }
 }
 
 $(document).on('drop', function () {
@@ -158,7 +155,7 @@ var List = React.createClass({
   getInitialState: function() {
     var nodes = util.parseJSON(storage.get(this.getCollapseKey()));
     var map = {};
-    this.collapseGroups = Array.isArray(nodes) ? nodes.filter(function(name) {
+    this.collapseGroups = util.isArr(nodes) ? nodes.filter(function(name) {
       if (isGroupName(name) && name[1] && !map[name]) {
         map[name] = 1;
         return true;
@@ -169,7 +166,7 @@ var List = React.createClass({
   componentDidMount: function () {
     var self = this;
     var visible = !self.props.hide;
-    $(window)
+    $(globalWin)
       .keydown(function (e) {
         if (visible && (e.ctrlKey || e.metaKey)) {
           var modal = self.props.modal;
@@ -562,7 +559,7 @@ var List = React.createClass({
       }
       break;
     case 'Help':
-      window.open(util.getDocUrl('gui/' + (props.name || 'values') + '.html'));
+      globalWin.open(util.getDocUrl('gui/' + (props.name || 'values') + '.html'));
       break;
     case 'Plugins':
       var modal = props.modal;

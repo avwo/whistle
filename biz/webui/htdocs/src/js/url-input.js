@@ -23,7 +23,7 @@ var UrlInput = React.createClass({
     } else if (props.isRedirect) {
       protocols = ['', 'http://', 'https://'];
     }
-    if (props.enableTplFile) {
+    if (props.enableTpl) {
       protocols.splice(1, 0, 'tpl://');
     }
 
@@ -396,7 +396,7 @@ var UrlInput = React.createClass({
           onBlur={self.hideHints}
           type="text"
           maxLength="8192"
-          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTplFile ? ' or directory ' : '') + 'path or (value)' : 'URL')}
+          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTpl ? ' or directory ' : '') + 'path or (value)' : 'URL')}
           className={'fill form-control' + (isFile ? ' w-file-input' : '')}
         />
         <button

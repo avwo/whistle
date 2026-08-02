@@ -8,10 +8,7 @@ var Detail = require('./detail');
 
 var getWidth = function (vertical) {
   var docElem = document.documentElement;
-  if (vertical) {
-    return Math.max(Math.floor(docElem.clientHeight / 2), 360);
-  }
-  return Math.max(Math.floor(docElem.clientWidth / 3), 572);
+  return Math.max(Math.floor(vertical ? docElem.clientHeight / 2 : docElem.clientWidth / 3), vertical ? 360 : 572);
 };
 
 var Network = React.createClass({

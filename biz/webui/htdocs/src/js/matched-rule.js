@@ -6,6 +6,7 @@ var PanelTips = require('./panel-tips');
 
 var getHelpUrl = protocols.getHelpUrl;
 var PROTOCOLS = protocols.PROTOCOLS;
+var isArr = util.isArr;
 var DEFAULT_RULES_MODAL = {};
 var PROXY_PROTOCOLS = ['socks', 'http-proxy', 'https-proxy'];
 var EMPTY = {message: 'No matching rules'};
@@ -21,12 +22,12 @@ PROTOCOLS.forEach(function (name) {
   DEFAULT_RULES_MODAL[name] = '';
 });
 
-function getAtRule(rule) {
-  return rule.rawPattern + ' @' + getMatcher(rule).substring(4) + getPluginName(rule);
+function getSpecRule(rule, symbol) {
+  return rule.rawPattern + ' ' + symbol + getMatcher(rule).substring(4) + getPluginName(rule);
 }
 
-function getVarRule(rule) {
-  return rule.rawPattern + ' %' + getMatcher(rule).substring(4) + getPluginName(rule);
+function getAtRule(rule) {
+  return getSpecRule(rule, '@');
 }
 
 function getStr(str) {
@@ -81,10 +82,18 @@ function getRuleStr(rule) {
   return rule.rawPattern + ' ' + matcher + getRawProps(rule, true);
 }
 
+function getFormatedRule(rule, all, prop) {
+  return rule.rawPattern + ' ' + getMatcher(rule) + getRawProps(rule, all) + (prop || '') + getPluginName(rule);
+}
+
 function onHelp(e) {
   var name = util.attr(e.target, 'data-name');
   var helpUrl = getHelpUrl(name);
   helpUrl && util.trigger('openUrl', name === 'rule' ? helpUrl + 'rule/' : helpUrl);
+}
+
+function getRealUrl(realUrl) {
+  return ' (URL: ' + realUrl + ')';
 }
 
 var MatchedRule = React.createClass({
@@ -111,7 +120,7 @@ var MatchedRule = React.createClass({
       if (pList) {
         pList.forEach(function (item) {
           atCtn = atCtn || [];
-          atCtn.push(getVarRule(item));
+          atCtn.push(getSpecRule(item, '%'));
           atTitle = [item.raw];
         });
       }
@@ -143,22 +152,20 @@ var MatchedRule = React.createClass({
         var pluginRule = name === 'plugin' && rules._pluginRule;
         if (pluginRule) {
           hasPluginRule = true;
-          var ruleList = [
-            pluginRule.rawPattern + ' ' + getMatcher(pluginRule) + getRawProps(pluginRule) + getPluginName(pluginRule)
-          ];
+          var ruleList = [getFormatedRule(pluginRule)];
           var titleList = [pluginRule.raw];
-          rule && Array.isArray(rule.list) &&
+          rule && isArr(rule.list) &&
               rule.list.forEach(function (item) {
-                ruleList.push(item.rawPattern + ' ' + getMatcher(item) + getRawProps(item) + getPluginName(item));
+                ruleList.push(getFormatedRule(item));
                 titleList.push(item.raw);
               });
           rulesModal[name] = ruleList.join('\n');
           titleModal[name] = titleList.join('\n');
-        } else if (rule && Array.isArray(rule.list)) {
+        } else if (rule && isArr(rule.list)) {
           var prop = getInjectProps(rule);
           rulesModal[name] = rule.list
               .map(function (rule) {
-                return rule.rawPattern + ' ' + getMatcher(rule) + getRawProps(rule, true) + prop + getPluginName(rule);
+                return getFormatedRule(rule, true, prop);
               })
               .join('\n');
           titleModal[name] = rule.list
@@ -173,19 +180,19 @@ var MatchedRule = React.createClass({
           if (name === 'host') {
             var result = [];
             if (ruleStr) {
-              result.push(ruleStr + (realUrl ? ' (URL: ' + realUrl + ')' : '') + getPluginName(rule));
+              result.push(ruleStr + (realUrl ? getRealUrl(realUrl) : '') + getPluginName(rule));
             }
             var proxy = rules.proxy;
             if (proxy && proxy.host) {
               result.push(
-                  getRuleStr(proxy.host) + ' (URL: ' + getMatcher(proxy) + ')' + getPluginName(rule)
+                  getRuleStr(proxy.host) + getRealUrl(getMatcher(proxy)) + getPluginName(rule)
                 );
             }
             rulesModal[name] = result.join('\n');
           } else {
             if (name === 'proxy') {
               if (realUrl && ruleStr) {
-                rulesModal[name] += ' (URL: ' + realUrl + ')';
+                rulesModal[name] += getRealUrl(realUrl);
               }
             }
             if (rulesModal[name]) {

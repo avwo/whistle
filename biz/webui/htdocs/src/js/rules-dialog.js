@@ -9,7 +9,7 @@ var CloseBtn = require('./close-btn');
 var ModalHeader = require('./modal-header');
 var Prompt = require('./prompt');
 var message = require('./message');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var showSysErr = util.showSysErr;
 var isStr = util.isStr;
@@ -135,7 +135,7 @@ var RulesDialog = React.createClass({
     };
     createFile(values.base64, values.value, true);
     var list = values.list;
-    list = Array.isArray(list) ? list.slice(0, 10) : [];
+    list = util.isArr(list) ? list.slice(0, 10) : [];
     list.forEach(function(base64) {
       createFile(base64);
     });
@@ -333,8 +333,7 @@ var RulesDialog = React.createClass({
           lineNumbers={storage.get('showRulesLineNumbers') === 'true'}
           lineWrapping={!!storage.get('autoRulesLineWrapping')}
         />
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             className="btn btn-primary"
@@ -342,7 +341,7 @@ var RulesDialog = React.createClass({
           >
             Save
           </button>
-        </div>
+        </ModalFooter>
         <Prompt ref="prompt" title="Create Rule File" placeholder="Enter rule file name" />
       </Dialog>
     );

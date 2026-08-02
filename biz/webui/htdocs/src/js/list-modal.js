@@ -12,7 +12,7 @@ var checkKey = util.checkKey;
 
 proto.reset = function (list, data, init) {
   var self = this;
-  self.list = Array.isArray(list) ? list : [];
+  self.list = util.isArr(list) ? list : [];
   data = data || {};
   self.data = {};
   self.groups = {};
@@ -437,9 +437,10 @@ proto.search = function (keyword, disabledType) {
     keyword = keyword.substring(1).trim();
   }
   var self = this;
-  if (keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|n|k|s):(.*)$/).test(keyword)) {
-    self._type = RegExp.$1;
-    keyword = RegExp.$2.trim();
+  var match = keyword &&(disabledType ? /^(b|v|n|k|s):(.*)$/ : /^(selected|s|active|a|b|v|n|k|s):(.*)$/).exec(keyword);
+  if (match) {
+    self._type = match[1];
+    keyword = match[2].trim();
     if (keyword[0] === '!') {
       not = true;
       keyword = keyword.substring(1).trim();

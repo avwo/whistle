@@ -43,8 +43,9 @@ module.exports = {
     this.setState({ level: option.value });
   },
   stopAutoRefresh: function () {
-    if (scrollAtBottom(this.container, this.content)) {
-      this.container.scrollTop = this.container.scrollTop - 10;
+    var con = this.container;
+    if (scrollAtBottom(con, this.content)) {
+      con.scrollTop = con.scrollTop - 10;
     }
   },
   scrollTop: function () {
@@ -160,7 +161,7 @@ module.exports = {
   },
   renderActionBar: function(disabled) {
     var self = this;
-    return (<div className="w-textarea-bar">
+    return (<div className="w-bar">
       <RecordBtn onClick={self.handleAction} />
       <a ref="importBtn" onClick={self.selectFile} draggable="false">
         Import

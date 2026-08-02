@@ -29,6 +29,14 @@ var BTNS = [
   }
 ];
 
+function handleRefresh(log) {
+  if (log.container.scrollTop < 5) {
+    log.autoRefresh();
+  } else {
+    log.scrollTop();
+  }
+}
+
 var Tools = React.createClass({
   getInitialState: function () {
     return { name: 'Console' };
@@ -79,19 +87,9 @@ var Tools = React.createClass({
   onDoubleClickBar: function () {
     var refs = this.refs;
     if (BTNS[0].active) {
-      var consoleLog = refs.console;
-      if (consoleLog.container.scrollTop < 5) {
-        consoleLog.autoRefresh();
-      } else {
-        consoleLog.scrollTop();
-      }
+      handleRefresh(refs.console);
     } else if (BTNS[1].active) {
-      var serverLog = refs.serverLog;
-      if (serverLog.container.scrollTop < 5) {
-        serverLog.autoRefresh();
-      } else {
-        serverLog.scrollTop();
-      }
+      handleRefresh(refs.serverLog);
     }
   },
   isActive: function (name) {
@@ -140,11 +138,13 @@ var Tools = React.createClass({
     var self = this;
     var state = self.state;
     var name = state.name;
+    var hide = getBool(self.props.hide);
+    var plugin = state.plugin;
     return (
       <div
         className={
           'fill v-box w-tools' +
-          util.getHide(getBool(self.props.hide))
+          util.getHide(hide)
         }
       >
         <BtnGroup
@@ -159,14 +159,14 @@ var Tools = React.createClass({
           <Console ref="console" hide={!BTNS[0].active} />
         </LazyInit>
         <LazyInit inited={name === BTNS[1].name}>
-        <ServerLog ref="serverLog" hide={!BTNS[1].active} />
+          <ServerLog ref="serverLog" hide={!BTNS[1].active} />
         </LazyInit>
         <LazyInit inited={name === BTNS[2].name}>
           <ToolBox hide={!BTNS[2].active} />
         </LazyInit>
         <TabMgr
-          active={state.plugin && state.plugin.plugin}
-          hide={getBool(self.props.hide)}
+          active={plugin && plugin.plugin}
+          hide={hide}
           tabs={dataCenter.getToolTabs()}
           className="w-custom-tab-panel"
         />

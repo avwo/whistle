@@ -9,8 +9,10 @@ var util = require('./util');
 var isFunc = util.isFunc;
 var isStr = util.isStr;
 var notEStr = util.notEStr;
+var isArr = util.isArr;
 var setPos = CodeMirror.Pos.bind(CodeMirror);
-var loc = window.location;
+var globalWin = window;
+var loc = globalWin.location;
 var disabledEditor = loc.href.indexOf('disabledEditor=1') !== -1;
 var NON_SPECAIL_RE = /[^:/]/;
 var PLUGIN_NAME_RE = /^((?:whistle\.)?([a-z\d_-]+:))(\/?$|\/\/)/;
@@ -128,7 +130,7 @@ for (var a = 'a'.charCodeAt(), z = 'z'.charCodeAt(); a <= z; a++) {
   CHARS.push('\'' + ch + '\'');
 }
 
-$(window).on('hashchange', function () {
+$(globalWin).on('hashchange', function () {
   var disabled = loc.href.indexOf('disabledEditor=1') !== -1;
   if (disabled !== disabledEditor) {
     disabledEditor = disabled;
@@ -289,12 +291,12 @@ function getSpecHints(keyword, protocol, hints) {
 function getAtValueList(keyword) {
   keyword = keyword.substring(1);
   try {
-    var getList = window.parent.getAtValueListForWhistle;
+    var getList = globalWin.parent.getAtValueListForWhistle;
     if (!isFunc(getList)) {
       return;
     }
     var list = getList(keyword);
-    if (Array.isArray(list)) {
+    if (isArr(list)) {
       var result = [];
       var len = 60;
       list.forEach(function (item) {
@@ -368,7 +370,7 @@ function getPluginVarHints(keyword, specProto) {
 
 function getAtHelpUrl(name, options) {
   try {
-    var _getAtHelpUrl = window.parent.getAtHelpUrlForWhistle;
+    var _getAtHelpUrl = globalWin.parent.getAtHelpUrlForWhistle;
     if (isFunc(_getAtHelpUrl)) {
       var url = _getAtHelpUrl(name, options);
       if (url === false || isStr(url)) {
@@ -403,7 +405,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar, c
   if (
     !data ||
     cgi.hasDestroyed ||
-    (!Array.isArray(data) && !Array.isArray(data.list))
+    (!isArr(data) && !isArr(data.list))
   ) {
     curHintValue = curHintProto = null;
     return;
@@ -411,7 +413,7 @@ function handleRemoteHints(data, editor, plugin, protoName, value, cgi, isVar, c
   curHintValue = value;
   curHintProto = protoName;
   var len = 0;
-  if (!Array.isArray(data)) {
+  if (!isArr(data)) {
     curHintPos = data.position;
     curHintOffset = parseInt(data.offset, 10) || 0;
     data = data.list;
@@ -581,9 +583,10 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   var specProto = getSpecProto(curWord);
   var isPluginVar = P_RE.test(curWord);
   var isPluginKey;
-  if (isPluginVar && P_VAR_RE.test(curWord)) {
-    pluginName = RegExp.$1;
-    sep = RegExp.$2;
+  var match = isPluginVar && P_VAR_RE.exec(curWord);
+  if (match) {
+    pluginName = match[1];
+    sep = match[2];
     plugin = pluginName && dataCenter.getPlugin(pluginName + ':');
     pluginVars = plugin && plugin.pluginVars;
     if (!pluginVars) {
@@ -627,10 +630,10 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
     }
   }
   if (curWord) {
-    if (VAL_RE.test(curWord)) {
-      var protoLen = RegExp.$1.length;
-      var tplStart = RegExp.$2;
-      var valKeyword = RegExp.$3;
+    if (match = VAL_RE.exec(curWord)) {
+      var protoLen = match[1].length;
+      var tplStart = match[2];
+      var valKeyword = match[3];
       var valuesModal = dataCenter.getValuesModal();
       var valuesKeys = valuesModal && valuesModal.list;
       var inlineKyes = getInlineKeys();
@@ -678,12 +681,12 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
         }
       }
     }
-    if (plugin || PLUGIN_NAME_RE.test(curWord)) {
-      plugin = plugin || dataCenter.getPlugin(RegExp.$2);
+    if (plugin || (match = PLUGIN_NAME_RE.exec(curWord))) {
+      plugin = plugin || dataCenter.getPlugin(match[2]);
       var pluginConf = pluginVars || plugin;
       if (plugin && (isStr(pluginConf.hintUrl) || pluginConf.hintList)) {
         if (!pluginVars) {
-          value = RegExp.$3 || '';
+          value = match[3] || '';
           value =
             value.length === 2
               ? curWord.substring(curWord.indexOf('//') + 2)
@@ -695,7 +698,7 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
           return;
         }
         clearTimeout(hintTimer);
-        var protoName = pluginVars ? '%' + pluginName : RegExp.$1.slice(0, -1);
+        var protoName = pluginVars ? '%' + pluginName : match[1].slice(0, -1);
         var _hints = pluginConf.hintList;
         if (_hints) {
           if (value) {

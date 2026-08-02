@@ -139,7 +139,7 @@
   margin-bottom: 0;
 }
 .w-com-bar input,
-.w-com-rules .w-inspectors-title input {
+.w-com-rules .w-detail-title input {
   margin: 0 5px 0 0;
   padding: 0;
 }
@@ -175,16 +175,16 @@
   margin: 0;
   border-right: var(--v-border);
 }
-.w-com-rules .w-inspectors-title {
+.w-com-rules .w-detail-title {
   padding-left: 10px !important;
 }
-.w-com-rules .w-inspectors-title label {
+.w-com-rules .w-detail-title label {
   margin: 0;
   display: inline-flex;
   align-items: center;
 }
 
-.w-com-rules .w-inspectors-title label:hover {
+.w-com-rules .w-detail-title label:hover {
   color: var(--c-default);
 }
 
@@ -213,7 +213,7 @@
   color: var(--c-disabled) !important;
 }
 
-.w-com-cookies-dialog table th {
+.w-com-cookies table th {
   padding: 5px 0 5px 8px;
 }
 .w-com-cookie-order {
@@ -223,19 +223,15 @@
   white-space: break-spaces;
   word-break: break-all;
 }
-.w-com-cookie-operation {
+.w-com-cookie-op {
   width: 160px;
 }
-.w-com-history-operation .btn, .w-com-cookie-operation a {
+.w-com-cookie-op a {
   padding: 2px 10px !important;
-  margin-right: 10px;
   display: inline-block;
 }
-.w-com-history-dialog .modal-dialog {
-  width: 1060px;
-}
 
-.w-com-cookies-dialog .modal-dialog {
+.w-com-cookies .modal-dialog {
   width: 720px;
 }
 

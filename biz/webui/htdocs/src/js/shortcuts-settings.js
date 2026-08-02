@@ -3,9 +3,10 @@ var Dialog = require('./dialog');
 var util = require('./util');
 var dataCenter = require('./data-center');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
 
 var CMD = 'Ctrl[Command]';
+var TOGGLE = 'Toggle Network, Rules, Values, and Plugins';
+var NETWORK_SESSIONS = ' network sessions';
 var SETTINGS = [
   {
     'category': 'Network',
@@ -13,17 +14,17 @@ var SETTINGS = [
       [
         'importNetwork',
         CMD + ' + I',
-        'Import network sessions'
+        'Import' + NETWORK_SESSIONS
       ],
       [
         'exportNetwork',
         CMD + ' + E',
-        'Export network sessions'
+        'Export' + NETWORK_SESSIONS
       ],
       [
         'saveNetwork',
         CMD + ' + S',
-        'Save network sessions'
+        'Save' + NETWORK_SESSIONS
       ],
       [
         'toggleNetworkState',
@@ -43,12 +44,12 @@ var SETTINGS = [
       [
         'removeNetworkSessions',
         CMD + ' + D',
-        'Remove selected network sessions'
+        'Remove selected' + NETWORK_SESSIONS
       ],
       [
         'switchNetworkView',
         CMD + ' + B',
-        'Switch between tree and list view of network sessions'
+        'Switch between tree and list view of' + NETWORK_SESSIONS
       ],
       [
         'replaySelectedRequests',
@@ -68,7 +69,7 @@ var SETTINGS = [
       [
         'clearNetworkSessions',
         CMD + ' + X',
-        'Clear network sessions'
+        'Clear' + NETWORK_SESSIONS
       ],
       [
         'focusNetworkSearchBox',
@@ -188,12 +189,12 @@ var SETTINGS = [
       [
         'switchTabReverse',
         CMD + ' + <--',
-        'Toggle Network, Rules, Values, and Plugins in reverse order'
+        TOGGLE + ' in reverse order'
       ],
       [
         'switchTab',
         CMD + ' + -->',
-        'Toggle Network, Rules, Values, and Plugins'
+        TOGGLE
       ],
       [
         'openService',
@@ -230,7 +231,7 @@ var ShortcutsSettings = React.createClass({
     var settings = this.state.settings;
 
     return (
-      <Dialog ref="dialog" wstyle="w-shortcuts">
+      <Dialog ref="dialog" wstyle="w-shortcuts" closable>
         <ModalHeader>
           Shortcuts Settings
         </ModalHeader>
@@ -250,9 +251,6 @@ var ShortcutsSettings = React.createClass({
               </div>
             );
           })}
-        </div>
-        <div className="modal-footer">
-          <DismissBtn />
         </div>
       </Dialog>
   );

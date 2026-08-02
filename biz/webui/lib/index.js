@@ -301,9 +301,10 @@ app.use(function(req, res, next) {
       if (referer) {
         var refOpts = parseUrl(referer);
         var pathname = refOpts.pathname;
-        if (PLUGIN_PATH_RE.test(pathname) && RegExp.$3) {
-          var name = RegExp.$2;
-          req.url = '/' + RegExp.$1 + '.' + name + path;
+        var match = PLUGIN_PATH_RE.exec(pathname);
+        if (match && match[3]) {
+          var name = match[2];
+          req.url = '/' + match[1] + '.' + name + path;
           PLUGIN_NAMES.set(path, name);
         } else {
           pluginName = config.getPluginNameByHost(refOpts.hostname);
@@ -400,9 +401,9 @@ function cgiHandler(req, res) {
       var notFound = err ? err.code === 'ENOENT' : !stat.isFile();
       var msg;
       if (config.debugMode) {
-        msg = util.THEME_STYLE + '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'No such File') + '</pre>';
+        msg = util.THEME_STYLE + '<pre>' + (err ? util.encodeHtml(util.getErrorStack(err)) : 'No such file') + '</pre>';
       } else {
-        msg = notFound ? 'Not Found' : 'Internal Server Error';
+        msg = notFound ? 'Not found' : 'Internal server error';
       }
       return common.sendRes(res, notFound ? 404 : 500, msg);
     }

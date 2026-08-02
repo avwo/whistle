@@ -2,7 +2,7 @@ var React = require('react');
 var Dialog = require('./dialog');
 var Textarea = require('./textarea');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var TextDialog = React.createClass({
   getInitialState: function () {
@@ -12,7 +12,7 @@ var TextDialog = React.createClass({
     if (value) {
       var self = this;
       self.setState({ value: value, base64: base64, name: name }, function () {
-        self.refs.textDialog.show();
+        self.refs.dialog.show();
       });
     }
   },
@@ -20,7 +20,7 @@ var TextDialog = React.createClass({
     var state = this.state;
     var value = state.value;
     return (
-      <Dialog ref="textDialog" wstyle="w-text-dialog">
+      <Dialog ref="dialog" wstyle="w-text-dialog">
         <div className="modal-body">
           <CloseBtn />
           <div
@@ -35,8 +35,7 @@ var TextDialog = React.createClass({
             />
           </div>
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             className="btn btn-primary w-copy-text-with-tips"
@@ -44,7 +43,7 @@ var TextDialog = React.createClass({
           >
             Copy
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
     );
   }
@@ -55,10 +54,10 @@ var TextDialogWrap = React.createClass({
     return false;
   },
   show: function (value, base64, name) {
-    this.refs.textDialog.show(value, base64, name);
+    this.refs.dialog.show(value, base64, name);
   },
   render: function () {
-    return <TextDialog ref="textDialog" />;
+    return <TextDialog ref="dialog" />;
   }
 });
 

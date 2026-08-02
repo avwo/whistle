@@ -36,6 +36,7 @@ var BASE_SERVICE_URL = 'service/';
 var isFunc = win.isFunc;
 var isStr = win.isStr;
 var trigger = events.trigger.bind(events);
+var decodeCom = decodeURIComponent;
 
 exports.trigger = trigger;
 exports.on = events.on.bind(events);
@@ -140,6 +141,12 @@ function removeSpaces(str) {
 
 exports.removeSpaces = removeSpaces;
 
+function isArr(obj) {
+  return Array.isArray(obj);
+}
+
+exports.isArr = isArr;
+
 exports.attr = function (el, name) {
   return el.getAttribute(name);
 };
@@ -176,11 +183,12 @@ function isSafeNumStr(str) {
   if (str == '0') {
     return true;
   }
-  if (!DIG_RE.test(str)) {
+  var match = DIG_RE.exec(str);
+  if (!match) {
     return false;
   }
-  var sign = RegExp.$1 === '-';
-  var num = RegExp.$2;
+  var sign = match[1] === '-';
+  var num = match[2];
   if (num.length < 16) {
     return true;
   }
@@ -310,7 +318,7 @@ exports.parseLogs = function (str) {
       str = JSON.parse(str);
     } catch (e) {}
   }
-  if (!Array.isArray(str)) {
+  if (!isArr(str)) {
     return;
   }
   var result;
@@ -409,7 +417,7 @@ exports.getCAHash = function(server, urlList) {
   var result = [port];
   var len = 0;
 
-  if (Array.isArray(ipv4)) {
+  if (isArr(ipv4)) {
     ipv4.forEach(function(ip) {
       if (notEStr(ip)) {
         result.push(ip);
@@ -834,7 +842,7 @@ exports.getTransProto = function(req) {
     return;
   }
   try {
-    return decodeURIComponent(proto).toUpperCase();
+    return decodeCom(proto).toUpperCase();
   } catch (e) {}
   return proto.toUpperCase();
 };
@@ -848,27 +856,27 @@ exports.ensureVisible = function (elem, container, init) {
   }
   var conHeight = container[0].offsetHeight;
   var elemHeight = elem[0].offsetHeight;
+  var curTop = container.scrollTop();
   var scrollTop;
   if (top < 0) {
     if (init) {
       scrollTop = Math.ceil((conHeight - elemHeight) / 2);
-      scrollTop = Math.max(0, container.scrollTop() + top - scrollTop);
-      container.scrollTop(scrollTop);
+      scrollTop = Math.max(0, curTop + top - scrollTop);
     } else {
-      container.scrollTop(container.scrollTop() + top - 2);
+      scrollTop = curTop + top - 2;
     }
-    return;
+    return container.scrollTop(scrollTop);
   }
 
   top += elemHeight - conHeight;
   if (top > 0) {
     if (init) {
       scrollTop = Math.ceil(conHeight / 2);
-      scrollTop = Math.max(0, container.scrollTop() + top + scrollTop);
-      container.scrollTop(scrollTop);
+      scrollTop = Math.max(0, curTop + top + scrollTop);
     } else {
-      container.scrollTop(container.scrollTop() + top + 2);
+      scrollTop = curTop + top + 2;
     }
+    container.scrollTop(scrollTop);
   }
 };
 
@@ -887,7 +895,7 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
     if (key || value) {
       var val = value;
       var k = key;
-      if (decode == decodeURIComponent) {
+      if (decode == decodeCom) {
         decode = decodeURIComponentSafe;
       }
       try {
@@ -898,7 +906,7 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
       } catch (e) {}
       if (!donotAllowRepeat && key in result) {
         var curVal = result[key];
-        if (Array.isArray(curVal)) {
+        if (isArr(curVal)) {
           curVal.push(value);
         } else {
           result[key] = [curVal, value];
@@ -925,7 +933,7 @@ function objectToString(obj, rawNames, noEncoding) {
     .map(function (key) {
       var value = obj[key];
       key = (rawNames && rawNames[key]) || key;
-      if (!Array.isArray(value)) {
+      if (!isArr(value)) {
         return key + ': ' + value;
       }
       return value
@@ -1045,13 +1053,14 @@ function parseJSON(str, resolve) {
     return;
   }
   if (resolve) {
-    if (!/({[\w\W]*}|\[[\w\W]*\])/.test(str)) {
+    var match = /({[\w\W]*}|\[[\w\W]*\])/.exec(str);
+    if (!match) {
       return;
     }
-    if (str === RegExp.$1) {
+    if (str === match[1]) {
       isJSONText = true;
     } else {
-      str = RegExp.$1;
+      str = match[1];
     }
   }
   try {
@@ -1113,7 +1122,7 @@ function parseLinesJSON(text) {
     var obj = parseLine(line);
     var name = obj.name;
     var value = obj.value;
-    var isKey = !Array.isArray(name);
+    var isKey = !isArr(name);
     if (isKey || name.length <= 1) {
       if (isKey) {
         result = result || {};
@@ -1374,7 +1383,7 @@ function getMockValues(values) {
 }
 
 function getMockData(data) {
-  if (!Array.isArray(data) || data.length > 2 || !notEStr(data[0])) {
+  if (!isArr(data) || data.length > 2 || !notEStr(data[0])) {
     return;
   }
   return {
@@ -1530,11 +1539,11 @@ exports.handleImportData = function(data, type) {
   if (mockData) {
     trigger('showRulesDialog', mockData);
   } else if (data && type === 'composerImportFile') {
-    if (Array.isArray(data)) {
+    if (isArr(data)) {
       trigger('composer', data[0]);
     } else {
       var entries = data.log && data.log.entries;
-      if (Array.isArray(entries) && entries.length) {
+      if (isArr(entries) && entries.length) {
         var entry = harToSession(entries[0]);
         entry && trigger('composer', entry);
       }
@@ -1668,7 +1677,7 @@ exports.asCURL = function (item) {
 function parseHeadersFromHar(list) {
   var headers = {};
   var rawHeaderNames = {};
-  if (Array.isArray(list)) {
+  if (isArr(list)) {
     list.forEach(function (header) {
       var name = header.name;
       var key = name.toLowerCase();
@@ -1682,13 +1691,9 @@ function parseHeadersFromHar(list) {
   };
 }
 
-exports.parseHeadersFromHar = parseHeadersFromHar;
-
 function getTimeFromHar(time) {
   return time > 0 ? time : 0;
 }
-
-exports.getTimeFromHar = getTimeFromHar;
 
 exports.parseKeyword = function (keyword) {
   keyword = keyword.split(/\s+/);
@@ -1869,9 +1874,10 @@ exports.triggerListChange = function (name, data) {
 
 var REG_EXP = /^\/(.+)\/([miu]{0,3})$/;
 function toRegExp(regExp) {
-  if (regExp && REG_EXP.test(regExp)) {
+  var match = regExp && REG_EXP.exec(regExp);
+  if (match) {
     try {
-      return new RegExp(RegExp.$1, RegExp.$2);
+      return new RegExp(match[1], match[2]);
     } catch (e) {}
   }
 }
@@ -1923,7 +1929,7 @@ function decodeURIComponentSafe(str, isUtf8) {
   }
   var result = str.replace(SPACE_RE, ' ');
   try {
-    return decodeURIComponent(result);
+    return decodeCom(result);
   } catch (e) {}
   if (!isUtf8 && gbkDecoder && CHECK_COMP_RE.test(result)) {
     try {
@@ -2015,7 +2021,7 @@ exports.BODY_KEY = BODY_KEY;
 exports.HEX_KEY = HEX_KEY;
 exports.JSON_KEY = JSON_KEY;
 
-function getHexFromBase64(base64) {
+function getBase64Hex(base64) {
   if (base64) {
     try {
       return getHexString(base64toBytes(base64));
@@ -2024,7 +2030,7 @@ function getHexFromBase64(base64) {
   return base64;
 }
 
-exports.getHexFromBase64 = getHexFromBase64;
+exports.getBase64Hex = getBase64Hex;
 
 function getClosedMsg(data) {
   return 'Closed' + (data.code ? ' (' + data.code + ')' : '');
@@ -2044,7 +2050,7 @@ function initData(data, isReq) {
         body = String(body);
         data.base64 = base64Encode(body);
         data[BODY_KEY] = body;
-        data[HEX_KEY] = getHexFromBase64(data.base64);
+        data[HEX_KEY] = getBase64Hex(data.base64);
       } catch (e) {
       } finally {
         delete data.body;
@@ -2059,7 +2065,7 @@ function initData(data, isReq) {
   var type = !isReq && getMediaType(data);
   if (type) {
     data[BODY_KEY] = 'data:' + type + ';base64,' + data.base64;
-    data[HEX_KEY] = getHexFromBase64(data.base64);
+    data[HEX_KEY] = getBase64Hex(data.base64);
   } else {
     var result = decodeBase64(data.base64);
     data[BODY_KEY] = result.text;
@@ -2174,7 +2180,7 @@ function parseHeaders(str) {
       var name = line.substring(0, index).trim();
       var list = headers[name];
       if (list) {
-        if (!Array.isArray(list)) {
+        if (!isArr(list)) {
           headers[name] = list = [list];
         }
         list.push(value);
@@ -2381,8 +2387,9 @@ exports.addPluginMenus = function (item, list, maxTop, disabled, treeId, url) {
     for (var j = 0; j < count; j++) {
       var plugin = pluginsList[j];
       var pattern = plugin._urlPattern;
-      if (plugin.required || plugin.requiredTreeNode) {
-        var disd = disabled && (!plugin.requiredTreeNode || !treeId);
+      var requiredTreeNode = plugin.requiredTreeNode;
+      if (plugin.required || requiredTreeNode) {
+        var disd = disabled && (!requiredTreeNode || !treeId);
         if (!disd && (pattern && (!curUrl || !pattern.test(curUrl)))) {
           disd = true;
         }
@@ -2418,21 +2425,24 @@ exports.getText = getText;
 function getKeys(obj) {
   var list = obj[''];
   var keys = Object.keys(obj);
-  list = list && (Array.isArray(list) ? list : Array.isArray(list.list) ? list.list : null);
+  list = list && (isArr(list) ? list : isArr(list.list) ? list.list : null);
   if (!list) {
     return keys;
   }
   delete obj[''];
   var result = [];
   list = list.concat(keys);
-  for (var i = 0, len = list.length; i < len; i++) {
-    var name = list[i];
+  list.concat(keys).forEach(function (name) {
     if (notEStr(name) && (result.indexOf(name) === -1)) {
       result.push(name);
     }
-  }
+  });
   return result;
 }
+
+exports.getExceedTips = function(name) {
+  return (name || 'Response') + ' body exceeds display limit';
+};
 
 exports.parseImportData = function (data, modal, isValues) {
   var list = [];
@@ -2467,7 +2477,7 @@ exports.parseImportData = function (data, modal, isValues) {
       isConflict: isConflict
     });
   };
-  if (Array.isArray(data)) {
+  if (isArr(data)) {
     var map = {};
     data.forEach(function (item) {
       var name = item && item.name;
@@ -2561,14 +2571,14 @@ function strToByteArray(str) {
   return null;
 }
 
-function base64ToByteArray(str) {
+function base64ToBytes(str) {
   try {
     return toByteArray(str);
   } catch (e) {}
   return null;
 }
 
-exports.base64ToByteArray = base64ToByteArray;
+exports.base64ToBytes = base64ToBytes;
 
 var UPLOAD_TYPE_RE = /^\s*multipart\//i;
 var BOUNDARY_RE = /boundary=(?:"([^"]+)"|([^;]+))/i;
@@ -2590,18 +2600,19 @@ function parseMultiHeader(header) {
   } catch (e) {
     return;
   }
-  if (!NAME_RE.test(header[0])) {
+  var match = NAME_RE.exec(header[0]);
+  if (!match) {
     return;
   }
   var result = {
-    name: RegExp.$1 || RegExp.$2,
+    name: match[1] || match[2],
     value: ''
   };
-  if (FILENAME_RE.test(header[0].replace(RegExp['$&'], '\n'))) {
-    result.value = RegExp.$1 || RegExp.$2;
+  if (match = FILENAME_RE.exec(header[0].replace(/^(.*)$/, '\n'))) {
+    result.value = match[1] || match[2];
   }
-  if (TYPE_RE.test(header[1])) {
-    result.type = RegExp.$1;
+  if (match = TYPE_RE.exec(header[1])) {
+    result.type = match[1];
   }
   return result;
 }
@@ -2657,7 +2668,7 @@ function parseUploadBody(body, boundary, needObj) {
         }
         var value = result[name];
         if (value != null) {
-          if (!Array.isArray(value)) {
+          if (!isArr(value)) {
             value = result[name] = [ value ];
           }
           value.push(curVal);
@@ -2686,11 +2697,12 @@ exports.parseUploadBody = function (req, needObj) {
     return;
   }
   var type = req.headers && req.headers['content-type'];
-  if (!BOUNDARY_RE.test(type)) {
+  var match = BOUNDARY_RE.exec(type);
+  if (!match) {
     return;
   }
-  var boundary = RegExp.$1 || RegExp.$2;
-  var body = base64ToByteArray(req.base64);
+  var boundary = match[1] || match[2];
+  var body = base64ToBytes(req.base64);
   return body && parseUploadBody(body, boundary, needObj);
 };
 
@@ -2851,15 +2863,15 @@ function paddingMS(ms) {
 
 function formatDate(date) {
   date = date || new Date();
-  var result = [];
-  result.push(date.getFullYear());
-  result.push(padding(date.getMonth() + 1));
-  result.push(padding(date.getDate()));
-  result.push(padding(date.getHours()));
-  result.push(padding(date.getMinutes()));
-  result.push(padding(date.getSeconds()));
-  result.push(paddingMS(date.getMilliseconds()));
-  return result.join('');
+  return [
+    date.getFullYear(),
+    padding(date.getMonth() + 1),
+    padding(date.getDate()),
+    padding(date.getHours()),
+    padding(date.getMinutes()),
+    padding(date.getSeconds()),
+    paddingMS(date.getMilliseconds())
+  ].join('');
 }
 
 exports.formatDate = formatDate;
@@ -2931,7 +2943,7 @@ function objectToArray(obj, rawNames) {
     Object.keys(obj).forEach(function (name) {
       var value = obj[name];
       name = rawNames[name] || name;
-      if (Array.isArray(value)) {
+      if (isArr(value)) {
         value.forEach(function (val) {
           result.push({
             name: name,
@@ -3008,7 +3020,7 @@ function toHarRes(item) {
   var headers = res.headers || '';
   var cookies = headers['set-cookie'];
   if (cookies) {
-    if (Array.isArray(cookies)) {
+    if (isArr(cookies)) {
       cookies = cookies.map(parseResCookie);
     } else {
       cookies = [parseResCookie(cookies)];
@@ -3043,20 +3055,26 @@ exports.toHar = function (item) {
   var dns = -1;
   var send = -1;
   var receive = -1;
-  if (item.dnsTime >= item.startTime) {
-    dns = item.dnsTime - item.startTime;
+  var startTime = item.startTime;
+  var dnsTime = item.dnsTime;
+  var requestTime = item.requestTime;
+  var responseTime = item.responseTime;
+  var endTime = item.endTime;
+
+  if (dnsTime >= startTime) {
+    dns = dnsTime - startTime;
     time = dns;
-    if (item.requestTime >= item.dnsTime) {
-      send = item.requestTime - item.dnsTime;
-      if (item.responseTime >= item.requestTime) {
-        receive = item.responseTime - item.requestTime;
-        if (item.endTime >= item.responseTime) {
-          time = item.endTime - item.startTime;
+    if (requestTime >= dnsTime) {
+      send = requestTime - dnsTime;
+      if (responseTime >= requestTime) {
+        receive = responseTime - requestTime;
+        if (endTime >= responseTime) {
+          time = endTime - startTime;
         } else {
-          time = item.responseTime - item.startTime;
+          time = responseTime - startTime;
         }
       } else {
-        time = item.requestTime - item.startTime;
+        time = requestTime - startTime;
       }
     }
   }
@@ -3179,7 +3197,7 @@ function filterJson(obj, keyword, filterType) {
   if (type !== 'object') {
     return false;
   }
-  if (Array.isArray(obj)) {
+  if (isArr(obj)) {
     var idx = [];
     for (var i = obj.length - 1; i >=0; i--) {
       if ((isVal || !checkKeyword(keyword, i + '')) && !filterJson(obj[i], keyword, filterType)) {
@@ -3221,19 +3239,21 @@ var HOST_RE = /^(.+)(?::(\d*))$/;
 var BRACKET_RE = /^\[|\]$/g;
 
 exports.parseUrl = function (url) {
-  if (!URL_RE.test(url)) {
+  var match = URL_RE.exec(url);
+  if (!match) {
     return;
   }
-  var protocol = RegExp.$1 || 'http:';
-  var host = RegExp.$2;
-  var pathname = RegExp.$3 || '/';
-  var search = RegExp.$4;
-  var hash = RegExp.$5 || null;
+  var protocol = match[1] || 'http:';
+  var host = match[2];
+  var pathname = match[3] || '/';
+  var search = match[4];
+  var hash = match[5] || null;
   var port = null;
   var hostname = host;
-  if (HOST_RE.test(host)) {
-    hostname = RegExp.$1;
-    port = RegExp.$2;
+  match = HOST_RE.exec(host);
+  if (match) {
+    hostname = match[1];
+    port = match[2];
   }
 
   return {
@@ -3314,7 +3334,7 @@ exports.getSimplePluginName = getSimplePluginName;
 exports.showJSONDialog = function(data, keyPath) {
   var str = data && strfy(data);
   if (str) {
-    trigger('showJsonViewDialog', [str, Array.isArray(keyPath) ? keyPath : null]);
+    trigger('showJsonViewDialog', [str, isArr(keyPath) ? keyPath : null]);
   }
 };
 

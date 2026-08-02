@@ -1,4 +1,4 @@
-.w-timeline :is(ul, li) {
+.w-tl :is(ul, li) {
   list-style: none;
   margin: 0;
   padding: 0;
@@ -7,13 +7,13 @@
   width: 100%;
   display: block;
 }
-.w-timeline li {
+.w-tl li {
   padding: 2px 0 2px;
   position: relative;
   white-space: nowrap;
   margin-bottom: 12px;
 }
-.w-timeline span {
+.w-tl span {
   display: inline-block;
   font-size: 12px;
   height: 20px;
@@ -22,50 +22,50 @@
   text-overflow: ellipsis;
   cursor: default;
 }
-.w-timeline-url {
+.w-tl-url {
   padding-right: 5px;
   width: 18%;
   max-width: 200px;
   text-align: right;
 }
-.w-timeline-stalled {
+.w-tl-stalled {
   background: var(--c-disabled);
 }
-.w-timeline-ttfb {
+.w-tl-ttfb {
   background: var(--b-active);
 }
-.w-timeline-dns {
+.w-tl-dns {
   background: var(--b-tl-dns);
 }
-.w-timeline-request {
+.w-tl-request {
   background: var(--b-tl-req);
 }
-.w-timeline-response {
+.w-tl-response {
   background: var(--b-tl-res);
 }
-.w-timeline-load {
+.w-tl-load {
   background: var(--b-tl-load);
 }
-.w-timeline-one > ul > li:hover, .w-timeline-multi:hover {
+.w-tl-one > ul > li:hover, .w-tl-multi:hover {
   background: var(--b-hover);
 }
-.w-timeline-time {
+.w-tl-time {
   position: absolute;
   top: 2px;
   right: 0;
   padding-right: 5px;
 }
-.w-timeline-stream {
+.w-tl-stream {
   padding-bottom: 5px!important;
 }
-.w-timeline-one .w-timeline-url {
+.w-tl-one .w-tl-url {
   text-align: right;
   padding-right: 10px;
   font-weight: bold;
 }
-.w-timeline-one .w-timeline-time {
+.w-tl-one .w-tl-time {
   left: 18% !important;
 }
-.w-timeline-full-url {
+.w-tl-full-url {
   width: 82%;
 }

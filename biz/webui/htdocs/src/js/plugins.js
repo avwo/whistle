@@ -16,6 +16,7 @@ var DismissBtn = require('./dismiss-btn');
 
 var showSysErr = util.showSysErr;
 var isStr = util.isStr;
+var isArr = util.isArr;
 var getSimplePluginName = util.getSimplePluginName;
 var trigger = util.trigger;
 var addEvent = util.on;
@@ -27,6 +28,7 @@ var SPACE_RE = /\s+$/;
 var REGISTRY_RE = /^--registry=https?:\/\/[^/?]/;
 var SEP_RE = /\s*[|,;\s]+\s*/;
 var SELECT_STYLE = {width: 270};
+var globalWin = window;
 var pendingEnable;
 var registryCache;
 
@@ -93,16 +95,17 @@ function getArgvs(account, dir) {
 function getCmd(addArgv) {
   var cmdName = dataCenter.getServerInfo().cmdName;
   var g = '';
-  if (cmdName && CMD_RE.test(cmdName)) {
-    cmdName = RegExp.$1 + ' ';
-    g = ' ' + RegExp.$2.trim();
+  var match = cmdName && CMD_RE.exec(cmdName);
+  if (match) {
+    cmdName = match[1] + ' ';
+    g = ' ' + match[2].trim();
   } else {
     cmdName = 'w2 ';
   }
   return cmdName + 'install' + g + ' ' + (addArgv ? getArgvs(dataCenter.account, dataCenter.whistleName) : '');
 }
 
-window.getWhistleProxyServerInfo = function () {
+globalWin.getWhistleProxyServerInfo = function () {
   var serverInfo = dataCenter.getServerInfo();
   return serverInfo && $.extend(true, {}, serverInfo);
 };
@@ -134,7 +137,7 @@ function getRegistry(url) {
 function parsePluginName(list, registry) {
   if (isStr(list)) {
     list = list.split(/[\s,;|]+/);
-  } else if (!Array.isArray(list)) {
+  } else if (!isArr(list)) {
     return;
   }
   var plugins = [];
@@ -165,7 +168,7 @@ var Home = React.createClass({
       }
       var url = getHomePage(plugin);
       if (isOpenExternal(plugin)) {
-        return window.open(url);
+        return globalWin.open(url);
       }
       trigger('showPluginOptionTab', plugin);
     });
@@ -233,7 +236,7 @@ var Home = React.createClass({
     if (this.installUrls) {
       this.installUrls.forEach(function(plugin) {
         var reg = plugin.installUrl && plugin.installRegistry;
-        Array.isArray(reg) && reg.forEach(function(r) {
+        isArr(reg) && reg.forEach(function(r) {
           if (r && list.indexOf(r) === -1) {
             list.push(r);
           }
@@ -539,8 +542,8 @@ var Home = React.createClass({
                 <th className="w-plugins-date">Date</th>
                 <th className="w-plugins-name">Name</th>
                 <th className="w-plugins-version">Version</th>
-                <th className="w-plugins-operation">Operation</th>
-                <th className="w-plugins-desc">Description</th>
+                <th className="w-plugins-op">Operation</th>
+                <th>Description</th>
               </tr>
             </thead>
           </table>
@@ -630,7 +633,7 @@ var Home = React.createClass({
                           title={'Update ' + moduleName}
                         >{hasNew}</a> : null}
                       </td>
-                      <td className="w-plugins-operation">
+                      <td className="w-plugins-op">
                         {plugin.noOpt ? <span className="disabled">Option</span> : <a
                           href={openInModal ? null : url}
                           target="_blank"
@@ -698,7 +701,7 @@ var Home = React.createClass({
                           </a>
                         ) : null}
                       </td>
-                      <td className="w-plugins-desc" title={plugin.description}>
+                      <td title={plugin.description}>
                         {plugin.description}
                       </td>
                     </tr>
@@ -719,7 +722,7 @@ var Home = React.createClass({
             </tbody>
           </table>
         </div>
-        <Dialog ref="pluginRules" wstyle="w-plugin-rules">
+        <Dialog ref="pluginRules" wstyle="w-plugin-rules" closable>
           <ModalHeader>
             {plugin.name}
           </ModalHeader>
@@ -729,9 +732,6 @@ var Home = React.createClass({
               {renderRules(plugin._rules, 'reqRules.txt (_rules.txt)')}
               {renderRules(plugin.resRules, 'resRules.txt')}
             </div>
-          </div>
-          <div className="modal-footer">
-            <DismissBtn />
           </div>
         </Dialog>
         <Dialog ref="operatePlugin" wstyle="w-plugin-update">
@@ -841,7 +841,7 @@ var Tabs = React.createClass({
     }
     self._resizeHandler = resizeHandler;
     resizeHandler();
-    $(window).on('resize', resizeHandler);
+    $(globalWin).on('resize', resizeHandler);
   },
   shouldComponentUpdate: function (nextProps) {
     return !this.props.hide || !nextProps.hide;
@@ -918,7 +918,7 @@ var Tabs = React.createClass({
     case 'Uninstall':
       return trigger('showUninstallPlugin', plugin);
     case 'Help':
-      return window.open((plugin && plugin.homepage) || util.getDocUrl('extensions/usage.html'));
+      return globalWin.open((plugin && plugin.homepage) || util.getDocUrl('extensions/usage.html'));
     case 'Install':
       return trigger('showInstallPlugins');
     case 'Plugins':

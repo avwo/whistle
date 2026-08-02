@@ -14,7 +14,6 @@ var ReqType = require('./req-type');
 var message = require('./message');
 var StatusSelect = require('./status-select');
 var win = require('./win');
-var DismissBtn = require('./dismiss-btn');
 
 var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
@@ -25,6 +24,7 @@ var TestRule = React.createClass({
     return {
       disabledHeaders: false,
       disabledBody: false,
+      enableGlobal: false,
       disabledMock: true,
       rules: '',
       url: '',
@@ -136,6 +136,9 @@ var TestRule = React.createClass({
   onMockChange: function(e) {
     this.setState({ disabledMock: !e.target.checked });
   },
+  onGlobalChange: function(e) {
+    this.setState({ enableGlobal: e.target.checked });
+  },
   updateType: function() {
     var self = this;
     var state = self.state;
@@ -160,12 +163,17 @@ var TestRule = React.createClass({
   },
   onTestRule: function() {
     var self = this;
+    if (self._pending) {
+      return;
+    }
+    self._pending = true;
     var state = self.state;
     var rules = state.rules;
     if (!state.disabledMock) {
       rules = '* statusCode://' + state.statusCode + (rules ? '\n' + rules : '');
     }
     dataCenter.compose({
+      disabledGlobalRules: !state.enableGlobal,
       needResponse: true,
       url: state.url,
       headers: state.disabledHeaders ? '' : state.headers,
@@ -175,6 +183,7 @@ var TestRule = React.createClass({
       isTest: true
     }, function(data, xhr) {
       if (!data) {
+        self._pending = false;
         return util.showSysErr(xhr);
       }
       var testId = data.res && data.res.testId;
@@ -182,6 +191,7 @@ var TestRule = React.createClass({
         return message.error(data.em || 'Error, please retry');
       }
       dataCenter.getMatchedRules({ testId: testId }, function(matchedRules, xhr2) {
+        self._pending = false;
         if (!matchedRules) {
           return util.showSysErr(xhr2);
         }
@@ -215,11 +225,11 @@ var TestRule = React.createClass({
     self.updateType();
 
     return (
-      <Dialog ref="testRules" wstyle="w-test-rule-dialog">
+      <Dialog ref="testRules" wstyle="w-test-rule-dialog" closable>
+        <ModalHeader>
+          Test Rules Matching
+        </ModalHeader>
         <div className="modal-body">
-          <ModalHeader>
-            Test Rules Matching
-          </ModalHeader>
           <div className="w-test-rule">
             <div className="w-rules-form">
               <label>
@@ -234,6 +244,10 @@ var TestRule = React.createClass({
                 onChange={self.onRulesChange}
                 placeholder="Enter rules for testing"
               />
+              <label className="w-test-global">
+                {renderBox(state.enableGlobal, self.onGlobalChange)}
+                Enable Global Rules
+              </label>
               <label className="mt-10">
                 {renderBox(!disabledMock, self.onMockChange)}
                 Mock Response Status Code
@@ -279,10 +293,7 @@ var TestRule = React.createClass({
             </div>
           </div>
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
-        </div>
-        <Dialog ref="matchedRule" wstyle="w-test-rule-dialog">
+        <Dialog ref="matchedRule" wstyle="w-test-rule-dialog" closable>
           <ModalHeader>
             Matching Rules
           </ModalHeader>

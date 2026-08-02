@@ -162,7 +162,7 @@ var FrameComposer = React.createClass({
       });
     }
   },
-  onForamt: function (e) {
+  onFormat: function (e) {
     util.handleFormat(e, this.format);
     util.handleTab(e);
   },
@@ -333,7 +333,7 @@ var FrameComposer = React.createClass({
           ref="textarea"
           maxLength={MAX_LENGTH}
           value={text}
-          onKeyDown={self.onForamt}
+          onKeyDown={self.onFormat}
           onChange={self.onTextareaChange}
           placeholder={'Enter ' + (isHexText ? 'hex ' : '') + 'text'}
           className={'fill' + (isHexText ? ' n-monospace' : '')}

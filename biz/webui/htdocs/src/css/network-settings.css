@@ -24,7 +24,7 @@
   font-weight: bold;
   text-align: right;
 }
-.w-ns-columns {
+.w-ns-cols {
   margin-top: 10px;
 }
 .w-ns-filter {
@@ -41,27 +41,27 @@
 .w-ns-filter textarea[disabled] {
   background: var(--b-disabled);
 }
-.w-ns-columns label {
+.w-ns-cols label {
   white-space: nowrap;
   padding-left: 10px;
   margin-left: 10px;
   text-align: left;
   width: 120px;
 }
-.w-ns-columns label .glyphicon-edit {
+.w-ns-cols label .glyphicon-edit {
   margin-left: 5px;
   cursor: pointer;
 }
-.w-ns-columns label .glyphicon-edit:hover {
+.w-ns-cols label .glyphicon-edit:hover {
   color: var(--c-link);
 }
-.w-ns-columns .btn {
+.w-ns-cols .btn {
   margin-right: 0;
   text-align: center;
   color: var(--c-thin);
   width: 72px;
 }
-.w-ns-columns legend label {
+.w-ns-cols legend label {
   margin-left: 0;
 }
 .w-ns-dialog .modal-dialog {
@@ -104,7 +104,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.w-ns-columns label span {
+.w-ns-cols label span {
   vertical-align: middle;
   overflow: hidden;
   font-weight: normal;
@@ -131,7 +131,7 @@
 .w-ns-edit .modal-dialog {
   width: 500px;
 }
-.w-ns-columns legend .btn-primary {
+.w-ns-cols legend .btn-primary {
   width: auto;
   margin-right: 10px;
   padding: 0 8px;

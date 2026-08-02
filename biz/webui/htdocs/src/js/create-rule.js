@@ -13,8 +13,8 @@ var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var Select = require('./custom-select');
 var util = require('./util');
-var DismissBtn = require('./dismiss-btn');
 var ModalHeader = require('./modal-header');
+var ModalFooter = require('./modal-footer');
 
 var getHideStyle = util.getHideStyle;
 var trigger = util.trigger;
@@ -27,15 +27,26 @@ var TYPE_OPTIONS = [
   { value: 'Debug', label: 'Debug Tools' }
 ];
 var PATTERN_OPTIONS = [
-  { value: 'url', label: 'URL Fragment (p://host*/path)' },
+  { value: 'url', label: 'URL Part (p://host*/path)' },
   { value: 'wildcard', label: 'Wildcard (^p://host*/path*)' },
-  { value: 'regexp', label: 'RegExp (/regexp/i)' }
+  { value: 'regexp', label: 'RegExp (/regexp/i)' },
+  { value: 'contains', label: 'Contains Keyword' }
 ];
 var PATTERN_TIPS = {
-  url: 'Enter URL e.g. http://example.com/path or *.example.com',
+  url: 'Enter URL part, e.g. a.com/path or *.b.com/path or /path or ?query',
   wildcard: 'Enter wildcard, e.g. ^https://**.example.com/path/index.*.js',
-  regexp: 'Enter regular expression, e.g. cmdname=Query(List|UserInfo)'
+  regexp: 'Enter regular expression, e.g. cmdname=Query(List|UserInfo)',
+  contains: 'Enter a keyword from the URL, e.g. cmdname=AddUser'
 };
+
+function formatPath(url) {
+  if (/^\^?\/\//.test(url)) {
+    return url;
+  }
+  return url.replace(/^(\^?(?:https?:\/\/|wss?:\/\/)?)([/?.])/, function(all, prefix, flag) {
+    return flag === '/' ? prefix + '**/' : (prefix[0] === '^' ? prefix : '^' + prefix) + '**/**' + flag;
+  });
+}
 
 var CreateRuleDialog = React.createClass({
   getInitialState: function() {
@@ -161,11 +172,13 @@ var CreateRuleDialog = React.createClass({
   handlePatternChange: function() {
     var state = this.state;
     var patternType = state.patternType;
+    var ignore = state.ignoreCase ? 'i' : '';
+    var regexp = state.regexp || '';
+    var pattern = '';
     if (patternType === 'regexp') {
-      var regexp = state.regexp || '';
       var result = /^\/(.*)\/(?:i?)$/.exec(regexp);
       if (result) {
-        state.pattern = result[1] ? result[0] : '';
+        pattern = result[1] ? result[0] : '';
       } else {
         var endTag;
         if (regexp[0] === '/') {
@@ -175,23 +188,29 @@ var CreateRuleDialog = React.createClass({
             endTag = result[0];
           }
         }
-        endTag = endTag || '/' + (state.ignoreCase ? 'i' : '');
-        state.pattern = regexp ? '/' + regexp + endTag : '';
+        endTag = endTag || '/' + ignore;
+        pattern = regexp ? '/' + regexp + endTag : '';
       }
+    } else if (patternType === 'contains') {
+      regexp = regexp.replace(/[|\\{}()[\]^$+?*.]/g, '\\$&');
+      pattern = regexp && '/' + regexp + '/' + ignore;
     } else {
       var url = state.patternUrl || '';
       if (url) {
         var fullMatch = state.fullMatch ? '$' : '';
         if (patternType === 'wildcard') {
-          state.pattern = url.replace(/^\^*/, '^') + fullMatch;
+          pattern = formatPath(url.replace(/^\^*/, '^')) + fullMatch;
         } else {
-          state.pattern = fullMatch + url;
+          if (/^tunnel:\/\//.test(url)) {
+            url = 'tunnel://' + url.substring(9).replace(/[\/?].*$/, '');
+          } else {
+            url = formatPath(url);
+          }
+          pattern = fullMatch + url;
         }
-      } else {
-        state.pattern = '';
       }
     }
-    this.setState({});
+    this.setState({pattern: pattern});
   },
   onMappingChange: function(rule) {
     this.setState({ mappingRule: rule });
@@ -231,9 +250,11 @@ var CreateRuleDialog = React.createClass({
     var session = state.session;
     var placeholder = PATTERN_TIPS[patternType];
     var isRegExp = patternType === 'regexp';
-    var urlInputStyle = getHideStyle(isRegExp);
+    var isContains = patternType === 'contains';
+    var urlInputStyle = getHideStyle(isRegExp || isContains);
     var regExpStyle = getHideStyle(!isRegExp);
     var wildcardStyle = getHideStyle(patternType !== 'wildcard');
+    var ignoreStyle = getHideStyle(!isRegExp && !isContains);
     var ignoreCase = state.ignoreCase;
 
     return (
@@ -244,14 +265,14 @@ var CreateRuleDialog = React.createClass({
           <HelpIcon className="ml-10" docsUrl={'rules/pattern.html#' + patternType} />
         </label>
         <div className="w-form-value">
-          <Select className="w-200" value={patternType} onChange={self.onPatternTypeChange} options={PATTERN_OPTIONS} />
+          <Select className="w-190" value={patternType} onChange={self.onPatternTypeChange} options={PATTERN_OPTIONS} />
           <span className="w-wildcard-symbol" style={wildcardStyle}>^</span>
           <UrlInput ref="urlInput" style={urlInputStyle} placeholder={placeholder} session={session} onChange={self.onPatternUrlChange} />
           <span className="w-regexp-symbol" style={regExpStyle}>/</span>
-          <input className="form-control mx-2" type="text" placeholder={placeholder} maxLength="1024"
-            value={state.regexp} onChange={self.onRegExpChange} style={regExpStyle} />
+          <input className={'form-control' + (isContains ? '' : ' mx-2')} type="text" placeholder={placeholder} maxLength="1024"
+            value={state.regexp} onChange={self.onRegExpChange} style={ignoreStyle} />
           <span className="w-regexp-symbol" style={regExpStyle}>/{ignoreCase ? 'i' : null}</span>
-          <label className="ml-10" style={regExpStyle}>
+          <label className="ml-10" style={ignoreStyle}>
             <input type="checkbox" className="mr-5" checked={ignoreCase} onChange={self.onIgnoreCaseChange} /> Case-insensitive
           </label>
           <label className="ml-10" style={urlInputStyle}>
@@ -297,22 +318,22 @@ var CreateRuleDialog = React.createClass({
     var state = self.state;
     var type = state.type;
     var rules = self.getRules();
+    var session = state.session;
 
     return (
       <Dialog ref="dialog" wstyle="w-create-rule">
         {self.renderHeader()}
         <div className="modal-body">
           {self.renderPattern()}
-          <MappingRule hide={type !== 'Mapping'} onChange={self.onMappingChange} session={state.session} />
-          <NetworkRule hide={type !== 'Network'} onChange={self.onNetworkChange} session={state.session} />
-          <RequestRule hide={type !== 'Request'} onChange={self.onRequestChange} session={state.session} />
-          <ResponseRule hide={type !== 'Response'} onChange={self.onResponseChange} session={state.session} />
-          <DebugRule hide={type !== 'Debug'} onChange={self.onDebugChange} session={state.session} />
-          <FiltersRule onChange={self.onFiltersChange} session={state.session} />
+          <MappingRule hide={type !== 'Mapping'} onChange={self.onMappingChange} session={session} />
+          <NetworkRule hide={type !== 'Network'} onChange={self.onNetworkChange} session={session} />
+          <RequestRule hide={type !== 'Request'} onChange={self.onRequestChange} session={session} />
+          <ResponseRule hide={type !== 'Response'} onChange={self.onResponseChange} session={session} />
+          <DebugRule hide={type !== 'Debug'} onChange={self.onDebugChange} session={session} />
+          <FiltersRule onChange={self.onFiltersChange} session={session} />
           {self.renderRules(rules)}
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             disabled={!rules}
             type="button"
@@ -321,7 +342,7 @@ var CreateRuleDialog = React.createClass({
           >
             Save{state.onSave ? null : ' As Rules'}
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
       );
   }

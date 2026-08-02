@@ -30,8 +30,7 @@ module.exports = {
     self.state.showNameInput = false;
     self.forceUpdate(function () {
       var nameInput = self.refs.nameInput;
-      var defaultName = self.props.defaultName;
-      if (defaultName === nameInput.value) {
+      if (self.props.defaultName === nameInput.value) {
         nameInput.value = '';
       }
     });

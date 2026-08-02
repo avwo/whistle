@@ -5,7 +5,6 @@ var Frames = require('./frames');
 var LazyInit = require('./lazy-init');
 var dataCenter = require('./data-center');
 var TabMgr = require('./tab-mgr');
-var ContextMenu = require('./context-menu');
 var Properties = require('./properties');
 var Icon = require('./icon');
 
@@ -53,8 +52,8 @@ var Inspectors = React.createClass({
           'fill v-box w-detail-inspectors' + util.getHide(hide)
         }
       >
-        <Properties className="w-detail-inspectors-url" modal={urlModal}  showEnableBtn={true} />
-        <div className="box w-inspectors-title w-detail-inspectors-tabs">
+        <Properties className="w-detail-url" modal={urlModal}  showEnableBtn={true} />
+        <div className="box w-detail-title w-detail-tabs">
           <button
             type="button"
             onClick={function () {
@@ -103,7 +102,6 @@ var Inspectors = React.createClass({
           tabs={tabs}
           className="w-custom-tab-panel"
         />
-        <ContextMenu ref="contextMenu" />
       </div>
     );
   }

@@ -3,7 +3,7 @@
   border: none;
 }
 
-.w-inspectors-title,
+.w-detail-title,
 .w-detail-webforms-title {
   line-height: 18px;
   background: var(--b-title);
@@ -11,28 +11,26 @@
   padding: 0 10px;
   border-bottom: var(--v-border);
 }
-.w-inspectors-title {
+.w-detail-title {
   padding: 0 5px !important;
-}
-.w-inspectors-title {
   font-weight: bold;
 }
 .w-detail-webforms-title {
   line-height: 16px !important;
 }
-.w-detail-inspectors-url.w-props td pre {
+.w-detail-url.w-props td pre {
   overflow-x: hidden;
   overflow-y: auto;
   max-height: 35px;
   padding-right: 8px;
 }
 
-.w-detail-inspectors-url.w-props th {
+.w-detail-url.w-props th {
   width: 60px;
   white-space: nowrap;
 }
 
-.w-detail-inspectors-url.w-props td {
+.w-detail-url.w-props td {
   padding-right: 0;
 }
 

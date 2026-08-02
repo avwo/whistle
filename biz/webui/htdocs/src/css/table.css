@@ -46,13 +46,13 @@
   vertical-align: middle!important;
 }
 
-.w-order-table-operation {
+.w-order-table-op {
   white-space: nowrap;
 }
 
-.w-order-table-operation a {
+.w-order-table-op a {
   margin-right: 20px;
 }
-.w-order-table-operation a:last-child {
+.w-order-table-op a:last-child {
   margin-right: 0;
 }

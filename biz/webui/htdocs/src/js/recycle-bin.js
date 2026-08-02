@@ -6,7 +6,6 @@ var message = require('./message');
 var win = require('./win');
 var Icon = require('./icon');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
 
 var showSysErr = util.showSysErr;
 var addEvent = util.on;
@@ -46,12 +45,10 @@ var RecycleBinDialog = React.createClass({
     if (options.list) {
       options.list = options.list
         .map(function (name) {
-          if (!TIMESTAMP_RE.test(name)) {
-            return;
-          }
-          return {
-            filename: decode(RegExp.$2),
-            date: util.toDateStr(parseInt(RegExp.$1, 10)),
+          var match = TIMESTAMP_RE.exec(name);
+          return match && {
+            filename: decode(match[2]),
+            date: util.toDateStr(parseInt(match[1], 10)),
             name: name
           };
         })
@@ -145,7 +142,7 @@ var RecycleBinDialog = React.createClass({
     var state = self.state;
     var list = state.list || [];
     return (
-      <Dialog ref="dialog" wstyle="w-files-dialog">
+      <Dialog ref="dialog" wstyle="w-files-dialog" closable>
         <ModalHeader>
           {state.name} Trash
         </ModalHeader>
@@ -155,11 +152,14 @@ var RecycleBinDialog = React.createClass({
               <th className="w-files-order">#</th>
               <th className="w-files-date">Date</th>
               <th className="w-files-path">Filename</th>
-              <th className="w-files-operation">Operation</th>
+              <th className="w-files-op">Operation</th>
             </thead>
             <tbody className="w-hover-body">
               {list.length ? (
                 list.map(function (item, i) {
+                  if (!item) {
+                    return null;
+                  }
                   var name = item.name;
                   var filename = item.filename;
                   return (
@@ -170,7 +170,7 @@ var RecycleBinDialog = React.createClass({
                         {util.isGroup(filename) ? <Icon name="triangle-right" className="w-list-group-icon" /> : null}
                         {filename}
                       </td>
-                      <td className="w-files-operation">
+                      <td className="w-files-op">
                         <a data-name={name} onClick={self.view}>
                           View
                         </a>
@@ -197,9 +197,6 @@ var RecycleBinDialog = React.createClass({
               )}
             </tbody>
           </table>
-        </div>
-        <div className="modal-footer">
-          <DismissBtn />
         </div>
       </Dialog>
     );

@@ -9,7 +9,7 @@ var message = require('./message');
 var Icon = require('./icon');
 var HelpIcon = require('./help-icon');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var MAX_CERT_SIZE = 128 * 1024;
 
@@ -253,6 +253,7 @@ var CertsInfoDialog = React.createClass({
                   var filename = item.filename;
                   var isRoot = item.isRoot;
                   var validity = item.validity;
+                  var domain = item.domain;
 
                   return (
                     <tr
@@ -280,8 +281,8 @@ var CertsInfoDialog = React.createClass({
                           {readOnly ? 'View path' : 'Delete'}
                         </a>
                       </td>
-                      <td className="w-certs-domain" title={item.domain}>
-                        {isRoot ? null : item.domain}
+                      <td className="w-certs-domain" title={domain}>
+                        {isRoot ? null : domain}
                       </td>
                       <td
                         className="w-certs-validity"
@@ -295,7 +296,7 @@ var CertsInfoDialog = React.createClass({
                 })
               ) : (
                 <tr>
-                  <td colSpan="5" className="w-empty">
+                  <td colSpan="6" className="w-empty">
                     No data
                   </td>
                 </tr>
@@ -303,8 +304,7 @@ var CertsInfoDialog = React.createClass({
             </tbody>
           </table>
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           {dataCenter.whistleId ? <button
             type="button"
             className="btn btn-warning"
@@ -324,14 +324,14 @@ var CertsInfoDialog = React.createClass({
           />
           <button
             type="button"
-            style={util.getHideStyle(dataCenter.isDiableCustomCerts())}
+            style={util.getHideStyle(dataCenter.noCustomCerts())}
             className="btn btn-primary ml-5"
             onClick={self.showUpload}
           >
             <Icon name="folder-open" />
             Upload
           </button>
-        </div>
+        </ModalFooter>
         <TipsDialog ref="tipsDialog" />
       </Dialog>
     );

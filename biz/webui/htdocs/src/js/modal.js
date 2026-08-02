@@ -4,10 +4,10 @@ var Dialog = require('./dialog');
 var CloseBtn = require('./close-btn');
 var ModalHeader = require('./modal-header');
 var util = require('./util');
-var DismissBtn = require('./dismiss-btn');
 
 var isFunc = util.isFunc;
 var notEStr = util.notEStr;
+var globalWin = window;
 var GLOBAL_VAR =
   '__WHISTLE_MODAL_' +
   Date.now() +
@@ -25,24 +25,26 @@ function getFlag() {
 
 function removeWinField(name) {
   try {
-    delete window[name];
+    delete globalWin[name];
   } catch (e) {
-    window[name] = undefined;
+    globalWin[name] = undefined;
   }
 }
 
 function createModal(options, callback, gVarName) {
   var container = document.createElement('div');
+  var fullCustom = options.fullCustom;
   document.body.appendChild(container);
   if (options.methods) {
-    window[gVarName] = options.methods;
+    globalWin[gVarName] = options.methods;
   }
   ReactDOM.render(
     <Dialog
       width={options.width}
       height={options.height}
-      fullCustom={options.fullCustom}
-      wclassName="w-dialog-for-plguin"
+      fullCustom={fullCustom}
+      closable={!fullCustom}
+      wclassName="w-dialog-for-plugin"
       customRef={function (d) {
         document.body.removeChild(container);
         initModal(d, options, gVarName);
@@ -51,17 +53,12 @@ function createModal(options, callback, gVarName) {
       onClose={options.onClose}
       onShow={options.onShow}
     >
-      {options.fullCustom ? (
+      {fullCustom ? (
         <CloseBtn />
       ) : (
         <ModalHeader />
       )}
       <div className="modal-body"></div>
-      {options.fullCustom ? null :
-        <div className="modal-footer">
-          <DismissBtn />
-        </div>
-      }
     </Dialog>,
     container
   );
@@ -172,7 +169,7 @@ exports.create = function (options) {
     show: function (options) {
       if (dialog) {
         if (options && options.methods) {
-          window[gVarName] = options.methods;
+          globalWin[gVarName] = options.methods;
         }
         dialog.show();
         initModal(dialog, options, gVarName);

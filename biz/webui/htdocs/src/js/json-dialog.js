@@ -5,7 +5,6 @@ var FilterInput = require('./filter-input');
 var util = require('./util');
 var FbBtn = require('./forward-back-btn');
 var CloseBtn = require('./close-btn');
-var DismissBtn = require('./dismiss-btn');
 
 var KV_RE = /^(k|v):/;
 var stringify = util.stringify;
@@ -96,7 +95,7 @@ var JSONDialog = React.createClass({
   _show: function (text, keyPath, session) {
     var self = this;
     var data = self.state.data;
-    self.setState({ session: session, keyPath: Array.isArray(keyPath) ? keyPath : null });
+    self.setState({ session: session, keyPath: util.isArr(keyPath) ? keyPath : null });
     if (data && data.text === text) {
       self.focus();
       return self.refs.jsonDialog.show();
@@ -157,7 +156,7 @@ var JSONDialog = React.createClass({
     var historyIndex = state.historyIndex;
 
     return (
-      <Dialog ref="jsonDialog" wstyle="w-json-dialog">
+      <Dialog ref="jsonDialog" wstyle="w-json-dialog" closable>
         <div className="modal-body">
           <FbBtn
             disabledBack={historyIndex <= 0}
@@ -173,9 +172,6 @@ var JSONDialog = React.createClass({
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} session={state.session} />
           </div>
           <FilterInput ref="filterInput" onChange={self.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
-        </div>
-        <div className="modal-footer">
-          <DismissBtn />
         </div>
       </Dialog>
     );

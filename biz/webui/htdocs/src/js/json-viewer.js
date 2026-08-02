@@ -104,8 +104,9 @@ var JsonViewer = React.createClass({
           return;
         }
         var elem = $(this);
-        if (LINK_RE.test(elem.text())) {
-          window.open((RegExp.$1 || 'http:') + RegExp.$2);
+        var match = LINK_RE.exec(elem.text());
+        if (match) {
+          window.open((match[1] || 'http:') + match[2]);
         }
       });
   },
@@ -168,7 +169,7 @@ var JsonViewer = React.createClass({
         className={className + getHide(noData || props.hide)}
       >
         <Tips data={tips} />
-        <div className="w-textarea-bar">
+        <div className="w-bar">
           <CopyBtn value={data.str} />
           <a
             onDoubleClick={self.download}

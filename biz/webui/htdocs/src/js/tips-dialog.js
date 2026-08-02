@@ -1,7 +1,7 @@
 var React = require('react');
 var Dialog = require('./dialog');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 var util = require('./util');
 
 var TipsDialog = React.createClass({
@@ -24,8 +24,7 @@ var TipsDialog = React.createClass({
           {state.title}
         </ModalHeader>
         <pre className="modal-body">{state.tips}</pre>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             data-dismiss="modal"
@@ -34,7 +33,7 @@ var TipsDialog = React.createClass({
           >
             Copy directory
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
     );
   }

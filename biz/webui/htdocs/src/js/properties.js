@@ -11,6 +11,8 @@ var dataCenter = require('./data-center');
 var HelpIcon = require('./help-icon');
 
 var TUNNEL_RE = /^tunnel:\/\//;
+var isArr = util.isArr;
+var toString = util.toString;
 
 function getSrcInfo(val, sep) {
   var index = sep ? val.indexOf(sep) : -1;
@@ -106,7 +108,7 @@ var Properties = React.createClass({
     var title = props.title || {};
     var clazz = props.wrapClass || '';
     var itemSep = isRules ? util.SOURCE_SEP : null;
-    var isArr = Array.isArray(modal);
+    var isArray = isArr(modal);
     var keys = Object.keys(modal);
     if (sourceText || copyValue) {
       var result = [];
@@ -117,13 +119,13 @@ var Properties = React.createClass({
         var value = modal[name];
         name = sourceText ? name + ': ' : '';
         result.push(
-          Array.isArray(value)
+          isArr(value)
             ? value
                 .map(function (val) {
-                  return name + util.toString(val);
+                  return name + toString(val);
                 })
                 .join('\n')
-            : name + util.toString(value)
+            : name + toString(value)
         );
       });
       sourceText = sourceText && result.join('\n');
@@ -152,7 +154,7 @@ var Properties = React.createClass({
         }
       >
         {sourceText ? (
-          <div className="w-textarea-bar">
+          <div className="w-bar">
             <CopyBtn value={sourceText} name="AsText" />
             {self.jsonStr ? (
               <CopyBtn value={self.jsonStr} name="AsJSON" />
@@ -161,7 +163,7 @@ var Properties = React.createClass({
           </div>
         ) : null}
         {copyValue ? (
-          <div className="w-textarea-bar">
+          <div className="w-bar">
             <CopyBtn value={copyValue} name={props.name} />
           </div>
         ) : null}
@@ -190,9 +192,9 @@ var Properties = React.createClass({
             ) : null}
             {keys.map(function (name, i) {
               var value = modal[name];
-              if (Array.isArray(value)) {
+              if (isArr(value)) {
                 return value.map(function (val, i) {
-                  val = util.toString(val);
+                  val = toString(val);
                   var json = showJsonView && util.likeJson(val) && util.parseJSON(val);
                   return (
                     <tr key={i} className={val ? null : 'w-no-value'}
@@ -216,7 +218,7 @@ var Properties = React.createClass({
                   );
                 });
               }
-              value = util.toString(value);
+              value = toString(value);
               var json = showJsonView && util.likeJson(value) && util.parseJSON(value);
               var css = cssMap && cssMap[name];
               var style = css && css.style;
@@ -232,7 +234,7 @@ var Properties = React.createClass({
                   className={value ? null : 'w-no-value'}
                   data-name={name}  data-value={value}
                 >
-                  {self.renderKey(isArr ? i + 1 + '' : name, value)}
+                  {self.renderKey(isArray ? i + 1 + '' : name, value)}
                   <td
                     className={(json ? 'w-props-json ' : 'w-user-select-none ') + (className || '')}
                     style={style}

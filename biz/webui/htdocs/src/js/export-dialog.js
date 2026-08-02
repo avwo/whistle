@@ -3,7 +3,7 @@ var Dialog = require('./dialog');
 var ShareViaUrlBtn = require('./share-via-url-btn');
 var util = require('./util');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var ExportDialog = React.createClass({
   getInitialState: function () {
@@ -112,8 +112,7 @@ var ExportDialog = React.createClass({
             maxLength="64"
           />
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <ShareViaUrlBtn type={state.name} data={state.data} getFilename={self.getInputValue} onComplete={self.onShare} />
           <button
             type="button"
@@ -123,7 +122,7 @@ var ExportDialog = React.createClass({
           >
             Export
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
     );
   }

@@ -1,7 +1,7 @@
 .w-textarea {
   position: relative;
 }
-.w-textarea-bar, .w-log-item > a {
+.w-bar, .w-log-item > a {
   display: none;
   position: absolute;
   z-index: 1;
@@ -13,16 +13,16 @@
   line-height: 1.5;
   background: var(--b-heavy);
 }
-.w-textarea:hover .w-textarea-bar {
+.w-textarea:hover .w-bar {
   display: block;
 }
-.w-textarea-bar a {
+.w-bar a {
   display: inline-block;
   text-decoration: none;
   color: var(--c-thin);
   padding: 0 5px;
 }
-.w-textarea-bar a:hover {
+.w-bar a:hover {
   color: var(--c-default);
 }
 

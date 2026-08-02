@@ -12,6 +12,7 @@ var Tips = require('./panel-tips');
 
 var parseQueryString = util.parseQueryString;
 var EMPTY_COOKIES = { message: 'No request cookies' };
+var decode = decodeURIComponent;
 
 var BTNS = [
   { name: 'Raw' },
@@ -90,14 +91,14 @@ var ReqDetail = React.createClass({
       bin = util.getHex(req);
       base64 = req.base64;
       headers = req.headers;
-      json = util.getJson(req, true, decodeURIComponent);
+      json = util.getJson(req, true, decode);
       delete headers.Host;
       cookies = headers.cookie;
       cookies = cookies && parseQueryString(
         cookies,
         /;\s*/g,
         null,
-        decodeURIComponent
+        decode
       );
       var realUrl = util.getRealUrl(modal);
       var index = realUrl.indexOf('?');
@@ -106,14 +107,14 @@ var ReqDetail = React.createClass({
         query,
         null,
         null,
-        decodeURIComponent
+        decode
       );
       if (util.isUrlEncoded(req)) {
         form = parseQueryString(
           util.getBody(req, true),
           null,
           null,
-          decodeURIComponent
+          decode
         );
         if (!window.___hasFormData) {
           form = null;
@@ -138,8 +139,9 @@ var ReqDetail = React.createClass({
         if (req.size < 5120) {
           tips = { message: 'No request body' };
         } else {
-          raw += '(Request body exceeds display limit)';
-          tips = { message: 'Request body exceeds display limit' };
+          var exceedTips = util.getExceedTips('Request');
+          raw += '(' + exceedTips + ')';
+          tips = { message: exceedTips };
         }
       }
     }

@@ -9,7 +9,7 @@ var HeaderSelect = require('./header-select');
 var TypeSelect = require('./type-select');
 var Dialog = require('./dialog');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 
 var getInjectValue = util.getInjectValue;
 var getRandomKey = util.getRandomKey;
@@ -393,8 +393,7 @@ module.exports = {
             })}
           </div>
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           <button
             type="button"
             data-dismiss="modal"
@@ -404,7 +403,7 @@ module.exports = {
           >
             Confirm
           </button>
-        </div>
+        </ModalFooter>
       </Dialog>
     );
   }

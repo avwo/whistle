@@ -12,21 +12,21 @@
   word-break: break-all;
   word-wrap: break-word;
 }
-.w-files-operation {
+.w-files-op {
   width: 240px;
 }
 
-.w-files-operation a {
+.w-files-op a {
   margin-right: 15px;
   display: inline-block;
   white-space: nowrap;
 }
 
-.w-files-operation a:last-child {
+.w-files-op a:last-child {
   color: var(--c-risk);
 }
 
-.w-files-operation a:last-child:hover {
+.w-files-op a:last-child:hover {
   color: var(--c-error);
 }
 

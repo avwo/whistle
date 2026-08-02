@@ -7,7 +7,7 @@ var EditorDialog = require('./editor-dialog');
 var parseCurl = require('./parse-curl');
 var Icon = require('./icon');
 var ModalHeader = require('./modal-header');
-var DismissBtn = require('./dismiss-btn');
+var ModalFooter = require('./modal-footer');
 var UploadForm = require('./upload-form');
 var showError = require('./message').error;
 
@@ -144,8 +144,7 @@ var ImportDialog = React.createClass({
             placeholder="Enter URL or file path"
           />
         </div>
-        <div className="modal-footer">
-          <DismissBtn />
+        <ModalFooter>
           {
             state.importCURL ? <button
             type="button"
@@ -182,7 +181,7 @@ var ImportDialog = React.createClass({
           >
             Import
           </button>
-        </div>
+        </ModalFooter>
         <UploadForm ref="uploadForm" name="fileInput" onChange={self.uploadFile} accept={state.accept} />
         <EditorDialog ref="editorDialog" title="Import cURL" hideFormat="1" placeholder="Enter cURL text"
           textEditor onConfirm={self.importCURL} />

@@ -15,7 +15,7 @@ var BackToBottomBtn = React.createClass({
   render() {
     var props = this.props;
     return (
-      <div className={'w-back-to-the-bottom' + getHide(props.hide)} ref="backBtn" onClick={props.onClick} title="Back to the bottom">
+      <div className={'w-back-to-bottom' + getHide(props.hide)} ref="backBtn" onClick={props.onClick} title="Back to the bottom">
         <Icon name="arrow-down" />
       </div>
     );
