@@ -1,6 +1,6 @@
 ## pattern
 
-`pattern` is the expression used in Whistle rules to match request URLs. It supports multiple matching methods, including URL fragment/domain, wildcards, and regular expressions.
+`pattern` is the expression used in Whistle rules to match request URLs. It supports multiple matching methods, including URL part/domain, wildcards, and regular expressions.
 
 ## Request URL Types
 
@@ -14,9 +14,9 @@ Whistle supports three types of request URLs:
 
 > The hash part of a URL (i.e., `#` and everything after it) is not sent to the server. Hashes only work on the client side (e.g., browsers) and cannot be directly obtained by the server.
 
-## URL Fragment {#url}
+## URL Part {#url}
 
-The URL fragment is used to match request URLs with flexible patterns. The matching rules are categorized as follows.
+The URL part is used to match request URLs with flexible patterns. The matching rules are categorized as follows.
 
 ### 1. Domain Matching
 
@@ -108,12 +108,12 @@ Use `*` or `**` in the `domain:port` part for fuzzy matching.
 
 ## Wildcard Matching {#wildcard}
 
-In [URL Fragment Matching](#url), because `*` is a legal character in URL paths, wildcards cannot be used directly in the path or query part.  
+In [URL Part Matching](#url), because `*` is a legal character in URL paths, wildcards cannot be used directly in the path or query part.  
 If you need to use wildcards in the **path** or **query parameters**, prefix the URL with `^`. Then `*`, `**`, `***` are interpreted as wildcards.
 
 ### 1. Domain Wildcard
 
-The syntax is exactly the same as the [Domain Wildcard in URL Fragment](#domain-wildcard):
+The syntax is exactly the same as the [Domain Wildcard in URL Part](#domain-wildcard):
 
 - `*`: Matches zero or more non-`.` characters (regex `/[^/?.]*/`)
 - `**`: Matches zero or more arbitrary characters except `/` and `?` (regex `/[^/?]*/`)
@@ -208,7 +208,7 @@ Use `$` at the end of the pattern to indicate that matching must end there (no e
 
 ## Regex Matching {#regexp}
 
-In addition to the URL fragment and wildcard matching described above, Whistle provides full regular expression support.  
+In addition to the URL part and wildcard matching described above, Whistle provides full regular expression support.  
 The regex syntax is fully compatible with JavaScript regular expressions:
 
 ```txt
