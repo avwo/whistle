@@ -6,6 +6,8 @@ var protocols = require('./protocols');
 var dataCenter = require('./data-center');
 var util = require('./util');
 
+var LOC_PROTO = 'locationHref://';
+var REDIRECT_PROTO = 'redirect://';
 var isFunc = util.isFunc;
 var isStr = util.isStr;
 var notEStr = util.notEStr;
@@ -166,7 +168,7 @@ function getInlineKeys() {
     curRules = value;
     var values = {};
     util.resolveInlineValues(curRules, values);
-    curKeys = Object.keys(values);
+    curKeys = util.toKeys(values);
     if (!curKeys.length) {
       curKeys = null;
     }
@@ -224,22 +226,22 @@ function getHints(keyword) {
   } else if ('extend'.indexOf(keyword) !== -1) {
     list.push('reqMerge://', 'resMerge://');
   }
-  var index1 = list.indexOf('redirect://');
-  var index2 = list.indexOf('locationHref://');
+  var index1 = list.indexOf(REDIRECT_PROTO);
+  var index2 = list.indexOf(LOC_PROTO);
   if (index1 !== -1) {
     if (index2 !== -1) {
       if (index1 > index2) {
         list.splice(index1, 1);
-        list.splice(index2 + 1, 0, 'redirect://');
+        list.splice(index2 + 1, 0, REDIRECT_PROTO);
       } else {
         list.splice(index2, 1);
-        list.splice(index1 + 1, 0, 'locationHref://');
+        list.splice(index1 + 1, 0, LOC_PROTO);
       }
     } else {
-      list.splice(index1 + 1, 0, 'locationHref://');
+      list.splice(index1 + 1, 0, LOC_PROTO);
     }
   } else if (index2 !== -1) {
-    list.splice(index2 + 1, 0, 'redirect://');
+    list.splice(index2 + 1, 0, REDIRECT_PROTO);
   }
   return list;
 }
@@ -632,8 +634,8 @@ CodeMirror.registerHelper('hint', 'rulesHint', function (editor) {
   if (curWord) {
     if (match = VAL_RE.exec(curWord)) {
       var protoLen = match[1].length;
-      var tplStart = match[2];
-      var valKeyword = match[3];
+      var tplStart = match[2] || '';
+      var valKeyword = match[3] || '';
       var valuesModal = dataCenter.getValuesModal();
       var valuesKeys = valuesModal && valuesModal.list;
       var inlineKyes = getInlineKeys();
