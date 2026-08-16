@@ -33,7 +33,7 @@ var TabMgr = React.createClass({
       cache[action] = Date.now();
       return true;
     }
-    var keys = Object.keys(cache);
+    var keys = util.toKeys(cache);
     if (keys.length >= MAX_IFRAME_COUNT) {
       var minTime;
       var destroyKey;

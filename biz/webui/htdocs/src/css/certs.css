@@ -34,8 +34,7 @@
 .w-certs-status .glyphicon-ok {
   color: var(--c-ok);
 }
-.w-cert-invalid th,
-.w-cert-invalid td {
+.w-cert-invalid :is(th, td) {
   color: var(--c-error);
 }
 

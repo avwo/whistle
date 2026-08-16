@@ -12,6 +12,7 @@ var CloseBtn = require('./close-btn');
 var ModalFooter = require('./modal-footer');
 
 var MAX_CERT_SIZE = 128 * 1024;
+var toKeys = util.toKeys;
 
 function getCertName(cert, filename) {
   filename = filename || cert.filename;
@@ -35,7 +36,7 @@ var CertsInfoDialog = React.createClass({
     var rootCA;
     var self = this;
     self._certsDir = self._certsDir || dir;
-    Object.keys(data).forEach(function (filename) {
+    toKeys(data).forEach(function (filename) {
       var cert = data[filename];
       var startDate = new Date(cert.notBefore);
       var endDate = new Date(cert.notAfter);
@@ -155,7 +156,7 @@ var CertsInfoDialog = React.createClass({
     var result;
     var missKeys = [];
     var missCerts = [];
-    Object.keys(certs).forEach(function (key) {
+    toKeys(certs).forEach(function (key) {
       var cert = certs[key];
       if (cert.key && cert.cert) {
         result = result || {};
@@ -194,7 +195,7 @@ var CertsInfoDialog = React.createClass({
     var handleCallback = function () {
       dataCenter.uploadCerts(files, self.handleCgi);
     };
-    var keys = Object.keys(files);
+    var keys = toKeys(files);
     var len = keys.length * 2;
     keys.map(function (name) {
       var file = files[name];

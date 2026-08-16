@@ -90,8 +90,9 @@ var Settings = React.createClass({
     if (!name || name === 'path') {
       return;
     }
+    var checked = target.checked;
     if (name === 'viewOwn') {
-      dataCenter.setOnlyViewOwnData(target.checked);
+      dataCenter.setOnlyViewOwnData(checked);
       self.setState({});
       trigger('filterChanged');
       return;
@@ -101,11 +102,11 @@ var Settings = React.createClass({
       return;
     }
     if (name === 'viewAllInNewWindow') {
-      storage.set('viewAllInNewWindow', target.checked ? '1' : '');
+      storage.set('viewAllInNewWindow', checked ? '1' : '');
       return self.setState({});
     }
     if (name === 'disabledHNR') {
-      storage.set('disabledHNR', target.checked ? '' : '1');
+      storage.set('disabledHNR', checked ? '' : '1');
       return self.setState({});
     }
     var settings = self.state;
@@ -113,11 +114,11 @@ var Settings = React.createClass({
     var columnsChanged;
     switch (name) {
     case 'filter':
-      settings.disabledFilterText = !target.checked;
+      settings.disabledFilterText = !checked;
       filterTextChanged = true;
       break;
     case 'excludeFilter':
-      settings.disabledExcludeText = !target.checked;
+      settings.disabledExcludeText = !checked;
       filterTextChanged = true;
       break;
     case 'filterText':
@@ -132,7 +133,7 @@ var Settings = React.createClass({
       columnsChanged = true;
       break;
     default:
-      columns.setSelected(name, target.checked);
+      columns.setSelected(name, checked);
       columnsChanged = true;
     }
     if (filterTextChanged) {
@@ -159,7 +160,7 @@ var Settings = React.createClass({
     }, self.state.openUrl);
   },
   onFilterKeyDown: function (e) {
-    if ((e.ctrlKey || e.metaKey) && e.keyCode == 88) {
+    if (util.isCtrl(e) && e.keyCode == 88) {
       e.stopPropagation();
     }
     util.handleTab(e);
@@ -199,9 +200,8 @@ var Settings = React.createClass({
     );
   },
   onNameChange: function (e) {
-    var value = e.target.value;
     this.setState({
-      value: value.trim(),
+      value: e.target.value.trim(),
       nameChanged: true
     });
   },

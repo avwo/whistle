@@ -12,18 +12,19 @@ var UploadForm = require('./upload-form');
 var showError = require('./message').error;
 
 var trigger = util.trigger;
+var SUFFIX = '.txt,.json';
 
 function getAccept(name) {
   if (name === 'network') {
-    return '.txt,.json,.saz,.har';
+    return SUFFIX + ',.saz,.har';
   }
   if (name === 'console' || name === 'server') {
     return '.log';
   }
   if (name === 'composer') {
-    return '.txt,.json,.har';
+    return SUFFIX + ',.har';
   }
-  return '.txt,.json';
+  return SUFFIX;
 }
 
 function parseJson(text) {
@@ -116,7 +117,7 @@ var ImportDialog = React.createClass({
         return false;
       }
       result.isHexText = false;
-      result.headers = util.objectToString(result.headers);
+      result.headers = util.objToStr(result.headers);
       trigger('setComposerData', [result]);
     } catch (e) {
       showError(e.message);

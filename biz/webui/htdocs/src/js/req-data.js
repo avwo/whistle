@@ -23,6 +23,9 @@ var trigger = util.trigger;
 var addEvent = util.on;
 var preventBlur = util.preventBlur;
 var getHide = util.getHide;
+var isCtrl = util.isCtrl;
+var isShift = util.isShift;
+var canAbort = util.canAbort;
 var TREE_ROW_HEIGHT = 24;
 var ROW_STYLE = { outline: 'none' };
 var globalWin = window;
@@ -149,6 +152,22 @@ var getFocusItemList = function (curItem) {
     return;
   }
   return [curItem];
+};
+
+var collapseAll = function (node) {
+  if (node.children) {
+    node.expand = false;
+    node.pExpand = false;
+    node.children.forEach(collapseAll);
+  }
+};
+
+var expandAll = function (node) {
+  if (node.children) {
+    node.expand = true;
+    node.pExpand = true;
+    node.children.forEach(expandAll);
+  }
 };
 
 var Spinner = React.createClass({
@@ -358,6 +377,7 @@ var Row = React.createClass({
     var columnList = p.columnList;
     var item = p.item;
     var style = item.style;
+    var isImport = item.importedData;
 
     return (
       <table className="table w-req-table" key={p.key} style={p.style} data-id={item.id}>
@@ -371,8 +391,8 @@ var Row = React.createClass({
           >
             <th className="order" scope="row" style={style}>
               {order}
-              {item.importedData ? <Icon name="import" /> : null}
-              {item.fc && !item.importedData ? <Icon name={item.testId ? 'text-size' : 'send'} /> : null}
+              {isImport ? <Icon name="import" /> : null}
+              {item.fc && !isImport ? <Icon name={item.testId ? 'text-size' : 'send'} /> : null}
             </th>
             {columnList.map(function (col) {
               var name = col.name;
@@ -552,8 +572,7 @@ var ReqData = React.createClass({
     }
   },
   getActivedList: function (item) {
-    var modal = this.props.modal;
-    return getFocusItemList(item) || (modal && modal.getSelectedList());
+    return getFocusItemList(item) || this.props.modal.getSelectedList();
   },
   componentDidMount: function () {
     var self = this;
@@ -645,14 +664,14 @@ var ReqData = React.createClass({
         var item;
         if (e.keyCode == 38) {
           //up
-          if (e.ctrlKey || e.metaKey) {
+          if (isCtrl(e)) {
             item = modal.start();
           } else {
             item = modal.prev();
           }
         } else if (e.keyCode == 40) {
           //down
-          if (e.ctrlKey || e.metaKey) {
+          if (isCtrl(e)) {
             item = modal.end();
           } else {
             item = modal.next();
@@ -759,18 +778,21 @@ var ReqData = React.createClass({
     var self = this;
     var modal = self.props.modal;
     var rows;
-    var allowMultiSelect = e.ctrlKey || e.metaKey;
+    var allowMultiSelect = isCtrl(e);
+    var removeSelected = function() {
+      self.$content.find('tr.w-selected').removeClass('w-selected');
+    };
     if (hm) {
       self.clearSelection();
-      this.$content.find('tr.w-selected').removeClass('w-selected');
+      removeSelected();
       item.selected = true;
       self.setSelected(item);
     } else if (e.shiftKey && (rows = self.getSelectedRows(item))) {
-      this.$content.find('tr.w-selected').removeClass('w-selected');
+      removeSelected();
       modal.setSelectedList(rows[0], rows[1], self.setSelected);
     } else {
       if (!allowMultiSelect) {
-        this.$content.find('tr.w-selected').removeClass('w-selected');
+        removeSelected();
         self.clearSelection();
       }
       item.selected = !allowMultiSelect || !item.selected;
@@ -937,7 +959,7 @@ var ReqData = React.createClass({
       this.setState({});
       break;
     case 'Replay':
-      trigger('replaySessions', [item, e.shiftKey]);
+      trigger('replaySessions', [item, isShift(e)]);
       break;
     case 'replayTimes':
       trigger('replaySessions', [item, true]);
@@ -1203,11 +1225,11 @@ var ReqData = React.createClass({
       }
       if (item.selected) {
         var len = selectedList.length;
-        actionItem[0].disabled = !selectedList.filter(util.canAbort).length;
+        actionItem[0].disabled = !selectedList.filter(canAbort).length;
         actionItem[1].disabled = !len;
         actionItem[2].disabled = !len || len > 1;
       } else {
-        actionItem[0].disabled = !util.canAbort(item);
+        actionItem[0].disabled = !canAbort(item);
         actionItem[1].disabled = false;
         actionItem[2].disabled = false;
       }
@@ -1231,21 +1253,17 @@ var ReqData = React.createClass({
       self.isTreeLeafNode = isLeaf;
       treeList[0].disabled = expand || isLeaf;
       treeList[1].disabled = !expand || isLeaf;
-      treeList[2].disabled = isLeaf;
-      treeList[3].disabled = isLeaf;
+      treeList[2].disabled = treeList[3].disabled = isLeaf;
       var count = (treeNodeData.parent || modal.root).children.length;
       removeItem[2].disabled = count <= 1;
     } else if (modal.isTreeView) {
-      treeList[0].disabled = true;
-      treeList[1].disabled = true;
-      treeList[2].disabled = !hasData;
-      treeList[3].disabled = !hasData;
+      treeList[0].disabled = treeList[1].disabled = true;
+      treeList[2].disabled = treeList[3].disabled = !hasData;
     }
     var rulesItem = contextMenuList[4];
     var pluginItem = contextMenuList[10];
     rulesItem.hide = dataCenter.hideRulesEditor;
-    contextMenuList[9].disabled = clickBlank && !selectedCount;
-    contextMenuList[7].disabled = clickBlank && !selectedCount;
+    contextMenuList[9].disabled = contextMenuList[7].disabled = clickBlank && !selectedCount;
     util.addPluginMenus(
       pluginItem,
       dataCenter.getNetworkMenus(),
@@ -1338,7 +1356,7 @@ var ReqData = React.createClass({
     }
 
     var sortColumns = [];
-    Object.keys(columnState).forEach(function (name) {
+    util.toKeys(columnState).forEach(function (name) {
       if ((order = columnState[name])) {
         sortColumns.push({
           name: name,
@@ -1354,14 +1372,15 @@ var ReqData = React.createClass({
     this.setState({ columns: settings.getSelectedColumns() });
   },
   onReplay: function (e) {
-    if (!e.metaKey && !e.ctrlKey) {
+    if (!isCtrl(e)) {
       return;
     }
     if (e.keyCode === 13) {
-      if (!util.hasShortcut( e.shiftKey ? 'replaySelectedRequestsTimes' : 'replaySelectedRequests')) {
+      var useTimes = e.shiftKey;
+      if (!util.hasShortcut('replaySelectedRequests' + (useTimes ? 'Times' : ''))) {
         return;
       }
-      trigger('replaySessions', [null, e.shiftKey]);
+      trigger('replaySessions', [null, useTimes]);
     } else if (e.keyCode === 65) {
       if (!util.hasShortcut('abortRequest')) {
         return;
@@ -1430,27 +1449,28 @@ var ReqData = React.createClass({
     }
   },
   expandAll: function (e) {
+    var self = this;
     if (!e) {
-      var root = this.props.modal.getTree();
-      root.children.forEach(util.expandAll);
-      return this.setState({});
+      var root = self.props.modal.getTree();
+      root.children.forEach(expandAll);
+      return self.setState({});
     }
-    var node = this.getTreeNode(e);
+    var node = self.getTreeNode(e);
     if (node) {
-      util.expandAll(node);
-      this.setState({});
+      expandAll(node);
+      self.setState({});
     }
   },
   collapseAll: function (e) {
     var self = this;
     if (!e) {
       var root = self.props.modal.getTree();
-      root.children.forEach(util.collapseAll);
+      root.children.forEach(collapseAll);
       return self.setState({});
     }
     var node = self.getTreeNode(e);
     if (node) {
-      util.collapseAll(node);
+      collapseAll(node);
       self.setState({});
     }
   },

@@ -66,7 +66,7 @@ function createCgi(url, settings) {
 
 function create(obj, settings) {
   var cgi = {};
-  Object.keys(obj).forEach(function (name) {
+  util.toKeys(obj).forEach(function (name) {
     cgi[name] = createCgi(obj[name], settings);
   });
   return cgi;

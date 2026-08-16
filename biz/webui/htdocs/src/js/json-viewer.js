@@ -20,6 +20,7 @@ var contextMenuList = [
 var SEARCH_MENU = [{name: 'Search Object'}];
 var KEY_PATH = ['root'];
 var getHide = util.getHide;
+var isCtrl = util.isCtrl;
 
 function compare(a, b) {
   return a > b ? 1 : -1;
@@ -88,7 +89,7 @@ var JsonViewer = React.createClass({
     var viewer = $(this.refs.jsonViewer);
     viewer
       .on('mouseenter', STR_SELECTOR, function (e) {
-        if (!(e.ctrlKey || e.metaKey)) {
+        if (!isCtrl(e)) {
           return;
         }
         var elem = $(this);
@@ -100,7 +101,7 @@ var JsonViewer = React.createClass({
         $(this).removeClass('w-is-link');
       })
       .on('mousedown', STR_SELECTOR, function (e) {
-        if (!(e.ctrlKey || e.metaKey)) {
+        if (!isCtrl(e)) {
           return;
         }
         var elem = $(this);

@@ -1,5 +1,5 @@
 .w-online-dialog .modal-dialog {
-  width: 320px;
+  width: 330px;
 }
 .w-online-info,
 .w-online-dns {
@@ -53,36 +53,18 @@
   width: 560px !important;
 }
 
-#appearanceMode {
-  display: inline-block;
-  width: 150px;
-  margin-left: 10px;
-  height: 32px;
-  font-size: 13px;
-  font-weight: normal;
-}
-
 .w-online-option {
-  font-weight: normal!important;
-  display: block;
-}
-
-.w-online-option input, .w-online-option span {
-  vertical-align: middle;
-}
-
-.w-theme-option, .w-dns-order-option {
   display: flex;
   align-items: center;
 }
 
-.w-theme-option strong, .w-dns-order-option strong {
+.w-online-option strong {
   width: 85px;
 }
 
-.w-theme-option select, .w-dns-order-option select {
+.w-online-option select {
   margin-left: 5px;
-  width: 160px;
+  width: 200px;
 }
 
 .w-login-btn span {
@@ -92,7 +74,6 @@
 .w-whistle-id-option {
   font-size: 16px;
 }
-
 
 .w-shortcuts {
   z-index: var(--z-modal);

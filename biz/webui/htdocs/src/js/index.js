@@ -55,6 +55,7 @@ var MAX_REPLAY_COUNT = 100;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at, .cm-js-weinre, .cm-js-log';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
+var SPECIAL_URL = /^(network|rules|values|plugins)(?:\.html?)?$/i;
 var OPTIONS_WITH_SELECTED = [
   'removeSelected',
   'exportWhistleFile'
@@ -71,7 +72,7 @@ var hideMenus = !!(query.hideMenus || query.hideMenu);
 var hideLeftMenu;
 var showTreeView;
 var dataUrl;
-var TABS = ['Network', 'Rules', 'Values', 'Plugins'];
+var TABS = ['network', 'rules', 'values', 'plugins'];
 var TEXT_SUFFIX_RE = /[\w-]\.(?:txt|csv|tsv|json|xml|yaml|yml|ini|conf|log|html|htm|css|js|py|java|c|cpp|h|sh|php|sql|md|markdown|rtf|tex|bib|vcf)(>)?$/i;
 var findDOMNode = ReactDOM.findDOMNode;
 var getHideStyle = util.getHideStyle;
@@ -96,6 +97,9 @@ var attr = util.attr;
 var strfy = util.strfy;
 var isArr = util.isArr;
 var noModal = util.noModal;
+var toKeys = util.toKeys;
+var CMD = util.CMD;
+var isCtrl = util.isCtrl;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -112,6 +116,14 @@ var DEL_VALUE = CMF_DEL_MSG + 'all follow values or group?';
 var DISABLE_TIPS = 'Do you confirm disabling all ';
 var DISABLE_RULES = DISABLE_TIPS + 'rules?';
 var DISABLE_PLUGINS = DISABLE_TIPS + 'plugins?';
+
+function getSelectedClass(selected) {
+  return selected ? ' w-menu-selected' : '';
+}
+
+function getShowClass(show) {
+  return show ? ' w-menu-wrapper-show' : '';
+}
 
 function getExistsTips(name) {
   return 'The name \'' + name + '\' is already in use';
@@ -172,8 +184,9 @@ globalWin.showWhistleMessage = function(options) {
 };
 
 globalWin.showWhistleWebUI = function(name) {
+  name = isStr(name) ? name.toLowerCase() : '';
   if (TABS.indexOf(name) !== -1) {
-    trigger('show' + name);
+    trigger('show' + util.upperFirst(name));
   }
 };
 var match = /[&#?]showTreeView=(0|false|1|true)(?:&|$|#)/.exec(search);
@@ -230,7 +243,7 @@ var RULES_ACTIONS = [
     name: 'Import',
     icon: 'import',
     id: 'importRules',
-    title: 'Ctrl[Command] + I'
+    title: CMD + 'I'
   },
   {
     name: 'Export',
@@ -243,20 +256,12 @@ var VALUES_ACTIONS = [
     name: 'Import',
     icon: 'import',
     id: 'importValues',
-    title: 'Ctrl[Command] + I'
+    title: CMD + 'I'
   },
   {
     name: 'Export',
     icon: 'export',
     id: 'exportValues'
-  }
-];
-
-var ABORT_OPTIONS = [
-  {
-    name: 'Abort',
-    icon: 'ban-circle',
-    id: 'abort'
   }
 ];
 
@@ -299,17 +304,19 @@ function handleImportFile(file, cb, type) {
 }
 
 function getPageName(options) {
-  var hash = location.hash.substring(1);
-  if (hash) {
-    hash = hash.replace(/[?#].*$/, '');
-  } else {
-    hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
-  }
   if (options.networkMode) {
     return 'network';
   }
   if (options.rulesMode && options.pluginsMode) {
     return 'plugins';
+  }
+  var hash = location.hash.substring(1);
+  if (hash) {
+    hash = hash.replace(/[?#].*$/, '');
+  } else {
+    hash = location.href.replace(/[?#].*$/, '').replace(/.*\//, '');
+    var match = SPECIAL_URL.exec(hash);
+    hash = match ? match[1].toLowerCase() : '';
   }
   if (options.rulesOnlyMode) {
     return hash === 'values' ? 'values' : 'rules';
@@ -321,7 +328,7 @@ function getPageName(options) {
   if (options.pluginsMode) {
     return hash !== 'plugins' ? 'network' : hash;
   }
-  if (isClient && !hash) {
+  if (!hash) {
     hash = storage.get('pageName');
     return TABS.indexOf(hash) !== -1 ? hash : 'network';
   }
@@ -425,6 +432,10 @@ function getCAType(type) {
     return type;
   }
   return 'cer';
+}
+
+function showCopyFailed() {
+  showError('Copy failed');
 }
 
 var Index = React.createClass({
@@ -594,32 +605,32 @@ var Index = React.createClass({
         icon: 'remove',
         id: 'removeAll',
         disabled: true,
-        title: 'Ctrl[Command] + X'
+        title: CMD + 'X'
       },
       {
         name: 'Remove Selected',
         id: 'removeSelected',
         disabled: true,
-        title: 'Ctrl[Command] + D'
+        title: CMD + 'D'
       },
       {
         name: 'Remove Unselected',
         id: 'removeUnselected',
         disabled: true,
-        title: 'Ctrl[Command] + Shift + D'
+        title: CMD + 'Shift + D'
       },
       {
         name: 'Import',
         icon: 'import',
         id: 'importSessions',
-        title: 'Ctrl[Command] + I'
+        title: CMD + 'I'
       },
       {
         name: 'Export',
         icon: 'export',
         id: 'exportWhistleFile',
         disabled: true,
-        title: 'Ctrl[Command] + S'
+        title: CMD + 'S'
       },
       {
         name: 'Show Tree View',
@@ -675,7 +686,7 @@ var Index = React.createClass({
       return;
     }
     var map = {};
-    Object.keys(plugins)
+    toKeys(plugins)
       .forEach(function (name) {
         var plugin = plugins[name];
         name = name.slice(0, -1);
@@ -747,7 +758,7 @@ var Index = React.createClass({
       }
     ];
 
-    Object.keys(plugins)
+    toKeys(plugins)
       .sort(function (a, b) {
         var p1 = plugins[a];
         var p2 = plugins[b];
@@ -967,13 +978,9 @@ var Index = React.createClass({
     var self = this;
     var clipboard = new Clipboard('.w-copy-text');
 
-    clipboard.on('error', function (e) {
-      alertMsg('Copy failed');
-    });
+    clipboard.on('error', showCopyFailed);
     clipboard = new Clipboard('.w-copy-text-with-tips');
-    clipboard.on('error', function (e) {
-      showError('Copy failed');
-    });
+    clipboard.on('error', showCopyFailed);
     clipboard.on('success', function (e) {
       showSucc('Copied clipboard');
     });
@@ -1398,11 +1405,12 @@ var Index = React.createClass({
         });
       })
       .on('keyup', function (e) {
-        if ((e.metaKey || e.ctrlKey) && e.keyCode === 82) {
+        if (isCtrl(e) && e.keyCode === 82) {
           !isClient && preventBlur(e);
         } else if (e.keyCode === 191) {
           var name = self.state.name;
-          var nodeName = document.activeElement && document.activeElement.nodeName;
+          var activeElement = document.activeElement;
+          var nodeName = activeElement && activeElement.nodeName;
           if (nodeName !== 'INPUT' && nodeName !== 'TEXTAREA' && !$('.modal.in').length) {
             if (name === 'network') {
               if (!hasShortcut('focusNetworkSearchBox')) {
@@ -1449,8 +1457,12 @@ var Index = React.createClass({
       .on('keydown', function (e) {
         var name = self.state.name;
         var code = e.keyCode;
+        var isNetwork = name == 'network';
+        var isRules = name === 'rules';
+        var isValues = name === 'values';
+        var isPlugins = name === 'plugins';
         code == 46 && removeItem(e);
-        if (!e.ctrlKey && !e.metaKey) {
+        if (!isCtrl(e)) {
           if (code === 112) {
             preventBlur(e);
             globalWin.open(util.getDocUrl('gui/' + name + '.html'));
@@ -1468,17 +1480,17 @@ var Index = React.createClass({
           return preventBlur(e);
         }
         if (code === 79) {
-          if (name === 'network') {
+          if (isNetwork) {
             if (!hasShortcut('toggleNetworkState')) {
               return;
             }
             trigger('toggleNetworkState');
-          } else if (name === 'rules') {
+          } else if (isRules) {
             if (!hasShortcut('toggleRules')) {
               return;
             }
             self.confirmDisableAllRules();
-          } else if (name === 'plugins') {
+          } else if (isPlugins) {
             if (!hasShortcut('togglePlugins')) {
               return;
             }
@@ -1486,17 +1498,17 @@ var Index = React.createClass({
           }
           preventBlur(e);
         } else if (code === 76) {
-          if (name === 'network') {
+          if (isNetwork) {
             if (!hasShortcut('toggleNetworkPanelLayout')) {
               return;
             }
             trigger('toggleNetworkDock');
-          } else if (name === 'rules') {
+          } else if (isRules) {
             if (!hasShortcut('toggleRulesNum')) {
               return;
             }
             trigger('toggleRulesLineNumbers');
-          } else if (name === 'values') {
+          } else if (isValues) {
             if (!hasShortcut('toggleValuesNum')) {
               return;
             }
@@ -1517,7 +1529,6 @@ var Index = React.createClass({
           trigger('toggleTreeViewByAccessKey');
           return;
         }
-        var isNetwork = name === 'network';
         if (isNetwork && code == 88) {
           if (
             !util.isFocusEditor() &&
@@ -1529,7 +1540,7 @@ var Index = React.createClass({
           return;
         }
         if (code == 68) {
-          if (!hasShortcut(isNetwork ? 'removeNetworkSessions' : name === 'rules' ? 'removeRules' : 'removeValues')) {
+          if (!hasShortcut(isNetwork ? 'removeNetworkSessions' : isRules ? 'removeRules' : 'removeValues')) {
             return;
           }
           return removeItem(e);
@@ -1562,14 +1573,14 @@ var Index = React.createClass({
           return;
         }
         if (code === 69) {
-          if (!hasShortcut(isNetwork ? 'exportNetwork' : name === 'rules' ? 'exportRules' : 'exportValues')) {
+          if (!hasShortcut(isNetwork ? 'exportNetwork' : isRules ? 'exportRules' : 'exportValues')) {
             return;
           }
           preventBlur(e);
           return noModal() && self.exportData();
         }
         if (code === 190) {
-          if (!hasShortcut(isNetwork ? 'openNetworkSettings' : name === 'rules' ? 'openRulesSettings' : 'openValuesSettings')) {
+          if (!hasShortcut(isNetwork ? 'openNetworkSettings' : isRules ? 'openRulesSettings' : 'openValuesSettings')) {
             return;
           }
           self.showSettings();
@@ -1583,12 +1594,12 @@ var Index = React.createClass({
                 return;
               }
               util.showService(self.state.name);
-            } else if (isNetwork || name === 'rules' || name === 'values') {
-              if (!hasShortcut(isNetwork ? 'importNetwork' : name === 'rules' ? 'importRules' : 'importValues')) {
+            } else if (isNetwork || isRules || isValues) {
+              if (!hasShortcut(isNetwork ? 'importNetwork' : isRules ? 'importRules' : 'importValues')) {
                 return;
               }
               self.importData();
-            } else if (name === 'plugins') {
+            } else if (isPlugins) {
               if (!hasShortcut('openInstallPlugins')) {
                 return;
               }
@@ -1621,7 +1632,7 @@ var Index = React.createClass({
 
     $(document.body)
       .on('mouseenter', LINK_SELECTOR, function (e) {
-        if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+        if (!isEditor() || !isCtrl(e)) {
           return;
         }
         var elem = $(this);
@@ -1643,7 +1654,7 @@ var Index = React.createClass({
         $(this).removeClass('w-is-link');
       })
       .on('mousedown', LINK_SELECTOR, function (e) {
-        if (!isEditor() || !(e.ctrlKey || e.metaKey)) {
+        if (!isEditor() || !isCtrl(e)) {
           return;
         }
         var elem = $(this);
@@ -2016,7 +2027,7 @@ var Index = React.createClass({
       }
       var oldPlugins = self.state.plugins;
       if (oldPlugins && data.plugins) {
-        Object.keys(data.plugins).forEach(function(name) {
+        toKeys(data.plugins).forEach(function(name) {
           var oldP = oldPlugins[name];
           if (oldP) {
             var p = data.plugins[name];
@@ -2610,16 +2621,7 @@ var Index = React.createClass({
   },
   hideNetworkOptions: function () {
     this.setState({
-      showAbortOptions: false,
       showNetworkOptions: false
-    });
-  },
-  showAbortOptions: function () {
-    var modal = this.state.network;
-    var list = modal.getSelectedList();
-    ABORT_OPTIONS[0].disabled = !list || !list.filter(util.canAbort).length;
-    this.setState({
-      showAbortOptions: true
     });
   },
   showCreateOptions: function () {
@@ -2630,11 +2632,6 @@ var Index = React.createClass({
   hideCreateOptions: function () {
     this.setState({
       showCreateOptions: false
-    });
-  },
-  hideAbortOptions: function () {
-    this.setState({
-      showAbortOptions: false
     });
   },
   showHelpOptions: function () {
@@ -3312,8 +3309,8 @@ var Index = React.createClass({
     this.setState({ replayCount: replayCount });
   },
   clickReplay: function (e) {
-    if (e.shiftKey) {
-      trigger('replaySessions', [null, e.shiftKey]);
+    if (util.isShift(e)) {
+      trigger('replaySessions', [null, true]);
     } else {
       this.replay(e);
     }
@@ -3504,8 +3501,7 @@ var Index = React.createClass({
   onClickMenu: function (e) {
     var target = $(e.target).closest('a');
     var self = this;
-    var state = self.state;
-    var isRules = state.name == 'rules';
+    var isRules = self.state.name == 'rules';
     if (target.hasClass('w-edit-menu')) {
       isRules ? self.showEditRules() : self.showEditValues();
     } else if (target.hasClass('w-delete-menu')) {
@@ -3681,12 +3677,11 @@ var Index = React.createClass({
         if (util.canAbort(item)) {
           return item.id;
         }
-      });
+      }).filter(util.noop);
       if (list.length) {
         dataCenter.abort({ list: list.join() });
       }
     }
-    this.hideAbortOptions();
   },
   allowMultipleChoice: function (e) {
     this.setMultipleCohice(e.target.checked);
@@ -4069,14 +4064,13 @@ var Index = React.createClass({
     var pluginsMode = state.pluginsMode;
     var multiEnv = dataCenter.isMultiEnv();
     var name = self.getTabName();
-    var isAccount = name == 'account';
     var isNetwork = name == 'network';
     var isRules = name == 'rules';
     var isValues = name == 'values';
     var isPlugins = name == 'plugins';
     var isEditor = isRules || isValues;
     var editMenuStyle = getHideStyle(!isEditor);
-    var importMenuStyle = getHideStyle(isPlugins || isAccount);
+    var importMenuStyle = getHideStyle(isPlugins);
     var disabledEditBtn = true;
     var disabledDeleteBtn = true;
     var rulesTheme = state.rulesTheme || 'cobalt';
@@ -4223,20 +4217,14 @@ var Index = React.createClass({
             style={getHideStyle(rulesMode)}
             onMouseEnter={self.showNetworkOptions}
             onMouseLeave={self.hideNetworkOptions}
-            className={
-              'w-nav-menu w-menu-wrapper' +
-              (showNetworkOptions ? ' w-menu-wrapper-show' : '')
-            }
+            className={'w-nav-menu w-menu-wrapper' + getShowClass(showNetworkOptions)}
           >
             <a
               onClick={self.showNetwork}
               onDoubleClick={self.toggleTreeView}
-              className={
-                'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
-              }
+              className={'w-network-menu' + getSelectedClass(isNetwork)}
               title={
-                'Double-click to open' +
-                (isTreeView ? ' List View' : ' Tree View')
+                'Double-click to open' + (isTreeView ? ' List View' : ' Tree View')
               }
               draggable="false"
             >
@@ -4253,17 +4241,11 @@ var Index = React.createClass({
             style={hideEditorStyle}
             onMouseEnter={self.showRulesOptions}
             onMouseLeave={self.hideRulesOptions}
-            className={
-              'w-nav-menu w-menu-wrapper' +
-              (showRulesOptions ? ' w-menu-wrapper-show' : '') +
-              (isRules ? ' w-menu-auto' : '')
-            }
+            className={'w-nav-menu w-menu-wrapper' + getShowClass(showRulesOptions) + (isRules ? ' w-menu-auto' : '')}
           >
             <a
               onClick={showRules}
-              className={
-                'w-rules-menu' + (isRules ? ' w-menu-selected' : '')
-              }
+              className={'w-rules-menu' + getSelectedClass(isRules)}
               draggable="false"
             >
               <Icon name="list" className={disabledAllRules ? 'w-disabled' : ''} />
@@ -4286,15 +4268,13 @@ var Index = React.createClass({
             onMouseLeave={self.hideValuesOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
-              (showValuesOptions ? ' w-menu-wrapper-show' : '') +
+              getShowClass(showValuesOptions) +
               (isValues ? ' w-menu-auto' : '')
             }
           >
             <a
               onClick={self.showValues}
-              className={
-                'w-values-menu' + (isValues ? ' w-menu-selected' : '')
-              }
+              className={'w-values-menu' + getSelectedClass(isValues)}
               draggable="false"
             >
               <Icon name="folder-close" />Values
@@ -4313,14 +4293,12 @@ var Index = React.createClass({
             onMouseLeave={self.hidePluginsOptions}
             className={
               'w-nav-menu w-menu-wrapper' +
-              (showPluginsOptions ? ' w-menu-wrapper-show' : '')
+              getShowClass(showPluginsOptions)
             }
           >
             <a
               onClick={self.showPlugins}
-              className={
-                'w-plugins-menu' + (isPlugins ? ' w-menu-selected' : '')
-              }
+              className={'w-plugins-menu' + getSelectedClass(isPlugins)}
               draggable="false"
             >
               <Icon name="th-large" className={disabledAllPlugins ? 'w-disabled' : ''} />
@@ -4432,28 +4410,14 @@ var Index = React.createClass({
           >
             <Icon name="transfer" />Rename
           </a>
-          <div
-            onMouseEnter={self.showAbortOptions}
-            onMouseLeave={self.hideAbortOptions}
+          <a
             style={getHideStyle(!isNetwork)}
-            className={
-              'w-menu-wrapper w-abort-menu-list w-menu-auto' +
-              (state.showAbortOptions ? ' w-menu-wrapper-show' : '')
-            }
+            onClick={self.clickReplay}
+            className="w-replay-menu"
+            draggable="false"
           >
-            <a
-              onClick={self.clickReplay}
-              className="w-replay-menu"
-              draggable="false"
-            >
-              <Icon name="repeat" />Replay
-            </a>
-            <MenuItem
-              options={ABORT_OPTIONS}
-              className="w-remove-menu-item"
-              onClickOption={self.abort}
-            />
-          </div>
+            <Icon name="repeat" />Replay
+          </a>
           <a
             onClick={self.composer}
             className="w-com-menu"
@@ -4485,7 +4449,7 @@ var Index = React.createClass({
             onMouseLeave={self.hideWeinreOptions}
             className={
               'w-menu-wrapper' +
-              (showWeinreOptions ? ' w-menu-wrapper-show' : '')
+              getShowClass(showWeinreOptions)
             }
           >
             <a
@@ -4519,9 +4483,7 @@ var Index = React.createClass({
           <div
             onMouseEnter={self.showHelpOptions}
             onMouseLeave={self.hideHelpOptions}
-            className={
-              'w-menu-wrapper' + (showHelpOptions ? ' w-menu-wrapper-show' : '')
-            }
+            className={'w-menu-wrapper' + getShowClass(showHelpOptions)}
           >
             <a
               onClick={self.showAboutDialog}
@@ -4632,9 +4594,7 @@ var Index = React.createClass({
           >
             <a
               onClick={self.showNetwork}
-              className={
-                'w-network-menu' + (isNetwork ? ' w-menu-selected' : '')
-              }
+              className={'w-network-menu' + getSelectedClass(isNetwork)}
               style={getHideStyle(rulesMode)}
               draggable="false"
             >
@@ -4643,10 +4603,7 @@ var Index = React.createClass({
             </a>
             <a
               onClick={showRules}
-              className={
-                'w-save-menu w-rules-menu' +
-                (isRules ? ' w-menu-selected' : '')
-              }
+              className={'w-save-menu w-rules-menu' + getSelectedClass(isRules)}
               style={hideEditorStyle}
               draggable="false"
             >
@@ -4661,10 +4618,7 @@ var Index = React.createClass({
             </a>
             <a
               onClick={self.showValues}
-              className={
-                'w-save-menu w-values-menu' +
-                (isValues ? ' w-menu-selected' : '')
-              }
+              className={'w-save-menu w-values-menu' + getSelectedClass(isValues)}
               style={hideEditorStyle}
               draggable="false"
             >
@@ -4679,9 +4633,7 @@ var Index = React.createClass({
             </a>
             <a
               onClick={self.showPlugins}
-              className={
-                'w-plugins-menu' + (isPlugins ? ' w-menu-selected' : '')
-              }
+              className={'w-plugins-menu' + getSelectedClass(isPlugins)}
               style={pluginsStyle}
               draggable="false"
             >
@@ -4892,7 +4844,7 @@ var Index = React.createClass({
         </Dialog>
         <LargeDialog ref="editorWin" className="w-editor-win" openInNewWin={self.openEditorInNewWin} />
         <LargeDialog ref="innerWin" className="w-inner-win" />
-        <Dialog ref="setReplayCount" wstyle="w-replay-count-dialog">
+        <Dialog ref="setReplayCount" wstyle="w-replay-count">
           <div className="modal-body">
             <label>
               Times:

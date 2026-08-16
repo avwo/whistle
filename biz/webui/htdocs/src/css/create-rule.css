@@ -256,3 +256,10 @@
   margin-right: 5px;
 }
 
+.w-url-pattern {
+  padding: 0;
+}
+
+.w-url-pattern .w-190 {
+  width: 183px!important;
+}

@@ -213,7 +213,7 @@ var FrameList = React.createClass({
     this.changeStatus(reqData, option);
   },
   onClear: function (e) {
-    if (e.ctrlKey || e.metaKey) {
+    if (util.isCtrl(e)) {
       e.stopPropagation();
       if (e.keyCode === 88) {
         if (!util.hasShortcut('clearNetworkFrames')) {

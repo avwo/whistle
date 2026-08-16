@@ -9,6 +9,7 @@ var proto = ListModal.prototype;
 var isStr = util.isStr;
 var isGroupName = util.isGroup;
 var checkKey = util.checkKey;
+var toKeys = util.toKeys;
 
 proto.reset = function (list, data, init) {
   var self = this;
@@ -36,7 +37,7 @@ proto.getList = function () {
 proto._getList = function (prop) {
   var list = [];
   var data = this.data;
-  Object.keys(data).forEach(function (name) {
+  toKeys(data).forEach(function (name) {
     var item = data[name];
     if (item && item[prop]) {
       list.push(item);
@@ -51,7 +52,7 @@ proto.getItem = function(name) {
 
 proto.hasChanged = function () {
   var data = this.data;
-  return Object.keys(data).some(function (name) {
+  return toKeys(data).some(function (name) {
     var item = data[name];
     return item && item.changed && !isGroupName(item.name);
   });
@@ -81,7 +82,7 @@ proto._setBoolProp = function (name, prop, bool) {
 proto.getSelectedNames = function () {
   var list = [];
   var data = this.data;
-  Object.keys(data).forEach(function (name) {
+  toKeys(data).forEach(function (name) {
     var item = data[name];
     if (item && item.selected) {
       list.push(item.name);
@@ -265,14 +266,14 @@ proto.getChangedGroupList = function(item) {
 
 proto.clearAllActive = function () {
   var data = this.data;
-  Object.keys(data).forEach(function (name) {
+  toKeys(data).forEach(function (name) {
     data[name].active = false;
   });
 };
 
 proto.clearAllSelected = function () {
   var data = this.data;
-  Object.keys(data).forEach(function (name) {
+  toKeys(data).forEach(function (name) {
     data[name].selected = false;
   });
 };

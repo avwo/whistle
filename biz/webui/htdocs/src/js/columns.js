@@ -17,7 +17,7 @@ function getAppName(appName) {
   }
   var result = appNameMap[appName];
   if (!result) {
-    result = appName[0].toUpperCase() + appName.substring(1);
+    result = util.upperFirst(appName);
     appNameMap[appName] = result;
   }
   return result;

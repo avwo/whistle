@@ -126,14 +126,14 @@ var Saved = React.createClass({
         </div>);
         return item;
       }), loading: false }, debounce === true ? null : function() {
-        self.refs.orderTable.scrollToTop();
+        self.refs.table.scrollToTop();
       });
     });
   },
   render: function () {
     var self = this;
     var state = self.state;
-    return <OrderTable ref="orderTable" cols={COLS} rows={state.rows} hide={self.props.hide} loading={state.loading} />;
+    return <OrderTable ref="table" cols={COLS} rows={state.rows} hide={self.props.hide} loading={state.loading} />;
   }
 });
 

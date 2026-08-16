@@ -7,6 +7,7 @@ var message = require('./message');
 var win = require('./win');
 var storage = require('./storage');
 
+var showError = message.error;
 var globaWin = window;
 var events = $({});
 var toByteArray = base64JS.toByteArray;
@@ -38,6 +39,7 @@ var isStr = win.isStr;
 var trigger = events.trigger.bind(events);
 var decodeCom = decodeURIComponent;
 
+exports.CMD = 'Ctrl[Command] + ';
 exports.trigger = trigger;
 exports.on = events.on.bind(events);
 exports.one = events.one.bind(events);
@@ -72,7 +74,7 @@ exports.EDITOR_THEMES = [
 
 exports.KW_TIPS = 'keyword or regexp for ';
 
-exports.BODY_ACTIONS = ['Prepend To Body', 'Replace Body', 'Append To Body', 'Modify Body Text', 'Modify Form/JSON', 'Delete Form/JSON'];
+exports.BODY_ACTIONS = ['Prepend To Body', 'Replace Entire Body', 'Append To Body', 'Modify Body Text', 'Modify Form/JSON', 'Delete Form/JSON'];
 
 exports.METHODS = [
   'GET',
@@ -134,6 +136,23 @@ exports.SERVICE_CTX = SERVICE_CTX;
 exports.NETWORK_ACTIONS = [
   { name: 'Create API Test', action: 'createApiTest', hide: true }
 ].concat(SERVICE_CTX);
+
+function toKeys(obj) {
+  return Object.keys(obj);
+}
+
+exports.toKeys = toKeys;
+
+function isCtrl(e) {
+  return e.ctrlKey || e.metaKey;
+}
+exports.isCtrl = isCtrl;
+
+function isShift(e) {
+  return e.shiftKey || isCtrl(e);
+}
+
+exports.isShift = isShift;
 
 function removeSpaces(str) {
   return str && str.replace(/\s+/g, '');
@@ -441,17 +460,18 @@ exports.getCAHash = function(server, urlList) {
 };
 
 exports.download = function(data, filename) {
-  var a = document.createElement('a');
-  document.body.appendChild(a);
+  var doc = document;
+  var a = doc.createElement('a');
+  doc.body.appendChild(a);
   a.style = 'display: none';
-  data = typeof data === 'string' ? data : stringify(data);
+  data = isStr(data) ? data : stringify(data);
   var blob = new Blob([data], {type: 'octet/stream'});
   var url = globaWin.URL.createObjectURL(blob);
   a.href = url;
   a.download = filename || 'data_' + formatDate() + '.txt';
   a.click();
   globaWin.URL.revokeObjectURL(url);
-  document.body.removeChild(a);
+  doc.body.removeChild(a);
 };
 
 var PROPS_MENUS = [
@@ -528,7 +548,7 @@ $(document)
   .on('mousedown', function (e) {
     stopDrag();
     var target = $(e.target);
-    Object.keys(dragCallbacks).some(function (selector) {
+    toKeys(dragCallbacks).some(function (selector) {
       dragTarget = target.closest(selector);
       if (dragTarget.length) {
         dragCallback = dragCallbacks[selector];
@@ -665,15 +685,14 @@ function getServerIp(modal) {
   return modal.serverIp || ip;
 }
 
-function getCellValue(item, col, name) {
+
+exports.getCellValue = function(item, col, name) {
   name = name || col.name;
   if (name === 'hostIp') {
     return getServerIp(item);
   }
   return col.key ? getProperty(item, col.key) : item[name];
-}
-
-exports.getCellValue = getCellValue;
+};
 
 exports.getServerIp = getServerIp;
 
@@ -699,7 +718,7 @@ exports.scuDlg = function () {
 function showSysErr(xhr, useToast) {
   xhr = xhr || {};
   var status = xhr.status;
-  var showTips = useToast ? message.error : win.alert;
+  var showTips = useToast ? showError : win.alert;
   if (!status) {
     if (xhr.errMsg === 'timeout') {
       return showTips('Request timeout');
@@ -847,6 +866,10 @@ exports.getTransProto = function(req) {
   return proto.toUpperCase();
 };
 
+exports.upperFirst = function(str) {
+  return str && isStr(str) ? str[0].toUpperCase() + str.substring(1) : '';
+};
+
 exports.ensureVisible = function (elem, container, init) {
   elem = $(elem);
   container = $(container);
@@ -922,11 +945,11 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
 
 exports.parseQueryString = parseQueryString;
 
-function objectToString(obj, rawNames, noEncoding) {
+function objToStr(obj, rawNames, noEncoding) {
   if (!obj || isStr(obj)) {
     return obj || '';
   }
-  var keys = Object.keys(obj);
+  var keys = toKeys(obj);
   var index = noEncoding ? keys.indexOf('content-encoding') : -1;
   index !== -1 && keys.splice(index, 1);
   return keys
@@ -945,7 +968,7 @@ function objectToString(obj, rawNames, noEncoding) {
     .join('\r\n');
 }
 
-exports.objectToString = objectToString;
+exports.objToStr = objToStr;
 
 function getRealUrl(modal) {
   var realUrl = modal.realUrl;
@@ -956,7 +979,7 @@ exports.getRealUrl = getRealUrl;
 
 function getHttpMeta(f1, f2, f3, obj) {
   var status = [f1, f2, f3].join(' ');
-  var headers = objectToString(obj.headers, obj.rawHeaderNames);
+  var headers = objToStr(obj.headers, obj.rawHeaderNames);
   return headers ? status + '\r\n' +  headers : status;
 }
 
@@ -988,7 +1011,7 @@ exports.getRawRes = function(modal) {
   if (status == null) {
     return '';
   }
-  var trailer = res.trailers && objectToString(res.trailers, res.rawTrailerNames);
+  var trailer = res.trailers && objToStr(res.trailers, res.rawTrailerNames);
   return getRawResHeaders(modal) + '\r\n\r\n' + getBody(res) + (trailer ? '\r\n\r\n' + trailer : '');
 };
 
@@ -1015,7 +1038,7 @@ exports.getOriginalReqHeaders = function (item, rulesHeaders) {
   if (getContentEncoding(headers)) {
     delete headers['content-encoding'];
   }
-  return objectToString(headers, req.rawHeaderNames);
+  return objToStr(headers, req.rawHeaderNames);
 };
 
 function removeProtocol(url) {
@@ -1654,7 +1677,7 @@ exports.asCURL = function (item) {
   var result = ['curl', '-X', method, strfy(url)];
   var headers = req.headers;
   var rawHeaderNames = req.rawHeaderNames || {};
-  Object.keys(headers).forEach(function (key) {
+  toKeys(headers).forEach(function (key) {
     if (
       key === 'content-length' ||
       key === 'content-encoding' ||
@@ -2161,9 +2184,9 @@ function parseRawJson(str, quite) {
     if (isObj(json)) {
       return json;
     }
-    !quite && message.error('Error: invalid JSON format');
+    !quite && showError('Error: invalid JSON format');
   } catch (e) {
-    !quite && message.error('Error: ' + e.message);
+    !quite && showError('Error: ' + e.message);
   }
 }
 
@@ -2424,7 +2447,7 @@ exports.getText = getText;
 
 function getKeys(obj) {
   var list = obj[''];
-  var keys = Object.keys(obj);
+  var keys = toKeys(obj);
   list = list && (isArr(list) ? list : isArr(list.list) ? list.list : null);
   if (!list) {
     return keys;
@@ -2940,7 +2963,7 @@ function objectToArray(obj, rawNames) {
   var result = [];
   if (obj) {
     rawNames = rawNames || EMPTY_OBJ;
-    Object.keys(obj).forEach(function (name) {
+    toKeys(obj).forEach(function (name) {
       var value = obj[name];
       name = rawNames[name] || name;
       if (isArr(value)) {
@@ -3123,26 +3146,6 @@ exports.getUrl = function (url) {
   return url && url.indexOf('/') === -1 ? 'tunnel://' + url : url;
 };
 
-function expandAll(node) {
-  if (node.children) {
-    node.expand = true;
-    node.pExpand = true;
-    node.children.forEach(expandAll);
-  }
-}
-
-exports.expandAll = expandAll;
-
-function collapseAll(node) {
-  if (node.children) {
-    node.expand = false;
-    node.pExpand = false;
-    node.children.forEach(collapseAll);
-  }
-}
-
-exports.collapseAll = collapseAll;
-
 function setPExpand(node, pExpand) {
   if (node.children) {
     node.pExpand = pExpand;
@@ -3209,7 +3212,7 @@ function filterJson(obj, keyword, filterType) {
     obj._idx = idx.reverse();
     return obj.length;
   }
-  Object.keys(obj).forEach(function(key) {
+  toKeys(obj).forEach(function(key) {
     var hasKey = !isVal && checkKeyword(keyword, key);
     if (isKey && hasKey) {
       return true;
@@ -3218,7 +3221,7 @@ function filterJson(obj, keyword, filterType) {
       delete obj[key];
     }
   });
-  return Object.keys(obj).length;
+  return toKeys(obj).length;
 }
 
 exports.filterJsonText = function(str, keyword, filterType) {
@@ -3339,7 +3342,7 @@ exports.showJSONDialog = function(data, keyPath) {
 };
 
 exports.handleFormat = function(e, onFormat) {
-  if (e.shiftKey && e.keyCode === 70  && (e.metaKey || e.ctrlKey)) {
+  if (e.shiftKey && e.keyCode === 70 && isCtrl(e)) {
     onFormat(e);
     preventBlur(e);
   }
@@ -3378,7 +3381,7 @@ exports.showHandlePluginInfo = function(data, xhr) {
     return false;
   }
   if (data.ec) {
-    return message.error(data.em || 'Request error, please try again!');
+    return showError(data.em || 'Request error, please try again!');
   }
   message.success('Request successful - plugin list updating...');
   return true;
@@ -3583,7 +3586,7 @@ exports.getKeyPath = function (keys) {
 
 
 exports.handleEditorKeydown = function(e) {
-  if (e.ctrlKey || e.metaKey) {
+  if (isCtrl(e)) {
     if (e.keyCode == 68) {
       e.target.value = '';
       preventAll(e);

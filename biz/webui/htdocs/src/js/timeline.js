@@ -129,7 +129,9 @@ var Timeline = React.createClass({
               load = '-';
               loadRate = 0;
             }
-
+            var dnsRateStyle = { width: dnsRate };
+            var reqRateStyle = { width: requestRate };
+            var resRateStyle = { width: responseRate };
             var total = endTime
               ? endTime - curStartTime + 'ms'
               : '-';
@@ -163,7 +165,7 @@ var Timeline = React.createClass({
                     <li>
                       <span className="w-tl-url">DNS:</span>
                       <span
-                        style={{ width: dnsRate }}
+                        style={dnsRateStyle}
                         className="w-tl-dns"
                       />
                       <span title={title} className="w-tl-time">
@@ -174,9 +176,9 @@ var Timeline = React.createClass({
                       <span className="w-tl-url">
                         Request:
                       </span>
-                      <span style={{ width: dnsRate }} />
+                      <span style={dnsRateStyle} />
                       <span
-                        style={{ width: requestRate }}
+                        style={reqRateStyle}
                         className="w-tl-request"
                       >
                         {' '}
@@ -189,12 +191,12 @@ var Timeline = React.createClass({
                       <span className="w-tl-url">
                         Response:
                       </span>
-                      <span style={{ width: dnsRate }} />
+                      <span style={dnsRateStyle} />
                       {isStream ? null : (
-                        <span style={{ width: requestRate }} />
+                        <span style={reqRateStyle} />
                       )}
                       <span
-                        style={{ width: responseRate }}
+                        style={resRateStyle}
                         className="w-tl-response"
                       />
                       <span title={title} className="w-tl-time">
@@ -205,11 +207,11 @@ var Timeline = React.createClass({
                       <span className="w-tl-url">
                         Download:
                       </span>
-                      <span style={{ width: dnsRate }} />
+                      <span style={dnsRateStyle} />
                       {isStream ? null : (
-                        <span style={{ width: requestRate }} />
+                        <span style={reqRateStyle} />
                       )}
-                      <span style={{ width: responseRate }} />
+                      <span style={resRateStyle} />
                       <span
                         style={{ width: loadRate }}
                         className="w-tl-load"
@@ -262,7 +264,7 @@ var Timeline = React.createClass({
                   className="w-tl-stalled"
                 />
                 <span
-                  style={{ width: dnsRate }}
+                  style={dnsRateStyle}
                   className="w-tl-dns"
                 />
                 <span

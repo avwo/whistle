@@ -123,7 +123,6 @@ var RecordBtn = React.createClass({
         </a>
         <MenuItem
           options={ACTION_OPTIONS}
-          className="w-remove-menu-item"
           onClickOption={self.onClickOption}
         />
       </div>

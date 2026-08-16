@@ -4,7 +4,7 @@ var util = require('./util');
 
 var STATUS_CODES = util.STATUS_CODES;
 
-var STATUS_CODE_OPTIONS = Object.keys(STATUS_CODES).map(function(code) {
+var STATUS_CODE_OPTIONS = util.toKeys(STATUS_CODES).map(function(code) {
   var msg = STATUS_CODES[code];
   msg = msg ? '(' + msg + ')' : '';
   return { value: code, label: code + ' ' + msg };

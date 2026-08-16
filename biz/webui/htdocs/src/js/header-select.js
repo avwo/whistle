@@ -1,5 +1,6 @@
 var React = require('react');
 var Select = require('./custom-select');
+var util = require('./util');
 
 var REQ_ACTIONS = [
   '- Delete Actions',
@@ -117,7 +118,8 @@ var RES_HEADERS = RES_ACTIONS.concat(GENERAL_HEADERS).concat([
   'X-RateLimit-Remaining'
 ]);
 
-const ALL_HEADERS = [];
+var ALL_HEADERS = [];
+var toKeys = util.toKeys;
 
 REQ_HEADERS.concat(RES_HEADERS).forEach(function(name) {
   if (!/\s/.test(name)) {
@@ -129,9 +131,7 @@ REQ_HEADERS.concat(RES_HEADERS).forEach(function(name) {
 });
 
 function toFirstUpperCase(str) {
-  return str.split('-').map(function(s) {
-    return s[0].toUpperCase() + s.substring(1);
-  }).join('-');
+  return str.split('-').map(util.upperFirst).join('-');
 }
 
 var HeaderSelect = React.createClass({
@@ -158,13 +158,13 @@ var HeaderSelect = React.createClass({
       if (!isRes && self._reqHeaders !== headers) {
         self._reqHeaders = headers;
         hasChanged = true;
-        Object.keys(headers).forEach(addOption);
+        toKeys(headers).forEach(addOption);
       }
       headers = session.res.headers;
       if (!isReq && self._resHeaders !== headers) {
         self._resHeaders = headers;
         hasChanged = true;
-        headers && Object.keys(headers).forEach(addOption);
+        headers && toKeys(headers).forEach(addOption);
       }
     }
     options.hasChanged = hasChanged;

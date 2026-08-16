@@ -163,7 +163,7 @@ var ResDetail = React.createClass({
       var showImg = name === btns[2].name;
       if (status != null) {
         headersStr = util.getRawResHeaders(modal);
-        trailerStr = trailers ? util.objectToString(trailers, res.rawTrailerNames) : '';
+        trailerStr = trailers ? util.objToStr(trailers, res.rawTrailerNames) : '';
         raw = headersStr + '\r\n\r\n' + body;
         var rawType = !modal.resError && util.getRawType(headers);
         var type = util.getContentType(rawType);
@@ -257,7 +257,7 @@ var ResDetail = React.createClass({
             headers={headersStr}
             base64={base64}
             session={modal}
-            className="fill w-detail-res-raw"
+            className="fill"
             hide={name != btns[0].name}
           />
         ) : null}
@@ -281,7 +281,7 @@ var ResDetail = React.createClass({
             base64={base64}
             value={body}
             session={modal}
-            className="fill w-detail-res-textview"
+            className="fill"
             hide={name != btns[3].name}
           />
         ) : null}
@@ -302,7 +302,7 @@ var ResDetail = React.createClass({
             tips={tips}
             value={bin}
             session={modal}
-            className="fill n-monospace w-detail-res-hex"
+            className="fill n-monospace"
             hide={name != btns[5].name}
           />
         ) : null}

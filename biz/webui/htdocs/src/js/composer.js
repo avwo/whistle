@@ -40,6 +40,7 @@ var getHide = util.getHide;
 var isArr = util.isArr;
 var getRawHeaders = dataCenter.getRawHeaders;
 var strfy = util.strfy;
+var toKeys = util.toKeys;
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -135,7 +136,7 @@ var Composer = React.createClass({
     } else {
       var uploadBodyData = util.parseRawJson(storage.get('composerUploadBody'), true);
       if (uploadBodyData) {
-        Object.keys(uploadBodyData).forEach(function(name) {
+        toKeys(uploadBodyData).forEach(function(name) {
           var value = uploadBodyData[name];
           if (isArr(value)) {
             value.forEach(parseValue);
@@ -249,7 +250,7 @@ var Composer = React.createClass({
       var target = $(e.target);
       if (!(target.closest('.w-com-history-data').length ||
         target.closest('.w-keep-history-data').length ||
-        target.closest('.w-replay-count-dialog').length ||
+        target.closest('.w-replay-count').length ||
         target.closest('.w-com-history-btn').length ||
         target.closest('.w-copy-text-with-tips').length ||
         target.closest('.w-ie-dialog').length ||
@@ -791,7 +792,7 @@ var Composer = React.createClass({
     }
     var self = this;
     var state = self.state;
-    if (e && e.shiftKey) {
+    if (e && util.isShift(e)) {
       return self.showRepeatTimes();
     }
     if (state.pending) {
@@ -871,7 +872,7 @@ var Composer = React.createClass({
       if (res) {
         body = util.joinBase64(body, base64);
         var data = {};
-        Object.keys(res).forEach(function(key) {
+        toKeys(res).forEach(function(key) {
           data[key] = res[key];
         });
         data.base64 = body;
@@ -1062,7 +1063,7 @@ var Composer = React.createClass({
     var elem = findDOMNode(self.refs.headers);
     var headers = parseHeaders(elem.value);
     headers.cookie = cookie;
-    elem.value = util.objectToString(headers);
+    elem.value = util.objToStr(headers);
     if (self.state.showPretty) {
       self.refs.prettyHeaders.update(headers);
     }
@@ -1559,7 +1560,7 @@ var Composer = React.createClass({
           </Divider>
         </div>
         <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
-        <Dialog ref="setRepeatTimes" wstyle="w-replay-count-dialog">
+        <Dialog ref="setRepeatTimes" wstyle="w-replay-count">
           <div className="modal-body">
             <label>
               Times:

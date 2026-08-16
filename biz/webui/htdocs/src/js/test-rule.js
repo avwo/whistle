@@ -18,6 +18,7 @@ var win = require('./win');
 var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
 var MAX_RULE_SIZE = 1024 * 32;
+var toKeys = util.toKeys;
 
 var TestRule = React.createClass({
   getInitialState: function() {
@@ -62,7 +63,7 @@ var TestRule = React.createClass({
             list.push(raw);
           }
         };
-        Object.keys(rules).forEach(function (name) {
+        toKeys(rules).forEach(function (name) {
           var rule = rules[name];
           if (rule.list) {
             rule.list.forEach(addRule);
@@ -82,7 +83,7 @@ var TestRule = React.createClass({
     if (session) {
       var req = session.req;
       var headers = {};
-      Object.keys(req.headers).forEach(function(name) {
+      toKeys(req.headers).forEach(function(name) {
         if (name !== 'x-whistle-rule-value') {
           headers[name] = req.headers[name];
         }
@@ -91,7 +92,7 @@ var TestRule = React.createClass({
       result.disabledBody = false;
       result.method = req.method;
       result.url = session.url;
-      result.headers = util.objectToString(headers, req.rawHeaderNames).substring(0, MAX_HEADERS_SIZE);
+      result.headers = util.objToStr(headers, req.rawHeaderNames).substring(0, MAX_HEADERS_SIZE);
       result.body = util.getBody(req, true).substring(0, MAX_BODY_SIZE);
     }
     return result;

@@ -21,7 +21,6 @@ var ExportDialog = React.createClass({
     self.setState({
       name: name,
       title: util.getDialogTitle(name, 'Export'),
-      showOptions: name === 'network',
       data: data
     });
   },
@@ -94,10 +93,9 @@ var ExportDialog = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
-    var showOptions = state.showOptions;
 
     return (
-      <Dialog ref="dialog" wstyle={'w-ie-dialog' + (showOptions ? ' w-export-network' : '')}>
+      <Dialog ref="dialog" wstyle="w-ie-dialog">
         <ModalHeader>
           {state.title}
         </ModalHeader>

@@ -21,6 +21,7 @@ var getSimplePluginName = util.getSimplePluginName;
 var trigger = util.trigger;
 var addEvent = util.on;
 var preventBlur = util.preventBlur;
+var toKeys = util.toKeys;
 var CMD_RE = /^([\w]{1,12})(\s+-g)?$/;
 var WHISTLE_PLUGIN_RE = /(?:^|[\s,;|])(?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+(?:\@[\w.^~*-]*)?(?:$|[\s,;|])/;
 var PLUGIN_NAME_RE = /^((?:@[\w.~-]+\/)?whistle\.[a-z\d_-]+)(?:\@([\w.^~*-]*))?$/;
@@ -52,7 +53,7 @@ function getPluginList(plugins, installUrls, disabledPlugins, disabledAllPlugins
   if (!plugins) {
     return [];
   }
-  return Object.keys(plugins).sort(util.getPluginComparator(plugins))
+  return toKeys(plugins).sort(util.getPluginComparator(plugins))
         .map(function (name) {
           var plugin = plugins[name];
           if (!disabledAllPlugins && !dataCenter.disableInstaller && plugin && installUrls && disabledPlugins
@@ -98,7 +99,7 @@ function getCmd(addArgv) {
   var match = cmdName && CMD_RE.exec(cmdName);
   if (match) {
     cmdName = match[1] + ' ';
-    g = ' ' + match[2].trim();
+    g = ' ' + (match[2] || '').trim();
   } else {
     cmdName = 'w2 ';
   }
@@ -214,7 +215,7 @@ var Home = React.createClass({
         list.push(getUpdateUrl(plugin));
         newPlugins[account] = list;
       });
-      var cmdMsg = Object.keys(newPlugins)
+      var cmdMsg = toKeys(newPlugins)
         .map(function (registry) {
           var list = newPlugins[registry].join(' ');
           return getCmd() + list + registry;

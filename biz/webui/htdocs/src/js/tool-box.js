@@ -14,16 +14,19 @@ var MAX_SAVE_LEN = 10240;
 var MAX_TEXT_LEN = 5120;
 var MAX_IMAGE_SIZE = 1024 * 1024 * 3;
 var handleTab = util.handleTab;
-var toString = util.toString;
 
 var notEmpty = util.notEmpty;
+
+function getString(name, maxLen) {
+  return util.toString(storage.get(name)).substring(0, maxLen);
+}
 
 var ToolBox = React.createClass({
   getInitialState: function () {
     return {
-      qrcodeValue: toString(storage.get('qrcodeValue')).substring(0, MAX_QRCODE_LEN),
-      jsonValue: toString(storage.get('jsonValue')).substring(0, MAX_SAVE_LEN),
-      codecText: toString(storage.get('codecText')).substring(0, MAX_TEXT_LEN)
+      qrcodeValue: getString('qrcodeValue', MAX_QRCODE_LEN),
+      jsonValue: getString('jsonValue', MAX_SAVE_LEN),
+      codecText: getString('codecText', MAX_TEXT_LEN)
     };
   },
   _saveQRCodeValue: function () {

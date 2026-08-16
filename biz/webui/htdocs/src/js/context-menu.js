@@ -68,7 +68,7 @@ var ContextMenu = React.createClass({
         target.attr('data-name')
       );
     }
-    if ((e.shiftKey || e.ctrlKey || e.metaKey) && target.attr('data-shift-to-edit')) {
+    if (util.isShift(e) && target.attr('data-shift-to-edit')) {
       util.trigger('showCopyEditor', target.attr('data-clipboard-text'));
     }
     if (data.radio) {
@@ -150,7 +150,7 @@ var ContextMenu = React.createClass({
                           }
                           style={getHideStyle(subItem.hide)}
                           data-clipboard-text={subItem.copyText}
-                          data-shift-to-edit={item.shiftToEdit ? 1 : null}
+                          data-shift-to-edit={item.shiftToEdit}
                         >
                           <label className="w-ctx-item-tt">
                             {subItem.multiple ? (

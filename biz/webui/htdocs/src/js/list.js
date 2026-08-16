@@ -168,7 +168,7 @@ var List = React.createClass({
     var visible = !self.props.hide;
     $(globalWin)
       .keydown(function (e) {
-        if (visible && (e.ctrlKey || e.metaKey)) {
+        if (visible && util.isCtrl(e)) {
           var modal = self.props.modal;
           if (e.keyCode === 83 && util.hasShortcut('save' + (self.isRules() ? 'Rules' : 'Values') + 'Changes')) {
             modal.getChangedList().forEach(function (item) {
@@ -203,7 +203,7 @@ var List = React.createClass({
         if (item) {
           var group = self.getCurGroup(item);
           group && self.expandGroup(group.name);
-          e.shiftKey ? self.setState({}) : self.onClick(item);
+          self.onClick(item);
           if (self.isRules()) {
             trigger('updateUI');
           }
@@ -241,12 +241,13 @@ var List = React.createClass({
       scrollToBottom();
     });
     addEvent(comName.toLowerCase() + 'NameChanged', function(_, name, newName) {
-      var index = name === newName ? - 1 : self.collapseGroups.indexOf(name);
+      var groups = self.collapseGroups;
+      var index = name === newName ? - 1 : groups.indexOf(name);
       if (index !== -1) {
-        if (self.collapseGroups.indexOf(newName) !== -1) {
-          self.collapseGroups.splice(index, 1);
+        if (groups.indexOf(newName) !== -1) {
+          groups.splice(index, 1);
         } else {
-          self.collapseGroups[index] = newName;
+          groups[index] = newName;
         }
         self.updateGroup();
       }
@@ -262,9 +263,10 @@ var List = React.createClass({
   },
   expandGroup: function(groupName) {
     var self = this;
-    var index = self.collapseGroups.indexOf(groupName);
+    var groups = self.collapseGroups;
+    var index = groups.indexOf(groupName);
     if (index !== -1) {
-      self.collapseGroups.splice(index, 1);
+      groups.splice(index, 1);
       self.updateGroup();
     }
   },
@@ -315,11 +317,12 @@ var List = React.createClass({
   },
   toggleGroup: function (item) {
     var self = this;
-    var index = self.collapseGroups.indexOf(item.name);
+    var groups = self.collapseGroups;
+    var index = groups.indexOf(item.name);
     if (index === -1) {
-      self.collapseGroups.push(item.name);
+      groups.push(item.name);
     } else {
-      self.collapseGroups.splice(index, 1);
+      groups.splice(index, 1);
     }
     self.updateGroup();
     self.setState({});
@@ -372,7 +375,7 @@ var List = React.createClass({
   },
   onFilterChange: function (keyword) {
     var self = this;
-    self.props.modal.search(keyword, self.props.name != 'rules');
+    self.props.modal.search(keyword, !self.isRules());
     self.setState({ filterText: keyword });
   },
   getItemByKey: function (key) {
@@ -401,7 +404,7 @@ var List = React.createClass({
   },
   onDrop: function (e) {
     var self = this;
-    var props = self.props;
+    var modal = self.props.modal;
     var info = getDragInfo(e, self.refs.list);
     e.stopPropagation();
     if (info) {
@@ -414,14 +417,15 @@ var List = React.createClass({
         group: group
       };
       info.target.style.background = '';
-      var toTop = self.isRules() && toName === 'Default';
+      var isRules = self.isRules();
+      var toTop = isRules && toName === 'Default';
       if (toTop) {
-        toName = props.modal.list[1];
+        toName = modal.list[1];
         params.to = toName;
         params.toTop = true;
       }
-      if (props.modal.moveTo(fromName, toName, group, toTop)) {
-        var name = props.name === 'rules' ? 'rules' : 'values';
+      if (modal.moveTo(fromName, toName, group, toTop)) {
+        var name = isRules ? 'rules' : 'values';
         dataCenter[name].moveTo(params, function (data, xhr) {
           if (!data) {
             showSysErr(xhr);
@@ -497,7 +501,9 @@ var List = React.createClass({
   onClickContextMenu: function (action, e, parentAction, menuName) {
     var self = this;
     var props = self.props;
-    var name = props.name === 'rules' ? 'Rules' : 'Values';
+    var isRules = self.isRules();
+    var name = isRules ? 'Rules' : 'Values';
+    var lname = isRules ? 'rules' : 'values';
     var currentFocusItem = self.currentFocusItem;
     switch (parentAction || action) {
     case 'CreateRule':
@@ -559,13 +565,13 @@ var List = React.createClass({
       }
       break;
     case 'Help':
-      globalWin.open(util.getDocUrl('gui/' + (props.name || 'values') + '.html'));
+      globalWin.open(util.getDocUrl('gui/' + lname + '.html'));
       break;
     case 'Plugins':
       var modal = props.modal;
       iframes.fork(action, {
         port: dataCenter.getPort(),
-        type: props.name === 'rules' ? 'rules' : 'values',
+        type: lname,
         name: menuName,
         list: modal && modal.getList(),
         activeItem: currentFocusItem,
@@ -613,9 +619,8 @@ var List = React.createClass({
     var self = this;
     var isRules = self.isRules();
     var name = target.attr('data-name');
-    var modal = self.props.modal;
     name = name && getName(name);
-    var item = modal.get(name);
+    var item = self.props.modal.get(name);
     if (!item) {
       name = undefined;
     }
@@ -656,15 +661,15 @@ var List = React.createClass({
     copyItem.disabled = disabled;
     if (!disabled) {
       copyItem.list[0].copyText = name;
+      var copyValueItem = copyItem.list[1];
       if (item.value) {
-        copyItem.list[1].disabled = false;
-        copyItem.list[1].copyText = item.value;
+        copyValueItem.disabled = false;
+        copyValueItem.copyText = item.value;
       } else {
-        copyItem.list[1].disabled = true;
+        copyValueItem.disabled = true;
       }
     }
-    list[3].disabled = isDefault || disabled;
-    list[4].disabled = isDefault || disabled;
+    list[3].disabled = list[4].disabled = isDefault || disabled;
     self.refs.contextMenu.show(data);
   },
   onAddRule: function (name) {

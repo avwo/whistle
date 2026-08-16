@@ -7,6 +7,7 @@ var MAX_CACHE_TIME = 1000 * 60 * 3;
 var TIMEOUT = 1000 * 60;
 var cache = {};
 var latestItem;
+var toKeys = util.toKeys;
 
 function destroy(item) {
   if (item === latestItem) {
@@ -27,7 +28,7 @@ var detectTimeout = function () {
   detectTimeout = util.noop;
   setInterval(function () {
     var now = Date.now();
-    Object.keys(cache).forEach(function (key) {
+    toKeys(cache).forEach(function (key) {
       var item = cache[key];
       if (now - item.mtime > MAX_CACHE_TIME) {
         destroy(item);
@@ -88,7 +89,7 @@ function onPluginContextMenuReady(win) {
 }
 
 function removeOldest() {
-  var keys = Object.keys(cache);
+  var keys = toKeys(cache);
   var len = keys.length;
   if (len < MAX_COUNT) {
     return;

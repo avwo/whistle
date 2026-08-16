@@ -3,6 +3,7 @@ var util = require('./util');
 var workers = {};
 var modal;
 var getStr = util.getString;
+var toKeys = util.toKeys;
 
 function isEnd(item) {
   return item.endTime || item.lost;
@@ -12,7 +13,7 @@ function assign(o1, o2) {
   if (util.isFunc(Object.assign)) {
     Object.assign(o1, o2);
   } else {
-    Object.keys(o2).forEach(function(key) {
+    toKeys(o2).forEach(function(key) {
       o1[key] = o2[key];
     });
   }
@@ -95,7 +96,7 @@ function removeWorker(id) {
 }
 
 exports.updateWorkers = function(list) {
-  Object.keys(workers).forEach(function(id) {
+  toKeys(workers).forEach(function(id) {
     if (list.indexOf(id) === -1) {
       removeWorker(id);
     }
@@ -105,7 +106,7 @@ exports.updateWorkers = function(list) {
 
 exports.postMessage = function(item) {
   if (isEnd(item)) {
-    Object.keys(workers).forEach(function(key) {
+    toKeys(workers).forEach(function(key) {
       workers[key].postMessage(item);
     });
   }

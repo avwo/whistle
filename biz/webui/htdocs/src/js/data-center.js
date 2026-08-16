@@ -18,6 +18,7 @@ var getTransProto = util.getTransProto;
 var trigger = util.trigger;
 var strfy = util.strfy;
 var isArr = util.isArr;
+var toKeys = util.toKeys;
 var MAX_FILTER_LEN = 5120;
 var LOCAL_IP = '127.0.0.1';
 var MAX_FRAMES_LENGTH = (exports.MAX_FRAMES_LENGTH = 256);
@@ -402,7 +403,7 @@ function checkFilter(item, list) {
       break;
     case 'headers':
       if (
-          checkFilterField(util.objectToString(req.headers), filter, true)
+          checkFilterField(util.objToStr(req.headers), filter, true)
         ) {
         return true;
       }
@@ -801,7 +802,7 @@ function loadComposeData(keys) {
     keys = keys.filter(filterComposeData);
     len = keys.length;
   } else {
-    keys = Object.keys(composeDataMap);
+    keys = toKeys(composeDataMap);
     len = keys.length;
   }
   if (!len) {
@@ -997,7 +998,7 @@ function getBase64Len(base64) {
 }
 
 function updateItem(item, newItem) {
-  Object.keys(newItem).forEach(function(key) {
+  toKeys(newItem).forEach(function(key) {
     var data = newItem[key];
     if (key === 'rules' || key === 'rulesHeaders' || key === 'url') {
       data = data || item[key];
@@ -1221,7 +1222,7 @@ function startLoadData() {
       pluginsMap = data.plugins || {};
       disabledPlugins = data.disabledPlugins || {};
       if (!disabledAllPlugins) {
-        Object.keys(pluginsMap).forEach(function (name) {
+        toKeys(pluginsMap).forEach(function (name) {
           var pluginName = name.slice(0, -1);
           if (!disabledPlugins[pluginName]) {
             var plugin = pluginsMap[name];
@@ -1377,7 +1378,7 @@ function startLoadData() {
             cb();
           });
         }
-        if (Object.keys(tunnelIps).length) {
+        if (toKeys(tunnelIps).length) {
           var hasNewIp;
           dataList.forEach(function (item) {
             var realIp = tunnelIps[item.id];
@@ -1455,7 +1456,7 @@ function getRawHeaders(headers, rawHeaderNames) {
     return;
   }
   var rawHeaders = {};
-  Object.keys(headers).forEach(function (name) {
+  toKeys(headers).forEach(function (name) {
     rawHeaders[rawHeaderNames[name] || name] = headers[name];
   });
   return rawHeaders;
@@ -1709,7 +1710,7 @@ var NOT_BOLD_RULES = {
 };
 
 function hasRules(rules) {
-  var keys = rules && Object.keys(rules);
+  var keys = rules && toKeys(rules);
   var len = keys && keys.length;
   if (len) {
     for (var i = 0; i < len; i++) {
@@ -2076,7 +2077,7 @@ exports.getPlugin = function (name) {
 };
 
 exports.getInstalledPlugins = function () {
-  return Object.keys(pluginsMap).sort(util.getPluginComparator(pluginsMap))
+  return toKeys(pluginsMap).sort(util.getPluginComparator(pluginsMap))
   .map(function (name) {
     var plugin = pluginsMap[name];
     var disabled = !!isDisabledPlugin(name);
@@ -2103,7 +2104,7 @@ function getMenus(menuName) {
   if (disabledAllPlugins) {
     return list;
   }
-  Object.keys(pluginsMap).forEach(function (name) {
+  toKeys(pluginsMap).forEach(function (name) {
     var plugin = pluginsMap[name];
     var menus = plugin[menuName];
     if (menus) {
@@ -2145,7 +2146,7 @@ exports.getPluginColumns = function() {
 
 exports.getPluginRegistry = function() {
   var result = [];
-  Object.keys(pluginsMap).forEach(function(key) {
+  toKeys(pluginsMap).forEach(function(key) {
     var registry = pluginsMap[key].registry;
     if (registry && result.indexOf(registry) === -1) {
       result.push(registry);

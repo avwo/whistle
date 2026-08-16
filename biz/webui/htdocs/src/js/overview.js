@@ -102,7 +102,7 @@ var Overview = React.createClass({
     });
   },
   updateCssMap: function () {
-    Object.keys(CSS_MAP).forEach(function (name) {
+    util.toKeys(CSS_MAP).forEach(function (name) {
       CSS_MAP[name].style[WIDTH_VAR] = 0;
     });
     var modal = this.props.modal;

@@ -29,7 +29,7 @@ var Network = React.createClass({
         if (self.props.hide) {
           return;
         }
-        if ((e.ctrlKey || e.metaKey) && e.keyCode == 68) {
+        if (util.isCtrl(e) && e.keyCode == 68) {
           if (
             !util.isFocusEditor() &&
             !$(e.target).closest('.w-frames-list').length

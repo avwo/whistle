@@ -203,7 +203,7 @@ var MatchedRule = React.createClass({
       });
     }
 
-    if (showOnlyMatchRules && (!rules || Object.keys(rules).length === 0)) {
+    if (showOnlyMatchRules && (!rules || util.toKeys(rules).length === 0)) {
       return <PanelTips data={EMPTY}  className="w-empty-tips" />;
     }
     return (

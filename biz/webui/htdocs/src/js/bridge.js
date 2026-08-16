@@ -159,7 +159,7 @@ function getBridge(win, api) {
     }
   };
   if (api) {
-    Object.keys(api).forEach(function (key) {
+    util.toKeys(api).forEach(function (key) {
       result[key] = api[key];
     });
   }

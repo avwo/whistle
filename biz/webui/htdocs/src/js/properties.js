@@ -13,6 +13,7 @@ var HelpIcon = require('./help-icon');
 var TUNNEL_RE = /^tunnel:\/\//;
 var isArr = util.isArr;
 var toString = util.toString;
+var isCtrl = util.isCtrl;
 
 function getSrcInfo(val, sep) {
   var index = sep ? val.indexOf(sep) : -1;
@@ -40,7 +41,7 @@ var Properties = React.createClass({
     var self = this;
     if (self.props.name === 'Rules') {
       $(self.refs.properties).on('mouseenter', 'td pre', function (e) {
-        if (!e.ctrlKey && !e.metaKey) {
+        if (!isCtrl(e)) {
           return;
         }
         var target = e.target;
@@ -52,7 +53,7 @@ var Properties = React.createClass({
       }).on('mouseleave', 'td pre', function (e) {
         e.target.removeAttribute('data-rule-source');
       }).on('click', 'td pre', function (e) {
-        if (!e.ctrlKey && !e.metaKey) {
+        if (!isCtrl(e)) {
           return;
         }
         self.onLocate(e.target.innerText);
@@ -109,7 +110,7 @@ var Properties = React.createClass({
     var clazz = props.wrapClass || '';
     var itemSep = isRules ? util.SOURCE_SEP : null;
     var isArray = isArr(modal);
-    var keys = Object.keys(modal);
+    var keys = util.toKeys(modal);
     if (sourceText || copyValue) {
       var result = [];
       keys.forEach(function (name) {

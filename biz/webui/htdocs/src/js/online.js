@@ -27,6 +27,9 @@ var curVerbatim = -1;
 var theme = 'light';
 var mediaMatches = false;
 var borderColor;
+var THEMES = ['auto', 'dark', 'light'];
+var SELECT_TAG = '<select class="form-control"></select>';
+
 var setTheme = function() {
   var newTheme = isDarkMode() ? 'dark' : 'light';
   if (theme === newTheme) {
@@ -45,7 +48,7 @@ var setTheme = function() {
 var handleThemeChange = setTheme;
 
 var appearanceMode = storage.get('appearanceMode');
-if (['auto', 'dark', 'light'].indexOf(appearanceMode) === -1) {
+if (THEMES.indexOf(appearanceMode) === -1) {
   appearanceMode = 'auto';
 }
 
@@ -141,7 +144,7 @@ function selectDnsOption(order) {
     return;
   }
   curOrder = order;
-  dialog.find('.w-dns-order-option select').val(curOrder);
+  dialog.find('.w-dns-order select').val(curOrder);
 }
 
 function getDnsOrder(verbatim) {
@@ -159,6 +162,13 @@ function getDnsOrder(verbatim) {
   }
   result.push('<option value="' + IPV6_ONLY_VAL + '">IPv6-only</option>');
   return result.join('');
+}
+
+function createSelect(list) {
+  list = list.map(function(item) {
+    return '<option value="' + item + '">' + item[0].toUpperCase() + item.substring(1) + '</option>';
+  });
+  return SELECT_TAG.replace('</', list.join('') + '</');
 }
 
 function createDialog() {
@@ -180,9 +190,8 @@ function createDialog() {
       '<button type="button" class="close" data-dismiss="modal">&times;</button>' +
       '<div class="w-online-ctn"></div>' +
       '<div class="w-online-info">' +  proxyInfoList.join('') + '</div>' +
-      '<h5 class="w-theme-option"><strong>Theme:</strong><select class="form-control"><option value="auto">Auto</option>' +
-      '<option value="dark">Dark</option><option value="light">Light</option></select></h5>'+
-      '<h5 class="w-dns-order-option"><strong>DNS Order:</strong><select class="form-control"></select></h5>' +
+      '<h5 class="w-online-option w-theme"><strong>Theme:</strong>' + createSelect(THEMES) + '</h5>'+
+      '<h5 class="w-online-option w-dns-order"><strong>DNS Order:</strong>' + SELECT_TAG + '</h5>' +
       '<p><a class="w-view-dns">Clear DNS Cache</a></p>' +
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
       '<a class="w-shortcuts-settings">Shortcuts Settings</a>' +
@@ -190,14 +199,14 @@ function createDialog() {
       '<div class="modal-footer">' + win.DISSMISS_BTN +
       '</div></div></div></div>'
     ).appendTo(document.body);
-    var appearanceSelect = dialog.find('.w-theme-option select');
+    var appearanceSelect = dialog.find('.w-theme select');
     appearanceSelect.on('change', function(e) {
       var val = e.target.value;
       storage.set('appearanceMode', val);
       setAppearanceMode(val);
     });
     appearanceSelect.val(appearanceMode);
-    dialog.find('.w-dns-order-option select').on('change', function(e) {
+    dialog.find('.w-dns-order select').on('change', function(e) {
       var target = e.target;
       var order = +target.value;
       self._pendingDnsOrder = true;
@@ -344,7 +353,7 @@ var Online = React.createClass({
     var ctn = dialog.find('.w-online-ctn').html(info.join(''));
     if (curVerbatim !== server.verbatim) {
       curVerbatim = server.verbatim;
-      dialog.find('.w-dns-order-option select').html(getDnsOrder(server.verbatim));
+      dialog.find('.w-dns-order select').html(getDnsOrder(server.verbatim));
     }
     !self._pendingDnsOrder && selectDnsOption(server.dnsOrder);
     ctn.find('h5.w-system-host').attr('title', server.host);
@@ -446,7 +455,7 @@ var Online = React.createClass({
           );
         memElem.parent().attr(
           'title',
-          Object.keys(memUsage)
+          util.toKeys(memUsage)
             .map(function (key) {
               return key + ': ' + memUsage[key];
             })

@@ -1,5 +1,4 @@
 var $ = require('jquery');
-require('../css/message.css');
 
 var cache = {};
 

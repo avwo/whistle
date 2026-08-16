@@ -4,7 +4,7 @@ var util = require('./util');
 var dataCenter = require('./data-center');
 var ModalHeader = require('./modal-header');
 
-var CMD = 'Ctrl[Command]';
+var CMD = util.CMD;
 var TOGGLE = 'Toggle Network, Rules, Values, and Plugins';
 var NETWORK_SESSIONS = ' network sessions';
 var SETTINGS = [
@@ -13,62 +13,62 @@ var SETTINGS = [
     'list': [
       [
         'importNetwork',
-        CMD + ' + I',
+        CMD + 'I',
         'Import' + NETWORK_SESSIONS
       ],
       [
         'exportNetwork',
-        CMD + ' + E',
+        CMD + 'E',
         'Export' + NETWORK_SESSIONS
       ],
       [
         'saveNetwork',
-        CMD + ' + S',
+        CMD + 'S',
         'Save' + NETWORK_SESSIONS
       ],
       [
         'toggleNetworkState',
-        CMD + ' + O',
+        CMD + 'O',
         'Turn captured requests ON or OFF'
       ],
       [
         'toggleNetworkPanelLayout',
-        CMD + ' + L',
-        'Toggle Network Panel layout: Left-right or top-bottom'
+        CMD + 'L',
+        'Toggle network panel layout: Left-right or top-bottom'
       ],
       [
         'openNetworkSettings',
-        CMD + ' + .',
+        CMD + '.',
         'Open network settings'
       ],
       [
         'removeNetworkSessions',
-        CMD + ' + D',
+        CMD + 'D',
         'Remove selected' + NETWORK_SESSIONS
       ],
       [
         'switchNetworkView',
-        CMD + ' + B',
+        CMD + 'B',
         'Switch between tree and list view of' + NETWORK_SESSIONS
       ],
       [
         'replaySelectedRequests',
-        CMD + ' + Enter',
+        CMD + 'Enter',
         'Replay selected requests'
       ],
       [
         'replaySelectedRequestsTimes',
-        CMD + ' + Shift + Enter',
+        CMD + 'Shift + Enter',
         'Set the number of times to replay the selected requests'
       ],
       [
         'abortRequest',
-        CMD + ' + A',
+        CMD + 'A',
         'Abort requests'
       ],
       [
         'clearNetworkSessions',
-        CMD + ' + X',
+        CMD + 'X',
         'Clear' + NETWORK_SESSIONS
       ],
       [
@@ -83,12 +83,12 @@ var SETTINGS = [
     'list': [
       [
         'replaySelectedFrame',
-        CMD + ' + Enter',
+        CMD + 'Enter',
         'Replay selected frames'
       ],
       [
         'clearNetworkFrames',
-        CMD + ' + X',
+        CMD + 'X',
         'Clear frames'
       ]
     ]
@@ -98,32 +98,32 @@ var SETTINGS = [
     'list': [
       [
         'importRules',
-        CMD + ' + I',
+        CMD + 'I',
         'Import rules'
       ],
       [
         'exportRules',
-        CMD + ' + E',
+        CMD + 'E',
         'Export rules'
       ],
       [
         'saveRulesChanges',
-        CMD + ' + S',
+        CMD + 'S',
         'Save rules changes'
       ],
       [
         'toggleRules',
-        CMD + ' + O',
+        CMD + 'O',
         'Turn rules ON or OFF'
       ],
       [
         'toggleRulesNum',
-        CMD + ' + L',
+        CMD + 'L',
         'Toggle line numbers'
       ],
       [
         'openRulesSettings',
-        CMD + ' + .',
+        CMD + '.',
         'Open rules settings'
       ],
       [
@@ -138,27 +138,27 @@ var SETTINGS = [
     'list': [
       [
         'importValues',
-        CMD + ' + I',
+        CMD + 'I',
         'Import values'
       ],
       [
         'exportValues',
-        CMD + ' + E',
+        CMD + 'E',
         'Export values'
       ],
       [
         'saveValuesChanges',
-        CMD + ' + S',
+        CMD + 'S',
         'Save values changes'
       ],
       [
         'toggleValuesNum',
-        CMD + ' + L',
+        CMD + 'L',
         'Toggle line numbers'
       ],
       [
         'openValuesSettings',
-        CMD + ' + .',
+        CMD + '.',
         'Open values settings'
       ],
       [
@@ -173,12 +173,12 @@ var SETTINGS = [
     'list': [
       [
         'openInstallPlugins',
-        CMD + ' + I',
+        CMD + 'I',
         'Open the plugin installation dialog box'
       ],
       [
         'togglePlugins',
-        CMD + ' + O',
+        CMD + 'O',
         'Turn all plugins ON or OFF'
       ]
     ]
@@ -188,17 +188,17 @@ var SETTINGS = [
     'list': [
       [
         'switchTabReverse',
-        CMD + ' + <--',
+        CMD + '<--',
         TOGGLE + ' in reverse order'
       ],
       [
         'switchTab',
-        CMD + ' + -->',
+        CMD + '-->',
         TOGGLE
       ],
       [
         'openService',
-        CMD + ' + J',
+        CMD + 'J',
         'Open service dialog'
       ]
     ]

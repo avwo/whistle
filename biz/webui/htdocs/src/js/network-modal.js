@@ -18,6 +18,7 @@ var WASM_RE = /application\/wasm/i;
 var TYPES = ['Img', 'HTML', 'CSS', 'JS', 'JSON'];
 var RAW_TYPES = ['Font', 'Media', 'Wasm'];
 var isStr = util.isStr;
+var getCellValue = util.getCellValue;
 
 function NetworkModal(list) {
   this.list = updateOrder(list);
@@ -338,8 +339,8 @@ proto.filter = function () {
         var column = columns[i];
         var isBody = column.name === 'body';
         var name = column.name === 'app' ? 'appName' : null;
-        var prevVal = isBody ? prev.bodySize : util.getCellValue(prev, column, name);
-        var nextVal = isBody ? next.bodySize : util.getCellValue(next, column, name);
+        var prevVal = isBody ? prev.bodySize : getCellValue(prev, column, name);
+        var nextVal = isBody ? next.bodySize : getCellValue(next, column, name);
         if (isBody) {
           if (prevVal === nextVal) {
             return 0;

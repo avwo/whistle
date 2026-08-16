@@ -36,7 +36,7 @@ CodeMirror.defineMode('rules', function () {
       }
     }
     if (match = IPV4_PORT_RE.exec(str)) {
-      return !port && notPort(match[1]) ? false : true;
+      return port || !notPort(match[1]);
     }
     var index = str.indexOf('::');
     if (index !== -1) {

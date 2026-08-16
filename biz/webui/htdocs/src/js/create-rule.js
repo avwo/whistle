@@ -264,7 +264,7 @@ var CreateRuleDialog = React.createClass({
           URL Pattern
           <HelpIcon className="ml-10" docsUrl={'rules/pattern.html#' + patternType} />
         </label>
-        <div className="w-form-value">
+        <div className="w-form-value w-url-pattern">
           <Select className="w-190" value={patternType} onChange={self.onPatternTypeChange} options={PATTERN_OPTIONS} />
           <span className="w-wildcard-symbol" style={wildcardStyle}>^</span>
           <UrlInput ref="urlInput" style={urlInputStyle} placeholder={placeholder} session={session} onChange={self.onPatternUrlChange} />

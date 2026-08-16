@@ -151,18 +151,17 @@ var ReqDetail = React.createClass({
     var pluginsTab = BTNS[7];
     var tabs = dataCenter.getReqTabs();
     var len = tabs.length;
-    pluginsTab.display = undefined;
-    pluginsTab.title = undefined;
-    pluginsTab.className = undefined;
     pluginsTab.hide = !len;
     if (len && len === 1) {
       pluginsTab.display = pluginsTab.title = tabs[0].name;
       pluginsTab.className = 'w-detail-custom-tab w-req';
     } else {
-      pluginsTab.display = undefined;
-      pluginsTab.title = undefined;
-      pluginsTab.className = undefined;
+      pluginsTab.display = pluginsTab.title = pluginsTab.className = undefined;
     }
+
+    var isHide = function(i) {
+      return name != BTNS[i].name;
+    };
 
     return (
       <div
@@ -182,14 +181,14 @@ var ReqDetail = React.createClass({
             headers={headersStr}
             base64={base64}
             className="fill"
-            hide={name != BTNS[0].name}
+            hide={isHide(0)}
           />
         ) : null}
         {state.initedHeaders ? (
           <div
             className={
               'fill w-auto' +
-              getHide(name != BTNS[1].name)
+              getHide(isHide(1))
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
@@ -203,7 +202,7 @@ var ReqDetail = React.createClass({
             hideRight={!form}
             hideLeft={!query}
             splitRatio={0.6}
-            className={getHide(name != BTNS[2].name)}
+            className={getHide(isHide(2))}
           >
             <div className="fill v-box">
               <div className="w-detail-webforms-title">Query</div>
@@ -230,7 +229,7 @@ var ReqDetail = React.createClass({
             value={body}
             session={modal}
             className="fill"
-            hide={name != BTNS[3].name}
+            hide={isHide(3)}
           />
         ) : null}
         {state.initedJSONView ? (
@@ -239,7 +238,7 @@ var ReqDetail = React.createClass({
             data={json}
             tips={tips}
             session={modal}
-            hide={name != BTNS[4].name}
+            hide={isHide(4)}
           />
         ) : null}
         {state.initedHexView ? (
@@ -251,14 +250,14 @@ var ReqDetail = React.createClass({
             value={bin}
             session={modal}
             className="fill n-monospace"
-            hide={name != BTNS[5].name}
+            hide={isHide(5)}
           />
         ) : null}
         {state.initedCookies ? (
           <div
             className={
               'fill w-auto' +
-              getHide(name != BTNS[6].name)
+              getHide(isHide(6))
             }
           >
             {

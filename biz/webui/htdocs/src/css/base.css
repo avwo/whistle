@@ -631,3 +631,14 @@ body input[readonly].w-input-ext {
 .w-auto {
   overflow: auto;
 }
+
+.w-message {
+  position: fixed;
+  top: 30px;
+  left: 50%;
+  z-index: calc(var(--z-max) + 2);
+  padding: 8px 20px !important;
+  max-width: 460px;
+  white-space: pre-wrap;
+  cursor: default;
+}

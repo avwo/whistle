@@ -211,7 +211,7 @@ var FilterInput = React.createClass({
         self.changeInput(value);
         self.hideHints();
       }
-    } else if (e.ctrlKey || e.metaKey) {
+    } else if (util.isCtrl(e)) {
       if (e.keyCode == 68) {
         self.clearFilterText();
         util.preventAll(e);

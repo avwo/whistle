@@ -127,7 +127,7 @@ var EditorDialog = React.createClass({
           self.setState({ hasChanged: true });
         });
         textarea.onkeydown = function(e) {
-          if ((e.ctrlKey || e.metaKey) && e.keyCode === 83) {
+          if (util.isCtrl(e) && e.keyCode === 83) {
             e.preventDefault();
             self.props.textEditor && self.onSave();
           }

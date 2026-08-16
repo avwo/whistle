@@ -73,8 +73,7 @@
   top: 2px;
 }
 
-.w-plugins th,
-.w-plugins td {
+.w-plugins :is(th, td) {
   font-size: 13px;
   font-weight: normal;
 }

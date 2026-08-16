@@ -10,13 +10,14 @@ var TYPES = {
   custom: ''
 };
 var TYPE_CONF_RE = /;.+$/;
+var toKeys = util.toKeys;
 
-Object.keys(TYPES).forEach(function (name) {
+toKeys(TYPES).forEach(function (name) {
   REV_TYPES[TYPES[name]] = name;
 });
 
 function getType(headers) {
-  var keys = Object.keys(headers);
+  var keys = toKeys(headers);
   var type;
   for (var i = 0, len = keys.length; i < len; i++) {
     var name = keys[i];
@@ -37,7 +38,7 @@ function getType(headers) {
 
 function setType(headers, type, lowerCase) {
   headers = util.parseHeaders(headers);
-  Object.keys(headers).forEach(function (name) {
+  toKeys(headers).forEach(function (name) {
     if (name.toLowerCase() === 'content-type') {
       if (type) {
         var addon = TYPE_CONF_RE.test(headers[name]) ? RegExp['$&'] : '';
@@ -51,7 +52,7 @@ function setType(headers, type, lowerCase) {
   if (type) {
     headers[lowerCase ? 'content-type' : 'Content-Type'] = type;
   }
-  return util.objectToString(headers);
+  return util.objToStr(headers);
 }
 
 function isUpload(headers) {

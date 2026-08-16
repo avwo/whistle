@@ -34,6 +34,7 @@ var isFunc = util.isFunc;
 var preventAll = util.preventAll;
 var trigger = util.trigger;
 var addEvent = util.on;
+var isCtrl = util.isCtrl;
 var globalWin = window;
 var INIT_LENGTH = 1024 * 16;
 var GUTTER_STYLE = [
@@ -120,7 +121,7 @@ var Editor = React.createClass({
     if (!len) {
       self._editorHistoryMap = {};
     } else if (len !== self._listLen) {
-      Object.keys(map).forEach(function(key) {
+      util.toKeys(map).forEach(function(key) {
         if (list.indexOf(key) === -1) {
           delete map[key];
         }
@@ -312,7 +313,7 @@ var Editor = React.createClass({
       }
     });
     editor.on('mousedown', function (_, e) {
-      if (!(e.ctrlKey || e.metaKey)) {
+      if (!isCtrl(e)) {
         return;
       }
       var target = $(e.target);
@@ -407,7 +408,7 @@ var Editor = React.createClass({
           name: props.mode,
           url: location.href
         };
-        if (!e.ctrlKey && !e.metaKey && e.keyCode === 112) {
+        if (!isCtrl(e) && e.keyCode === 112) {
           var helpUrl = rulesHint.getHelpUrl(self._editor, options);
           if (!helpUrl) {
             return;
@@ -427,7 +428,7 @@ var Editor = React.createClass({
           }
         } catch (e) {}
       }
-      if (e.shiftKey && (e.metaKey || e.ctrlKey)) {
+      if (e.shiftKey && isCtrl(e)) {
         var onFormat = props.onFormat;
         var onInspect = props.onInspect;
         if (isFunc(onFormat) && e.keyCode === 70) {
@@ -438,7 +439,7 @@ var Editor = React.createClass({
       }
       if (
         (!isRules && !isJS) ||
-        !(e.ctrlKey || e.metaKey) ||
+        !isCtrl(e) ||
         e.keyCode != 191
       ) {
         return;

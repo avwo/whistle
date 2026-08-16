@@ -21,6 +21,7 @@ var getHide = util.getHide;
 var attr = util.attr;
 var toString = util.toString;
 var encodeCom = util.encodeURIComponent;
+var toKeys = util.toKeys;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -57,7 +58,7 @@ var PropsEditor = React.createClass({
     var overflow;
     var self = this;
     if (data) {
-      var keys = Object.keys(data);
+      var keys = toKeys(data);
       overflow = keys.length >= MAX_COUNT;
       if (overflow) {
         keys = keys.slice(0, MAX_COUNT);
@@ -81,7 +82,7 @@ var PropsEditor = React.createClass({
     if (self.props.disabled) {
       return;
     }
-    if (Object.keys(self.state.modal || '').length >= MAX_COUNT) {
+    if (toKeys(self.state.modal || '').length >= MAX_COUNT) {
       return showError('Maximum allowed value: ' + MAX_COUNT);
     }
     self.setState({ data: '' });
@@ -89,7 +90,7 @@ var PropsEditor = React.createClass({
   },
   clear: function() {
     var self = this;
-    if (!Object.keys(self.state.modal || '').length) {
+    if (!toKeys(self.state.modal || '').length) {
       return;
     }
     self.setState({ modal: {} }, self.props.onChange);
@@ -225,13 +226,13 @@ var PropsEditor = React.createClass({
   },
   getFields: function () {
     var modal = this.state.modal || '';
-    return Object.keys(modal).map(function (key) {
+    return toKeys(modal).map(function (key) {
       return modal[key];
     });
   },
   toString: function () {
     var modal = this.state.modal || '';
-    var keys = Object.keys(modal);
+    var keys = toKeys(modal);
     if (this.props.isHeader) {
       return keys
         .map(function (key) {
@@ -262,7 +263,7 @@ var PropsEditor = React.createClass({
     }
     var modal = self.state.modal || '';
     var size = file.size;
-    Object.keys(modal).forEach(function (key) {
+    toKeys(modal).forEach(function (key) {
       size += modal[key].size;
     });
     if (size > MAX_FILE_SIZE) {
@@ -306,7 +307,7 @@ var PropsEditor = React.createClass({
     var modal = state.modal || '';
     var filename = state.filename;
     var fileSize = state.fileSize;
-    var keys = Object.keys(modal);
+    var keys = toKeys(modal);
     var isHeader = props.isHeader;
     var allowUploadFile = props.allowUploadFile;
     var data = state.data || '';
