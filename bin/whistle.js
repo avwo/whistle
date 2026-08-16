@@ -199,7 +199,7 @@ if (cmd === 'root') {
   if (file) {
     root = path.join(root, file);
   }
-  process.stdout.write(root);
+  console.log(root);
 } else if (cmd === 'status') {
   var all = argv[3] === '--all' || argv[3] === '-l';
   if (argv[3] === '-S') {
