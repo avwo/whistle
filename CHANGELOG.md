@@ -1,5 +1,11 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.9
+1. feat: 自动保存上次关闭时的页面，下次未指定页面是默认打开上次页面
+2. feat: 支持携带字符集（`charset=utf-8`）的 `text/event-stream` 类型，提升与各类服务端推送的兼容性
+3. fix: https://github.com/avwo/whistle/issues/1349
+4. fix: https://github.com/avwo/whistle/issues/1348
+
 ## v2.10.8
 1. feat: 在 `Create Rule`（创建规则）界面中，增加了“包含关键词”（Contains Keyword）匹配选项，方便您更灵活地定义规则条件
 2. refactor: 移除了存在安全漏洞的旧依赖库，替换为更稳定、安全的版本，提升整体系统安全性

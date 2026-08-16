@@ -1,8 +1,14 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.9
+1. feat: auto-save the last opened page and restore it as default when no specific page is specified on next launch
+2. feat: support `text/event-stream` responses with a `charset=utf-8` parameter, improving compatibility with various server‑sent event implementations
+3. fix: https://github.com/avwo/whistle/issues/1349
+4. fix: https://github.com/avwo/whistle/issues/1348
+
 ## v2.10.8
-1. feat: Added a "Contains Keyword" match option in the `Create Rule` interface, allowing you to define rule conditions more flexibly.  
-2. refactor: Removed outdated dependency libraries with known security vulnerabilities and replaced them with more stable, secure versions, enhancing overall system security.
+1. feat: Added a "Contains Keyword" match option in the `Create Rule` interface, allowing you to define rule conditions more flexibly
+2. refactor: Removed outdated dependency libraries with known security vulnerabilities and replaced them with more stable, secure versions, enhancing overall system security
 
 ## v2.10.7
 1. fix: Resolved the issue reported in https://github.com/avwo/whistle/issues/1338
