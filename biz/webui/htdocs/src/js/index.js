@@ -100,6 +100,7 @@ var noModal = util.noModal;
 var toKeys = util.toKeys;
 var CMD = util.CMD;
 var isCtrl = util.isCtrl;
+var createHover = util.createHover;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -264,6 +265,13 @@ var VALUES_ACTIONS = [
     id: 'exportValues'
   }
 ];
+
+var networkHover = createHover('showNetworkOptions');
+var rulesHover = createHover('showRulesOptions');
+var valuesHover = createHover('showValuesOptions');
+var pluginsHover = createHover('showPluginsOptions');
+var weinreHover = createHover('showWeinreOptions');
+var helpHover = createHover('showHelpOptions');
 
 function getJsonForm(data, name) {
   var form = new FormData();
@@ -754,7 +762,8 @@ var Index = React.createClass({
     plugins = plugins || {};
     var pluginsOptions = [
       {
-        name: 'Home'
+        icon: 'th-large',
+        name: 'All'
       }
     ];
 
@@ -2614,16 +2623,10 @@ var Index = React.createClass({
   },
   showNetworkOptions: function () {
     if (this.state.name == 'network') {
-      this.setState({
-        showNetworkOptions: true
-      });
+      networkHover.show.call(this);
     }
   },
-  hideNetworkOptions: function () {
-    this.setState({
-      showNetworkOptions: false
-    });
-  },
+  hideNetworkOptions: networkHover.hide,
   showCreateOptions: function () {
     this.setState({
       showCreateOptions: true
@@ -2634,16 +2637,8 @@ var Index = React.createClass({
       showCreateOptions: false
     });
   },
-  showHelpOptions: function () {
-    this.setState({
-      showHelpOptions: true
-    });
-  },
-  hideHelpOptions: function () {
-    this.setState({
-      showHelpOptions: false
-    });
-  },
+  showHelpOptions: helpHover.show,
+  hideHelpOptions: helpHover.hide,
   showHasNewVersion: function (hasNewVersion) {
     this.setState({
       hasNewVersion: hasNewVersion
@@ -2667,15 +2662,11 @@ var Index = React.createClass({
       });
     }
     self.setState({
-      rulesOptions: rulesOptions,
-      showRulesOptions: true
+      rulesOptions: rulesOptions
     });
+    rulesHover.show.call(self);
   },
-  hideRulesOptions: function () {
-    this.setState({
-      showRulesOptions: false
-    });
-  },
+  hideRulesOptions: rulesHover.hide,
   showValuesOptions: function (e) {
     var self = this;
     var valuesOptions;
@@ -2701,15 +2692,11 @@ var Index = React.createClass({
       valuesOptions = newValues.concat(valuesOptions);
     }
     self.setState({
-      valuesOptions: valuesOptions,
-      showValuesOptions: true
+      valuesOptions: valuesOptions
     });
+    valuesHover.show.call(self);
   },
-  hideValuesOptions: function () {
-    this.setState({
-      showValuesOptions: false
-    });
-  },
+  hideValuesOptions: valuesHover.hide,
   showAndActivePlugins: function (option) {
     var self = this;
     self.hidePluginsOptions();
@@ -2783,16 +2770,8 @@ var Index = React.createClass({
       }
     }
   },
-  showPluginsOptions: function (e) {
-    this.setState({
-      showPluginsOptions: true
-    });
-  },
-  hidePluginsOptions: function () {
-    this.setState({
-      showPluginsOptions: false
-    });
-  },
+  showPluginsOptions: pluginsHover.show,
+  hidePluginsOptions: pluginsHover.hide,
   showWeinreOptionsQuick: function (e) {
     var self = this;
     var list = self.getWeinreFromRules();
@@ -2812,15 +2791,9 @@ var Index = React.createClass({
         icon: 'console'
       };
     });
-    self.setState({
-      showWeinreOptions: true
-    });
+    weinreHover.show.call(self);
   },
-  hideWeinreOptions: function () {
-    this.setState({
-      showWeinreOptions: false
-    });
-  },
+  hideWeinreOptions: weinreHover.hide,
   setMenuOptionsState: function (name, callback) {
     var state = {
       showCreateRules: false,

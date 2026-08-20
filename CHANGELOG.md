@@ -1,5 +1,10 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.10
+1. fix: https://github.com/avwo/whistle/pull/1350
+2. fix: https://github.com/avwo/whistle/issues/1342
+3. feat: 优化界面
+
 ## v2.10.9
 1. feat: 自动保存上次关闭时的页面，下次未指定页面是默认打开上次页面
 2. feat: 支持携带字符集（`charset=utf-8`）的 `text/event-stream` 类型，提升与各类服务端推送的兼容性

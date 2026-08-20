@@ -3630,3 +3630,28 @@ exports.isWildcard = function (str) {
       /^\.[^./?]+\.[^/?]/.test(domain)
     );
 };
+
+
+exports.createHover = function(name) {
+  var timer = '_' + name + 'Timer';
+
+  var getState = function(show) {
+    var state = {};
+    state[name] = show;
+    return state;
+  };
+
+  return {
+    show: function() {
+      var self = this;
+      clearTimeout(self[timer]);
+      self[timer] = setTimeout(function() {
+        self.setState(getState(true));
+      }, 360);
+    },
+    hide: function() {
+      clearTimeout(this[timer]);
+      this.setState(getState(false));
+    }
+  };
+};

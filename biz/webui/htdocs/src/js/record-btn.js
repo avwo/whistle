@@ -30,6 +30,8 @@ var ACTION_OPTIONS = [
   }
 ];
 
+var hover = util.createHover('showActionOptions');
+
 var RecordBtn = React.createClass({
   getInitialState: function () {
     return { stop: false };
@@ -68,16 +70,8 @@ var RecordBtn = React.createClass({
 
     this.onClickOption({ id: flag });
   },
-  showActionOptions: function () {
-    this.setState({
-      showActionOptions: true
-    });
-  },
-  hideActionOptions: function () {
-    this.setState({
-      showActionOptions: false
-    });
-  },
+  showActionOptions: hover.show,
+  hideActionOptions: hover.hide,
   onClickOption: function (option) {
     var self = this;
     var state = self.state;

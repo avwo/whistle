@@ -1,5 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.10
+1. fix: https://github.com/avwo/whistle/pull/1350
+2. fix: https://github.com/avwo/whistle/issues/1342
+3. feat: refine webui
+
 ## v2.10.9
 1. feat: auto-save the last opened page and restore it as default when no specific page is specified on next launch
 2. feat: support `text/event-stream` responses with a `charset=utf-8` parameter, improving compatibility with various server‑sent event implementations

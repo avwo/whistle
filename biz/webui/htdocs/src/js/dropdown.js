@@ -3,6 +3,8 @@ var React = require('react');
 var util = require('./util');
 var Icon = require('./icon');
 
+var hover = util.createHover('hover');
+
 var DropDown = React.createClass({
   getInitialState: function () {
     return {};
@@ -24,11 +26,9 @@ var DropDown = React.createClass({
     if (onBeforeShow) {
       onBeforeShow();
     }
-    this.setState({ hover: true });
+    hover.show.call(this);
   },
-  onMouseLeave: function () {
-    this.setState({ hover: false });
-  },
+  onMouseLeave: hover.hide,
   getSelectedOption: function () {
     var props = this.props;
     var value = props.value;
