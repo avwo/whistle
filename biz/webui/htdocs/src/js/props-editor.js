@@ -311,7 +311,7 @@ var PropsEditor = React.createClass({
     var isHeader = props.isHeader;
     var allowUploadFile = props.allowUploadFile;
     var data = state.data || '';
-    var text = data ? 'Modify' : 'Add';
+    var text = data ? 'Save' : 'Add';
     var btnText = text + (isHeader ? ' Header' : ' Param');
     var cbBtnText = props.callback ? text + ' & Send' : null;
     var handle = data ? self.edit : self.add;
@@ -353,14 +353,12 @@ var PropsEditor = React.createClass({
                         className="w-edit-btn"
                         data-name={name}
                         onClick={self.onEdit}
-                        title="Edit"
                       />
                       <Icon
                         name="remove"
                         className="w-del-btn"
                         data-name={name}
                         onClick={self.onRemove}
-                        title="Delete"
                       />
                     </td>
                   </tr>

@@ -1,4 +1,5 @@
 var React = require('react');
+var $ = require('jquery');
 var Dialog = require('./dialog');
 var dataCenter = require('./data-center');
 var util = require('./util');
@@ -7,6 +8,7 @@ var Icon = require('./icon');
 var ModalFooter = require('./modal-footer');
 var ModalHeader = require('./modal-header');
 var UploadForm = require('./upload-form');
+var Select = require('./custom-select');
 var showError = require('./message').error;
 
 var showSysErr = util.showSysErr;
@@ -14,8 +16,10 @@ var isStr = util.isStr;
 var trigger = util.trigger;
 var addEvent = util.on;
 var stringify = util.stringify;
+var getValuesModal = dataCenter.getValuesModal;
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
+var INSERT_BTN = 'Populate from Session';
 var iframeStyle = {
   padding: 0,
   border: 'none',
@@ -25,9 +29,38 @@ var iframeStyle = {
   verticalAlign: 'top'
 };
 
+var SESSION_OPTIONS = ['URL', 'Method', 'Status Code', 'Request Headers', 'Response Headers',
+  'Request Body', 'Response Body', 'Request JSON', 'Response JSON', 'Raw Request', 'Raw Response'];
+
+function getTitle(tempFile) {
+  return tempFile ? 'Replace File (' + tempFile + ')' : 'Create File';
+}
+
+function getKey(tempFile) {
+  if (tempFile && tempFile[0] === '{') {
+    var last = tempFile.length - 1;
+    if (tempFile[last] === '}') {
+      return tempFile.substring(1, last);
+    }
+  }
+}
+
+function getKeyItem(key) {
+  return key && getValuesModal().get(key);
+}
+
+function getKeyValue(key) {
+  var item = getKeyItem(key);
+  return (item && item.value) || '';
+}
+
 function getTempFile(tempFile, cb) {
-  if (tempFile === 'blank') {
+  if (!tempFile ||tempFile === 'blank') {
     return cb('');
+  }
+  var key = getKey(tempFile);
+  if (key) {
+    return cb(getKeyValue(key));
   }
   dataCenter.getTempFile({
     filename: tempFile
@@ -49,30 +82,28 @@ function getText(item, key) {
   var req = item.req;
   var res = item.res || '';
   switch(key) {
-  case 'blank':
-    return '';
-  case 'url':
+  case SESSION_OPTIONS[0]:
     return item.url;
-  case 'method':
+  case SESSION_OPTIONS[1]:
     return req.method;
-  case 'reqHeaders':
-    return stringify(req.headers);
-  case 'resHeaders':
-    return res.headers ? stringify(res.headers) : '';
-  case 'reqBody':
-    return util.getBody(req, true);
-  case 'resBody':
-    return util.getBody(res);
-  case 'reqJson':
-    return util.getJsonStr(req, true, decodeURIComponent);
-  case 'resJson':
-    return util.getJsonStr(res);
-  case 'rawReq':
-    return util.getRawReq(item);
-  case 'rawRes':
-    return util.getRawRes(item);
-  case 'statusCode':
+  case SESSION_OPTIONS[2]:
     return res.statusCode;
+  case SESSION_OPTIONS[3]:
+    return stringify(req.headers);
+  case SESSION_OPTIONS[4]:
+    return res.headers ? stringify(res.headers) : '';
+  case SESSION_OPTIONS[5]:
+    return util.getBody(req, true);
+  case SESSION_OPTIONS[6]:
+    return util.getBody(res);
+  case SESSION_OPTIONS[7]:
+    return util.getJsonStr(req, true, decodeURIComponent);
+  case SESSION_OPTIONS[8]:
+    return util.getJsonStr(res);
+  case SESSION_OPTIONS[9]:
+    return util.getRawReq(item);
+  case SESSION_OPTIONS[10]:
+    return util.getRawRes(item);
   }
   return '';
 }
@@ -83,11 +114,13 @@ var EditorDialog = React.createClass({
   },
   show: function (data) {
     var self = this;
-    self.setState(data);
     var textarea = self._textarea;
     self.refs.dialog.show();
+    data = data || {};
+    data.isKey = !!data.isKey;
+    self.setState(data);
     if (self.props.textEditor && textarea) {
-      var value = data && data.value;
+      var value = data.value;
       if (isStr(value)) {
         textarea.value = value;
       }
@@ -123,9 +156,6 @@ var EditorDialog = React.createClass({
         style.borderRadius = '3px';
         textarea.maxLength = MAX_LEN;
         textarea.placeholder = self.props.placeholder || 'Enter text';
-        textarea.addEventListener('input', function() {
-          self.setState({ hasChanged: true });
-        });
         textarea.onkeydown = function(e) {
           if (util.isCtrl(e) && e.keyCode === 83) {
             e.preventDefault();
@@ -146,30 +176,33 @@ var EditorDialog = React.createClass({
         self.onClose();
         var state = self.state;
         var name;
-        state.textSrc = '';
         state.callback = null;
         var text = data && (data.text || data.value) || '';
         if (!data || text || data.session !== undefined) {
           var filename = data && data.filename;
           var textarea = self._textarea;
+          var isKey = data && data.isKey;
           self._session = data && data.session;
+          self._filename = filename;
           state.callback = data && data.callback;
+          var selectedKey = isKey ? (getKey(filename) || getValuesModal().getKeys()[0]) : null;
           self.show({
-            hasChanged: !!(text || textarea.value.trim()),
-            value: text,
-            title: 'Create Temp File',
-            isTempFile: true
+            isKey: isKey,
+            selectedKey: selectedKey,
+            value: isKey ? getKeyValue(selectedKey) : text,
+            title: getTitle(filename),
+            isTempFile: !isKey
           });
           filename && getTempFile(filename, function(value) {
             textarea.value = value;
           });
         } else if (name = data.name) {
-          var item = dataCenter.valuesModal.get(name);
-          var value = item && item.value || '';
+          var item = getKeyItem(name);
           self._keyName = name;
+          self._modifyValue = !!item;
           self.show({
-            value: value,
-            title: item ? 'Update value for key \'' + name + '\' in Values' : 'Create a new key \'' + name + '\' to Values',
+            value: getKeyValue(name),
+            title: item ? 'Modify value for key \'' + name + '\' in Values' : 'Create a new key \'' + name + '\' to Values',
             isTempFile: false
           });
         } else {
@@ -180,11 +213,11 @@ var EditorDialog = React.createClass({
             self._fileElem = elem;
             self._rulesItem = rulesItem;
             tempFile = tempFile || 'blank';
-            var isBlank = tempFile === 'blank' || /[\\/]/.test(tempFile);
+            tempFile = (tempFile === 'blank' || /[\\/]/.test(tempFile)) ? null : 'temp/' + tempFile;
             getTempFile(tempFile, function(value) {
               self.show({
                 value: value,
-                title: (isBlank ? 'Create' : 'Edit') + ' Temp File' + (isBlank ? '' : ' (temp/' + tempFile + ')'),
+                title: getTitle(tempFile),
                 isTempFile: true
               });
             });
@@ -206,27 +239,43 @@ var EditorDialog = React.createClass({
       self.hide();
     }
   },
+  addKey: function(name, value, cb) {
+    var graceful = value == null;
+    dataCenter.values.add({
+      name: name,
+      value: value || '',
+      graceful: graceful
+    }, function (data, xhr) {
+      if (data && data.ec === 0) {
+        trigger('addNewValuesFile', {
+          filename: name,
+          data: graceful ? getKeyValue(name) : value,
+          update: true
+        });
+        cb && cb();
+      } else {
+        showSysErr(xhr);
+      }
+    });
+  },
   onSave: function(base64) {
     var self = this;
+    var state = self.state;
     var isBase64 = isStr(base64);
     var value = isBase64 ? base64 : self.getValue();
-    if (!isBase64 && !self.state.isTempFile) {
-      dataCenter.values.add({
-        name: self._keyName,
-        value: value
-      }, function (data, xhr) {
-        if (data && data.ec === 0) {
-          trigger('addNewValuesFile', {
-            filename: self._keyName,
-            data: value,
-            update: true
-          });
-          self.hide();
-        } else {
-          showSysErr(xhr);
+    if (!isBase64 && !state.isTempFile) {
+      var keyName = self._keyName || state.selectedKey;
+      if (!keyName) {
+        self.refs.select.shake();
+        return showError('The key is required');
+      }
+      return self.addKey(keyName, value, function() {
+        self.hide();
+        var callback = state.callback;
+        if (callback) {
+          callback('{' + keyName + '}');
         }
       });
-      return;
     }
     var params = {  clientId: dataCenter.getPageId() };
     params[isBase64 ? 'base64' : 'value'] = value;
@@ -236,11 +285,11 @@ var EditorDialog = React.createClass({
       }
       var elem = self._fileElem;
       if (!elem) {
-        var callback = self.state.callback;
+        var callback = state.callback;
         if (callback) {
           callback(result.filepath);
         } else {
-          win.alert('Temp file created:\n' + result.filepath, result.filepath, 'Copy Temp File Path', 'alert-info');
+          win.alert('File created:\n' + result.filepath, result.filepath, 'Copy File Path', 'alert-info');
         }
         return self.hide();
       }
@@ -341,75 +390,77 @@ var EditorDialog = React.createClass({
     self.readFile(file);
     uploadForm.getInput().value = '';
   },
-  onTextChange: function(e) {
+  populate: function(e) {
     var self = this;
-    var textSrc = e.target.value;
-    var textarea = self._textarea;
-    var updateValue = function() {
-      self.setState({ textSrc: textSrc, hasChanged: false }, self.updateRules);
-      if (textSrc[0] === '{') {
-        var valuesModal = dataCenter.valuesModal;
-        var item = valuesModal.getItem(textSrc.slice(1, -1));
-        textarea.value = item && item.value || '';
-      } else if (self._session) {
-        textarea.value = getText(self._session, textSrc);
-      }
-    };
-    if (!self.state.hasChanged || !textarea.value.trim()) {
-      return updateValue();
-    }
-    win.confirm('Unsaved changes will be lost. Continue?', function(sure) {
-      sure && updateValue();
-    });
+    self._textarea.value = getText(self._session, $(e.target).text().trim()) || '';
   },
   onClose: function () {
     var self = this;
     self._keyName = null;
+    self._modifyValue = null;
     self._tempFile = null;
+    self._filename = null;
     self._fileElem = null;
     self._rulesItem = null;
     self._session = null;
+  },
+  showSessionOptions: function() {
+    this.refs.session.show();
+  },
+  createKey: function(key, cb) {
+    var self = this;
+    self.addKey(key, null, function() {
+      self.changeKey({ value: key });
+      cb();
+    });
+  },
+  changeKey: function(e) {
+    var self = this;
+    var key = e.value;
+    var textarea = self._textarea;
+    var preKey = self.state.selectedKey;
+    var preVal = getKeyValue(preKey);
+    var handleChange = function(flag) {
+      if (flag === false) {
+        return;
+      }
+      textarea.value = getKeyValue(key);
+      self.setState({ selectedKey: key });
+    };
+    if (preVal && preVal !== textarea.value) {
+      return win.confirm('The value for key \'' + preKey + '\' has been modified. Switch and lose changes. Continue?', handleChange);
+    }
+    handleChange();
+  },
+  renderKeys: function() {
+    var self = this;
+    var keys = getValuesModal().getKeys();
+    var selectedKey = self.state.selectedKey;
+    if (selectedKey && keys.indexOf(selectedKey) === -1) {
+      keys.push(selectedKey);
+    } else if (!keys.length) {
+      keys.push('No keys available');
+    }
+
+    return <Select ref="select" value={selectedKey} className="w-session-text-select ml-5" placeholder="Enter new key"
+      options={keys} onCreate={self.createKey} onChange={self.changeKey} />;
   },
   renderHeader: function(showUpload) {
     var self = this;
     var state = self.state;
     var props = self.props;
     var title = props.title || state.title || '';
-    var textSrc = state.textSrc || '';
-    var list = title[0] !== 'E' && dataCenter.getValuesModal().getNotEmptyList();
     var session = self._session;
+    var isKey = state.isKey;
 
     return (
       <ModalHeader>
-        {title || 'Edit Copied Text'}
-        {showUpload && (session || list.length) ? <span className="ml-5">
-          -- From
-          <select className="form-control w-session-text-select ml-10" value={textSrc} onChange={self.onTextChange}>
-            <option value="">Custom</option>
-            {session ? [
-              <optgroup label="Request Session">
-                <option value="url">URL</option>
-                <option value="method">Method</option>
-                <option value="statusCode">Status Code</option>
-                <option value="reqHeaders">Request Headers</option>
-                <option value="resHeaders">Response Headers</option>
-                <option value="reqBody">Request Body</option>
-                <option value="resBody">Response Body</option>
-                <option value="reqJson">Request JSON</option>
-                <option value="resJson">Response JSON</option>
-                <option value="rawReq">Raw Request</option>
-                <option value="rawRes">Raw Response</option>
-              </optgroup>
-            ] : null}
-            { list.length ? <optgroup label="Values">{
-                list.map(function(key) {
-                  key = '{' + key + '}';
-                  return <option value={key}>{key}</option>;
-                })
-              }</optgroup> : null
-            }
-          </select>
-        </span> : null}
+        {isKey ? 'Select Key' : title || 'Modify Copied Text'}
+        {isKey ? self.renderKeys() : null}
+        {showUpload && session ? <button type="button" className="btn btn-sm btn-default ml-10" onClick={self.showSessionOptions}>
+          <Icon name="import" className="mr-5" />
+          {INSERT_BTN}
+        </button> : null}
       </ModalHeader>
     );
   },
@@ -421,6 +472,8 @@ var EditorDialog = React.createClass({
     var hasConfirm = props.onConfirm;
     var textEditor = props.textEditor;
     var showUpload = textEditor && !hasConfirm;
+    var keyName = self._keyName;
+    var isKey = state.isKey;
 
     return (
       <Dialog ref="dialog" wstyle={'w-editor-dialog' + (textEditor ? ' w-big-editor-dialog' : '') +
@@ -440,7 +493,7 @@ var EditorDialog = React.createClass({
           }
         </div>
         {textEditor ? <ModalFooter className="modal-footer">
-          {hasConfirm ? null : <button
+          {hasConfirm || keyName || isKey ? null : <button
             type="button"
             className="btn btn-info"
             onClick={self.onUpload}
@@ -453,7 +506,7 @@ var EditorDialog = React.createClass({
             className="btn btn-primary"
             onClick={hasConfirm ? self.onConfirm : self.onSave}
           >
-            {hasConfirm ? 'Confirm' : (self._fileElem ? 'Save' : 'Create')}
+            {hasConfirm ? 'Confirm' : (self._fileElem || self._filename || isKey || self._modifyValue ? 'Save' : 'Create')}
           </button>
         </ModalFooter> : <ModalFooter>
           <button
@@ -467,6 +520,22 @@ var EditorDialog = React.createClass({
           </button>
         </ModalFooter>}
         <UploadForm ref="uploadForm" onChange={self.readLocalFile} />
+        <Dialog ref="session" wstyle="w-plugins-mgr w-session-dialog" closable>
+          <ModalHeader>
+          {INSERT_BTN}
+          </ModalHeader>
+          <div className="modal-body">
+            {
+              SESSION_OPTIONS.map(function (name) {
+                return (
+                  <div key={name} className="btn btn-default plugin-mgr-btn" data-dismiss="modal" onClick={self.populate}>
+                    {name}
+                  </div>
+                );
+              })
+            }
+          </div>
+        </Dialog>
       </Dialog>
     );
   }

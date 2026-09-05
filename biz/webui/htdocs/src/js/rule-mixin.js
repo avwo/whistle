@@ -267,7 +267,7 @@ module.exports = {
       <button className="btn btn-primary ml-10 h-32" onClick={this.onAdd} disabled={disabled || isMax}>
         <Icon name="plus" />
       </button>,
-      <button className="btn btn-default w-delete ml-10 h-32" onClick={this.onRemove} disabled={disabled || (isMin && !action.value)}>
+      <button className="btn btn-default w-delete ml-5 h-32" onClick={this.onRemove} disabled={disabled || (isMin && !action.value)}>
         <Icon name="minus" />
       </button>
     ];
@@ -293,7 +293,7 @@ module.exports = {
     var type = action.type;
     var self = this;
     if (type === allActions[1]) {
-      return self.renderAllHeaders(action, disabled, 'flex-1 mr-0', 'Select ' + name + ' header name to delete');
+      return self.renderAllHeaders(action, disabled, 'flex-1 mr-0', 'Select ' + name + ' header name to delete (case-insensitive)');
     }
     if (/^content-type$/i.test(type)) {
       return <TypeSelect isReq={isReq} disabled={disabled} value={action.key} className="flex-1 mr-0" onChange={self.onKeyChange} />;

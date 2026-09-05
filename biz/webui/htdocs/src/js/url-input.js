@@ -356,9 +356,10 @@ var UrlInput = React.createClass({
       </div>
     );
   },
-  showEditor: function () {
+  showEditor: function (e) {
     var self = this;
     util.trigger('showEditorDialog', {
+      isKey: $(e.target).closest('button.btn-default').length,
       filename: self.state.url.replace(/\?.*$/, ''),
       session: self.props.session || null,
       callback: self.handleCallback
@@ -370,6 +371,7 @@ var UrlInput = React.createClass({
     var props = self.props;
     var protocol = state.protocol;
     var disabled = props.disabled;
+    var enableFile = props.enableFile;
     var isFile = protocol === 'file://' || protocol === 'tpl://';
 
     return (
@@ -396,7 +398,7 @@ var UrlInput = React.createClass({
           onBlur={self.hideHints}
           type="text"
           maxLength="8192"
-          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTpl ? ' or directory ' : '') + 'path or (value)' : 'URL')}
+          placeholder={props.placeholder || 'Enter ' + (isFile ?  'file' + (props.enableTpl ? '/directory' : '') + ' path or {key} or (value)' : 'URL')}
           className={'fill form-control' + (isFile ? ' w-file-input' : '')}
         />
         <button
@@ -406,9 +408,13 @@ var UrlInput = React.createClass({
         >
           Params
         </button>
-        {props.enableFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={self.showEditor}>
+        {enableFile ? <button disabled={disabled} className="btn btn-primary h-32 ml-10 w-add-file" onClick={self.showEditor}>
           <Icon name="plus" />
           File
+        </button> : null}
+        {enableFile ? <button disabled={disabled} className="btn btn-default h-32 ml-5 w-add-file" onClick={self.showEditor}>
+          <Icon name="plus" />
+          Key
         </button> : null}
         {self.renderParamsEditor()}
         {self.renderHints()}

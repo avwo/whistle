@@ -47,26 +47,14 @@
   visibility: hidden;
 }
 
-body .w-ctx-list .w-ctx-list {
-  margin-left: 3px;
+body .w-ctx-sub-list .w-ctx-list {
+  margin-left: -3px;
   display: none;
   top: -1px;
   z-index: calc(var(--z-ctx-menu) + 2);
 }
-body .w-ctx-list .w-ctx-gap {
-  position: absolute;
-  margin-left: -2px;
-  height: 35px;
-  top: -1px;
-  left: 100%;
-  width: 6px;
-  display: none;
-  z-index: calc(var(--z-ctx-menu) + 1);
-}
-.w-ctx-item:hover :is(.w-ctx-list, .w-ctx-gap) {
+.w-ctx-sub-list[data-show] .w-ctx-list {
   display: block;
-}
-.w-ctx-item:hover .w-ctx-list {
   width: auto;
 }
 .w-ctx-item {
@@ -113,10 +101,6 @@ body .w-ctx-list .w-ctx-gap {
 .w-ctx-left .w-ctx-item .w-ctx-list {
   right: 102%;
   left: unset;
-}
-
-.w-ctx-left .w-ctx-list .w-ctx-gap {
-  left: -3px;
 }
 
 .w-ctx-radio-list {

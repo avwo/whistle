@@ -292,6 +292,10 @@ function checkFilterType(item, filterType) {
     }
   }
 
+  if (filterType === 'SSE') {
+    return rawType === 'text/event-stream';
+  }
+
   var curType = util.getContentType(rawType);
   for (i = 0, len = TYPES.length; i < len; i++) {
     type = TYPES[i];

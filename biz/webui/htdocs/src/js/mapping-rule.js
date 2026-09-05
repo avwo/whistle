@@ -119,7 +119,7 @@ var NetworkRule = React.createClass({
         <div className="w-form-item">
           <label>
             {renderBox(!disabled, 'disabled')}
-            Mapping File/URL/(Value)
+            Mapping File/URL/{'{key}'}/(Value)
             <HelpIcon className="ml-10" docsUrl={self.getDocsUrl} />
           </label>
           <div className="w-form-value">

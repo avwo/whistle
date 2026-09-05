@@ -24,17 +24,17 @@ var getInjectValue = util.getInjectValue;
 var getRandomKey = util.getRandomKey;
 BODY_ACTIONS = [
   BODY_ACTIONS[0],
-  'Prepend HTML To Body',
-  'Prepend CSS To Body',
-  'Prepend JS To Body',
+  'Prepend HTML to Body',
+  'Prepend CSS to Body',
+  'Prepend JS to Body',
   BODY_ACTIONS[1],
-  'Replace Body With HTML',
-  'Replace Body With CSS',
-  'Replace Body With JS',
+  'Replace Body with HTML',
+  'Replace Body with CSS',
+  'Replace Body with JS',
   BODY_ACTIONS[2],
-  'Append HTML To Body',
-  'Append CSS To Body',
-  'Append JS To Body'
+  'Append HTML to Body',
+  'Append CSS to Body',
+  'Append JS to Body'
 ].concat(BODY_ACTIONS.slice(-3)).concat(['Modify Socket Frame Script']);
 
 var ResponseRule = React.createClass({

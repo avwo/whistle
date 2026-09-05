@@ -345,16 +345,10 @@ proto.remove = function (name) {
   }
 };
 
-proto.getNotEmptyList = function() {
-  var list = [];
-  var data = this.data;
-  this.list.forEach(function (name) {
-    var item = data[name];
-    if (item && item.value) {
-      list.push(name);
-    }
+proto.getKeys = function() {
+  return this.list.filter(function(name) {
+    return !isGroupName(name);
   });
-  return list;
 };
 
 proto.removeGroup = function (name) {

@@ -12,17 +12,19 @@ var preventBlur = util.preventBlur;
 var getHideStyle = util.getHideStyle;
 var MAX_LEN = 128;
 var ACTIVE_CLASS = 'w-active';
-var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'captureError'];
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'SSE', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'captureError'];
 var getTitle = function (type) {
-  return 'Show only ' + type.toLowerCase() + ' requests';
+  return 'Show only ' + type + ' sessions';
 };
 var TITLES = {
   JS: getTitle('JavaScript'),
+  SSE: getTitle('Server-Sent Events'),
   Img: getTitle('Image'),
   WS: getTitle('WebSocket'),
   Wasm: getTitle('WebAssembly'),
-  Import: 'Show import sessions',
-  Rules: 'Show requests matching the rules'
+  Import: getTitle('imported'),
+  Rules: getTitle('rule-matching'),
+  Mock: getTitle('mock-rule-matching')
 };
 
 TYPES.forEach(function (type) {
@@ -272,7 +274,6 @@ var FilterInput = React.createClass({
         {TYPES.map(function (type) {
           return <span key={type} title={TITLES[type] || type} className={getActive(filterType === type)}>{type}</span>;
         })}
-        <span className={className}>All</span>
       </div>
     );
   },

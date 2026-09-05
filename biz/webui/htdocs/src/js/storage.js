@@ -2,6 +2,7 @@ var PREFIX = location.href
   .replace(/[?#].*$/, '')
   .replace(/\/index.html$/i, '/');
 var cache = {};
+var stroage = window.localStorage;
 
 function getKey(key) {
   return PREFIX + '?' + key;
@@ -16,20 +17,20 @@ exports.set = function (key, value) {
   }
   cache[key] = value;
   try {
-    localStorage[key] = value;
+    stroage[key] = value;
   } catch (e) {}
 };
 
 exports.get = function (key, noCache) {
   key = getKey(key);
   try {
-    return noCache ? localStorage[key] : cache[key] || localStorage[key];
+    return noCache ? stroage[key] : cache[key] || stroage[key];
   } catch (e) {}
   return cache[key];
 };
 
 exports.remove = function(key) {
   try {
-    localStorage.removeItem(getKey(key));
+    stroage.removeItem(getKey(key));
   } catch (e) {}
 };

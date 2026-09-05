@@ -414,6 +414,10 @@ a {
   color: var(--c-error)!important;
 }
 
+.w-session-dialog {
+  z-index: calc(var(--z-modal) + 2);
+}
+
 .w-editor-dialog .modal-dialog {
   width: 960px;
 }

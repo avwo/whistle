@@ -171,8 +171,8 @@ var Settings = React.createClass({
   showDialog: function () {
     var self = this;
     var settings = self.getNetworkSettings();
-    self.setState(settings);
     self.refs.dialog.show();
+    self.setState(settings);
   },
   hideDialog: function () {
     this.refs.dialog.hide();
@@ -470,7 +470,6 @@ var Settings = React.createClass({
                       name="edit"
                       onClick={self.editCustomCol}
                       data-name={col.title}
-                      title={'Edit ' + col.title}
                     />
                   ) : null}
                 </label>
@@ -479,7 +478,7 @@ var Settings = React.createClass({
           </fieldset>
 
           <label className="w-ns-own">
-            Maximum Rows:
+            Row Limit:
             <select
               className="form-control"
               onChange={self.onRowsChange}

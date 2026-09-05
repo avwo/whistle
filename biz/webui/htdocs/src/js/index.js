@@ -100,6 +100,7 @@ var noModal = util.noModal;
 var toKeys = util.toKeys;
 var CMD = util.CMD;
 var isCtrl = util.isCtrl;
+var createHover = util.createHover;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -202,15 +203,15 @@ if (match = /[&#?]hideLeft(?:Bar|Menu)=(0|false|1|true)(?:&|$|#)/.exec(search)) 
 
 var TOP_BAR_MENUS = [
   {
-    name: 'Scroll To Top',
+    name: 'Scroll to Top',
     action: 'top'
   },
   {
-    name: 'Scroll To Selected',
+    name: 'Scroll to Selected',
     action: 'selected'
   },
   {
-    name: 'Scroll To Bottom',
+    name: 'Scroll to Bottom',
     action: 'bottom'
   }
 ];
@@ -264,6 +265,13 @@ var VALUES_ACTIONS = [
     id: 'exportValues'
   }
 ];
+
+var networkHover = createHover('showNetworkOptions');
+var rulesHover = createHover('showRulesOptions');
+var valuesHover = createHover('showValuesOptions');
+var pluginsHover = createHover('showPluginsOptions');
+var weinreHover = createHover('showWeinreOptions');
+var helpHover = createHover('showHelpOptions');
 
 function getJsonForm(data, name) {
   var form = new FormData();
@@ -361,24 +369,6 @@ function compareSelectedNames(src, target) {
     }
   }
   return true;
-}
-
-function getKey(url) {
-  if (url.indexOf('{') == 0) {
-    var index = url.lastIndexOf('}');
-    return index > 1 && url.substring(1, index);
-  }
-
-  return false;
-}
-
-function getValue(url) {
-  if (url.indexOf('(') == 0) {
-    var index = url.lastIndexOf(')');
-    return (index != -1 && url.substring(1, index)) || '';
-  }
-
-  return false;
 }
 
 function appendList(list, _list) {
@@ -585,7 +575,7 @@ var Index = React.createClass({
     state.network = networkModal;
     state.rulesOptions = rulesOptions;
     state.pluginsOptions = self.createPluginsOptions(modal.plugins);
-    dataCenter.valuesModal = state.values = valuesModal;
+    state.values = valuesModal;
     state.valuesOptions = valuesOptions;
     dataCenter.syncData = self.syncData;
     dataCenter.syncRules = self.syncRules;
@@ -754,7 +744,8 @@ var Index = React.createClass({
     plugins = plugins || {};
     var pluginsOptions = [
       {
-        name: 'Home'
+        icon: 'th-large',
+        name: 'All'
       }
     ];
 
@@ -1134,7 +1125,7 @@ var Index = React.createClass({
     });
 
     addEvent('activeValues', function () {
-      var valuesModal = dataCenter.valuesModal;
+      var valuesModal = dataCenter.getValuesModal();
       var activeName = dataCenter.activeValuesName;
       if (valuesModal.exists(activeName)) {
         self.setValuesActive(activeName, valuesModal);
@@ -1615,9 +1606,9 @@ var Index = React.createClass({
         return;
       }
 
-      var index = url.indexOf('://') + 3;
-      url = index != -1 ? url.substring(index) : url;
-      if (url.indexOf('{') !== 0) {
+      var index = url.indexOf('://');
+      url = index === -1 ? url : url.substring(index + 3);
+      if (url[0] !== '{') {
         return;
       }
 
@@ -1975,7 +1966,7 @@ var Index = React.createClass({
     }, 10000);
 
     dataCenter.getLogIdOptions = function(id) {
-      var list = self.getLogIdListFromRules() || [];
+      var list = self.getRuleItems(/^log:\/\/(\S+)/);
       var map = {};
       list = list.map(function (id) {
         map[id] = true;
@@ -2178,88 +2169,9 @@ var Index = React.createClass({
   hideUpdateTipsDialog: function () {
     this.refs.showUpdateTips.hide();
   },
-  getAllRulesText: function () {
-    var text = ' ' + this.getAllRulesValue();
-    return text.replace(/#[^\r\n]*[\r\n]/g, '\n');
-  },
-  getLogIdListFromRules: function () {
-    var text = this.getAllRulesText();
-    if (
-      (text = text.match(
-        /\slog:\/\/(?:\{[^\s]{1,36}\}|[^/\\{}()<>\s]{1,36})\s/g
-      ))
-    ) {
-      var flags = {};
-      text = text
-        .map(function (logId) {
-          logId = removeProtocol(logId.trim());
-          if (logId[0] === '{') {
-            logId = logId.slice(1, -1);
-          }
-          return logId;
-        })
-        .filter(function (logId) {
-          if (!logId) {
-            return false;
-          }
-          if (!flags[logId]) {
-            flags[logId] = 1;
-            return true;
-          }
-          return false;
-        });
-    }
-    return text;
-  },
-  getWeinreFromRules: function () {
-    var values = this.state.values;
-    var text = this.getAllRulesText();
-    if ((text = text.match(/(?:^|\s)weinre:\/\/[^\s#]+(?:$|\s)/gm))) {
-      var flags = {};
-      text = text
-        .map(function (weinre) {
-          weinre = removeProtocol(weinre.trim());
-          var value = getValue(weinre);
-          if (value !== false) {
-            return value;
-          }
-          var key = getKey(weinre);
-          if (key !== false) {
-            key = values.get(key);
-            return key && key.value;
-          }
-
-          return weinre;
-        })
-        .filter(function (weinre) {
-          if (!weinre) {
-            return false;
-          }
-          if (!flags[weinre]) {
-            flags[weinre] = 1;
-            return true;
-          }
-          return false;
-        });
-    }
-
-    return text;
-  },
-  getValuesFromRules: function () {
-    var text = ' ' + this.getAllRulesValue();
-    if ((text = text.match(/\s(?:[\w-]+:\/\/)?\{[^\s#]+\}/g))) {
-      text = text
-        .map(function (key) {
-          return getKey(removeProtocol(key.trim()));
-        })
-        .filter(function (key) {
-          return !!key;
-        });
-    }
-    return text;
-  },
-  getAllRulesValue: function () {
+  getRuleItems: function (re) {
     var result = [];
+    var rules = [];
     var activeList = [];
     var selectedList = [];
     var state = this.state;
@@ -2272,17 +2184,24 @@ var Index = React.createClass({
       } else if (item.selected) {
         selectedList.push(value);
       } else {
-        result.push(value);
+        rules.push(value);
       }
     });
     modal = state.values;
     modal.list.forEach(function (name) {
       if (/\.rules$/.test(name)) {
-        result.push(modal.get(name).value);
+        rules.push(modal.get(name).value);
       }
     });
-
-    return activeList.concat(selectedList).concat(result).join('\r\n');
+    rules = util.removeComments(activeList.concat(selectedList).concat(rules).join('\r\n')).trim().split(/\s+/);
+    rules.forEach(function(item) {
+      item = re.exec(item);
+      item && result.indexOf(item[1]) === -1 && result.push(item[1]);
+    });
+    return result;
+  },
+  getWeinreFromRules: function () {
+    return this.getRuleItems(/^weinre:\/\/(\S+)/);
   },
   startLoadData: function (init) {
     var self = this;
@@ -2614,16 +2533,10 @@ var Index = React.createClass({
   },
   showNetworkOptions: function () {
     if (this.state.name == 'network') {
-      this.setState({
-        showNetworkOptions: true
-      });
+      networkHover.show.call(this);
     }
   },
-  hideNetworkOptions: function () {
-    this.setState({
-      showNetworkOptions: false
-    });
-  },
+  hideNetworkOptions: networkHover.hide,
   showCreateOptions: function () {
     this.setState({
       showCreateOptions: true
@@ -2634,16 +2547,8 @@ var Index = React.createClass({
       showCreateOptions: false
     });
   },
-  showHelpOptions: function () {
-    this.setState({
-      showHelpOptions: true
-    });
-  },
-  hideHelpOptions: function () {
-    this.setState({
-      showHelpOptions: false
-    });
-  },
+  showHelpOptions: helpHover.show,
+  hideHelpOptions: helpHover.hide,
   showHasNewVersion: function (hasNewVersion) {
     this.setState({
       hasNewVersion: hasNewVersion
@@ -2667,15 +2572,11 @@ var Index = React.createClass({
       });
     }
     self.setState({
-      rulesOptions: rulesOptions,
-      showRulesOptions: true
+      rulesOptions: rulesOptions
     });
+    rulesHover.show.call(self);
   },
-  hideRulesOptions: function () {
-    this.setState({
-      showRulesOptions: false
-    });
-  },
+  hideRulesOptions: rulesHover.hide,
   showValuesOptions: function (e) {
     var self = this;
     var valuesOptions;
@@ -2687,7 +2588,7 @@ var Index = React.createClass({
       valuesOptions = VALUES_ACTIONS;
     } else {
       valuesOptions = [];
-      var list = self.getValuesFromRules() || [];
+      var list = self.getRuleItems(/^(?:[\w-]+:\/\/)?\{(.+)\}$/);
       list = util.unique(valuesList.concat(list));
       var newValues = [];
       list.forEach(function (name) {
@@ -2701,15 +2602,11 @@ var Index = React.createClass({
       valuesOptions = newValues.concat(valuesOptions);
     }
     self.setState({
-      valuesOptions: valuesOptions,
-      showValuesOptions: true
+      valuesOptions: valuesOptions
     });
+    valuesHover.show.call(self);
   },
-  hideValuesOptions: function () {
-    this.setState({
-      showValuesOptions: false
-    });
-  },
+  hideValuesOptions: valuesHover.hide,
   showAndActivePlugins: function (option) {
     var self = this;
     self.hidePluginsOptions();
@@ -2783,20 +2680,12 @@ var Index = React.createClass({
       }
     }
   },
-  showPluginsOptions: function (e) {
-    this.setState({
-      showPluginsOptions: true
-    });
-  },
-  hidePluginsOptions: function () {
-    this.setState({
-      showPluginsOptions: false
-    });
-  },
+  showPluginsOptions: pluginsHover.show,
+  hidePluginsOptions: pluginsHover.hide,
   showWeinreOptionsQuick: function (e) {
     var self = this;
     var list = self.getWeinreFromRules();
-    if (!list || !list.length) {
+    if (!list.length) {
       self.showAnonymousWeinre();
       return;
     }
@@ -2805,22 +2694,16 @@ var Index = React.createClass({
   },
   showWeinreOptions: function (e) {
     var self = this;
-    var list = (self.state.weinreOptions = self.getWeinreFromRules() || []);
+    var list = self.state.weinreOptions = self.getWeinreFromRules();
     self.state.weinreOptions = util.unique(list).map(function (name) {
       return {
         name: name,
         icon: 'console'
       };
     });
-    self.setState({
-      showWeinreOptions: true
-    });
+    weinreHover.show.call(self);
   },
-  hideWeinreOptions: function () {
-    this.setState({
-      showWeinreOptions: false
-    });
-  },
+  hideWeinreOptions: weinreHover.hide,
   setMenuOptionsState: function (name, callback) {
     var state = {
       showCreateRules: false,
@@ -4790,7 +4673,7 @@ var Index = React.createClass({
         <Dialog ref="chooseFileType" wstyle="w-choose-file-type" onClose={self.onCloseChooseFileTypeDialog}>
           <div className="modal-body">
             <label className="w-choose-file-type-label">
-              Save As
+              Save as
               <input
                 ref="sessionsName"
                 value={state.filename}

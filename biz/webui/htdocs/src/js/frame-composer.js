@@ -247,7 +247,7 @@ var FrameComposer = React.createClass({
               className="btn btn-default btn-sm"
             >
               <Icon name="arrow-left" />
-              Send To Client
+              Send to Client
             </button>
             <button
               disabled={disabled}
@@ -265,15 +265,15 @@ var FrameComposer = React.createClass({
               className={'dropdown-menu' + closed}
             >
               <li style={displayStyle}>
-                <a onClick={self.onSend}>Send Binary Data</a>
+                <a onClick={self.onSend}>Send as Binary</a>
               </li>
               <li>
                 <a onClick={self.uploadTextToClient}>
-                  {isHttps ? 'Upload ' : 'Upload Text Data'}
+                  {isHttps ? 'Upload' : 'Upload as Text'}
                 </a>
               </li>
               <li style={displayStyle}>
-                <a onClick={self.uploadBinToClient}>Upload Binary Data</a>
+                <a onClick={self.uploadBinToClient}>Upload as Binary</a>
               </li>
             </ul>
           </div>
@@ -288,7 +288,7 @@ var FrameComposer = React.createClass({
               className="btn btn-default btn-sm"
             >
               <Icon name="arrow-right" />
-              Send To Server
+              Send to Server
             </button>
             <button
               disabled={disabled}
@@ -307,16 +307,16 @@ var FrameComposer = React.createClass({
             >
               <li style={displayStyle}>
                 <a data-target="server" onClick={self.onSend}>
-                  Send Binary Data
+                  Send as Binary
                 </a>
               </li>
               <li>
                 <a onClick={self.uploadTextToServer}>
-                  {isHttps ? 'Upload ' : 'Upload Text Data'}
+                  {isHttps ? 'Upload' : 'Upload as Text'}
                 </a>
               </li>
               <li style={displayStyle}>
-                <a onClick={self.uploadBinToServer}>Upload Binary Data</a>
+                <a onClick={self.uploadBinToServer}>Upload as Binary</a>
               </li>
             </ul>
           </div>

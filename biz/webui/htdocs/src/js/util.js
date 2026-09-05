@@ -74,7 +74,7 @@ exports.EDITOR_THEMES = [
 
 exports.KW_TIPS = 'keyword or regexp for ';
 
-exports.BODY_ACTIONS = ['Prepend To Body', 'Replace Entire Body', 'Append To Body', 'Modify Body Text', 'Modify Form/JSON', 'Delete Form/JSON'];
+exports.BODY_ACTIONS = ['Prepend to Body', 'Replace Entire Body', 'Append to Body', 'Modify Body Text', 'Modify Form/JSON', 'Delete Form/JSON'];
 
 exports.METHODS = [
   'GET',
@@ -127,7 +127,7 @@ exports.METHODS = [
 ];
 
 var SERVICE_CTX = [
-  { name: 'Share Via URL', action: 'shareViaUrl', hide: true },
+  { name: 'Share via URL', action: 'shareViaUrl', hide: true },
   { name: 'Show Service', action: 'showService', hide: true }
 ];
 
@@ -3441,11 +3441,11 @@ exports.resolveInlineValues = resolveInlineValues;
 var MULTI_TO_ONE_RE = /^\s*line`\s*[\r\n]([\s\S]*?)[\r\n]\s*`\s*?$/gm;
 var LINE_END_RE = /\s*[\r\n]+\s*/;
 
-function removeRulesComments(str) {
+function removeComments(str) {
   return !str || str.indexOf('#') === -1 ? str : str.replace(COMMENT_RE, '').trim();
 }
 
-exports.removeRulesComments = removeRulesComments;
+exports.removeComments = removeComments;
 
 function mergeLines(str) {
   return str.replace(MULTI_TO_ONE_RE, function(_, line) {
@@ -3455,7 +3455,7 @@ function mergeLines(str) {
 
 exports.formatRules = function (str, values, rawValues) {
   str = resolveInlineValues(str, values, rawValues);
-  str = removeRulesComments(str);
+  str = removeComments(str);
   str = mergeLines(str);
   return str.trim().split(LINE_END_RE);
 };
@@ -3629,4 +3629,29 @@ exports.isWildcard = function (str) {
       domain.indexOf('~') !== -1 ||
       /^\.[^./?]+\.[^/?]/.test(domain)
     );
+};
+
+
+exports.createHover = function(name) {
+  var timer = '_' + name + 'Timer';
+
+  var getState = function(show) {
+    var state = {};
+    state[name] = show;
+    return state;
+  };
+
+  return {
+    show: function() {
+      var self = this;
+      clearTimeout(self[timer]);
+      self[timer] = setTimeout(function() {
+        self.setState(getState(true));
+      }, 360);
+    },
+    hide: function() {
+      clearTimeout(this[timer]);
+      this.setState(getState(false));
+    }
+  };
 };

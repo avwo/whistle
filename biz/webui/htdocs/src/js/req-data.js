@@ -59,7 +59,7 @@ var contextMenuList = [
     ].concat(util.NETWORK_ACTIONS)
   },
   {
-    name: 'Open',
+    name: 'Show',
     list: [
       { name: 'New Tab' },
       { name: 'QR Code' },
@@ -79,7 +79,7 @@ var contextMenuList = [
       { name: 'Cell Text' },
       { name: 'URL (+Query)' },
       { name: 'URL (-Query)' },
-      { name: 'As cURL' },
+      { name: 'as cURL' },
       { name: 'Client IP' },
       { name: 'Server IP' },
       { name: 'Cookie' },
@@ -1120,10 +1120,13 @@ var ReqData = React.createClass({
     list0[4].disabled = disabled;
     list0[5].disabled = disabled;
     list0[7].disabled = disabled;
+    var viewMenu = list0[8];
     if (modal.isTreeView) {
-      list0[8].name = 'List View';
+      viewMenu.icon = 'globe';
+      viewMenu.name = 'List View';
     } else {
-      list0[8].name = 'Tree View';
+      viewMenu.icon = 'tree-conifer';
+      viewMenu.name = 'Tree View';
     }
     contextMenuList[2].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
@@ -1145,7 +1148,7 @@ var ReqData = React.createClass({
         menu.copyText = util.getUrl((item && item.url) || treeUrl);
         menu.disabled = isTreeNode;
         break;
-      case 'As cURL':
+      case 'as cURL':
         menu.copyText = util.asCURL(item);
         break;
       case 'Client IP':

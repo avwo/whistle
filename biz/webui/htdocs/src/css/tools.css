@@ -431,6 +431,7 @@
   height: var(--h-field);
   padding: 0 10px;
   border-left-width: 0.5px;
+  padding: 6px 8px;
 }
 
 .w-url-input .w-file-input {

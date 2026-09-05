@@ -53,7 +53,7 @@ var ShareBtn = React.createClass({
         disabled={this.props.disabled}
       >
         <Icon name="cloud" />
-        Share Via URL
+        Share via URL
       </button>
     );
   }

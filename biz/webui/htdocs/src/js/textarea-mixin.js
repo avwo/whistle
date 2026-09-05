@@ -39,7 +39,7 @@ module.exports = {
     if (e.keyCode != 13 && e.type != 'click') {
       return;
     }
-    var modal = dataCenter.valuesModal;
+    var modal = dataCenter.getValuesModal();
     if (!modal) {
       return;
     }

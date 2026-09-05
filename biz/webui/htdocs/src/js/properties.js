@@ -133,7 +133,7 @@ var Properties = React.createClass({
       if (copyValue) {
         copyValue = result.filter(util.noop).join('\n').trim();
         if (isRules) {
-          copyValue = util.removeRulesComments(copyValue);
+          copyValue = util.removeComments(copyValue);
         }
       }
     }

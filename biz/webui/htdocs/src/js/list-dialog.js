@@ -310,7 +310,7 @@ var ListDialog = React.createClass({
                 })
               }
             </div> : (onConfirm && !rulesModal ? null : <p style={{marginTop: 10, marginBottom: 5, whiteSpace: 'nowrap'}}>
-                Save As
+                Save as
                 <input
                   ref="filename"
                   value={state.filename}

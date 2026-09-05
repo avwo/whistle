@@ -24,3 +24,10 @@
   opacity: 0.66;
   font-weight: 400;
 }
+
+.w-session-dialog .plugin-mgr-btn {
+  padding: 6px 0;
+  margin: 10px auto;
+  font-size: 14px;
+  font-weight: 400;
+}

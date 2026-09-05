@@ -242,7 +242,7 @@ var KVDialog = React.createClass({
             disabled={!checkedCount}
             onClick={self.confirm}
           >
-            Add To {title} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
+            Add to {title} {len ? ' (' + checkedCount + ' / ' + len + ')' : null}
           </button>
         </div>
       </Dialog>

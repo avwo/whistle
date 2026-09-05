@@ -25,7 +25,7 @@ var RulesMiniEditor = React.createClass({
 
     return (
         <div className="fill v-box w-rules-mini-editor">
-          <Icon name="resize-full" title="Edit rules in dialog" onClick={self.onResise} />
+          <Icon name="resize-full" onClick={self.onResise} />
           <textarea
             readOnly={disabled}
             value={rules}

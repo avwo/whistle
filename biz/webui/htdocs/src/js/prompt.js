@@ -22,9 +22,9 @@ var Prompt = React.createClass({
   shouldComponentUpdate: util.scuDlg,
   show: function(callback, value) {
     var self = this;
+    self.refs.dialog.show();
     self.setState({ value: value || '' });
     self._callback = callback;
-    self.refs.dialog.show();
     setTimeout(self.focus, 300);
   },
   focus: function() {
@@ -35,10 +35,18 @@ var Prompt = React.createClass({
   onConfirm: function() {
     var self = this;
     var cb = self._callback;
-    if (cb && cb(self.state.value) === false) {
-      return self.focus();
+    var value = self.state.value;
+    var onCreate = self.props.onCreate;
+    var handleCb = function() {
+      if (cb && cb(value) === false) {
+        return self.focus();
+      }
+      self.refs.dialog.hide();
+    };
+    if (onCreate) {
+      return onCreate(value, handleCb);
     }
-    self.refs.dialog.hide();
+    handleCb();
   },
   render: function() {
     var self = this;

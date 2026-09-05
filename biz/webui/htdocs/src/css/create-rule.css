@@ -160,6 +160,10 @@
   margin-bottom: 10px;
 }
 
+.w-add-file {
+  padding: 6px 8px;
+}
+
 .w-add-file span {
   margin-right: 3px;
   font-size: 12px;

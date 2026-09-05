@@ -64,7 +64,6 @@
   font-weight: normal;
   color: var(--c-default);
   position: relative;
-  cursor: pointer;
   background-color: var(--b-bar);
 }
 .w-req-data-headers .table th:last-child {

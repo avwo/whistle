@@ -1,4 +1,5 @@
 var React = require('react');
+var $ = require('jquery');
 var Prompt = require('./prompt');
 var storage = require('./storage');
 var util = require('./util');
@@ -92,6 +93,9 @@ var Select = React.createClass({
       onChange(option, props.data);
     }
   },
+  shake: function() {
+    util.shakeElem($(this.refs.select));
+  },
   createOption: function(value) {
     var self = this;
     var props = self.props;
@@ -141,10 +145,6 @@ var Select = React.createClass({
     var value = e.target.value;
     var option = self.getOption(value);
     if (value === ' ') {
-      var onCustom = self.props.onCustom;
-      if (onCustom) {
-        return onCustom(self.createOption);
-      }
       return self.refs.prompt.show(self.createOption);
     }
     self.handleChange(option);
@@ -176,7 +176,8 @@ var Select = React.createClass({
   render: function() {
     var self = this;
     var props = self.props;
-    var name = props.name;
+    var onCreate = props.onCreate;
+    var showCustom = props.name || onCreate;
     var options = self.state.options;
     var selectPlaceholder = props.selectPlaceholder;
     var value = props.value || '';
@@ -188,8 +189,8 @@ var Select = React.createClass({
         onChange={self.onChange} onClick={props.onClick}>
         {selectPlaceholder ? <option value="">{selectPlaceholder}</option> : null}
         {self.renderOptions(options)}
-        {name ? <option value=" ">+Custom</option> : null}
-        {name ? <Prompt ref="prompt" placeholder={props.placeholder} isNum={props.isNum} isHeader={props.isHeader} maxLength={props.maxLength} /> : null}
+        {showCustom ? <option value=" ">+Custom</option> : null}
+        {showCustom ? <Prompt ref="prompt" placeholder={props.placeholder} onCreate={onCreate} isNum={props.isNum} isHeader={props.isHeader} maxLength={props.maxLength} /> : null}
       </select>
     );
   }

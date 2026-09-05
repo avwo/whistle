@@ -164,7 +164,7 @@ var ImportDialog = React.createClass({
             onClick={self.showService}
           >
             <Icon name="cloud" />
-            Import From Service
+            Get from Service
           </button> : null}
           <button
             type="button"

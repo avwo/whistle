@@ -51,6 +51,7 @@ function formatPath(url) {
 var CreateRuleDialog = React.createClass({
   getInitialState: function() {
     return {
+      ignoreCase: true,
       type: 'Mapping',
       patternType: 'url',
       regexp: ''
@@ -162,7 +163,7 @@ var CreateRuleDialog = React.createClass({
     this.handlePatternChange();
   },
   onIgnoreCaseChange: function(e) {
-    this.state.ignoreCase = e.target.checked;
+    this.state.ignoreCase = !e.target.checked;
     this.handlePatternChange();
   },
   onFullMatchChange: function(e) {
@@ -273,10 +274,10 @@ var CreateRuleDialog = React.createClass({
             value={state.regexp} onChange={self.onRegExpChange} style={ignoreStyle} />
           <span className="w-regexp-symbol" style={regExpStyle}>/{ignoreCase ? 'i' : null}</span>
           <label className="ml-10" style={ignoreStyle}>
-            <input type="checkbox" className="mr-5" checked={ignoreCase} onChange={self.onIgnoreCaseChange} /> Case-insensitive
+            <input type="checkbox" className="mr-5" checked={!ignoreCase} onChange={self.onIgnoreCaseChange} /> Match-case
           </label>
           <label className="ml-10" style={urlInputStyle}>
-            <input type="checkbox" className="mr-5" checked={state.fullMatch} onChange={self.onFullMatchChange} /> Full-match
+            <input type="checkbox" className="mr-5" checked={state.fullMatch} onChange={self.onFullMatchChange} /> Exact-match
           </label>
         </div>
       </div>
@@ -340,7 +341,7 @@ var CreateRuleDialog = React.createClass({
             className="btn btn-primary"
             onClick={self.saveRules}
           >
-            Save{state.onSave ? null : ' As Rules'}
+            Save{state.onSave ? null : ' as Rules'}
           </button>
         </ModalFooter>
       </Dialog>

@@ -71,7 +71,8 @@ var Textarea = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
-    var value = props.value || '';
+    var rawVal = props.value || '';
+    var value = rawVal;
     var exceed = value.length - MAX_LENGTH;
     if (exceed > 512) {
       value = value.substring(0, MAX_LENGTH) +
@@ -94,8 +95,7 @@ var Textarea = React.createClass({
             <Icon name="send" />
             Edit
           </a> : null}
-          <CopyBtn value={value} />
-          {isHexView ? <CopyBtn name="AsHex" value={util.getHexText(value)} /> : null}
+          <CopyBtn value={isHexView ? util.getHexText(rawVal) : rawVal} />
           <a
             onDoubleClick={self.download}
             onClick={self.showNameInput}

@@ -39,7 +39,7 @@ var ContextMenu = React.createClass({
   componentDidUpdate: function () {
     ReactDOM.unstable_renderSubtreeIntoContainer(
       this,
-      this.getDialogElement(),
+      this.getPopup(),
       this.container
     );
   },
@@ -78,7 +78,29 @@ var ContextMenu = React.createClass({
       self.setState({});
     }
   },
-  getDialogElement: function () {
+  clearTimer: function () {
+    clearTimeout(this._hideTimer);
+    clearTimeout(this._showTimer);
+  },
+  showSubMenus: function (e) {
+    var self = this;
+    var li = $(e.target).closest('li');
+    self.clearTimer();
+    if (!li.attr('data-show')) {
+      self._showTimer = setTimeout(function () {
+        li.siblings().removeAttr('data-show');
+        li.attr('data-show', '1');
+      }, 200);
+    }
+  },
+  hideSubMenus: function () {
+    var self = this;
+    self.clearTimer();
+    self._hideTimer = setTimeout(function () {
+      $('.w-ctx-item[data-show]').removeAttr('data-show');
+    }, 400);
+  },
+  getPopup: function () {
     var self = this;
     var data = self.state;
     var list = data.list || [];
@@ -112,6 +134,8 @@ var ContextMenu = React.createClass({
                 data-clipboard-text={item.copyText}
                 style={getHideStyle(item.hide)}
                 onClick={item.onClick}
+                onMouseEnter={self.showSubMenus}
+                onMouseLeave={self.hideSubMenus}
               >
                 <label className={'w-ctx-item-tt' + (item.selected ? ' w-ctx-selected' : '')}>
                   {radio ? <span className={'w-ctx-checked' + (item.selected ? ' visible' : '')}>✔️</span> : null}
@@ -122,7 +146,6 @@ var ContextMenu = React.createClass({
                   {item.name}
                 </label>
                 {subList ? <Icon name="play" /> : null}
-                {subList ? <div className="w-ctx-gap"></div> : null}
                 {subList ? (
                   <ul
                     className="w-ctx-list"
@@ -159,6 +182,7 @@ var ContextMenu = React.createClass({
                                 checked={subItem.checked}
                               />
                             ) : null}
+                            {subItem.icon ? <Icon name={subItem.icon} /> : null}
                             {name}
                           </label>
                         </li>

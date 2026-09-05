@@ -35,6 +35,7 @@ var uploadUrlencodedParser = bodyParser.urlencoded(UPLOAD_PARSE_CONF);
 var uploadJsonParser = bodyParser.json(UPLOAD_PARSE_CONF);
 var GET_METHOD_RE = /^get$/i;
 var WEINRE_RE = /^\/weinre\/.*/;
+var IMPORT_CGI = '/cgi-bin/import-remote';
 var ALLOW_PLUGIN_PATHS = ['/cgi-bin/rules/list2', '/cgi-bin/values/list2', '/cgi-bin/get-custom-certs-info'];
 var DONT_CHECK_PATHS = ['/cgi-bin/server-info', '/cgi-bin/plugins/is-enable', '/cgi-bin/plugins/get-plugins',
   '/preview.html', '/cgi-bin/rootca', '/cgi-bin/check-update', '/cgi-bin/log/set', '/cgi-bin/status'];
@@ -70,11 +71,14 @@ function isTempFile(query) {
   return common.getTempFile(query.filename);
 }
 
+function sendForbidden(res) {
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.end('{"ec":0,"value":"","forbidden":true}');
+}
+
 function sendToService(req, res) {
   if (!hasLogin() && req.path === '/cgi-bin/temp/get' && !isTempFile(req.query)) {
-    res.setHeader('Content-Type', 'application/json; charset=utf-8');
-    res.end('{"ec":0,"value":"","forbidden":true}');
-    return;
+    return sendForbidden(res);
   }
   loadService(function(err, options) {
     if (err) {
@@ -134,6 +138,9 @@ function requireLogin(req, res, msg) {
       return config.handleWebReq(req, res);
     }
     return res.status(404).end();
+  }
+  if (req.path === IMPORT_CGI) {
+    return sendForbidden(res);
   }
   res.setHeader('WWW-Authenticate', ' Basic realm=User Login');
   res.setHeader('Content-Type', 'text/html; charset=utf8');
@@ -410,32 +417,7 @@ function cgiHandler(req, res) {
     handleResponse();
   });
 }
-app.get('/cgi-bin/import-remote', function(req, res) {
-  var url = req.query.url;
-  if (HTTP_RE.test(url)) {
-    util.request({
-      url: url,
-      maxLength: MAX_LEN
-    }, function(err, body, r) {
-      if (err) {
-        var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6MB' : err.message;
-        return res.json({ec: 2, em: msg});
-      }
-      var status = r.statusCode;
-      if (status !== 200) {
-        var em = status > 200 && status < 400 ? 'No data' : 'Request failed';
-        return res.json({ec: 2, em: em + ' (statusCode: ' + status + ')'});
-      }
-      return res.json({ec: 0, body: body});
-    });
-  } else if (util.isString(url)) {
-    req.url = '/cgi-bin/temp/get?filename=' + encodeURIComponent(url);
-    req.query.filename = url;
-    sendToService(req, res);
-  } else {
-    res.json({ec: 400, em: 'Bad url'});
-  }
-});
+
 app.all('/service/*', sendToService);
 app.all('/cgi-bin/service/*', sendToService);
 app.all('/cgi-bin/sessions/*', sendToService);
@@ -448,7 +430,7 @@ function readPluginPage(req, res, plugin, html, config) {
   res.write(config);
   res.write(html);
   var index = req.path.indexOf('/', 1);
-  if (index === -1) {
+  if (index === -1 || common.existsUpPath(req.path)) {
     res.end();
   } else {
     var filepath = req.path.substring(index + 1);
@@ -525,6 +507,33 @@ app.use(function(req, res, next) {
   }
   if (checkAuth(req, res)) {
     next();
+  }
+});
+
+app.get(IMPORT_CGI, function(req, res) {
+  var url = req.query.url;
+  if (HTTP_RE.test(url)) {
+    util.request({
+      url: url,
+      maxLength: MAX_LEN
+    }, function(err, body, r) {
+      if (err) {
+        var msg = err.code === 'EEXCEED'  ? 'The size of response body exceeds 6MB' : err.message;
+        return res.json({ec: 2, em: msg});
+      }
+      var status = r.statusCode;
+      if (status !== 200) {
+        var em = status > 200 && status < 400 ? 'No data' : 'Request failed';
+        return res.json({ec: 2, em: em + ' (statusCode: ' + status + ')'});
+      }
+      return res.json({ec: 0, body: body});
+    });
+  } else if (util.isString(url)) {
+    req.url = '/cgi-bin/temp/get?filename=' + encodeURIComponent(url);
+    req.query.filename = url;
+    sendToService(req, res);
+  } else {
+    res.json({ec: 400, em: 'Bad url'});
   }
 });
 

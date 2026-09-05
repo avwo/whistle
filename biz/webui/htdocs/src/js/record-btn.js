@@ -19,16 +19,18 @@ var STOP_OPTION = {
 var ACTION_OPTIONS = [
   PAUSE_OPTION,
   {
-    name: 'Scroll To Top',
+    name: 'Scroll to Top',
     icon: 'arrow-up',
     id: 'top'
   },
   {
-    name: 'Scroll To Bottom',
+    name: 'Scroll to Bottom',
     icon: 'arrow-down',
     id: 'bottom'
   }
 ];
+
+var hover = util.createHover('showActionOptions');
 
 var RecordBtn = React.createClass({
   getInitialState: function () {
@@ -68,16 +70,8 @@ var RecordBtn = React.createClass({
 
     this.onClickOption({ id: flag });
   },
-  showActionOptions: function () {
-    this.setState({
-      showActionOptions: true
-    });
-  },
-  hideActionOptions: function () {
-    this.setState({
-      showActionOptions: false
-    });
-  },
+  showActionOptions: hover.show,
+  hideActionOptions: hover.hide,
   onClickOption: function (option) {
     var self = this;
     var state = self.state;

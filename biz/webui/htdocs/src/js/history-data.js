@@ -9,7 +9,7 @@ var CloseBtn = require('./close-btn');
 var isStr = util.isStr;
 var contextMenuList = [
   { name: 'Copy URL' },
-  { name: 'Copy As cURL' },
+  { name: 'Copy as cURL' },
   { name: 'Replay' },
   { name: 'Replay Times' },
   { name: 'Export' },
@@ -166,7 +166,7 @@ var HistoryData = React.createClass({
     var props = self.props;
     var focusItem = self._focusItem;
     switch (action) {
-    case 'Copy As cURL':
+    case 'Copy as cURL':
       return self.copyAsCURL(null, focusItem);
     case 'Export':
       return self.exportItem(focusItem);
@@ -226,7 +226,7 @@ var HistoryData = React.createClass({
           </div>
           <div className="fill v-box w-com-history-ctn">
             {selectedItem ? <div className="w-com-history-footer">
-                {self.renderBtn('As cURL', self.copyAsCURL)}
+                {self.renderBtn('as cURL', self.copyAsCURL)}
                 {self.renderBtn('Replay', self.onReplay)}
                 {self.renderBtn('Replay Times', self.onReplayTimes)}
                 <button

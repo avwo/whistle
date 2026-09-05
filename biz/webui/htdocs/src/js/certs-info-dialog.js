@@ -313,7 +313,7 @@ var CertsInfoDialog = React.createClass({
             onClick={this.showService}
           >
             <Icon name="cloud" />
-            Import From Service
+            Get from Service
           </button> : null}
           <input
             ref="uploadCerts"
