@@ -243,6 +243,10 @@
   var cacheList = [];
   var origin = (location.origin || (location.protocol + '//' + location.host)) + '/';
 
+  try {
+    LOG_ID = decodeURIComponent(LOG_ID);
+  } catch(e) {}
+
   function setLog() {
     if (!cacheList.length) {
       return;
