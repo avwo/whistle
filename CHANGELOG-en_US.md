@@ -1,5 +1,13 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.10
+1. fix: https://github.com/avwo/whistle/pull/1350
+2. fix: https://github.com/avwo/whistle/pull/1351
+3. fix: https://github.com/avwo/whistle/issues/1342
+4. fix: https://github.com/avwo/whistle/issues/1352
+5. fix: https://github.com/avwo/whistle/issues/1353
+6. feat: refine webui
+
 ## v2.10.9
 1. feat: auto-save the last opened page and restore it as default when no specific page is specified on next launch
 2. feat: support `text/event-stream` responses with a `charset=utf-8` parameter, improving compatibility with various server‑sent event implementations
@@ -628,7 +636,7 @@
 ## v1.8
 1. feat: Added new protocols [htmlPrepend](https://wproxy.org/docs/rules/htmlPrepend.html), [htmlBody](https://wproxy.org/docs/rules/htmlBody.html), [htmlAppend](https://wproxy.org/docs/rules/htmlAppend.html), [cssPrepend](https://wproxy.org/docs/rules/cssPrepend.html), [cssBody](https://wproxy.org/docs/rules/cssBody.html), [cssAppend](https://wproxy.org/docs/rules/cssAppend.html), [jsPrepend](https://wproxy.org/docs/rules/jsPrepend.html), [jsBody](https://wproxy.org/docs/rules/jsBody.html), [jsAppend](https://wproxy.org/docs/rules/jsAppend.html).
 2. feat: Support wildcard matching.
-3. feat: Support `Copy As CURL`.
+3. feat: Support `Copy as CURL`.
 4. feat: Support importing HAR files.
 5. feat: Support third-party extensions for the `@` symbol function in Rules.
 

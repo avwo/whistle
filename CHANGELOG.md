@@ -1,5 +1,13 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.10
+1. fix: https://github.com/avwo/whistle/pull/1350
+2. fix: https://github.com/avwo/whistle/pull/1351
+3. fix: https://github.com/avwo/whistle/issues/1342
+4. fix: https://github.com/avwo/whistle/issues/1352
+5. fix: https://github.com/avwo/whistle/issues/1353
+6. feat: 优化界面
+
 ## v2.10.9
 1. feat: 自动保存上次关闭时的页面，下次未指定页面是默认打开上次页面
 2. feat: 支持携带字符集（`charset=utf-8`）的 `text/event-stream` 类型，提升与各类服务端推送的兼容性
@@ -631,7 +639,7 @@
 ## v1.8
 1. feat: 新增协议 [htmlPrepend](https://wproxy.org/docs/rules/htmlPrepend.html)、[htmlBody](https://wproxy.org/docs/rules/htmlBody.html)、[htmlAppend](https://wproxy.org/docs/rules/htmlAppend.html)、[cssPrepend](https://wproxy.org/docs/rules/cssPrepend.html)、[cssBody](https://wproxy.org/docs/rules/cssBody.html)、[cssAppend](https://wproxy.org/docs/rules/cssAppend.html)、[jsPrepend](https://wproxy.org/docs/rules/jsPrepend.html)、[jsBody](https://wproxy.org/docs/rules/jsBody.html)、[jsAppend](https://wproxy.org/docs/rules/jsAppend.html)
 2. feat: 支持通配符匹配
-3. feat: 支持 `Copy As CURL`
+3. feat: 支持 `Copy as CURL`
 4. feat: 支持导入 HAR 文件
 5. feat: 支持第三方扩展 Rules 里面的 `@` 符号功能
 
