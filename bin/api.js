@@ -139,7 +139,8 @@ exports.network = {
    *                                  - `Font`：字体文件
    *                                  - `Img`：图片资源
    *                                  - `Media`：音视频媒体
-   *                                  - `WS`：WebSocket 帧数据
+   *                                  - `WS`：WebSocket 请求
+   *                                  - `SSE`：Server-Sent Events 请求
    *                                  - `Tunnel`：隧道连接（如 WebSocket 升级）
    *                                  - `Wasm`：WebAssembly 模块
    *                                  - `Mock`：Mock 数据
@@ -526,7 +527,90 @@ function getTimings(session) {
   };
 }
 
+var PATTERN_FIELDS = ['url', 'm', 'method', 'reqH', 'reqHeader', 'reqHeaders',
+  'b', 'body', 'reqBody', 's', 'statusCode', 'status', 'resH', 'resHeader', 'resHeaders'];
+
+function getHeaderKey(key) {
+  return !key || typeof key !== 'string' || /[^\w!#$%&'*+.^`|~-]/.test(key) ? '' : key.toLowerCase();
+}
+
+function createFilter(item, name, key) {
+  var protocol = (item.exclude ? 'ex' : 'in') + 'cludeFilter://';
+  name = name ? name + (key ? '.' : ':') : '';
+  key = key ? key + ':' : '';
+  return protocol + name + key + item.value;
+}
+
+function createPattern(list) {
+  if (!list) {
+    return '';
+  }
+  if (!Array.isArray(list)) {
+    list = [list];
+  }
+  var len = list.length;
+  if (!len) {
+    return '';
+  }
+  var result = [];
+  var urlPattern;
+  var key;
+  var add = function(item, name, key) {
+    var p = createFilter(item, name, key);
+    if (result.indexOf(p) === -1) {
+      result.push(p);
+    }
+  };
+  list.forEach(function(item) {
+    if (!item || !item.value || PATTERN_FIELDS.indexOf(item.name) === -1) {
+      return;
+    }
+    var value = item.value;
+    if (typeof value !== 'string') {
+      value = String(value);
+    }
+    if (/\s/.test(item.value)) {
+      return;
+    }
+    switch(item.name) {
+    case 'url':
+      if (urlPattern) {
+        add(item);
+      } else {
+        urlPattern = item.value;
+      }
+      return;
+    case 'm':
+    case 'method':
+      return add(item, 'm');
+    case 'reqH':
+    case 'reqHeader':
+    case 'reqHeaders':
+      key = getHeaderKey(item.key);
+      return key && add(item, 'reqH', key);
+    case 'b':
+    case 'body':
+    case 'reqBody':
+      return add(item, 'b');
+    case 's':
+    case 'statusCode':
+    case 'status':
+      return add(item, 's');
+    case 'resH':
+    case 'resHeader':
+    case 'resHeaders':
+      key = getHeaderKey(item.key);
+      return key && add(item, 'resH', key);
+    }
+  });
+  if (urlPattern || result.length) {
+    result.unshift(urlPattern || '*');
+  }
+  return result.join(' ');
+}
+
 exports.utils = {
+  createPattern: createPattern,
   isUtf8: isUtf8,
   getText: getText,
   getUtf8Buf: getUtf8Buf,
