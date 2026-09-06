@@ -17,6 +17,7 @@
   height: 31px;
   line-height: 31px;
   overflow: hidden;
+  outline: none;
 }
 .w-menu .glyphicon,
 .w-detail .glyphicon {

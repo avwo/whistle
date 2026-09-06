@@ -105,7 +105,6 @@ var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
 var EXCEED_TIPS = util.EXCEED_TIPS;
-var README_URL = GITHUB_URL + '#whistle';
 var OBJ_TIPS = EXCEED_TIPS + ' 36MB';
 var EMPTY_TIPS = 'The name is required';
 var alertMsg = win.alert;
@@ -3748,9 +3747,12 @@ var Index = React.createClass({
     trigger('focusNetworkList');
   },
   showAboutDialog: function (e) {
-    if (this.state.hasNewVersion) {
-      this.refs.aboutDialog.showAboutInfo();
-      preventBlur(e);
+    preventBlur(e);
+    var self = this;
+    if (self.state.hasNewVersion) {
+      self.refs.aboutDialog.showAboutInfo();
+    } else {
+      util.shakeElem($(findDOMNode(self.refs.helpMenu)));
     }
   },
   onTopContextMenu: function(e) {
@@ -3925,6 +3927,7 @@ var Index = React.createClass({
     if (option.name === 'Update' && dataCenter.showLatestClientVersion()) {
       preventBlur(e);
     }
+    this.hideHelpOptions();
   },
   renderBtn: function(onClick, name, type) {
     return (
@@ -4375,14 +4378,13 @@ var Index = React.createClass({
                   ? 'A new version is available, click to see details'
                   : null
               }
-              href={README_URL}
-              target="_blank"
             >
               {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
               <Icon name="question-sign" />
               <span className="w-help-name">Help</span>
             </a>
             <MenuItem
+              ref="helpMenu"
               options={state.helpOptions}
               onClickOption={self.onClickHelpMenu}
               name={
