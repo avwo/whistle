@@ -540,7 +540,7 @@ var Home = React.createClass({
               <tr>
                 <th className="w-plugins-order">#</th>
                 <th className="w-plugins-active">Active</th>
-                <th className="w-plugins-date">Modified⬇</th>
+                <th className="w-plugins-date">Installed On</th>
                 <th className="w-plugins-name">Name</th>
                 <th className="w-plugins-version">Version</th>
                 <th className="w-plugins-op">Operation</th>
