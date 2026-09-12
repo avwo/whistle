@@ -147,7 +147,7 @@ var KVDialog = React.createClass({
             <select
               value={state.selectedHistory || ''}
               onChange={this.selectHistory}
-              className="form-control w-history-record-list"
+              className="form-control w-kv-list"
             >
               {state.hideDefaultOption ? null : <option value="">
                 Select history

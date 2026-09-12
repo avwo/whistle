@@ -41,11 +41,12 @@
 .w-large-dialog .w-open-win-btn {
   position: absolute;
   top: -23px;
-  right: 30px;
+  left: 5px;
   z-index: -1;
   cursor: pointer;
   padding: 5px 8px;
-  font-size: 14px;
+  height: 24px;
+  font-size: 13px;
   display: inline-block;
   background: var(--b-title);
   color: var(--c-heavy);

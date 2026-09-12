@@ -94,6 +94,7 @@ var SERVICE_URL = CGI_URL + 'service/';
 var SOCKET_URL = CGI_URL + 'socket/';
 var JSON_TYPE = 'application/json';
 var decode = decodeURIComponent;
+var DATA_HEADER = 'x-whistle-session-info-5b6a_f7b9-88xe_1165_';
 
 exports.HAS_RULES_KEY = HAS_RULES_KEY;
 exports.enabledRulesCount = 0;
@@ -755,9 +756,12 @@ exports.socket = $.extend(
   )
 );
 
+var hasInvalidCerts;
 function updateCertStatus(data) {
-  if (exports.hasInvalidCerts != data.hasInvalidCerts) {
-    exports.hasInvalidCerts = data.hasInvalidCerts;
+  var _hasInvalidCerts = data.hasInvalidCerts;
+  if (hasInvalidCerts != _hasInvalidCerts) {
+    hasInvalidCerts = _hasInvalidCerts;
+    exports.certStyle = _hasInvalidCerts ? { color: 'var(--c-error)' } : null;
     trigger('updateUI');
   }
 }
@@ -1734,10 +1738,19 @@ function setReqData(item) {
   item.method = req.method;
   var end = item.endTime;
   var defaultValue = end ? '' : '-';
+  var reqHeaders = req.headers;
   var resHeaders = res.headers || '';
   setAppName(item);
+  if (reqHeaders[DATA_HEADER]) {
+    delete reqHeaders[DATA_HEADER];
+  }
+  if (rules && item.pipe) {
+    rules.pipe = item.pipe;
+    item[HAS_RULES_KEY] = true;
+  } else if (!item[HAS_RULES_KEY]) {
+    item[HAS_RULES_KEY] = hasRules(rules);
+  }
   item.hostIp = res.ip || defaultValue;
-  item[HAS_RULES_KEY] = item[HAS_RULES_KEY] || hasRules(rules);
   item.clientIp = req.ip || LOCAL_IP;
   item.date = item.date || util.toDateStr(item.startTime);
   item.clientPort = req.port;
@@ -1785,13 +1798,10 @@ function setReqData(item) {
   }
   req._hasError = item.reqError;
   res._hasError = item.resError;
-  req.rawHeaders = getRawHeaders(req.headers, req.rawHeaderNames);
+  req.rawHeaders = getRawHeaders(reqHeaders, req.rawHeaderNames);
   res.rawHeaders = getRawHeaders(res.headers, res.rawHeaderNames);
   res.rawTrailers = getRawHeaders(res.trailers, res.rawTrailerNames);
   setStyle(item);
-  if (rules && item.pipe) {
-    rules.pipe = item.pipe;
-  }
   var path = item.path;
   var isHttps = item.isHttps;
   var protocol = item.protocol;

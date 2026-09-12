@@ -168,12 +168,8 @@ var ResDetail = React.createClass({
         var rawType = !modal.resError && util.getRawType(headers);
         var type = util.getContentType(rawType);
         isJson = type === 'JSON';
-        // 对 SVG 做特殊处理, 利用 base64 ，图片标签展示 svg 元素
-        if (rawType === 'image/svg+xml') {
-          imgSrc = 'data:image/svg+xml;base64,' + (res.base64 || '');
-          isText = false;
-        } else if (type === 'IMG') {
-          imgSrc = body || (res.size ? modal.url : undefined);
+        if (type === 'IMG') {
+          imgSrc = util.getImgUrl(modal);
           isText = false;
         } else if (showImg && res.base64 && (type === 'HTML' || (json && json.isJSONText && util.likeJson(body)))) {
           if (json && json.isJSONText) {

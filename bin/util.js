@@ -193,7 +193,7 @@ exports.getBody = function (res, callback, isRaw) {
   res.on('data', function(data) {
     resBody.push(data);
   });
-  res.on('end', function() {
+  res.once('end', function() {
     resBody = Buffer.concat(resBody);
     try {
       callback(null, isRaw ? resBody : JSON.parse(resBody.toString()));

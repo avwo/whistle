@@ -14,7 +14,7 @@ var ImageView = React.createClass({
   },
   getPreviewUrl: function() {
     var self = this;
-    var data = !self.props.imgSrc && hasWebView() && self.props.data;
+    var data = hasWebView() && self.props.data;
     if (!data || !data.res.base64) {
       return;
     }
@@ -39,15 +39,15 @@ var ImageView = React.createClass({
   render: function () {
     var self = this;
     var props = self.props;
-    var previewUrl = self.getPreviewUrl(props.data);
-    var isImg = props.imgSrc && !previewUrl;
+    var imgSrc = props.imgSrc;
+    var previewUrl = !imgSrc && self.getPreviewUrl(props.data);
 
     return (
       <div
         className={'fill w-image-view' + (previewUrl ? ' w-image-webview' : '') +
-          util.getHide(props.hide) + (isImg ? ' w-image-bg' : '')}
+          util.getHide(props.hide) + (imgSrc ? ' w-image-bg' : '')}
       >
-        {previewUrl || props.imgSrc ? <div className="w-bar">
+        {previewUrl || imgSrc ? <div className="w-bar">
           <a onClick={self.preview}>Open in new window</a>
         </div> : null}
         {self.getPreviewElem(previewUrl)}

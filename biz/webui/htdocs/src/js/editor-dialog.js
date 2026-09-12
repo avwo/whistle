@@ -419,7 +419,6 @@ var EditorDialog = React.createClass({
     var key = e.value;
     var textarea = self._textarea;
     var preKey = self.state.selectedKey;
-    var preVal = getKeyValue(preKey);
     var handleChange = function(flag) {
       if (flag === false) {
         return;
@@ -427,7 +426,8 @@ var EditorDialog = React.createClass({
       textarea.value = getKeyValue(key);
       self.setState({ selectedKey: key });
     };
-    if (preVal && preVal !== textarea.value) {
+    var val = textarea.value;
+    if (val && getKeyValue(preKey) !== val) {
       return win.confirm('The value for key \'' + preKey + '\' has been modified. Switch and lose changes. Continue?', handleChange);
     }
     handleChange();
@@ -448,8 +448,7 @@ var EditorDialog = React.createClass({
   renderHeader: function(showUpload) {
     var self = this;
     var state = self.state;
-    var props = self.props;
-    var title = props.title || state.title || '';
+    var title = self.props.title || state.title || '';
     var session = self._session;
     var isKey = state.isKey;
 

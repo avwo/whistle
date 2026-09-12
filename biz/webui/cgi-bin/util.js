@@ -104,7 +104,7 @@ exports.getReqData = function(req, callback) {
     }
   });
   req.on('error', handleCb);
-  req.on('end', function() {
+  req.once('end', function() {
     if (done) {
       return;
     }

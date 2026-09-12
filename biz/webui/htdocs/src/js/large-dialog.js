@@ -44,7 +44,10 @@ var LargeDialog = React.createClass({
 
     return (
       <Dialog ref="dialog" wstyle={'w-large-dialog ' + (props.className || '')}>
-        {hideButton ? null : <Icon className="w-open-win-btn" onClick={this.openInNewWin} name="new-window" title="Open in new window" />}
+        {hideButton ? null : <div className="w-open-win-btn w-middle" onClick={this.openInNewWin}>
+          <Icon name="new-window" className="mr-5" />
+          Open in new window
+        </div>}
         <CloseBtn />
         <div className="modal-body w-fix-drag">
           <iframe ref="iframe" className="modal-body" />

@@ -49,7 +49,6 @@ var ShareBtn = React.createClass({
       <button
         onClick={this.save}
         className="btn btn-warning"
-        draggable="false"
         disabled={this.props.disabled}
       >
         <Icon name="cloud" />

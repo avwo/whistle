@@ -33,7 +33,7 @@ var HttpsSettings = React.createClass({
   show: function() {
     this.refs.dialog.show();
   },
-  showCustomCertsInfo: function () {
+  showCustomCerts: function () {
     var self = this;
     if (self.loadingCerts) {
       return;
@@ -49,7 +49,7 @@ var HttpsSettings = React.createClass({
   },
   shouldComponentUpdate: util.scuDlg,
   componentDidMount: function() {
-    util.on('showCustomCerts', this.showCustomCertsInfo);
+    util.on('showCustomCerts', this.showCustomCerts);
   },
   render: function() {
     var self = this;
@@ -139,10 +139,8 @@ var HttpsSettings = React.createClass({
               </p>
               <a
                 draggable="false"
-                style={{
-                  color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : null
-                }}
-                onClick={self.showCustomCertsInfo}
+                style={dataCenter.certStyle}
+                onClick={self.showCustomCerts}
               >
                 Custom Certs Settings
               </a>

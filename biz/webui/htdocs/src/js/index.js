@@ -629,9 +629,9 @@ var Index = React.createClass({
     ];
     state.helpOptions = [
       {
-        name: 'Website',
+        name: 'Home',
         href: util.getDocUrl(),
-        icon: 'link'
+        icon: 'home'
       },
       {
         name: 'GitHub',
@@ -2689,7 +2689,6 @@ var Index = React.createClass({
       return;
     }
     $(e.target).closest('div').addClass('w-menu-wrapper-show');
-    util.shakeElem($(findDOMNode(self.refs.weinreMenu)));
   },
   showWeinreOptions: function (e) {
     var self = this;
@@ -3746,13 +3745,12 @@ var Index = React.createClass({
     self.replay('', self.replayList, self.state.replayCount);
     trigger('focusNetworkList');
   },
-  showAboutDialog: function (e) {
+  showHelpMenu: function (e) {
     preventBlur(e);
     var self = this;
+    var refs = self.refs;
     if (self.state.hasNewVersion) {
-      self.refs.aboutDialog.showAboutInfo();
-    } else {
-      util.shakeElem($(findDOMNode(self.refs.helpMenu)));
+      refs.aboutDialog.showAboutInfo();
     }
   },
   onTopContextMenu: function(e) {
@@ -4068,6 +4066,7 @@ var Index = React.createClass({
     var createRules = self.createRules;
     var createValues = self.createValues;
     var renderBtn = self.renderBtn;
+    var hasNewVersion = state.hasNewVersion;
 
     dataCenter.hideRulesEditor = hideEditor;
     self.hideNetwork = rulesMode;
@@ -4361,7 +4360,7 @@ var Index = React.createClass({
             onClick={self.showHttpsSettingsDialog}
             className="w-https-menu"
             draggable="false"
-            style={{ color: dataCenter.hasInvalidCerts ? 'var(--c-error)' : null }}
+            style={dataCenter.certStyle}
           >
             <Icon name={state.interceptHttpsConnects ? 'ok-circle' : 'lock'} />
             <span className="w-https-name">HTTPS</span>
@@ -4372,19 +4371,18 @@ var Index = React.createClass({
             className={'w-menu-wrapper' + getShowClass(showHelpOptions)}
           >
             <a
-              onClick={self.showAboutDialog}
+              onClick={self.showHelpMenu}
               title={
-                state.hasNewVersion
+                hasNewVersion
                   ? 'A new version is available, click to see details'
                   : null
               }
             >
-              {state.hasNewVersion ? <i className="w-new-version-icon" /> : null}
+              {hasNewVersion ? <i className="w-new-version-icon" /> : null}
               <Icon name="question-sign" />
               <span className="w-help-name">Help</span>
             </a>
             <MenuItem
-              ref="helpMenu"
               options={state.helpOptions}
               onClickOption={self.onClickHelpMenu}
               name={

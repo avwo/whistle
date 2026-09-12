@@ -755,19 +755,12 @@ exports.getRawType = getRawType;
 
 exports.getExtension = function (headers) {
   var suffix = getContentType(headers);
-  var type;
-  if (suffix === 'XML') {
-    type = getRawType(headers);
-    if (type.indexOf('image/') === 0) {
-      suffix = 'IMG';
-    }
-  }
   if (suffix !== 'IMG') {
     return suffix
       ? '.' + (suffix === 'TEXT' ? 'txt' : suffix.toLowerCase())
       : '';
   }
-  type = type || getRawType(headers);
+  var type = getRawType(headers);
   type = type.substring(type.indexOf('/') + 1).toLowerCase();
   return /\w+/.test(type) ? '.' + RegExp['$&'] : '';
 };
@@ -775,6 +768,9 @@ exports.getExtension = function (headers) {
 function getContentType(type) {
   type = getRawType(type);
   if (type) {
+    if (type.indexOf('image/') != -1) {
+      return 'IMG';
+    }
     if (type.indexOf('javascript') != -1) {
       return 'JS';
     }
@@ -792,9 +788,6 @@ function getContentType(type) {
     }
     if (type.indexOf('text/') != -1) {
       return 'TEXT';
-    }
-    if (type.indexOf('image/') != -1) {
-      return 'IMG';
     }
   }
 
@@ -1541,19 +1534,20 @@ exports.harToSession = harToSession;
 
 exports.handleImportData = function(data, type) {
   if (data) {
-    if (data.type === 'setNetworkSettings') {
+    var dataType = data.type;
+    if (dataType === 'setNetworkSettings') {
       trigger('setNetworkSettings', data);
       return true;
     }
-    if (data.type === 'setRulesSettings') {
+    if (dataType === 'setRulesSettings') {
       trigger('setRulesSettings', data);
       return true;
     }
-    if (data.type === 'setValuesSettings') {
+    if (dataType === 'setValuesSettings') {
       trigger('setValuesSettings', data);
       return true;
     }
-    if (data.type === 'setComposerData') {
+    if (dataType === 'setComposerData') {
       trigger('setComposerData', data);
       return true;
     }
@@ -2023,13 +2017,16 @@ exports.joinBase64 = function(b1, b2) {
   return fromByteArray(b1);
 };
 
-function getMediaType(res) {
-  var type = getRawType(res.headers);
-  if (!type || getContentType(type) !== 'IMG') {
-    return '';
+function getImgUrl(item) {
+  var res = item.res;
+  var type = res.base64 && getRawType(res.headers);
+  if (type) {
+    return 'data:' + type + ';base64,' + res.base64;
   }
-  return type;
+  return res.size ? item.url : undefined;
 }
+
+exports.getImgUrl = getImgUrl;
 
 var BODY_KEY = '$body';
 var HEX_KEY = '$hex';
@@ -2085,15 +2082,9 @@ function initData(data, isReq) {
       return;
     }
   }
-  var type = !isReq && getMediaType(data);
-  if (type) {
-    data[BODY_KEY] = 'data:' + type + ';base64,' + data.base64;
-    data[HEX_KEY] = getBase64Hex(data.base64);
-  } else {
-    var result = decodeBase64(data.base64);
-    data[BODY_KEY] = result.text;
-    data[HEX_KEY] = result.hex;
-  }
+  var result = decodeBase64(data.base64);
+  data[BODY_KEY] = result.text;
+  data[HEX_KEY] = result.hex;
 }
 
 function getJson(data, isReq, decode) {
@@ -2167,7 +2158,7 @@ function getPreviewUrl(data) {
       (url.indexOf('?') === -1 ? '' : '&') +
       '???WHISTLE_PREVIEW_CHARSET=' +
       charset;
-    return url + '???#' + (isImg ? getBody(res) : res.base64);
+    return url + '???#' + (isImg ? getImgUrl(data) : res.base64);
   }
 }
 
