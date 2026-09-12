@@ -6,7 +6,11 @@
 3. fix: https://github.com/avwo/whistle/issues/1342
 4. fix: https://github.com/avwo/whistle/issues/1352
 5. fix: https://github.com/avwo/whistle/issues/1353
-6. feat: refine webui
+6. fix: https://github.com/avwo/whistle/issues/1358
+7. fix: https://github.com/avwo/whistle/issues/1360
+8. fix: [pipe](https://wproxy.org/docs/rules/pipe.html) may cause request hangs and memory leaks
+9. feat: Set minimum supported Node.js version to >= 14.0.0
+10. feat: refine webui
 
 ## v2.10.9
 1. feat: auto-save the last opened page and restore it as default when no specific page is specified on next launch

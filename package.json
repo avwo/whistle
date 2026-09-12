@@ -75,7 +75,7 @@
     "docs": "vitepress build docs"
   },
   "engines": {
-    "node": ">= 8.8"
+    "node": ">= 14.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
