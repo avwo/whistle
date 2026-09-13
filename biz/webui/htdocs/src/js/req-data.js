@@ -35,15 +35,15 @@ var CMD_RE = /^:dump\s+(\d{1,15})\s*$/;
 var BODY_FILTER = /(^\s*|\s+)(content|c|b|body):/i;
 var BASE_DOM = '.ReactVirtualized__Grid:first';
 var MAX_LEN = 64;
-var KV_TIPS = util.KV_TIPS;
+var KW_TIPS = util.KW_TIPS;
 var ERROR_STYLE = 'w-error-status';
 var HINTS = [
-  '<' + KV_TIPS + 'URL>',
-  'd:<' + KV_TIPS + 'domain>',
-  'm:<' + KV_TIPS + 'HTTP method>',
-  's:<' + KV_TIPS + 'HTTP status code>',
-  'h:<' + KV_TIPS + 'request or response headers>',
-  'b:<' + KV_TIPS + 'request or response body>'
+  '<' + KW_TIPS + 'URL>',
+  'd:<' + KW_TIPS + 'domain>',
+  'm:<' + KW_TIPS + 'HTTP method>',
+  's:<' + KW_TIPS + 'HTTP status code>',
+  'h:<' + KW_TIPS + 'request or response headers>',
+  'b:<' + KW_TIPS + 'request or response body>'
 ];
 var contextMenuList = [
   {

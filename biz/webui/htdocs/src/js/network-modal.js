@@ -9,7 +9,7 @@ var dataCenter;
 var WIN_NAME_PRE =
   '__whistle_' + location.href.replace(/\/[^/]*([#?].*)?$/, '/') + '__';
 var KW_RE =
-  /^(e|error|style|url|host|h|domain|d|u|composer|fc|content|c|b|body|headers|h|ip|i|status|a|app|result|s|r|method|m|mark|type|t):(.*)$/i;
+  /^(e|error|style|url|host|h|domain|d|u|composer|fc|content|c|b|body|headers|h|ip|i|status|a|app|result|s|r|method|m|mark|p|pending|type|t):(.*)$/i;
 var KW_LIST_RE = /([^\s]+)(?:\s+([^\s]+)(?:\s+([\S\s]+))?)?/;
 var WS_RE = /^wss?:\/\//;
 var FONT_RE = /font\//i;
@@ -183,6 +183,9 @@ function checkItem(item, opts) {
   switch (opts.type) {
   case 'mark':
     return !item.mark || checkData(item, opts);
+  case 'p':
+  case 'pending':
+    return item.endTime || checkData(item, opts);
   case 'c':
   case 'content':
   case 'b':

@@ -12,7 +12,8 @@ var preventBlur = util.preventBlur;
 var getHideStyle = util.getHideStyle;
 var MAX_LEN = 128;
 var ACTIVE_CLASS = 'w-active';
-var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'WS', 'SSE', 'Tunnel', 'Wasm', 'Mock', 'Rules', 'Import', 'Composer', 'Error', 'captureError'];
+var TYPES = ['JSON', 'HTML', 'CSS', 'JS', 'Font', 'Img', 'Media', 'Wasm', 'WS', 'SSE', 'Tunnel',
+  'Rules', 'Mock', 'Import', 'Composer', 'Error', 'captureError'];
 var getTitle = function (type) {
   return 'Show only ' + type + ' sessions';
 };
