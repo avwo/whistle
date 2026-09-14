@@ -73,21 +73,21 @@ var HttpsSettings = React.createClass({
             <div style={{marginBottom: 10}}>
               <HelpIcon docsUrl="gui/https.html" />
               <a
-                className="w-download-rootca"
+                style={{lineHeight: '30px'}}
                 title={caShortUrl}
                 href={caUrl}
                 target="dlFrame"
               >
                 Download RootCA
               </a>
-              <select className="w-root-ca-type" value={caType} onChange={self.selectCAType}>
+              <select className="w-rootca-type" value={caType} onChange={self.selectCAType}>
                 <option value="crt">rootCA.crt</option>
                 <option value="cer">rootCA.cer</option>
                 <option value="pem">rootCA.pem</option>
               </select>
             </div>
-            <div className="w-root-ca-url-wrap">
-              <select className="w-root-ca-url" value={caFullUrl} onChange={self.selectCAUrl}>
+            <div className="w-rootca-url-wrap">
+              <select className="w-rootca-url" value={caFullUrl} onChange={self.selectCAUrl}>
                 <option value="">{caShortUrl} (PROXY REQUIRED)</option>
                 {props.caUrlList.map(function (url) {
                   url = url[0] === 'h' ? url : 'http://' + url + ':' + props.port;

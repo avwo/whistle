@@ -21,6 +21,7 @@ var getSize = util.getSize;
 var escape = util.escape;
 var formatTime = util.formatTime;
 var IPV6_ONLY_VAL = 4;
+var VERBATIM_VAL = 5;
 var dialog;
 var curOrder;
 var curVerbatim = -1;
@@ -130,12 +131,12 @@ dataCenter.handleIframeLoad = function(e) {
 function selectDnsOption(order) {
   order = +order;
   if (curVerbatim === 2) {
-    if (order < 1 || order > IPV6_ONLY_VAL) {
-      order = 1;
+    if (order < 2 || order > VERBATIM_VAL) {
+      order = 2;
     }
   } else if (curVerbatim === 1) {
-    if (order !== 2 && order !== IPV6_ONLY_VAL) {
-      order = 1;
+    if (order !== IPV6_ONLY_VAL && order !== VERBATIM_VAL) {
+      order = 2;
     }
   } else if (order !== IPV6_ONLY_VAL) {
     order = 0;
@@ -147,11 +148,11 @@ function selectDnsOption(order) {
   dialog.find('.w-dns-order select').val(curOrder);
 }
 
-function getDnsOrder(verbatim) {
+function getDnsOrderOptions(verbatim) {
   var result = [];
   if (verbatim) {
     result.push(
-      '<option value="1">Verbatim</option>',
+      '<option value="5">Verbatim</option>',
       '<option value="2">IPv4-first</option>'
     );
     if (verbatim === 2) {
@@ -353,7 +354,7 @@ var Online = React.createClass({
     var ctn = dialog.find('.w-online-ctn').html(info.join(''));
     if (curVerbatim !== server.verbatim) {
       curVerbatim = server.verbatim;
-      dialog.find('.w-dns-order select').html(getDnsOrder(server.verbatim));
+      dialog.find('.w-dns-order select').html(getDnsOrderOptions(server.verbatim));
     }
     !self._pendingDnsOrder && selectDnsOption(server.dnsOrder);
     ctn.find('h5.w-system-host').attr('title', server.host);

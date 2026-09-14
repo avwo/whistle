@@ -161,18 +161,11 @@
 .w-https-dialog .modal-dialog {
   width: 342px;
 }
-.w-https-help {
-  margin-left: 150px;
-}
 .w-https-dialog .modal-dialog div {
   white-space: nowrap;
 }
 .w-https-dialog a {
   display: inline-block;
-}
-.w-download-rootca,
-.w-https-help {
-  line-height: 30px;
 }
 .w-https-settings label {
   font-weight: normal;
@@ -330,48 +323,25 @@
   padding-left: 5px;
 }
 
-.w-root-ca-type {
+.w-rootca-type {
   width: 92px;
   float: right;
   margin: 3px 15px 0 0;
 }
 
-.w-root-ca-url-wrap {
+.w-rootca-url-wrap {
   display: flex;
   align-items: center;
   margin: -3px 0 10px;
 }
 
-.w-root-ca-url-wrap .glyphicon {
+.w-rootca-url-wrap .glyphicon {
   margin-top: -2px;
 }
 
-.w-root-ca-url {
+.w-rootca-url {
   display: block;
   width: 292px;
-}
-
-
-.w-fieldset pre {
-  max-height: 220px;
-  overflow: auto;
-  padding: 10px;
-}
-.w-fieldset {
-  border: var(--v-border);
-}
-.w-fieldset legend {
-  font-size: 12px;
-  padding: 0 5px;
-  border: none;
-  width: auto;
-  margin: 0 10px;
-  font-weight: bold;
-}
-
-.w-fieldset legend .glyphicon {
-  margin-left: 5px;
-  cursor: pointer;
 }
 
 @media screen and (max-width: 1105px) {

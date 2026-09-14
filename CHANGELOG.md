@@ -9,8 +9,9 @@
 6. fix: https://github.com/avwo/whistle/issues/1358
 7. fix: https://github.com/avwo/whistle/issues/1360
 8. fix: [pipe](https://wproxy.org/docs/rules/pipe.html) 规则请求阻塞与内存泄漏
-9. feat: Node.js 最低支持版本调整为 >= 14.0.0
-10. feat: 优化界面
+9. feat: `DNS Order` 默认值改为 `ipv4-first`
+10. feat: Node.js 最低支持版本调整为 >= 14.0.0
+11. feat: 优化界面
 
 ## v2.10.9
 1. feat: 自动保存上次关闭时的页面，下次未指定页面是默认打开上次页面

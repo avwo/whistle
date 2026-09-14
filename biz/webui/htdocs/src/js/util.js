@@ -3367,12 +3367,9 @@ function getPluginCgiUrl(moduleName, url) {
 exports.getPluginCgiUrl = getPluginCgiUrl;
 
 exports.showHandlePluginInfo = function(data, xhr) {
-  if (!data) {
-    showSysErr(xhr);
-    return false;
-  }
-  if (data.ec) {
-    return showError(data.em || 'Request error, please try again!');
+  if (!data || data.ec) {
+    data ? showError(data.em || 'Request error, please try again!') : showSysErr(xhr);
+    return;
   }
   message.success('Request successful - plugin list updating...');
   return true;

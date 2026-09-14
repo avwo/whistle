@@ -129,7 +129,6 @@ var About = React.createClass({
               </span>
               {clientVersion ? 'Client Version: ' : null}
               {clientVersion ? <a
-                className="w-about-version"
                 title="View CHANGELOG"
                 href={CLIENT_CHANGELOG_URL}
                 target="_blank"
@@ -148,7 +147,6 @@ var About = React.createClass({
               {clientVersion ? <br /> : null}
               {clientVersion ? 'Whistle Version: ' : 'Version: '}
               <a
-                className="w-about-version"
                 title="View CHANGELOG"
                 onClick={util.openChangeLog}
               >
