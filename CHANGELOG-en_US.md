@@ -1,5 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.11
+1. feat: improve the UI interaction for `Create Rule`
+2. fix: https://github.com/avwo/whistle-client/issues/132
+3. feat: Set minimum supported Node.js version to >= 16.0.0
+
 ## v2.10.10
 1. fix: https://github.com/avwo/whistle/pull/1350
 2. fix: https://github.com/avwo/whistle/pull/1351
@@ -9,7 +14,7 @@
 6. fix: https://github.com/avwo/whistle/issues/1358
 7. fix: https://github.com/avwo/whistle/issues/1360
 8. fix: [pipe](https://wproxy.org/docs/rules/pipe.html) may cause request hangs and memory leaks
-9. feat: default DNS order to `ipv4-first`
+9. feat: default DNS order to `IPv4-first`
 10. feat: Set minimum supported Node.js version to >= 14.0.0
 11. feat: refine webui
 

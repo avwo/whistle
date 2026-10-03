@@ -1,5 +1,11 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.11
+1. feat: 优化 `Create Rule` 的界面交互
+2. fix: https://github.com/avwo/whistle-client/issues/132
+3. feat: Node.js 最低支持版本调整为 >= 16.0.0
+
+
 ## v2.10.10
 1. fix: https://github.com/avwo/whistle/pull/1350
 2. fix: https://github.com/avwo/whistle/pull/1351
@@ -9,7 +15,7 @@
 6. fix: https://github.com/avwo/whistle/issues/1358
 7. fix: https://github.com/avwo/whistle/issues/1360
 8. fix: [pipe](https://wproxy.org/docs/rules/pipe.html) 规则请求阻塞与内存泄漏
-9. feat: `DNS Order` 默认值改为 `ipv4-first`
+9. feat: `DNS Order` 默认值改为 `IPv4-first`
 10. feat: Node.js 最低支持版本调整为 >= 14.0.0
 11. feat: 优化界面
 

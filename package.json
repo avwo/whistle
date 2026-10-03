@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.10.10",
+  "version": "2.10.11",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -37,7 +37,7 @@
     "url": "https://github.com/avwo/whistle.git"
   },
   "dependencies": {
-    "adm-zip": "^0.6.0",
+    "adm-zip": "^0.6.1",
     "async-limiter": "2.0.0",
     "body-parser": "^1.20.6",
     "colors": "1.1.2",
@@ -75,7 +75,7 @@
     "docs": "vitepress build docs"
   },
   "engines": {
-    "node": ">= 14.0.0"
+    "node": ">= 16.0.0"
   },
   "devDependencies": {
     "babel-core": "^6.7.6",
