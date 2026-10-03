@@ -181,8 +181,7 @@ var Properties = React.createClass({
         >
           <tbody>
             {rawValue ? (
-              <tr key="raw" className={rawValue ? null : 'w-no-value'}
-                data-name={rawName}  data-value={rawValue}>
+              <tr key="raw" data-name={rawName} data-value={rawValue}>
                 <th>{rawName}</th>
                 <td className="w-props-raw-data w-user-select-none" title={rawValue}>
                   <pre>
@@ -222,8 +221,6 @@ var Properties = React.createClass({
               value = toString(value);
               var json = showJsonView && util.likeJson(value) && util.parseJSON(value);
               var css = cssMap && cssMap[name];
-              var style = css && css.style;
-              var className = css && css.className;
               var showInfo = !json && showEnableBtn && name === 'Status Code' && value === 'captureError';
               var list = isRules ? value.split(util.CRLF_RE) : null;
               var onContextMenu = json ? stopPropagation : null;
@@ -237,8 +234,8 @@ var Properties = React.createClass({
                 >
                   {self.renderKey(isArray ? i + 1 + '' : name, value)}
                   <td
-                    className={(json ? 'w-props-json ' : 'w-user-select-none ') + (className || '')}
-                    style={style}
+                    className={(json ? 'w-props-json ' : 'w-user-select-none ') + ((css && css.className) || '')}
+                    style={css && css.style}
                     onContextMenu={onContextMenu}
                   >
                     {

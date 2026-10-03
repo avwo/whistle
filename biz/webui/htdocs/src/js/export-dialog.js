@@ -13,9 +13,7 @@ var ExportDialog = React.createClass({
     var self = this;
     self.refs.dialog.show();
     setTimeout(function () {
-      var input = self.refs.input;
-      input.focus();
-      input.select();
+      util.focus(self.refs.input);
     }, 500);
     name = name || 'network';
     self.setState({

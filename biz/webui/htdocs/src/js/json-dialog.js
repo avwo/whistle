@@ -171,7 +171,7 @@ var JSONDialog = React.createClass({
           >
             <JSONView keyPath={state.keyPath} dialog data={state.curData || state.data} viewSource={true} session={state.session} />
           </div>
-          <FilterInput ref="filterInput" onChange={self.onFilter} placeholder=" (e.g. xxx or k:xxx or v:xxx)" />
+          <FilterInput ref="filterInput" onChange={self.onFilter} placeholder="Filter: keyword, k:key, v:value" />
         </div>
       </Dialog>
     );

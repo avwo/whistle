@@ -1,12 +1,11 @@
 require('../css/editor-settings.css');
 var React = require('react');
 var util = require('./util');
+var Select = require('./custom-select');
 
-var themes = util.EDITOR_THEMES;
-
-var fontSizeOptions = [12, 13];
+var fontSizeOptions = ['12px', '13px'];
 for (var i = 14; i <= 36; i += 2) {
-  fontSizeOptions.push(i);
+  fontSizeOptions.push(i + 'px');
 }
 
 var EditorSettings = React.createClass({
@@ -29,31 +28,13 @@ var EditorSettings = React.createClass({
         <p>
           <label>
             <span className="w-label">Theme:</span>
-            <select
-              value={props.theme}
-              onChange={props.onThemeChange}
-              className="form-control"
-            >
-              {themes.map(function(theme) {
-                return <option key={theme} value={theme}>{theme}</option>;
-              })}
-            </select>
+            <Select value={props.theme} onChange={props.onThemeChange} options={util.EDITOR_THEMES} />
           </label>
         </p>
         <p>
           <label>
             <span className="w-label">Font Size:</span>
-            <select
-              value={props.fontSize}
-              onChange={props.onFontSizeChange}
-              className="form-control"
-            >
-              {
-                fontSizeOptions.map(function(size) {
-                  return <option key={size} value={size + 'px'}>{size + 'px'}</option>;
-                })
-              }
-            </select>
+            <Select value={props.fontSize} onChange={props.onFontSizeChange} options={fontSizeOptions} />
           </label>
         </p>
         <p className="w-editor-option">

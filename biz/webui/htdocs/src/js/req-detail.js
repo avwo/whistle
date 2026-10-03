@@ -9,6 +9,7 @@ var Textarea = require('./textarea');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
 var Tips = require('./panel-tips');
+var mixin = require('./detail-mixin');
 
 var parseQueryString = util.parseQueryString;
 var EMPTY_COOKIES = { message: 'No request cookies' };
@@ -27,6 +28,7 @@ var BTNS = [
 var getHide = util.getHide;
 
 var ReqDetail = React.createClass({
+  mixins: [mixin],
   getInitialState: function () {
     return {
       initedHeaders: false,
@@ -44,16 +46,6 @@ var ReqDetail = React.createClass({
     util.on('reqTabsChange', function () {
       self.setState({});
     });
-  },
-  shouldComponentUpdate: util.scu,
-  onClickBtn: function (btn) {
-    this.selectBtn(btn);
-    this.setState({});
-  },
-  selectBtn: function (btn) {
-    btn.active = true;
-    this.state.btn = btn;
-    this.state['inited' + btn.name] = true;
   },
   onEdit: function () {
     util.trigger('setComposerData', this.props.modal);
@@ -136,13 +128,12 @@ var ReqDetail = React.createClass({
         !body &&
         !/^ws/.test(modal.url)
       ) {
-        if (req.size < 5120) {
-          tips = { message: 'No request body' };
-        } else {
-          var exceedTips = util.getExceedTips('Request');
+        var exceedTips;
+        if (req.size >= 5120) {
+          exceedTips = util.getExceedTips('Request');
           raw += '(' + exceedTips + ')';
-          tips = { message: exceedTips };
         }
+        tips = { message: exceedTips || 'No request body' };
       }
     }
     state.raw = raw;
@@ -150,18 +141,10 @@ var ReqDetail = React.createClass({
     base64 = base64 || '';
     var pluginsTab = BTNS[7];
     var tabs = dataCenter.getReqTabs();
-    var len = tabs.length;
-    pluginsTab.hide = !len;
-    if (len && len === 1) {
-      pluginsTab.display = pluginsTab.title = tabs[0].name;
-      pluginsTab.className = 'w-detail-custom-tab w-req';
-    } else {
-      pluginsTab.display = pluginsTab.title = pluginsTab.className = undefined;
-    }
-
     var isHide = function(i) {
       return name != BTNS[i].name;
     };
+    this.setupPluginsTab(tabs, pluginsTab);
 
     return (
       <div

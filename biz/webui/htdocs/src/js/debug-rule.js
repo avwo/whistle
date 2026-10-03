@@ -4,10 +4,6 @@ var ruleMixin = require('./rule-mixin');
 var removeSpaces = require('./util').removeSpaces;
 var FormItem = require('./form-item');
 
-function forcus(elem) {
-  elem.focus();
-  elem.select();
-}
 
 function filterNum(str) {
   return str.replace(/\D+/g, '');
@@ -70,17 +66,6 @@ var DebugRule = React.createClass({
   onNumChange: function(e, key) {
     this.onStateChange(key, filterNum(e.target.value));
   },
-  onCheckChange: function(e, key, ref) {
-    var self = this;
-    var disabled = !e.target.checked;
-    self.state[key] = disabled;
-    self.setState({}, function() {
-      if (!disabled) {
-        forcus(self.refs[ref]);
-      }
-      self.handleChange();
-    });
-  },
   onAbortReqChange: function(e) {
     this.onStateChange('abortReq', e.target.checked);
   },
@@ -124,7 +109,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledWeinre, 'disabledWeinre')}
             Weinre
           </label>
-          <input ref="weinreId" disabled={disabledWeinre} value={state.weinreId} type="text"
+          <input disabled={disabledWeinre} value={state.weinreId} type="text"
             className="form-control w-weinre-id" maxLength="32" placeholder="Enter weinre id (optional)" onChange={self.onWeinreIdChange} />
           <HelpIcon title="View the DOM structure of web pages" docsUrl="rules/weinre.html" className="ml-10" />
         </FormItem>
@@ -133,7 +118,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledLog, 'disabledLog')}
             Log
           </label>
-          <input ref="logId" disabled={disabledLog} value={state.logId} type="text"
+          <input disabled={disabledLog} value={state.logId} type="text"
             className="form-control w-log-id" maxLength="32" placeholder="Enter log id (optional)" onChange={self.onLogIdChange} />
           <HelpIcon title="View the console output of web pages" docsUrl="rules/log.html" className="ml-10" />
         </FormItem>
@@ -142,7 +127,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledReqDelay, 'disabledReqDelay')}
             Delay Request
           </label>
-          <input ref="reqDelay" disabled={disabledReqDelay} value={state.reqDelay} type="text"
+          <input disabled={disabledReqDelay} value={state.reqDelay} type="text"
             className="form-control w-200" maxLength="7" placeholder="Enter request delay (ms)" onChange={self.onReqDelayChange} />
           <span className="ml-5">ms</span>
           <HelpIcon docsUrl="rules/reqDelay.html" className="ml-10" />
@@ -152,7 +137,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledResDelay, 'disabledResDelay')}
             Delay Response
           </label>
-          <input ref="resDelay" disabled={disabledResDelay} value={state.resDelay} type="text"
+          <input disabled={disabledResDelay} value={state.resDelay} type="text"
             className="form-control w-200" maxLength="7" placeholder="Enter response delay (ms)" onChange={self.onResDelayChange} />
           <span className="ml-5">ms</span>
           <HelpIcon docsUrl="rules/resDelay.html" className="ml-10" />
@@ -162,7 +147,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledReqSpeed, 'disabledReqSpeed')}
             Limit Request Speed
           </label>
-          <input ref="reqSpeed" disabled={disabledReqSpeed} value={state.reqSpeed} type="text"
+          <input disabled={disabledReqSpeed} value={state.reqSpeed} type="text"
             className="form-control w-200" maxLength="7" placeholder="Enter request speed (kb/s)" onChange={self.onReqSpeedChange} />
           <span className="ml-5">kb/s</span>
           <HelpIcon docsUrl="rules/reqSpeed.html" className="ml-10" />
@@ -172,7 +157,7 @@ var DebugRule = React.createClass({
             {renderBox(!disabledResSpeed, 'disabledResSpeed')}
             Limit Response Speed
           </label>
-          <input ref="resSpeed" disabled={disabledResSpeed} value={state.resSpeed} type="text"
+          <input disabled={disabledResSpeed} value={state.resSpeed} type="text"
             className="form-control w-200" maxLength="7" placeholder="Enter response speed (kb/s)" onChange={self.onResSpeedChange} />
           <span className="ml-5">kb/s</span>
           <HelpIcon docsUrl="rules/resSpeed.html" className="ml-10" />

@@ -14,9 +14,11 @@ var CloseBtn = require('./close-btn');
 var Prompt = require('./prompt');
 var message = require('./message');
 var ModalFooter = require('./modal-footer');
+var Select = require('./custom-select');
 
 var DATA_KEY_TIPS = 'e.g. res.body or res.body:/"msgno":"(\w+)"/ ...';
 var URL_DEMO = ', e.g. https://example.com/path#xxx={WHISTLE_DATA}';
+var ROW_LIMIT_OPTIONS = [500, 1000, 1500, 2000, 2500, 3000].map(String);
 var isStr = util.isStr;
 var isBool = util.isBool;
 var trigger = util.trigger;
@@ -167,6 +169,7 @@ var Settings = React.createClass({
   },
   onRowsChange: function (e) {
     NetworkModal.setMaxRows(e.target.value);
+    this.setState({});
   },
   showDialog: function () {
     var self = this;
@@ -192,9 +195,7 @@ var Settings = React.createClass({
       },
       function () {
         setTimeout(function () {
-          var input = self.refs.newColumnName;
-          input.select();
-          input.focus();
+          util.focus(self.refs.newColumnName);
         }, 360);
       }
     );
@@ -479,18 +480,7 @@ var Settings = React.createClass({
 
           <label className="w-ns-own">
             Row Limit:
-            <select
-              className="form-control"
-              onChange={self.onRowsChange}
-              value={NetworkModal.getMaxRows()}
-            >
-              <option value="500">500</option>
-              <option value="1000">1000</option>
-              <option value="1500">1500</option>
-              <option value="2000">2000</option>
-              <option value="2500">2500</option>
-              <option value="3000">3000</option>
-            </select>
+            <Select value={NetworkModal.getMaxRows()} onChange={self.onRowsChange} options={ROW_LIMIT_OPTIONS} />
           </label>
           <label className="w-ns-own">
             <input
@@ -502,14 +492,14 @@ var Settings = React.createClass({
           </label>
           <label className="w-ns-own">
             <input checked={viewAllInNewWindow} data-name="viewAllInNewWindow" type="checkbox" />
-            "ViewAll" in new window
+            'ViewAll' in new window
             <Icon onClick={self.showViewAllSettings} name="cog" title="Custom URL opening"
               className={'ml-10' + (viewAllInNewWindow ? (state.openUrl ? ' w-enabled' : '') + ' w-help-icon' : ' w-not-allowed')} />
           </label>
-          <label className="w-ns-own">
+          <label className="w-ns-own" title={util.CMD + 'B'}>
             <input checked={isTreeView} data-name="treeView" type="checkbox" />
             <Icon name="tree-conifer" />
-            Show Tree View (Ctrl[Command] + B)
+            Show Tree View
           </label>
           {isTreeView ? (
             <label style={{marginLeft: 20}} className="w-ns-own">

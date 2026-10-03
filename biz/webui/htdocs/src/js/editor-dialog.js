@@ -20,6 +20,7 @@ var getValuesModal = dataCenter.getValuesModal;
 var MAX_LEN = 1024 * 1024 * 11;
 var fakeIframe = 'javascript:"<style>html,body{padding:0;margin:0}</style><textarea></textarea>"';
 var INSERT_BTN = 'Populate from Session';
+var OPTION_PLACEHOLDER = { value: '', label: 'Select or create a key' };
 var iframeStyle = {
   padding: 0,
   border: 'none',
@@ -185,7 +186,7 @@ var EditorDialog = React.createClass({
           self._session = data && data.session;
           self._filename = filename;
           state.callback = data && data.callback;
-          var selectedKey = isKey ? (getKey(filename) || getValuesModal().getKeys()[0]) : null;
+          var selectedKey = isKey ? (getKey(filename) || '') : null;
           self.show({
             isKey: isKey,
             selectedKey: selectedKey,
@@ -200,9 +201,10 @@ var EditorDialog = React.createClass({
           var item = getKeyItem(name);
           self._keyName = name;
           self._modifyValue = !!item;
+          var key = ' key \'' + name + '\' ';
           self.show({
             value: getKeyValue(name),
-            title: item ? 'Modify value for key \'' + name + '\' in Values' : 'Create a new key \'' + name + '\' to Values',
+            title: item ? 'Modify value for' + key + 'in Values' : 'Create a new' + key + 'to Values',
             isTempFile: false
           });
         } else {
@@ -258,23 +260,26 @@ var EditorDialog = React.createClass({
       }
     });
   },
+  getKeyName: function() {
+    var self = this;
+    var keyName = self._keyName || self.state.selectedKey;
+    if (keyName) {
+      return keyName;
+    }
+    self.refs.select.shake();
+    showError('The key is required');
+  },
   onSave: function(base64) {
     var self = this;
     var state = self.state;
     var isBase64 = isStr(base64);
     var value = isBase64 ? base64 : self.getValue();
     if (!isBase64 && !state.isTempFile) {
-      var keyName = self._keyName || state.selectedKey;
-      if (!keyName) {
-        self.refs.select.shake();
-        return showError('The key is required');
-      }
-      return self.addKey(keyName, value, function() {
+      var keyName = self.getKeyName();
+      return keyName && self.addKey(keyName, value, function() {
         self.hide();
         var callback = state.callback;
-        if (callback) {
-          callback('{' + keyName + '}');
-        }
+        callback && callback('{' + keyName + '}');
       });
     }
     var params = {  clientId: dataCenter.getPageId() };
@@ -405,7 +410,10 @@ var EditorDialog = React.createClass({
     self._session = null;
   },
   showSessionOptions: function() {
-    this.refs.session.show();
+    var self = this;
+    if (!self.state.isKey || self.getKeyName()) {
+      self.refs.session.show();
+    }
   },
   createKey: function(key, cb) {
     var self = this;
@@ -419,16 +427,19 @@ var EditorDialog = React.createClass({
     var key = e.value;
     var textarea = self._textarea;
     var preKey = self.state.selectedKey;
+    var value = getKeyValue(key);
     var handleChange = function(flag) {
       if (flag === false) {
         return;
       }
-      textarea.value = getKeyValue(key);
+      if (value) {
+        textarea.value = value;
+      }
       self.setState({ selectedKey: key });
     };
     var val = textarea.value;
-    if (val && getKeyValue(preKey) !== val) {
-      return win.confirm('The value for key \'' + preKey + '\' has been modified. Switch and lose changes. Continue?', handleChange);
+    if (val && value && getKeyValue(preKey) !== val) {
+      return win.confirm('New key \'' + key + '\' differs from the editor content. Switching will overwrite it. Continue?', handleChange);
     }
     handleChange();
   },
@@ -436,10 +447,9 @@ var EditorDialog = React.createClass({
     var self = this;
     var keys = getValuesModal().getKeys();
     var selectedKey = self.state.selectedKey;
+    keys.unshift(OPTION_PLACEHOLDER);
     if (selectedKey && keys.indexOf(selectedKey) === -1) {
       keys.push(selectedKey);
-    } else if (!keys.length) {
-      keys.push('No keys available');
     }
 
     return <Select ref="select" value={selectedKey} className="w-session-text-select ml-5" placeholder="Enter new key"
@@ -454,7 +464,7 @@ var EditorDialog = React.createClass({
 
     return (
       <ModalHeader>
-        {isKey ? 'Select Key' : title || 'Modify Copied Text'}
+        {isKey ? 'Key Name' : title || 'Modify Copied Text'}
         {isKey ? self.renderKeys() : null}
         {showUpload && session ? <button type="button" className="btn btn-sm btn-default ml-10" onClick={self.showSessionOptions}>
           <Icon name="import" className="mr-5" />

@@ -83,7 +83,7 @@ var UrlInput = React.createClass({
       url = url ? state.protocol + state.url : '';
       if (url !== self._curUrl) {
         self._curUrl = url;
-        onChange(url, self.refs.checkbox);
+        onChange(url, self.refs.urlInput);
       }
     }
   },
@@ -99,9 +99,9 @@ var UrlInput = React.createClass({
     self.handleChange();
   },
   shake: function() {
-    var con = $(this.refs.urlInput).find('input');
-    util.shakeElem(con);
-    con.select().focus();
+    var input = $(this.refs.urlInput);
+    util.shakeElem(input);
+    util.focus(input);
   },
   showParams: function() {
     var self = this;
@@ -375,7 +375,7 @@ var UrlInput = React.createClass({
     var isFile = protocol === 'file://' || protocol === 'tpl://';
 
     return (
-      <div ref="urlInput" className={'w-url-input ' + (props.className || '')} style={props.style}>
+      <div className={'w-url-input ' + (props.className || '')} style={props.style}>
         <select
           disabled={disabled}
           value={protocol}
@@ -387,7 +387,7 @@ var UrlInput = React.createClass({
           })}
         </select>
         <input
-          ref="checkbox"
+          ref="urlInput"
           disabled={disabled}
           value={state.url}
           onChange={self.onUrlChange}

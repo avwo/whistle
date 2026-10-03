@@ -21,8 +21,7 @@ module.exports = {
       if (defaultName) {
         nameInput.value = defaultName;
       }
-      nameInput.select();
-      nameInput.focus();
+      util.focus(nameInput);
     });
   },
   hideNameInput: function () {

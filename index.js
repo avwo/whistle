@@ -8,7 +8,6 @@ var os = require('os');
 var assert = require('assert');
 var common = require('./lib/util/common');
 
-var ver = process.version.substring(1).split('.');
 var PROD_RE = /(^|\|)prod(uction)?($|\|)/;
 var noop = function () {};
 var state = {};
@@ -16,21 +15,20 @@ var INTERVAL = 1000;
 var TIMEOUT = 10000;
 var MASTER_TIMEOUT = 12000;
 
-if (ver[0] >= 7 && ver[1] >= 7) {
-  var connect = net.Socket.prototype.connect;
-  if (typeof connect === 'function') {
-    //fix: Node v7.7.0+引入的 `"listener" argument must be a function` 问题
-    net.Socket.prototype.connect = function (options, cb) {
-      if (options && typeof options === 'object' && typeof cb !== 'function') {
-        return connect.call(this, options, null);
-      }
-      return connect.apply(this, arguments);
-    };
-  }
+var connect = net.Socket.prototype.connect;
+if (typeof connect === 'function') {
+  //fix: Node v7.7.0+引入的 `"listener" argument must be a function` 问题
+  net.Socket.prototype.connect = function (options, cb) {
+    if (options && typeof options === 'object' && typeof cb !== 'function') {
+      return connect.call(this, options, null);
+    }
+    return connect.apply(this, arguments);
+  };
 }
 
 var env = process.env || '';
 env.WHISTLE_ROOT = __dirname;
+env.PFORK_MAX_HTTP_HEADER_SIZE = 1024 * 1024;
 if (typeof tls.checkServerIdentity == 'function') {
   var checkServerIdentity = tls.checkServerIdentity;
   tls.checkServerIdentity = function () {

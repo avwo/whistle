@@ -28,9 +28,7 @@ var Prompt = React.createClass({
     setTimeout(self.focus, 300);
   },
   focus: function() {
-    var input = this.refs.value;
-    input.focus();
-    input.select();
+    util.focus(this.refs.value);
   },
   onConfirm: function() {
     var self = this;

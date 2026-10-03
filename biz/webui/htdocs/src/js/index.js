@@ -51,7 +51,7 @@ var MAX_PLUGINS_TABS = 7;
 var MAX_FILE_SIZE = 1024 * 1024 * 128;
 var MAX_OBJECT_SIZE = 1024 * 1024 * 36;
 var MAX_LOG_SIZE = 1024 * 1024 * 2;
-var MAX_REPLAY_COUNT = 100;
+var MAX_REPEAT_TIMES = util.MAX_REPEAT_TIMES;
 var LINK_SELECTOR = '.cm-js-type, .cm-js-http-url, .cm-string, .cm-js-at, .cm-js-weinre, .cm-js-log';
 var LINK_RE = /^"(https?:)?(\/\/[^/]\S+)"$/i;
 var AT_LINK_RE = /^@(https?:)?(\/\/[^/]\S+)$/i;
@@ -100,7 +100,9 @@ var noModal = util.noModal;
 var toKeys = util.toKeys;
 var CMD = util.CMD;
 var isCtrl = util.isCtrl;
+var formatFilename = util.formatFilename;
 var createHover = util.createHover;
+var focus = util.focus;
 var showError = message.error;
 var showSucc = message.success;
 var GITHUB_URL = util.GITHUB_URL;
@@ -733,7 +735,7 @@ var Index = React.createClass({
     });
   },
   showKVDialog: function(data, isValues) {
-    if (data) {
+    if (data && !handleImportData(data)) {
       var self = this;
       var state = self.state;
       self.refs.syncDialog.showKVDialog(data, state.rules, state.values, isValues);
@@ -1798,17 +1800,15 @@ var Index = React.createClass({
         self.replayList = list;
         self.refs.setReplayCount.show();
         setTimeout(function () {
-          var input = self.refs.replayCount;
-          input.select();
-          input.focus();
+          focus(self.refs.replayCount);
         }, 300);
         return;
       }
       self.replay(e, list);
     });
     addEvent('filterSessions', self.showSettings);
-    addEvent('exportSessions', function (e, curItem, filename) {
-      self.exportData(e, getFocusItemList(curItem), filename);
+    addEvent('exportSessions', function (e, curItem, filename, isSaved) {
+      self.exportData(e, getFocusItemList(curItem), filename, isSaved);
     });
     addEvent('abortRequest', function (e, curItem) {
       self.abort(getFocusItemList(curItem));
@@ -2405,30 +2405,22 @@ var Index = React.createClass({
     this.refs.exportDialog.show('valuesSettings', this.getValuesSettings());
   },
   getInputValue: function () {
-    return util.formatFilename(this.refs.sessionsName.value.trim());
+    return formatFilename(this.refs.sessionsName.value.trim());
   },
   filterFilename: function (e) {
-    this.setState({ filename: util.formatFilename(e.target.value) });
+    this.setState({ filename: formatFilename(e.target.value) });
   },
-  exportData: function (_, curItem, filename) {
+  exportData: function (_, curItem, filename, isSaved) {
     var self = this;
     var state = self.state;
     switch (state.name) {
     case 'network':
-      var modal = state.network;
       self.currentFoucsItem = curItem;
-      if (modal.hasVisibleSession()) {
-        self.showChooseFileType(filename);
-      } else {
-        message.info('No sessions to export');
-      }
-      break;
+      return self.showChooseFileType(filename, isSaved);
     case 'rules':
-      self.showAndActiveRules({ id: 'exportRules', selectedList: getExportNames(state.rules, curItem) });
-      break;
+      return self.showAndActiveRules({ id: 'exportRules', selectedList: getExportNames(state.rules, curItem) });
     case 'values':
-      self.showAndActiveValues({ id: 'exportValues', selectedList: getExportNames(state.values, curItem) });
-      break;
+      return self.showAndActiveValues({ id: 'exportValues', selectedList: getExportNames(state.values, curItem) });
     }
   },
   importSessionsFromUrl: function (url) {
@@ -2440,14 +2432,10 @@ var Index = React.createClass({
     });
   },
   handleImportRules: function(data) {
-    if (data && !handleImportData(data)) {
-      this.showKVDialog(data);
-    }
+    this.showKVDialog(data);
   },
   handleImportValues: function(data) {
-    if (data && !handleImportData(data)) {
-      this.showKVDialog(data, true);
-    }
+    this.showKVDialog(data, true);
   },
   showAndActiveRules: function (item, e) {
     var self = this;
@@ -2766,16 +2754,6 @@ var Index = React.createClass({
   },
   enableHttp2: function (e) {
     var self = this;
-    if (!dataCenter.supportH2) {
-      confirmMsg(
-        'HTTP/2 requires Node.js LTS version v16+. Please upgrade',
-        function (sure) {
-          sure && globalWin.open('https://nodejs.org/');
-          self.setState({});
-        }
-      );
-      return;
-    }
     var checked = e.target.checked;
     dataCenter.enableHttp2(
       { enableHttp2: checked ? 1 : 0 },
@@ -2942,8 +2920,7 @@ var Index = React.createClass({
         selectedRule: activeItem
       },
       function () {
-        editRulesInput.select();
-        editRulesInput.focus();
+        focus(editRulesInput);
       }
     );
   },
@@ -2967,8 +2944,7 @@ var Index = React.createClass({
         selectedValue: activeItem
       },
       function () {
-        editValuesInput.select();
-        editValuesInput.focus();
+        focus(editValuesInput);
       }
     );
   },
@@ -3182,12 +3158,7 @@ var Index = React.createClass({
     }
   },
   replayCountChange: function (e) {
-    var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    var replayCount = count.slice(0, 3);
-    if (replayCount > MAX_REPLAY_COUNT) {
-      replayCount = MAX_REPLAY_COUNT;
-    }
-    this.setState({ replayCount: replayCount });
+    this.setState({ replayCount: util.getRepeatTimes(e) });
   },
   clickReplay: function (e) {
     if (util.isShift(e)) {
@@ -3216,10 +3187,10 @@ var Index = React.createClass({
     };
     var map;
     if (count > 1) {
-      replayReq(list[0], Math.min(count, MAX_REPLAY_COUNT));
+      replayReq(list[0], Math.min(count, MAX_REPEAT_TIMES));
     } else {
       map = {};
-      list.slice(0, MAX_REPLAY_COUNT).forEach(function (item) {
+      list.slice(0, MAX_REPEAT_TIMES).forEach(function (item) {
         map[item.id] = 1;
         replayReq(item);
       });
@@ -3524,7 +3495,8 @@ var Index = React.createClass({
   },
   setPluginState: function(name, disabled) {
     var self = this;
-    if (self.state.ndp) {
+    var state = self.state;
+    if (state.ndp) {
       return message.info('Plugin disabling is restricted');
     }
     dataCenter.plugins.disablePlugin(
@@ -3534,9 +3506,9 @@ var Index = React.createClass({
       },
       function (data, xhr) {
         if (data && data.ec === 0) {
-          self.state.disabledPlugins = data.data;
+          state.disabledPlugins = data.data;
           dataCenter.setDisabledPlugins(data.data);
-          protocols.setPlugins(self.state);
+          protocols.setPlugins(state);
           self.setState({});
         } else {
           showSysErr(xhr);
@@ -3604,17 +3576,21 @@ var Index = React.createClass({
   installPlugins: function () {
     trigger('installPlugins');
   },
-  showChooseFileType: function (filename) {
-    this.refs.chooseFileType.show();
-    var input = this.refs.sessionsName;
-    if (notEStr(filename)) {
-      input.value = filename;
-    }
+  showChooseFileType: function (filename, isSaved) {
+    var self = this;
+    var refs = self.refs;
+    refs.chooseFileType.show();
     setTimeout(function () {
-      input.focus();
-      input.select();
+      focus(refs.sessionsName);
     }, 500);
-    this.setState({ selectedSessions: this.getExportSessions() });
+    filename = notEStr(filename) && formatFilename(filename);
+    if (filename) {
+      self.state.filename = filename;
+    }
+    self.setState({
+      selectedSessions: self.getExportSessions(),
+      isSaved: isSaved
+    });
   },
   chooseFileType: function (e) {
     var value = e.target.value;
@@ -3703,19 +3679,26 @@ var Index = React.createClass({
       };
     }
     if (type !== 'Fiddler') {
-      return util.download(sessions, name || 'network_' + util.formatDate() + (isHar ? '.har' : '.txt'));
+      var suffix = isHar ? '.har' : '.txt';
+      if (notEStr(name)) {
+        var curSuffix = name.lastIndexOf('.');
+        if (curSuffix <= 0 || name.substring(curSuffix) !== suffix) {
+          name += suffix;
+        }
+      }
+      return util.download(sessions, name || 'network_' + util.formatDate() + suffix);
     }
     var refs = self.refs;
     findDOMNode(refs.exportFilename).value = name || '';
     findDOMNode(refs.exportFileType).value = type;
     findDOMNode(refs.sessions).value = util.stringify(sessions);
-    findDOMNode(refs.exportSessionsForm).submit();
+    findDOMNode(refs.exportForm).submit();
   },
-  hideChooseFileTypeDialog: function(failed) {
+  hideExportDialog: function(failed) {
     if (!failed) {
-      var refs = this.refs;
-      refs.chooseFileType.hide();
-      refs.sessionsName.value = '';
+      var self = this;
+      self.refs.chooseFileType.hide();
+      self.setState({ filename: ''});
     }
   },
   exportBySave: function (e) {
@@ -3723,11 +3706,9 @@ var Index = React.createClass({
       return;
     }
     var self = this;
-    var input = this.refs.sessionsName;
-    var name = input.value.trim();
-    input.value = '';
+    var name = self.refs.sessionsName.value.trim();
     self.exportSessions(self.state.exportFileType, name, self.state.selectedSessions);
-    self.hideChooseFileTypeDialog();
+    self.hideExportDialog();
   },
   exportAll: function () {
     var self = this;
@@ -4089,7 +4070,7 @@ var Index = React.createClass({
             onMouseEnter={forceShowLeftMenu}
             onMouseLeave={forceHideLeftMenu}
             style={getHideStyle(networkMode || pluginsOnlyMode)}
-            title="Ctrl[Command] + M"
+            title={CMD + 'M'}
           >
             <Icon
               name={
@@ -4265,7 +4246,7 @@ var Index = React.createClass({
             onClick={self.clear}
             style={getHideStyle(!isNetwork)}
             className="w-remove-menu w-remove-menu-list"
-            title="Ctrl[Command] + X"
+            title={CMD + 'X'}
             draggable="false"
           >
             <Icon name="remove" />Clear
@@ -4275,7 +4256,7 @@ var Index = React.createClass({
             className="w-save-menu"
             style={editMenuStyle}
             draggable="false"
-            title="Ctrl[Command] + S"
+            title={CMD + 'S'}
           >
             <Icon name="save-file" />Save
           </a>
@@ -4709,7 +4690,7 @@ var Index = React.createClass({
             <SaveToServiceBtn
               type="network"
               disabled={!selectedCount}
-              onComplete={self.hideChooseFileTypeDialog}
+              onComplete={self.hideExportDialog}
               getFilename={self.getInputValue} data={self.getExportSessions}
             />
             <button
@@ -4721,7 +4702,7 @@ var Index = React.createClass({
               onClick={self.exportBySave}
               disabled={!selectedCount}
             >
-              Export Selected ({selectedCount})
+              Export {state.isSaved ? 'Saved' : 'Selected'} ({selectedCount})
             </button>
           </ModalFooter>
         </Dialog>
@@ -4733,7 +4714,7 @@ var Index = React.createClass({
               Times:
               <input
                 ref="replayCount"
-                placeholder={'<= ' + MAX_REPLAY_COUNT}
+                placeholder={'1-' + MAX_REPEAT_TIMES}
                 onKeyDown={replayRepeat}
                 onChange={self.replayCountChange}
                 value={state.replayCount}
@@ -4844,7 +4825,7 @@ var Index = React.createClass({
         />
         <iframe name="dlFrame" style={HIDE_STYLE} />
         <form
-          ref="exportSessionsForm"
+          ref="exportForm"
           action="cgi-bin/sessions/export"
           style={HIDE_STYLE}
           method="post"

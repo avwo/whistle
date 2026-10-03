@@ -7,6 +7,7 @@ var KVDialog = require('./kv-dialog');
 var Icon = require('./icon');
 
 var isStr = util.isStr;
+var getPluginCgiUrl = util.getPluginCgiUrl;
 
 var showLoading = function(time) {
   return time && (Date.now() - time > 800);
@@ -46,7 +47,7 @@ var SyncDialog = React.createClass({
     self.loadingRules = Date.now() || 1;
     rulesUrl = addHistory(rulesUrl, history);
     var loadRules = dataCenter.createCgi(
-      util.getPluginCgiUrl(self.state.moduleName, rulesUrl)
+      getPluginCgiUrl(self.state.moduleName, rulesUrl)
     );
     loadRules(function (data, xhr) {
       self.loadingRules = false;
@@ -68,7 +69,7 @@ var SyncDialog = React.createClass({
     self.loadingValues = Date.now() || 1;
     valuesUrl = addHistory(valuesUrl, history);
     var loadValues = dataCenter.createCgi(
-      util.getPluginCgiUrl(self.state.moduleName, valuesUrl)
+      getPluginCgiUrl(self.state.moduleName, valuesUrl)
     );
     loadValues(function (data, xhr) {
       self.loadingValues = false;

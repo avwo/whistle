@@ -160,7 +160,7 @@ var Select = React.createClass({
         for (++i; i < len; i++) {
           var item = options[i];
           var itemVal = item.value;
-          if (LABEL_RE.test(item.value)) {
+          if (LABEL_RE.test(itemVal)) {
             i--;
             break;
           }
@@ -189,7 +189,7 @@ var Select = React.createClass({
         onChange={self.onChange} onClick={props.onClick}>
         {selectPlaceholder ? <option value="">{selectPlaceholder}</option> : null}
         {self.renderOptions(options)}
-        {showCustom ? <option value=" ">+Custom</option> : null}
+        {showCustom ? <option value=" ">+Create</option> : null}
         {showCustom ? <Prompt ref="prompt" placeholder={props.placeholder} onCreate={onCreate} isNum={props.isNum} isHeader={props.isHeader} maxLength={props.maxLength} /> : null}
       </select>
     );

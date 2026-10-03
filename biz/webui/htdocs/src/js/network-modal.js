@@ -135,8 +135,7 @@ function checkUrl(item, opts) {
   if (checkKeyword((item.isHttps ? 'tunnel://' : '') + item.url, opts)) {
     return true;
   }
-  var rawUrl = util.getRawUrl(item);
-  return checkKeyword(rawUrl, opts);
+  return checkKeyword(util.getRawUrl(item), opts);
 }
 
 function checkData(item, opts) {

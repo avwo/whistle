@@ -88,7 +88,7 @@ var HttpsSettings = React.createClass({
             </div>
             <div className="w-rootca-url-wrap">
               <select className="w-rootca-url" value={caFullUrl} onChange={self.selectCAUrl}>
-                <option value="">{caShortUrl} (PROXY REQUIRED)</option>
+                <option value="">{caShortUrl} (Set proxy first)</option>
                 {props.caUrlList.map(function (url) {
                   url = url[0] === 'h' ? url : 'http://' + url + ':' + props.port;
                   url += '/cgi-bin/rootca' + (caType === 'cer' ? '' : '?type=' + caType);
@@ -127,7 +127,7 @@ var HttpsSettings = React.createClass({
               <p>
                 <label>
                   <input
-                    checked={dataCenter.supportH2 && props.enableHttp2}
+                    checked={props.enableHttp2}
                     onChange={props.onEnableHttp2}
                     type="checkbox"
                     className="w-vm"

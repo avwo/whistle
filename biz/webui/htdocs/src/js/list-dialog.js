@@ -1,6 +1,5 @@
 require('../css/list-dialog.css');
 var React = require('react');
-var findDOMNode = require('react-dom').findDOMNode;
 var util = require('./util');
 var Dialog = require('./dialog');
 var Tabs = require('./tabs');
@@ -50,10 +49,10 @@ var ListDialog = React.createClass({
   },
   donwload: function(data) {
     var refs = this.refs;
-    var input = findDOMNode(refs.filename);
-    var form = findDOMNode(refs.exportData);
-    findDOMNode(refs.exportName).value = input.value.trim();
-    findDOMNode(refs.data).value = util.strfy(data);
+    var input = refs.filename;
+    var form = refs.exportData;
+    refs.exportName.value = input.value.trim();
+    refs.data.value = util.strfy(data);
     form.submit();
     input.value = '';
   },
@@ -61,7 +60,7 @@ var ListDialog = React.createClass({
     this.setState({ filename: util.formatFilename(e.target.value) });
   },
   getInputValue: function () {
-    return util.formatFilename(findDOMNode(this.refs.filename).value.trim());
+    return util.formatFilename(this.refs.filename.value.trim());
   },
   getRuleList: function (cb) {
     var self = this;
@@ -179,9 +178,7 @@ var ListDialog = React.createClass({
       self.setState({ checkedItems: checkedItems });
     }
     !props.onConfirm && setTimeout(function () {
-      var input = findDOMNode(self.refs.filename);
-      input.focus();
-      input.select();
+      util.focus(self.refs.filename);
     }, 500);
 
     if (rulesModal) {
@@ -245,7 +242,7 @@ var ListDialog = React.createClass({
   onShare: function(err) {
     if (!err) {
       this.refs.dialog.hide();
-      findDOMNode(this.refs.filename).value = '';
+      this.refs.filename.value = '';
     }
   },
   render: function () {

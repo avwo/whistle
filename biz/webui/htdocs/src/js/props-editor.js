@@ -9,6 +9,7 @@ var CloseBtn = require('./close-btn');
 var ModalFooter = require('./modal-footer');
 var UploadForm = require('./upload-form');
 var showError = require('./message').error;
+var ModalHeader = require('./modal-header');
 
 var MAX_FILE_SIZE = 1024 * 1024 * 20;
 var MAX_NAME_LEN = 128;
@@ -22,6 +23,7 @@ var attr = util.attr;
 var toString = util.toString;
 var encodeCom = util.encodeURIComponent;
 var toKeys = util.toKeys;
+var focus = util.focus;
 
 var highlight = function (name) {
   return name === 'x-forwarded-for' || W2_HEADER_RE.test(name);
@@ -126,7 +128,7 @@ var PropsEditor = React.createClass({
     var nameInput = self.refs.name;
     var name = nameInput.value.trim();
     if (!name) {
-      nameInput.focus();
+      focus(nameInput);
       return showError('The name is required');
     }
     var valueInput = self.refs.valueInput;
@@ -151,7 +153,7 @@ var PropsEditor = React.createClass({
     var nameInput = self.refs.name;
     var name = nameInput.value.trim();
     if (!name) {
-      nameInput.focus();
+      focus(nameInput);
       return showError('The name is required');
     }
     var valueInput = self.refs.valueInput;
@@ -199,8 +201,7 @@ var PropsEditor = React.createClass({
       }
     }
     setTimeout(function () {
-      nameInput.select();
-      nameInput.focus();
+      focus(nameInput);
     }, 600);
   },
   onRemove: function (e) {
@@ -290,9 +291,7 @@ var PropsEditor = React.createClass({
         fileData: null
       },
       function () {
-        var valueInput = self.refs.valueInput;
-        valueInput.select();
-        valueInput.focus();
+        focus(self.refs.valueInput);
       }
     );
     e.stopPropagation();
@@ -312,7 +311,6 @@ var PropsEditor = React.createClass({
     var allowUploadFile = props.allowUploadFile;
     var data = state.data || '';
     var text = data ? 'Save' : 'Add';
-    var btnText = text + (isHeader ? ' Header' : ' Param');
     var cbBtnText = props.callback ? text + ' & Send' : null;
     var handle = data ? self.edit : self.add;
 
@@ -379,8 +377,11 @@ var PropsEditor = React.createClass({
           </button>
         )}
         <Dialog ref="composer" wstyle="w-com-dialog">
+          <ModalHeader>
+              {data ? 'Edit' : 'Add'}
+              {isHeader ? ' Header' : ' Param'}
+          </ModalHeader>
           <div className="modal-body">
-            <CloseBtn />
             <label>
               Name:
               <input
@@ -393,11 +394,7 @@ var PropsEditor = React.createClass({
             <div>
               Value:
               <div
-                className={
-                  allowUploadFile
-                    ? 'w-props-editor-upload mt-5'
-                    : 'w-props-editor-form mt-5'
-                }
+                className={'w-props-editor-' + (allowUploadFile ? 'upload' : 'form') + ' mt-5'}
               >
                 <div
                   onClick={self.onUpload}
@@ -443,7 +440,7 @@ var PropsEditor = React.createClass({
               className="btn btn-primary"
               onClick={handle}
             >
-              {btnText}
+              {text}
             </button>
           </ModalFooter>
         </Dialog>

@@ -10,6 +10,7 @@ var JSONViewer = require('./json-viewer');
 var dataCenter = require('./data-center');
 var PluginsTabs = require('./plugins-tabs');
 var Tips = require('./panel-tips');
+var mixin = require('./detail-mixin');
 
 var COOKIE_HEADERS = [
   'Name',
@@ -25,8 +26,10 @@ var COOKIE_HEADERS = [
 ];
 var EMPTY_COOKIES = { message: 'No response cookies' };
 var getHide = util.getHide;
+var CRLF2 = '\r\n\r\n';
 
 var ResDetail = React.createClass({
+  mixins: [mixin],
   getInitialState: function () {
     return {
       initedHeaders: false,
@@ -56,16 +59,6 @@ var ResDetail = React.createClass({
     util.on('resTabsChange', function () {
       self.setState({});
     });
-  },
-  shouldComponentUpdate: util.scu,
-  onClickBtn: function (btn) {
-    this.selectBtn(btn);
-    this.setState({});
-  },
-  selectBtn: function (btn) {
-    btn.active = true;
-    this.state.btn = btn;
-    this.state['inited' + btn.name] = true;
   },
   render: function () {
     var self = this;
@@ -164,7 +157,7 @@ var ResDetail = React.createClass({
       if (status != null) {
         headersStr = util.getRawResHeaders(modal);
         trailerStr = trailers ? util.objToStr(trailers, res.rawTrailerNames) : '';
-        raw = headersStr + '\r\n\r\n' + body;
+        raw = headersStr + CRLF2 + body;
         var rawType = !modal.resError && util.getRawType(headers);
         var type = util.getContentType(rawType);
         isJson = type === 'JSON';
@@ -198,17 +191,15 @@ var ResDetail = React.createClass({
         modal.endTime &&
         !/^ws/.test(modal.url)
       ) {
-        tips = { url: modal.url };
-        if (res.size < 5120) {
-          tips.message = 'No response body';
-        } else {
-          var exceedTips = util.getExceedTips();
+        var exceedTips;
+        if (res.size >= 5120) {
+          exceedTips = util.getExceedTips();
           raw += '(' + exceedTips + ')';
-          tips.message = exceedTips;
         }
+        tips = { url: modal.url, message: exceedTips || 'No response body' };
       }
       if (trailerStr) {
-        raw += '\r\n\r\n' + trailerStr;
+        raw += CRLF2 + trailerStr;
       }
     }
 
@@ -228,16 +219,10 @@ var ResDetail = React.createClass({
 
     var pluginsTab = btns[8];
     var tabs = dataCenter.getResTabs();
-    var len = props.inComposer ? 0 : tabs.length;
-    pluginsTab.hide = !len;
-    if (len && len === 1) {
-      pluginsTab.display = pluginsTab.title = tabs[0].name;
-      pluginsTab.className = 'w-detail-custom-tab';
-    } else {
-      pluginsTab.display = undefined;
-      pluginsTab.title = undefined;
-      pluginsTab.className = undefined;
-    }
+    var isHide = function(index) {
+      return name !== btns[index].name;
+    };
+    this.setupPluginsTab(tabs, pluginsTab, props.inComposer ? 0 : tabs.length);
     return (
       <div
         className={
@@ -254,14 +239,14 @@ var ResDetail = React.createClass({
             base64={base64}
             session={modal}
             className="fill"
-            hide={name != btns[0].name}
+            hide={isHide(0)}
           />
         ) : null}
         {state.initedHeaders ? (
           <div
             className={
               'fill w-auto' +
-              getHide(name != btns[1].name)
+              getHide(isHide(1))
             }
           >
             <Properties modal={rawHeaders || headers} enableViewSource="1" />
@@ -278,7 +263,7 @@ var ResDetail = React.createClass({
             value={body}
             session={modal}
             className="fill"
-            hide={name != btns[3].name}
+            hide={isHide(3)}
           />
         ) : null}
         {state.initedJSONView ? (
@@ -287,7 +272,7 @@ var ResDetail = React.createClass({
             data={json}
             tips={tips}
             session={modal}
-            hide={name != btns[4].name}
+            hide={isHide(4)}
           />
         ) : null}
         {state.initedHexView ? (
@@ -299,14 +284,14 @@ var ResDetail = React.createClass({
             value={bin}
             session={modal}
             className="fill n-monospace"
-            hide={name != btns[5].name}
+            hide={isHide(5)}
           />
         ) : null}
         {state.initedCookies ? (
           <div
             className={
               'fill w-auto w-detail-res-cookies' +
-              getHide(name != btns[6].name)
+              getHide(isHide(6))
             }
           >
             {cookies && cookies.length ? <Table head={COOKIE_HEADERS} modal={cookies} /> : (headers ? <Tips data={EMPTY_COOKIES} /> : null)}
@@ -316,7 +301,7 @@ var ResDetail = React.createClass({
           <div
             className={
               'fill w-auto' +
-              getHide(name != btns[7].name)
+              getHide(isHide(7))
             }
           >
             <Properties modal={rawTrailers || trailers} enableViewSource="1" />

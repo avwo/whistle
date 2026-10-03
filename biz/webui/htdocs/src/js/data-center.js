@@ -858,7 +858,6 @@ exports.getInitialData = function (callback) {
         updateWhistleId(server);
         hasUpdater = server && server.hasUpdater;
         exports.version = server && server.version;
-        exports.supportH2 = data.supportH2;
         exports.isWin = server && server.isWin;
         updateRulesInfo(data.rules);
         exports.custom1 = data.custom1;
@@ -1192,7 +1191,6 @@ function startLoadData() {
       exports.whistleName = data.wName;
       exports.account = data.account;
       exports.disableInstaller = data.disableInstaller;
-      exports.supportH2 = data.supportH2;
       exports.version = server && server.version;
       exports.isWin = server && server.isWin;
       updateRulesInfo(data);

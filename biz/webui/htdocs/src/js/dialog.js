@@ -26,10 +26,8 @@ var Dialog = React.createClass({
     }
     container.on('hide.bs.modal', function() {
       self._isVisible = false;
-      self.onVisibleChange();
     }).on('show.bs.modal', function() {
       self._isVisible = true;
-      self.onVisibleChange();
     });
     if (isFunc(props.onShow)) {
       container.on('shown.bs.modal', function() {
@@ -80,7 +78,6 @@ var Dialog = React.createClass({
       return;
     }
     self._isVisible = true;
-    self.onVisibleChange();
     container.modal(
       self.props.disableBackdrop
         ? {
@@ -89,12 +86,6 @@ var Dialog = React.createClass({
         }
         : 'show'
     );
-  },
-  onVisibleChange: function () {
-    var onVisibleChange = this.props.onVisibleChange;
-    if (isFunc(onVisibleChange)) {
-      onVisibleChange(this._isVisible);
-    }
   },
   isVisible: function () {
     return this._isVisible;

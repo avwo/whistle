@@ -31,6 +31,13 @@ var borderColor;
 var THEMES = ['auto', 'dark', 'light'];
 var SELECT_TAG = '<select class="form-control"></select>';
 
+var findElem = function(selector) {
+  return dialog.find(selector);
+};
+var getDnsSelect = function() {
+  return findElem('.w-dns-order select');
+};
+
 var setTheme = function() {
   var newTheme = isDarkMode() ? 'dark' : 'light';
   if (theme === newTheme) {
@@ -145,43 +152,55 @@ function selectDnsOption(order) {
     return;
   }
   curOrder = order;
-  dialog.find('.w-dns-order select').val(curOrder);
+  getDnsSelect().val(curOrder);
+}
+
+function createOption(label, value) {
+  return '<option value="' + value + '">' + label + '</option>';
 }
 
 function getDnsOrderOptions(verbatim) {
   var result = [];
   if (verbatim) {
     result.push(
-      '<option value="5">Verbatim</option>',
-      '<option value="2">IPv4-first</option>'
+      createOption('Verbatim', '5'),
+      createOption('IPv4-first', '2')
     );
     if (verbatim === 2) {
-      result.push('<option value="3">IPv6-first</option>');
+      result.push(createOption('IPv6-first', '3'));
     }
   } else {
-    result.push('<option value="0">Default</option>');
+    result.push(createOption('Default', '0'));
   }
-  result.push('<option value="' + IPV6_ONLY_VAL + '">IPv6-only</option>');
+  result.push(createOption('IPv6-only', IPV6_ONLY_VAL));
   return result.join('');
 }
 
 function createSelect(list) {
   list = list.map(function(item) {
-    return '<option value="' + item + '">' + item[0].toUpperCase() + item.substring(1) + '</option>';
+    return createOption(item[0].toUpperCase() + item.substring(1), item);
   });
   return SELECT_TAG.replace('</', list.join('') + '</');
+}
+
+function createItem(label, value) {
+  return '<h5><strong>' + label + ':</strong> ' + (value || '') + '</h5>';
+}
+
+function createInfoItem(label, id) {
+  return createItem(label, '<span id="' + id + '">-</span>');
 }
 
 function createDialog() {
   if (!dialog) {
     var proxyInfoList = [
-      '<h5><strong>Uptime:</strong> <span id="whistleUptime">-</span></h5>',
-      '<h5><strong>All Requests:</strong> <span id="whistleAllRequests">-</span></h5>',
-      '<h5><strong>All QPS:</strong> <span id="whistleAllQps">-</span></h5>',
-      '<h5><strong>Requests:</strong> <span id="whistleRequests">-</span></h5>',
-      '<h5><strong>QPS:</strong> <span id="whistleQps">-</span></h5>',
-      '<h5><strong>CPU:</strong> <span id="whistleCpu">-</span></h5>',
-      '<h5><strong>Memory:</strong> <span id="whistleMemory">-</span></h5>'
+      createInfoItem('Uptime', 'whistleUptime'),
+      createInfoItem('All Requests', 'whistleAllRequests'),
+      createInfoItem('All QPS', 'whistleAllQps'),
+      createInfoItem('Requests', 'whistleRequests'),
+      createInfoItem('QPS', 'whistleQps'),
+      createInfoItem('CPU', 'whistleCpu'),
+      createInfoItem('Memory', 'whistleMemory')
     ];
     dialog = $(
       '<div class="modal fade w-online-dialog">' +
@@ -200,14 +219,14 @@ function createDialog() {
       '<div class="modal-footer">' + win.DISSMISS_BTN +
       '</div></div></div></div>'
     ).appendTo(document.body);
-    var appearanceSelect = dialog.find('.w-theme select');
+    var appearanceSelect = findElem('.w-theme select');
     appearanceSelect.on('change', function(e) {
       var val = e.target.value;
       storage.set('appearanceMode', val);
       setAppearanceMode(val);
     });
     appearanceSelect.val(appearanceMode);
-    dialog.find('.w-dns-order select').on('change', function(e) {
+    getDnsSelect().on('change', function(e) {
       var target = e.target;
       var order = +target.value;
       self._pendingDnsOrder = true;
@@ -275,6 +294,7 @@ var Online = React.createClass({
   checkServerChanged: function (data) {
     data.mac = data.mac || '';
     var self = this;
+    var dialog = self.refs.confirmReload;
     if (self.macAddr === undefined) {
       self.macAddr = data.mac;
       self.serverPort = data.port;
@@ -294,9 +314,9 @@ var Online = React.createClass({
       self.rulesMode !== data.rulesMode ||
       self.multiEnv !== data.multiEnv
     ) {
-      self.refs.confirmReload.show();
+      dialog.show();
     } else {
-      self.refs.confirmReload.hide();
+      dialog.hide();
     }
   },
   showServerInfo: function () {
@@ -322,7 +342,7 @@ var Online = React.createClass({
     }
     var addInfo = function(name, value, prefix) {
       if (value) {
-        info.push('<h5><strong>' + name + ':</strong> ' + (prefix || '') + value + '</h5>');
+        info.push(createItem(name, (prefix || '') + value));
       }
     };
     addInfo('Host', escape(server.host));
@@ -343,18 +363,18 @@ var Online = React.createClass({
     addInfo('HTTP Port', server.httpPort);
     addInfo('HTTPS Port', server.httpsPort);
     if (server.ipv4.length) {
-      info.push('<h5><strong>IPv4:</strong></h5>');
+      info.push(createItem('IPv4'));
       info.push('<p>' + server.ipv4.join('<br/>') + '</p>');
     }
     if (server.ipv6.length) {
-      info.push('<h5><strong>IPv6:</strong></h5>');
+      info.push(createItem('IPv6'));
       info.push('<p>' + server.ipv6.join('<br/>') + '</p>');
     }
     createDialog();
-    var ctn = dialog.find('.w-online-ctn').html(info.join(''));
+    var ctn = findElem('.w-online-ctn').html(info.join(''));
     if (curVerbatim !== server.verbatim) {
       curVerbatim = server.verbatim;
-      dialog.find('.w-dns-order select').html(getDnsOrderOptions(server.verbatim));
+      getDnsSelect().html(getDnsOrderOptions(server.verbatim));
     }
     !self._pendingDnsOrder && selectDnsOption(server.dnsOrder);
     ctn.find('h5.w-system-host').attr('title', server.host);
@@ -362,14 +382,14 @@ var Online = React.createClass({
       self._initProxyInfo = true;
       var curServerInfo;
       var isHide = true;
-      var dnsElem = dialog.find('.w-online-dns');
-      var shortcutsElem = dialog.find('.w-shortcuts-settings');
+      var dnsElem = findElem('.w-online-dns');
+      var shortcutsElem = findElem('.w-shortcuts-settings');
       var hideDns = true;
 
       dnsElem.on('click', function () {
         self.refs.dnsDialog.show(dataCenter.getServerInfo());
       });
-      dialog.find('.w-view-dns').on('click', function() {
+      findElem('.w-view-dns').on('click', function() {
         win.confirm('Do you confirm clearing the DNS cache?', function(sure) {
           if (sure) {
             dataCenter.rules.clearDnsCache(function (data, xhr) {
@@ -406,21 +426,21 @@ var Online = React.createClass({
         if (!pInfo) {
           if (!isHide) {
             isHide = true;
-            dialog.find('.w-online-info').hide();
+            findElem('.w-online-info').hide();
           }
           return;
         }
         if (isHide) {
           isHide = false;
-          dialog.find('.w-online-info').show();
+          findElem('.w-online-info').show();
         }
-        var reqElem = dialog.find('#whistleRequests');
-        var uiReqElem = dialog.find('#whistleAllRequests');
-        var cpuElem = dialog.find('#whistleCpu');
-        var memElem = dialog.find('#whistleMemory');
-        var uptimeElem = dialog.find('#whistleUptime');
-        var qpsElem = dialog.find('#whistleQps');
-        var uiQpsElem = dialog.find('#whistleAllQps');
+        var reqElem = findElem('#whistleRequests');
+        var uiReqElem = findElem('#whistleAllRequests');
+        var cpuElem = findElem('#whistleCpu');
+        var memElem = findElem('#whistleMemory');
+        var uptimeElem = findElem('#whistleUptime');
+        var qpsElem = findElem('#whistleQps');
+        var uiQpsElem = findElem('#whistleAllQps');
         var memUsage = pInfo.memUsage;
         var totalTunnelRequests = pInfo.totalTunnelRequests;
         var tunnelRequests = pInfo.tunnelRequests;
@@ -437,7 +457,6 @@ var Online = React.createClass({
         var totalAllQps = pInfo.totalAllQps;
         var tunnelQps = pInfo.tunnelQps;
         uptimeElem.text(formatTime(pInfo.uptime));
-        uptimeElem.parent().attr('title', pInfo.uptime);
         reqElem
           .parent()
           .attr(

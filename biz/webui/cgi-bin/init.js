@@ -21,7 +21,6 @@ module.exports = function(req, res) {
     custom1: properties.get('Custom1'),
     custom2: properties.get('Custom2'),
     hasInvalidCerts: ca.hasInvalidCerts,
-    supportH2: config.enableH2,
     lastSvrLogId: lastSvrLog && lastSvrLog.id,
     lastDataId: proxy.getLastDataId(),
     clientId: util.getClientId(),

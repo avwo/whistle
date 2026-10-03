@@ -59,7 +59,7 @@ var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
 var MAX_UPLOAD_SIZE = MAX_BODY_SIZE * 2;
 var MAX_COUNT = 64;
-var MAX_REPEAT_TIMES = 100;
+var MAX_REPEAT_TIMES = util.MAX_REPEAT_TIMES;
 var RULES_HEADER = 'x-whistle-rule-value';
 
 var getTabClass = function (active) {
@@ -261,12 +261,7 @@ var Composer = React.createClass({
     trigger('composerDidMount');
   },
   repeatTimesChange: function (e) {
-    var count = e.target.value.replace(/^\s*0*|[^\d]+/, '');
-    var repeatTimes = count.slice(0, 3);
-    if (repeatTimes > MAX_REPEAT_TIMES) {
-      repeatTimes = MAX_REPEAT_TIMES;
-    }
-    this.setState({ repeatTimes: repeatTimes });
+    this.setState({ repeatTimes: util.getRepeatTimes(e) });
   },
   repeatRequest: function(e) {
     if (util.checkSubmit(e)) {
@@ -725,16 +720,6 @@ var Composer = React.createClass({
   },
   toggleH2: function (e) {
     var self = this;
-    if (!dataCenter.supportH2) {
-      win.confirm(
-        'HTTP/2 requires Node.js LTS version v16+. Please upgrade',
-        function (sure) {
-          sure && window.open('https://nodejs.org/');
-          self.setState({});
-        }
-      );
-      return;
-    }
     var useH2 = e.target.checked;
     storage.set('useH2InComposer', useH2 ? 1 : '');
     self.setState({ useH2: useH2 });
@@ -780,9 +765,7 @@ var Composer = React.createClass({
     self._isReplay = isReplay;
     findDOMNode(refs.repeatBtn).innerHTML = isReplay ? 'Replay' : 'Send';
     setTimeout(function () {
-      var input = findDOMNode(refs.repeatTimes);
-      input.select();
-      input.focus();
+      util.focus(refs.repeatTimes);
     }, 300);
   },
   execute: function (e, times) {
@@ -1307,7 +1290,7 @@ var Composer = React.createClass({
                     disabled={pending}
                     type="checkbox"
                     onChange={self.toggleH2}
-                    checked={dataCenter.supportH2 && useH2}
+                    checked={useH2}
                   />
                   HTTP/2
                 </label>
@@ -1566,7 +1549,7 @@ var Composer = React.createClass({
               Times:
               <input
                 ref="repeatTimes"
-                placeholder={'<= ' + MAX_REPEAT_TIMES}
+                placeholder={'1-' + MAX_REPEAT_TIMES}
                 onKeyDown={self.repeatRequest}
                 onChange={self.repeatTimesChange}
                 value={repeatTimes}

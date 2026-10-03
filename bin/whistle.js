@@ -15,6 +15,11 @@ var colors = require('colors');
 var error = util.error;
 var info = util.info;
 var OPTIONS = util.DEFAULT_OPTIONS;
+var version = process.version;
+
+if (+version.substring(1).split('.')[0] < 16) {
+  error('[!] Node.js@' + version + ' is too old, please upgrade to v16 or above: https://nodejs.org/');
+}
 
 function getLatestVersion(options, cb, index) {
   var done;

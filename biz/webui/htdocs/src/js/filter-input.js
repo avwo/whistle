@@ -77,9 +77,7 @@ var FilterInput = React.createClass({
     }
   },
   focus: function() {
-    var input = this.refs.input;
-    input.select();
-    input.focus();
+    util.focus(this.refs.input);
   },
   addHint: function () {
     var self = this;
@@ -331,7 +329,7 @@ var FilterInput = React.createClass({
           onBlur={self.hideHints}
           className="w-filter-input"
           maxLength={MAX_LEN}
-          placeholder={'Type filter text' + (props.placeholder || '')}
+          placeholder={props.placeholder || 'Type filter text'}
         />
         <button
           onMouseDown={preventBlur}
@@ -339,7 +337,7 @@ var FilterInput = React.createClass({
           style={getHideStyle(!state.filterText)}
           type="button"
           className="close w-clear-input"
-          title="Ctrl[Command]+D"
+          title={util.CMD + 'D'}
         >&times;</button>
       </div>
     );

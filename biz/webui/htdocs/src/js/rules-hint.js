@@ -76,19 +76,18 @@ var DEL_HINTS = [
 
 var LINE_PROPS_HINTS = ['important', 'safeHtml', 'strictHtml', 'disableAutoCors', 'disableUserLogin', 'enableUserLogin',
   'internal', 'internalOnly', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyHostOnly', 'proxyTunnel', 'weakRule', 'enableBigData'];
-
-var ENABLE_HINTS = ['abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData', 'br', 'gzip', 'deflate',
-  'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser', 'flushHeaders', 'forHttp', 'forHttps',
-  'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'showHost', 'ignoreSend', 'ignoreReceive',
-  'pauseSend', 'pauseReceive', 'inspect', 'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache',
-  'keepAllCache', 'keepClientId', 'safeHtml', 'strictHtml', 'multiClient', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'tunnelHeadersFirst',
-  'useLocalHost', 'useSafePort', 'userLogin', 'weakRule', 'socket', 'websocket'];
-var DISABLE_HINTS = ['301', 'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'autoCors',  'ajax', 'bigData', 'capture', 'captureIp', 'captureStream',
-  'clientCert', 'clientId', 'clientIp', 'customParser', 'cache', 'dnsCache', 'csp', 'cookies', 'reqCookies', 'resCookies', 'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite',
-  'forceResWrite', 'gzip', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError', 'interceptConsole', 'internalProxy', 'proxyFirst',
-  'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepAlive', 'keepClientId', 'keepH2Session', 'safeHtml', 'strictHtml',
-  'multiClient', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'secureOptions', 'servername',
-  'timeout', 'trailerHeader', 'trailers', 'tunnelAuthHeader', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule'];
+var COMMON_HINTS = [
+  'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData',
+  'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser',
+  'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError',
+  'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepClientId',
+  'safeHtml', 'strictHtml', 'multiClient', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules',
+  'responseWithMatchedRules', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule', 'gzip'
+];
+var ENABLE_HINTS = COMMON_HINTS.concat(['br', 'deflate', 'showHost', 'ignoreSend', 'ignoreReceive', 'pauseSend', 'pauseReceive', 'inspect', 'socket', 'websocket']);
+var DISABLE_HINTS = ['301'].concat(COMMON_HINTS).concat(['autoCors',  'ajax', 'cache', 'dnsCache', 'csp', 'cookies', 'reqCookies', 'resCookies',
+  'keepAlive', 'keepH2Session', 'proxyConnection', 'ua', 'proxyUA', 'referer', 'rejectUnauthorized', 'secureOptions', 'servername',
+  'timeout', 'trailerHeader', 'trailers', 'tunnelAuthHeader']);
 var SHIFT_PREFIX = 'Shift-';
 var CHARS = [
   '-',

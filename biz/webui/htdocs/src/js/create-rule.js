@@ -177,23 +177,11 @@ var CreateRuleDialog = React.createClass({
     var regexp = state.regexp || '';
     var pattern = '';
     if (patternType === 'regexp') {
-      var result = /^\/(.*)\/(?:i?)$/.exec(regexp);
-      if (result) {
-        pattern = result[1] ? result[0] : '';
-      } else {
-        var endTag;
-        if (regexp[0] === '/') {
-          regexp = regexp.substring(1);
-          if ((result = /(\\*)\/(?:i?)$/.exec(regexp)) && !result[1]) {
-            regexp = regexp.substring(0, result.index);
-            endTag = result[0];
-          }
-        }
-        endTag = endTag || '/' + ignore;
-        pattern = regexp ? '/' + regexp + endTag : '';
+      if (regexp) {
+        pattern = '/' + regexp.replace(/\//g, '\\$&') +  '/' + ignore;
       }
     } else if (patternType === 'contains') {
-      regexp = regexp.replace(/[|\\{}()[\]^$+?*.]/g, '\\$&');
+      regexp = regexp.replace(/[|/\\{}()[\]^$+?*.]/g, '\\$&');
       pattern = regexp && '/' + regexp + '/' + ignore;
     } else {
       var url = state.patternUrl || '';

@@ -453,10 +453,6 @@
   color: var(--c-default);
 }
 
-.w-req-protocol-tag {
-  border: 1px solid var(--c-tag);
-}
-
 .w-req-tag {
   border: 1px solid var(--c-ok);
 }

@@ -38,8 +38,9 @@ var isFunc = win.isFunc;
 var isStr = win.isStr;
 var trigger = events.trigger.bind(events);
 var decodeCom = decodeURIComponent;
+var CRLF2 = '\r\n\r\n';
 
-exports.CMD = 'Ctrl[Command] + ';
+exports.CMD = 'Ctrl（Mac：⌘) + ';
 exports.trigger = trigger;
 exports.on = events.on.bind(events);
 exports.one = events.one.bind(events);
@@ -159,6 +160,23 @@ function removeSpaces(str) {
 }
 
 exports.removeSpaces = removeSpaces;
+
+exports.focus = function(input) {
+  input.focus();
+  input.select();
+};
+
+var MAX_REPEAT_TIMES = 100;
+
+exports.MAX_REPEAT_TIMES = MAX_REPEAT_TIMES;
+
+exports.getRepeatTimes = function(e) {
+  var count = e.target.value.replace(/[^\d]+/, '').replace(/^\s*0+/, '');
+  var repeatTimes = count.slice(0, 3);
+  if (repeatTimes > MAX_REPEAT_TIMES) {
+    repeatTimes = MAX_REPEAT_TIMES;
+  }
+};
 
 function isArr(obj) {
   return Array.isArray(obj);
@@ -866,6 +884,9 @@ exports.upperFirst = function(str) {
 exports.ensureVisible = function (elem, container, init) {
   elem = $(elem);
   container = $(container);
+  if (!elem.length || !container.length) {
+    return;
+  }
   var top = elem.offset().top - container.offset().top;
   if (!top) {
     return;
@@ -995,7 +1016,7 @@ exports.getRawReqHeaders = getRawReqHeaders;
 exports.getRawResHeaders = getRawResHeaders;
 
 exports.getRawReq = function(modal) {
-  return modal ? (getRawReqHeaders(modal) + '\r\n\r\n' + getBody(modal.req, true)) : '';
+  return modal ? (getRawReqHeaders(modal) + CRLF2 + getBody(modal.req, true)) : '';
 };
 
 exports.getRawRes = function(modal) {
@@ -1005,7 +1026,7 @@ exports.getRawRes = function(modal) {
     return '';
   }
   var trailer = res.trailers && objToStr(res.trailers, res.rawTrailerNames);
-  return getRawResHeaders(modal) + '\r\n\r\n' + getBody(res) + (trailer ? '\r\n\r\n' + trailer : '');
+  return getRawResHeaders(modal) + CRLF2 + getBody(res) + (trailer ? CRLF2 + trailer : '');
 };
 
 function toLowerCase(str) {
@@ -2596,7 +2617,7 @@ exports.base64ToBytes = base64ToBytes;
 
 var UPLOAD_TYPE_RE = /^\s*multipart\//i;
 var BOUNDARY_RE = /boundary=(?:"([^"]+)"|([^;]+))/i;
-var BODY_SEP = strToByteArray('\r\n\r\n');
+var BODY_SEP = strToByteArray(CRLF2);
 var NAME_RE = /name=(?:"([^"]+)"|([^;]+))/i;
 var FILENAME_RE = /filename=(?:"([^"]+)"|([^;]+))/i;
 var TYPE_RE = /^\s*content-type:\s*([^\s]+)/i;
@@ -2734,7 +2755,7 @@ function getMultiPart(part) {
   if (!header) {
     return;
   }
-  header = strToByteArray(header + '\r\n\r\n');
+  header = strToByteArray(header + CRLF2);
   return data ? concatByteArray(header, data, CRLF_BUF) : header;
 }
 
@@ -2910,20 +2931,21 @@ function parseResCookie(cookie) {
     secure: false
   };
   for (var i in cookie) {
+    var value = cookie[i];
     switch (i.toLowerCase()) {
     case 'domain':
-      result.domain = cookie[i];
+      result.domain = value;
       break;
     case 'path':
-      result.path = cookie[i];
+      result.path = value;
       break;
     case 'expires':
-      result.expires = cookie[i];
+      result.expires = value;
       break;
     case 'max-age':
-      result['max-age'] = cookie[i];
-      result.maxAge = cookie[i];
-      result.maxage = cookie[i];
+      result['max-age'] = value;
+      result.maxAge = value;
+      result.maxage = value;
       break;
     case 'httponly':
       result.httpOnly = true;
@@ -2936,13 +2958,13 @@ function parseResCookie(cookie) {
       result.partitioned = true;
       break;
     case 'samesite':
-      result.sameSite = cookie[i];
-      result.samesite = cookie[i];
+      result.sameSite = value;
+      result.samesite = value;
       break;
     default:
       if (!result[0]) {
         result.name = i;
-        result.value = cookie[i];
+        result.value = value;
       }
     }
   }

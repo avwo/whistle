@@ -188,12 +188,12 @@ var SETTINGS = [
     'list': [
       [
         'switchTabReverse',
-        CMD + '<--',
+        CMD + '←',
         TOGGLE + ' in reverse order'
       ],
       [
         'switchTab',
-        CMD + '-->',
+        CMD + '→',
         TOGGLE
       ],
       [

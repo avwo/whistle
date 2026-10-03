@@ -138,11 +138,12 @@ var Overview = React.createClass({
     var overviewModal = DEFAULT_OVERVIEW_MODAL;
     var self = this;
     var modal = self.props.modal;
+    var rawUrl;
     var showOnlyMatchRules = self.state.showOnlyMatchRules;
 
     if (modal) {
       overviewModal = {};
-      var rawUrl = util.getRawUrl(modal);
+      rawUrl = util.getRawUrl(modal);
       OVERVIEW.forEach(function (name, i) {
         var prop = OVERVIEW_PROPS[i];
         if (prop) {
@@ -260,7 +261,7 @@ var Overview = React.createClass({
           style={util.getFilteredBg(showOnlyMatchRules)}
         >
           <HelpIcon docsUrl="rules/protocols.html" />
-          All Rules:
+          All Rules
           <label>
             <input
               checked={showOnlyMatchRules}

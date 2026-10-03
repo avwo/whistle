@@ -217,7 +217,6 @@ var HistoryData = React.createClass({
                   <div>{item.url}</div>
                   <p>
                     <i className={'w-req-tag w-req-tag-' + item.method}>{item.method}</i>
-                    <i className="w-req-protocol-tag">{item.protocol}</i>
                     {item.body ? <i className="w-req-type-tag">Body</i> : null}
                   </p>
                 </div>

@@ -14,11 +14,13 @@ var ReqType = require('./req-type');
 var message = require('./message');
 var StatusSelect = require('./status-select');
 var win = require('./win');
+var Select = require('./custom-select');
 
 var MAX_HEADERS_SIZE = 1024 * 128;
 var MAX_BODY_SIZE = 1024 * 256;
 var MAX_RULE_SIZE = 1024 * 32;
 var toKeys = util.toKeys;
+var index = 0;
 
 var TestRule = React.createClass({
   getInitialState: function() {
@@ -105,6 +107,10 @@ var TestRule = React.createClass({
       return this.state.type;
     }
   },
+  onClose: function() {
+    this.state.pending = false;
+    ++index;
+  },
   show: function(data) {
     var self = this;
     var state = self.getReqData(data);
@@ -164,15 +170,23 @@ var TestRule = React.createClass({
   },
   onTestRule: function() {
     var self = this;
-    if (self._pending) {
+    var state = self.state;
+    if (state.pending) {
       return;
     }
-    self._pending = true;
-    var state = self.state;
+    var curIndex = ++index;
+    state.pending = true;
     var rules = state.rules;
     if (!state.disabledMock) {
       rules = '* statusCode://' + state.statusCode + (rules ? '\n' + rules : '');
     }
+    self.setState({});
+    var done = function() {
+      if (curIndex === index) {
+        self.setState({ pending: false });
+      }
+    };
+    setTimeout(done, 6000);
     dataCenter.compose({
       disabledGlobalRules: !state.enableGlobal,
       needResponse: true,
@@ -183,20 +197,27 @@ var TestRule = React.createClass({
       rules: rules,
       isTest: true
     }, function(data, xhr) {
+      if (curIndex !== index) {
+        return;
+      }
       if (!data) {
-        self._pending = false;
+        done();
         return util.showSysErr(xhr);
       }
       var testId = data.res && data.res.testId;
       if (!testId) {
+        done();
         return message.error(data.em || 'Error, please retry');
       }
       dataCenter.getMatchedRules({ testId: testId }, function(matchedRules, xhr2) {
-        self._pending = false;
+        if (curIndex !== index) {
+          return;
+        }
         if (!matchedRules) {
+          done();
           return util.showSysErr(xhr2);
         }
-        self.setState({ matchedRules: matchedRules });
+        self.setState({ matchedRules: matchedRules, pending: false });
         self.refs.matchedRule.show();
       });
     });
@@ -226,12 +247,24 @@ var TestRule = React.createClass({
     self.updateType();
 
     return (
-      <Dialog ref="testRules" wstyle="w-test-rule-dialog" closable>
+      <Dialog ref="testRules" wstyle="w-test-rule-dialog" closable onClose={self.onClose}>
         <ModalHeader>
           Test Rules Matching
         </ModalHeader>
         <div className="modal-body">
           <div className="w-test-rule">
+            <div className="w-rules-form">
+              <label>
+                <Icon name="link" className="mr-10" />
+                Request URL
+              </label>
+              <div className="box w-com-url">
+                <Select value={state.method} onChange={self.onMethodChange} className="w-com-method" options={util.METHODS} />
+                <UrlInput value={url} onChange={self.onUrlChange} hideCustom />
+                <button className="btn w-com-execute btn-primary" onClick={self.onTestRule} disabled={!url || state.pending}>Test</button>
+                <HelpIcon docsUrl="rules/test-rules.html" className="mr-0 ml-10" />
+              </div>
+            </div>
             <div className="w-rules-form">
               <label>
                 <Icon name="list" className="mr-10" />
@@ -254,26 +287,6 @@ var TestRule = React.createClass({
                 Mock Response Status Code
                 <StatusSelect disabled={disabledMock} value={state.statusCode} onChange={self.onStatusCodeChange} />
               </label>
-            </div>
-            <div className="w-rules-form">
-              <label>
-                <Icon name="link" className="mr-10" />
-                Request URL
-              </label>
-              <div className="box w-com-url">
-                <select
-                  value={state.method}
-                  onChange={self.onMethodChange}
-                  className="form-control w-com-method"
-                >
-                  {util.METHODS.map(function (m) {
-                    return <option value={m}>{m}</option>;
-                  })}
-                </select>
-                <UrlInput value={url} onChange={self.onUrlChange} hideCustom />
-                <button className="btn w-com-execute btn-primary" onClick={self.onTestRule} disabled={!url}>Test</button>
-                <HelpIcon docsUrl="rules/test-rules.html" className="mr-0 ml-10" />
-              </div>
             </div>
             <div className="w-rules-form">
               <label>

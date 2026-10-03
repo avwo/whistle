@@ -139,8 +139,8 @@ function getDragInfo(e, list) {
 $(document).on('drop', function () {
   if (curTarget) {
     curTarget.style.background = '';
+    curTarget = null;
   }
-  curTarget = null;
 });
 
 function getSuffix(name) {
@@ -331,9 +331,7 @@ var List = React.createClass({
     var name = attr(e.target, 'data-group');
     var groups = this.props.modal.groups;
     var group = groups[name];
-    if (!group) {
-      group = groups[name] = {};
-    }
+    group = groups[name] = group || {};
     group.expand = !group.expand;
     this.setState({});
   },
@@ -884,7 +882,7 @@ var List = React.createClass({
                 );
               })}
             </div>
-            <FilterInput ref="filterInput" onChange={self.onFilterChange} />
+            <FilterInput ref="filterInput" onChange={self.onFilterChange} placeholder="Filter: keyword, k:key, v:value" />
             <ContextMenu onClick={self.onClickContextMenu} ref="contextMenu" />
             <RecycleBinDialog ref="recycleBin" />
             <EnabledRulesDialog ref="enabledRulesDialog" />

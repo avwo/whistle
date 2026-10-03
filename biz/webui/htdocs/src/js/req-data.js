@@ -66,7 +66,6 @@ var contextMenuList = [
       { name: 'Overview' },
       { name: 'Inspectors' },
       { name: 'Timeline' },
-      { name: 'Composer' },
       { name: 'Preview' },
       { name: 'Source' },
       { name: 'Tree View', action: 'toggleView' }
@@ -77,7 +76,7 @@ var contextMenuList = [
     shiftToEdit: true,
     list: [
       { name: 'Cell Text' },
-      { name: 'URL (+Query)' },
+      { name: 'URL' },
       { name: 'URL (-Query)' },
       { name: 'as cURL' },
       { name: 'Client IP' },
@@ -145,6 +144,11 @@ var getCellText = function (target) {
 
 var preventInputBlur = function (e) {
   e.target.nodeName != 'INPUT' && preventBlur(e);
+};
+
+var getUrl = function (item, treeUrl, withoutQuery) {
+  item = util.getUrl((item && item.url) || treeUrl);
+  return item && withoutQuery ? item.replace(/[?#].*$/, '') : item;
 };
 
 var getFocusItemList = function (curItem) {
@@ -607,9 +611,7 @@ var ReqData = React.createClass({
       self._pendingSave = false;
       self.refs.saveSessions.show();
       setTimeout(function () {
-        var input = self.refs.sessionsName;
-        input.focus();
-        input.select();
+        util.focus(self.refs.sessionsName);
       }, 500);
     });
     addEvent('replayTreeView', function (_, dataId, count) {
@@ -1078,8 +1080,9 @@ var ReqData = React.createClass({
     var self = this;
     var modal = self.props.modal;
     var dataId = el.attr('data-id');
+    var isTreeView = modal.isTreeView;
     clearTimeout(self._delayCtxTimer);
-    if (!modal.isTreeView && !dataId) {
+    if (!isTreeView && !dataId) {
       var con = self.container.find(BASE_DOM);
       if (con.length && document.elementFromPoint && con[0].offsetHeight < con[0].scrollHeight) {
         var pageX = e.pageX;
@@ -1100,17 +1103,16 @@ var ReqData = React.createClass({
     var item = modal.getItem(dataId);
     var disabled = !item;
     var cellText = item && (nodeName === 'TD' || nodeName === 'TH') && getCellText(target);
-    var treeNodeData = modal.isTreeView && modal.getTreeNode(treeId);
+    var treeNodeData = isTreeView && modal.getTreeNode(treeId);
     self.treeTarget = null;
     self.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
     var list0 = contextMenuList[1].list;
-    list0[4].disabled = clickBlank || !/^https?:\/\//.test(treeId || item.url);
     if (disabled || clickBlank) {
-      list0[6].disabled = true;
+      list0[5].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
-      list0[6].disabled =
+      list0[5].disabled =
         !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
     list0[0].disabled = clickBlank;
@@ -1118,16 +1120,9 @@ var ReqData = React.createClass({
     list0[2].disabled = disabled;
     list0[3].disabled = disabled;
     list0[4].disabled = disabled;
-    list0[5].disabled = disabled;
-    list0[7].disabled = disabled;
-    var viewMenu = list0[8];
-    if (modal.isTreeView) {
-      viewMenu.icon = 'globe';
-      viewMenu.name = 'List View';
-    } else {
-      viewMenu.icon = 'tree-conifer';
-      viewMenu.name = 'Tree View';
-    }
+    list0[6].disabled = disabled;
+    list0[7].icon = isTreeView ? 'globe' : 'tree-conifer';
+    list0[7].name = isTreeView ? 'List View' : 'Tree View';
     contextMenuList[2].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
     var isTreeNode = disabled && !treeUrl;
@@ -1135,17 +1130,16 @@ var ReqData = React.createClass({
       menu.disabled = disabled;
       switch (menu.name) {
       case 'Cell Text':
+        menu.hide = isTreeView;
         menu.copyText = cellText;
         menu.disabled = disabled || !cellText;
         break;
       case 'URL (-Query)':
-        menu.copyText = util.getUrl(
-            (item && item.url.replace(/[?#].*$/, '')) || treeUrl
-          );
+        menu.copyText = getUrl(item, treeUrl, true);
         menu.disabled = isTreeNode;
         break;
-      case 'URL (+Query)':
-        menu.copyText = util.getUrl((item && item.url) || treeUrl);
+      case 'URL':
+        menu.copyText = getUrl(item, treeUrl);
         menu.disabled = isTreeNode;
         break;
       case 'as cURL':
@@ -1237,16 +1231,14 @@ var ReqData = React.createClass({
         actionItem[2].disabled = false;
       }
     } else {
-      actionItem[0].disabled = true;
-      actionItem[1].disabled = true;
-      actionItem[2].disabled = true;
-      actionItem[3].disabled = true;
-      actionItem[4].disabled = true;
+      for (var j = 0; j < 5; j++) {
+        actionItem[j].disabled = true;
+      }
     }
 
     var treeItem = contextMenuList[5];
     var treeList = treeItem.list;
-    treeItem.hide = !modal.isTreeView;
+    treeItem.hide = !isTreeView;
     treeItem.disabled = !treeNodeData && !hasData;
     if (treeNodeData) {
       var isLeaf = treeNodeData.data;
@@ -1259,7 +1251,7 @@ var ReqData = React.createClass({
       treeList[2].disabled = treeList[3].disabled = isLeaf;
       var count = (treeNodeData.parent || modal.root).children.length;
       removeItem[2].disabled = count <= 1;
-    } else if (modal.isTreeView) {
+    } else if (isTreeView) {
       treeList[0].disabled = treeList[1].disabled = true;
       treeList[2].disabled = treeList[3].disabled = !hasData;
     }
@@ -1652,6 +1644,7 @@ var ReqData = React.createClass({
         <BackToBottomBtn ref="backBtn" hide={isTreeView} onClick={self.autoRefresh} />
         <FilterInput
           ref="filterInput"
+          placeholder="Filter: URL, m:method, s:status, h:header, b:body ..."
           onKeyDown={self.onFilterKeyDown}
           onChange={self.onFilterChange}
           wStyle={colStyle}
