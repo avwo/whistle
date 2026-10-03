@@ -55,7 +55,7 @@ var Saved = React.createClass({
     var index = getIndex(e);
     var item = this.state.rows[index];
     item && this.loadSessions(item, function(sessions) {
-      util.trigger('exportSessions', [sessions, item.filename]);
+      util.trigger('exportSessions', [sessions, item.filename, true]);
     });
   },
   onRemove: function(e) {
