@@ -4,6 +4,7 @@
 1. feat: 优化 `Create Rule` 的界面交互
 2. fix: https://github.com/avwo/whistle-client/issues/132
 3. feat: Node.js 最低支持版本调整为 >= 16.0.0
+4. feat: 新增 `enable://useSniAsTunnelDomain`，确保 tunnel 内域名与请求 SNI 一致
 
 
 ## v2.10.10

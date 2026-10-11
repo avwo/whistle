@@ -4,6 +4,7 @@
 1. feat: improve the UI interaction for `Create Rule`
 2. fix: https://github.com/avwo/whistle-client/issues/132
 3. feat: Set minimum supported Node.js version to >= 16.0.0
+4. feat: Add `enable://useSniAsTunnelDomain` to keep the domain inside the tunnel consistent with the request SNI
 
 ## v2.10.10
 1. fix: https://github.com/avwo/whistle/pull/1350
