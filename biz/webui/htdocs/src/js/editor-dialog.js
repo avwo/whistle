@@ -242,7 +242,7 @@ var EditorDialog = React.createClass({
     }
   },
   addKey: function(name, value, cb) {
-    var graceful = value == null;
+    var graceful = value == null ? 1 : '';
     dataCenter.values.add({
       name: name,
       value: value || '',

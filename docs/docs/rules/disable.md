@@ -84,6 +84,7 @@ pattern disable://action1 disable://action2 ... [filters...]
 - `useLocalHost`：禁用 useLocalHost 功能，详见：[enable](./enable)
 - `useSafePort`：禁用 useSafePort 功能，详见：[enable](./enable)
 - `userLogin`：禁用设置 [statusCode://401](./statusCode) 时显示登录框
+- `useSniAsTunnelDomain`：禁用 `enable://useSniAsTunnelDomain`
 - `weakRule`：禁用 weakRule 功能，详见：[enable](./enable)
 
 ## 配置示例

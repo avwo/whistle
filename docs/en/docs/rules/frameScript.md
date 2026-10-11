@@ -54,6 +54,8 @@ Visiting `https://echo.websocket.org/.ws` Results:
 | `parseQuery` | Same as `querystring.parse` in Node.js |
 | `sendToClient(frame, options)` | Sends data (object, string, buffer) to the client. See the example below. |
 | `sendToServer(frame, options)` | Sends data (object, string, buffer) to the server. See the example below. |
+| `ctx.destroy()` | Closes the current connection (added in `v2.10.11`) |
 | `handleSendToClientFrame(buffer, options)` | Processes (filters or deletes) data sent to the client. See the example below. |
 | `handleSendToServerFrame(buffer, options)` | Processes (filters or deletes) data sent to the server. See the example below. |
 
+> **Note**: `ctx.sendToClient` must not be called inside `handleSendToClientFrame`; `ctx.sendToServer` must not be called inside `handleSendToServerFrame`

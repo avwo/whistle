@@ -52,8 +52,10 @@ wss://echo.websocket.org/ frameScript://{test-frame.js}
 | `getValue(key)`   | 获取Values中的值                                                    |
 | `parseUrl`        | 同Node.js的`url.parse`                                              |
 | `parseQuery`      | 同Node.js的`querystring.parse`                                      |
-| `sendToClient(frame, options)` | 发送数据（对象、字符串、Buffer）到客户端，用法见下面示例 |
-| `sendToServer(frame, options)` | 发送数据（对象、字符串、Buffer）到服务端，用法见下面示例 |
+| `ctx.sendToClient(frame, options)` | 发送数据（对象、字符串、Buffer）到客户端，用法见下面示例 |
+| `ctx.sendToServer(frame, options)` | 发送数据（对象、字符串、Buffer）到服务端，用法见下面示例 |
+| `ctx.destroy()` | 断开当前连接（`v2.10.11` 新增） |
 | `handleSendToClientFrame(buffer, options)` | 处理（过滤或删除）发送到客户端的数据，用法见下面示例 |
 | `handleSendToServerFrame(buffer, options)` | 处理（过滤或删除）发送到服务端的数据，用法见下面示例 |
 
+> 注意：`handleSendToClientFrame` 内不可调用 `ctx.sendToClient`；`handleSendToServerFrame` 内不可调用 `ctx.sendToServer`

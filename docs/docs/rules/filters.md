@@ -16,20 +16,23 @@ pattern opertaion includeFilter://pattern1 ... excludeFilter://patternx ...
 
 ## pattern 类型
 
+用于 `includeFilter://<pattern>` 和 `excludeFilter://<pattern>` 的匹配表达式。
 
+> **通用规则**
+> - 未指定前缀时，默认匹配请求 URL。
+> - 关键字匹配默认不区分大小写。
+> - 正则格式为 `/regexp/`，末尾可加 `i` 表示忽略大小写，例如 `/regexp/i`。
+> - `chance` 的 `probability` 取值范围为 `0 ~ 1`。
 
-| 语法                | 用途                  | 示例                          |
-| ------------------- | --------------------- | ----------------------------- |
-| `b:pattern`         | 匹配请求体内容        | `includeFilter://b:keyword` `excludeFilter://b:/regexp/[i]` |
-| `m:pattern`         | 匹配 HTTP 方法        | `includeFilter://m:keyword` `excludeFilter://m:/regexp/[i]` |
-| `i:pattern`         | 匹配客户端或服务端 IP | `includeFilter://i:keyword` `excludeFilter://i:/regexp/[i]` |
-| `chance:probability`| `Math.random() < probability` | `includeFilter://chance:0.5` `excludeFilter://chance:0.3` |
-| `clientIp:pattern`  | 仅匹配客户端 IP       | `includeFilter://clientIp:/regexp/[i]`  `excludeFilter://clientIp:keyword` |
-| `serverIp:pattern`  | 仅匹配服务端 IP       | `includeFilter://serverIp:/regexp/[i]`  `excludeFilter://serverIp:keyword` |
-| `s:pattern`         | 匹配响应状态码        | `includeFilter://s:/^20/`  `excludeFilter://s:30` |
-| `reqH.header-key:pattern` | 仅匹配请求头          | `includeFilter://reqH.content-type:json`  `excludeFilter://reqH.content-type:/regexp/i` |
-| `resH:header-key:pattern` | 仅匹配响应头          | `includeFilter://resH.content-type:json`  `excludeFilter://resH.content-type:/regexp/i` |
-|  其它 `xxxxxx`     | 匹配请求 URL（同 [pattern](./pattern)） | `includeFilter://*/cgi-*` `excludeFilter://www.test.com` `includeFilter://https://www.test.com/path` |
-
-
-
+| 语法 | 匹配目标 | 示例 |
+| --- | --- | --- |
+| `b:pattern` | 请求体内容：关键字（不区分大小写）或正则 | `includeFilter://b:keyword`<br>`excludeFilter://b:/regexp/i` |
+| `m:pattern` | HTTP 方法：方法名（不区分大小写）或正则 | `includeFilter://m:get`<br>`excludeFilter://m:/regexp/i` |
+| `i:pattern` | 客户端或服务端 IP：IP 或正则 | `includeFilter://i:192.168.1.10`<br>`excludeFilter://i:/regexp/i` |
+| `chance:probability` | 按概率随机命中：`Math.random() < probability` | `includeFilter://chance:0.5`<br>`excludeFilter://chance:0.3` |
+| `clientIp:pattern` | 客户端 IP：IP 或正则 | `includeFilter://clientIp:192.168.1.10`<br>`excludeFilter://clientIp:/regexp/i` |
+| `serverIp:pattern` | 服务端 IP：IP 或正则 | `includeFilter://serverIp:192.168.1.10`<br>`excludeFilter://serverIp:/regexp/i` |
+| `s:pattern` | 响应状态码：状态码或正则 | `includeFilter://s:/^20/`<br>`excludeFilter://s:200` |
+| `reqH.header-key:pattern` | 请求头：关键字（不区分大小写）或正则 | `includeFilter://reqH.content-type:json`<br>`excludeFilter://reqH.content-type:/regexp/i` |
+| `resH.header-key:pattern` | 响应头：关键字（不区分大小写）或正则 | `includeFilter://resH.content-type:json`<br>`excludeFilter://resH.content-type:/regexp/i` |
+| 无前缀 `pattern`（其它 `xxxxxx`） | 请求 URL，同 [pattern](./pattern) | `includeFilter://*/cgi-*`<br>`excludeFilter://www.test.com`<br>`includeFilter://https://www.test.com/path` |

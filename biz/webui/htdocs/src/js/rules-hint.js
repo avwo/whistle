@@ -81,8 +81,8 @@ var COMMON_HINTS = [
   'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser',
   'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError',
   'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepClientId',
-  'safeHtml', 'strictHtml', 'multiClient', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules',
-  'responseWithMatchedRules', 'tunnelHeadersFirst', 'useLocalHost', 'useSafePort', 'userLogin', 'weakRule', 'gzip'
+  'safeHtml', 'strictHtml', 'multiClient', 'reqMergeBigData', 'resMergeBigData', 'requestWithMatchedRules', 'responseWithMatchedRules', 'tunnelHeadersFirst',
+  'useLocalHost', 'useSafePort', 'userLogin', 'useSniAsTunnelDomain', 'weakRule', 'gzip'
 ];
 var ENABLE_HINTS = COMMON_HINTS.concat(['br', 'deflate', 'showHost', 'ignoreSend', 'ignoreReceive', 'pauseSend', 'pauseReceive', 'inspect', 'socket', 'websocket']);
 var DISABLE_HINTS = ['301'].concat(COMMON_HINTS).concat(['autoCors',  'ajax', 'cache', 'dnsCache', 'csp', 'cookies', 'reqCookies', 'resCookies',

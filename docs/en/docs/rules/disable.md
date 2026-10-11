@@ -84,6 +84,7 @@ pattern disable://action1 disable://action2 ... [filters...]
 - `useLocalHost`: Disable the useLocalHost feature, see: [enable](./enable)
 - `useSafePort`: Disable the useSafePort feature, see: [enable](./enable)
 - `userLogin`: Disable showing the login box when setting [statusCode://401](./statusCode)
+- `useSniAsTunnelDomain`：Disable `enable://useSniAsTunnelDomain`
 - `weakRule`: Disable the weakRule feature, see: [enable](./enable)
 
 ## Configuration Example

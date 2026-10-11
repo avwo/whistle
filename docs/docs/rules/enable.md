@@ -69,6 +69,7 @@ pattern enable://action1 enable://action2 ... [filters...]
 - `useLocalHost`：修改 `log` 和 `weinre` 请求 `URL` 的域名，使用内置域名
 - `useSafePort`：修改 `log` 和 `weinre` 请求 `URL` 的端口，使用内置端口
 - `userLogin`：设置 [statusCode://401](./statusCode) 是否显示登录框（默认显示）
+- `useSniAsTunnelDomain`：当 Tunnel 域名与请求中的 SNI 不一致时，使用 SNI 中携带的域名作为 Tunnel 域名
 - `weakRule`：默认情况下，当配置了 [file](./file) 等协议时，[proxy](./proxy) 规则会自动失效。通过设置 `weakRule` 属性，可以提升 [proxy](./proxy) 规则的优先级，使其在上述场景中仍然生效
 - `socket`：在启用 HTTPS 解析（`Enable HTTPS` 或 `enable://https`）后，发往 `80/443` 端口的 TUNNEL 请求会被强制尝试解析为 HTTP/HTTPS 流量。默认情况下，若解析失败，该连接将被销毁；而其他端口的请求解析失败则会继续以 TUNNEL 方式传输。通过设置 `enable://socket`，可让发往 `80/443` 端口的请求在解析失败时同样降级为 TUNNEL 连接，避免连接被销毁
 - `websocket`：用于处理非标准 WebSocket 连接。某些请求虽使用 WebSocket 协议传输，但其 Upgrade 请求头并非标准值（如 `Upgrade: websocket`）。默认情况下，Whistle 会将其视为普通 TCP 连接而不解析数据。启用 `enable://websocket` 可强制 Whistle 识别此类连接为 WebSocket 协议并进行数据解析
