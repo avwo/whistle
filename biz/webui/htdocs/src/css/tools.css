@@ -232,6 +232,10 @@
   width: 1020px;
 }
 
+.w-rules-dialog .w-editor-wrap {
+  min-height: 674px;
+}
+
 .w-generate-cert input {
   line-height: var(--h-field);
   height: var(--h-field);
@@ -288,9 +292,10 @@
   vertical-align: middle;
 }
 
-.w-rules-dialog .w-list-content {
+.w-rules-dialog .w-editor {
   min-height: 500px;
   height: calc(100vh - 260px);
+  border: none;
 }
 
 .w-rules-dialog .CodeMirror {

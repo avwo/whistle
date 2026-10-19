@@ -36,7 +36,7 @@
   display: none;
 }
 
-.w-list-content {
+.w-editor {
   border-bottom: var(--v-border);
   border-right: var(--v-border);
   cursor: text;

@@ -155,3 +155,7 @@ html[data-theme="dark"] .w-filter-input {
   background: field;
   color: var(--c-thin);
 }
+
+html[data-theme="dark"] .CodeMirror-gutter-filler, html[data-theme="dark"] .CodeMirror-scrollbar-filler {
+  background: transparent;
+}

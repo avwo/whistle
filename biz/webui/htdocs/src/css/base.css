@@ -434,6 +434,16 @@ a {
   border: var(--v-border);
 }
 
+
+.w-editor-dialog-title {
+  display: inline-block;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 760px;
+  overflow: hidden;
+  vertical-align: middle;
+}
+
 .w-win-dialog {
   z-index: calc(var(--z-modal-max) + 1);
 }

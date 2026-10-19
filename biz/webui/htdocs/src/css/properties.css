@@ -95,3 +95,8 @@ span.w-src-info {
 .w-com-dialog .form-control {
   padding: 6px;
 }
+
+.w-edit-rules-btn {
+  margin-left: 5px;
+  cursor: pointer;
+}

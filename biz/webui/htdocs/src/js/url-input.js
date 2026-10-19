@@ -9,6 +9,7 @@ var win = require('./win');
 var PROTOCOL_RE = /^[\w-]+:\/\//;
 var getHideStyle = util.getHideStyle;
 var preventBlur = util.preventBlur;
+var hasClosest = util.hasClosest;
 var CMF_DEL_MSG = util.CMF_DEL_MSG;
 var ACTIVE_CLASS = 'w-active';
 
@@ -152,11 +153,11 @@ var UrlInput = React.createClass({
     self.hintElem = $(self.refs.hints);
     self.handleHideParams = function(e) {
       var target = $(e.target);
-      if (!(target.closest('.w-url-params').length ||
-        target.closest('.w-params-editor').length ||
-        target.closest('.w-com-dialog').length ||
-        target.closest('.w-win-dialog').length ||
-        target.closest('.w-ctx-menu').length)) {
+      if (!(hasClosest(target, '.w-url-params') ||
+        hasClosest(target, '.w-params-editor') ||
+        hasClosest(target, '.w-com-dialog') ||
+        hasClosest(target, '.w-win-dialog') ||
+        hasClosest(target, '.w-ctx-menu'))) {
         self.hideParams();
       }
     };

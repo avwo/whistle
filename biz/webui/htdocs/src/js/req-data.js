@@ -55,6 +55,7 @@ var contextMenuList = [
       { name: 'Edit Request' },
       { name: 'Mark' },
       { name: 'Unmark' },
+      { name: 'Edit Rules' },
       { name: 'Test Rules' }
     ].concat(util.NETWORK_ACTIONS)
   },
@@ -370,6 +371,32 @@ function getIcon(data, className) {
 
 function removeHighlight(elem) {
   elem.removeClass('highlight');
+}
+
+function getRuleFileName(rule) {
+  rule = rule && rule.file;
+  return rule && /^File: /.test(rule) ? rule.substring(6) : null;
+}
+
+function getRulesFile(item) {
+  var rules = item && item.rules;
+  if (!rules) {
+    return;
+  }
+  var keys = Object.keys(rules);
+  for (var i = 0, len = keys.length; i < len; i++) {
+    var rule = rules[keys[i]];
+    var list = rule.list;
+    var fileName = getRuleFileName(rule);
+    if (fileName || !list) {
+      return fileName;
+    }
+    for (var j = 0, jLen = list.length; j < jLen; j++) {
+      if (fileName = getRuleFileName(list[j])) {
+        return fileName;
+      }
+    }
+  }
 }
 
 var Row = React.createClass({
@@ -969,6 +996,9 @@ var ReqData = React.createClass({
     case 'Export':
       trigger('exportSessions', getSessions());
       break;
+    case 'Edit Rules':
+      trigger('showRulesDialog', {filename: getRulesFile(item)});
+      break;
     case 'Test Rules':
       trigger('showTestRuleDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId)});
       break;
@@ -1107,22 +1137,22 @@ var ReqData = React.createClass({
     self.treeTarget = null;
     self.currentFocusItem = item;
     var clickBlank = disabled && !treeNodeData;
-    var list0 = contextMenuList[1].list;
+    var list1 = contextMenuList[1].list;
     if (disabled || clickBlank) {
-      list0[5].disabled = true;
+      list1[5].disabled = true;
     } else {
       var type = util.getContentType(item.res.headers);
-      list0[5].disabled =
+      list1[5].disabled =
         !item.res.base64 || (type !== 'HTML' && type !== 'IMG');
     }
-    list0[0].disabled = clickBlank;
-    list0[1].disabled = clickBlank;
-    list0[2].disabled = disabled;
-    list0[3].disabled = disabled;
-    list0[4].disabled = disabled;
-    list0[6].disabled = disabled;
-    list0[7].icon = isTreeView ? 'globe' : 'tree-conifer';
-    list0[7].name = isTreeView ? 'List View' : 'Tree View';
+    list1[0].disabled = clickBlank;
+    list1[1].disabled = clickBlank;
+    list1[2].disabled = disabled;
+    list1[3].disabled = disabled;
+    list1[4].disabled = disabled;
+    list1[6].disabled = disabled;
+    list1[7].icon = isTreeView ? 'globe' : 'tree-conifer';
+    list1[7].name = isTreeView ? 'List View' : 'Tree View';
     contextMenuList[2].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
     var isTreeNode = disabled && !treeUrl;
@@ -1202,7 +1232,6 @@ var ReqData = React.createClass({
     filterItem[2].disabled = clickBlank;
 
     var actionItem = contextMenuList[0].list;
-    contextMenuList[0].disabled = disabled;
     if (item) {
       actionItem[3].disabled = false;
       if (item.selected) {

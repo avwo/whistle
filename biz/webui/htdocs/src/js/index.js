@@ -113,6 +113,7 @@ var alertMsg = win.alert;
 var confirmMsg = win.confirm;
 var CMF_DEL_MSG = util.CMF_DEL_MSG;
 var CMF_CHG_MSG = util.CMF_CHG_MSG;
+var hasClosest = util.hasClosest;
 var DEL_RULES = CMF_DEL_MSG + 'all follow rules or group?';
 var DEL_VALUE = CMF_DEL_MSG + 'all follow values or group?';
 var DISABLE_TIPS = 'Do you confirm disabling all ';
@@ -1371,7 +1372,7 @@ var Index = React.createClass({
         var name = self.state.name;
         var filename = file.name;
         if (name === 'network') {
-          if ($target.closest('.w-frames-com').length) {
+          if (hasClosest($target, '.w-frames-com')) {
             return;
           }
           if (/\.log$/i.test(filename)) {
@@ -1524,7 +1525,7 @@ var Index = React.createClass({
         if (isNetwork && code == 88) {
           if (
             !util.isFocusEditor() &&
-            !$(e.target).closest('.w-frames-list').length &&
+            !hasClosest($(e.target), '.w-frames-list') &&
             hasShortcut('clearNetworkSessions')
           ) {
             self.clear();
@@ -1617,14 +1618,19 @@ var Index = React.createClass({
       return index > 1 ? url.substring(1, index) : null;
     }
 
-    var isEditor = function () {
+    var isEditor = function (e) {
       var name = self.state.name;
       return name === 'rules' || name === 'values';
     };
 
+    function isRulesDialog(e) {
+      return hasClosest($(e.target), '.w-rules-dialog-global');
+    }
+
     $(document.body)
       .on('mouseenter', LINK_SELECTOR, function (e) {
-        if (!isEditor() || !isCtrl(e)) {
+        var isDialog = isRulesDialog(e);
+        if (!(isDialog ||isEditor()) || !isCtrl(e)) {
           return;
         }
         var elem = $(this);
@@ -1634,7 +1640,7 @@ var Index = React.createClass({
           elem.hasClass('cm-string') ||
           elem.hasClass('cm-js-at') ||
           elem.hasClass('cm-js-weinre') ||
-          (!self.hideNetwork && elem.hasClass('cm-js-log')) ||
+          (!self.hideNetwork && !isDialog && elem.hasClass('cm-js-log')) ||
           TEMP_LINK_RE.test(text = elem.text()) ||
           isTextFile(text) ||
           getKey(text)
@@ -1646,7 +1652,8 @@ var Index = React.createClass({
         $(this).removeClass('w-is-link');
       })
       .on('mousedown', LINK_SELECTOR, function (e) {
-        if (!isEditor() || !isCtrl(e)) {
+        var isDialog = isRulesDialog(e);
+        if (!(isDialog || isEditor()) || !isCtrl(e)) {
           return;
         }
         var elem = $(this);
@@ -1668,7 +1675,9 @@ var Index = React.createClass({
           return self.openWeinre(removeProtocol(text));
         }
         if (elem.hasClass('cm-js-log')) {
-          return self.openLog(removeProtocol(text));
+          return !isDialog && !self.hideNetwork && self.showNetwork(null, function() {
+            trigger('showLog', removeProtocol(text));
+          });
         }
         if (elem.hasClass('cm-js-http-url')) {
           if (!/^https?:\/\//i.test(text)) {
@@ -3045,13 +3054,6 @@ var Index = React.createClass({
       showWeinreOptions: false
     });
   },
-  openLog: function(id) {
-    if (!this.hideNetwork) {
-      this.showNetwork(null, function() {
-        trigger('showLog', id);
-      });
-    }
-  },
   onClickRulesOption: function (item) {
     item.selected ? this.unselectRules(item) : this.selectRules(item);
   },
@@ -3735,7 +3737,7 @@ var Index = React.createClass({
     }
   },
   onTopContextMenu: function(e) {
-    if (this.getTabName() !== 'network' || $(e.target).closest('.w-menu-item').length) {
+    if (this.getTabName() !== 'network' || hasClosest($(e.target), '.w-menu-item')) {
       return;
     }
     preventBlur(e);
@@ -3765,11 +3767,11 @@ var Index = React.createClass({
       var target = $(e.target);
       list[0].hide = true;
       list[1].hide = true;
-      if (target.closest('.w-network-menu').length) {
+      if (hasClosest(target, '.w-network-menu')) {
         list[0].hide = false;
-      } else if (target.closest('.w-save-menu').length) {
+      } else if (hasClosest(target, '.w-save-menu')) {
         list[1].hide = false;
-        if (target.closest('.w-rules-menu').length) {
+        if (hasClosest(target, '.w-rules-menu')) {
           list[1].disabled = !state.rules.hasChanged();
         } else {
           list[1].disabled = !state.values.hasChanged();
@@ -4838,7 +4840,7 @@ var Index = React.createClass({
         <SyncDialog ref="syncDialog" />
         <JSONDialog ref="jsonDialog" />
         <div id="copyTextBtn" style={HIDE_STYLE} />
-        <RulesDialog ref="rulesDialog" />
+        <RulesDialog ref="rulesDialog" isGlobal />
         <form
           ref="downloadForm"
           action="cgi-bin/download"

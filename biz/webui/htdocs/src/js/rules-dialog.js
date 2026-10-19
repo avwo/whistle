@@ -10,6 +10,7 @@ var ModalHeader = require('./modal-header');
 var Prompt = require('./prompt');
 var message = require('./message');
 var ModalFooter = require('./modal-footer');
+var LazyInit = require('./lazy-init');
 
 var showSysErr = util.showSysErr;
 var isStr = util.isStr;
@@ -49,6 +50,15 @@ var RulesDialog = React.createClass({
   getInitialState: function () {
     return { rulesName: getName() };
   },
+  componentDidMount: function() {
+    var self = this;
+    if (self.props.isGlobal) {
+      util.on('updateRulesDialog', function() {
+        self._hasChanged = false;
+        self.setValue(self.state.rulesName, true);
+      });
+    }
+  },
   show: function (rules, values, filename) {
     var self = this;
     self._rules = rules;
@@ -60,9 +70,7 @@ var RulesDialog = React.createClass({
         self.setState({ rulesValue: rules });
       }, 360);
     }
-    self.setValue();
-    filename = getName(filename);
-    filename && self.setState({ rulesName: filename });
+    self.setValue(filename);
   },
   onRulesChange: function(e) {
     var name = e.target.value;
@@ -243,31 +251,33 @@ var RulesDialog = React.createClass({
     if (name) {
       storage.set('previewRulesName', name);
     } else {
-      name = getName();
+      name = getName(this.state.rulesName);
     }
     var rulesModal = dataCenter.getRulesModal();
     var item = rulesModal.getItem(name);
     var value = item && item.value || '';
     var lf = value ? '\n\n' : '\n';
     var curRules = this._rules;
-    if (value.indexOf(curRules) !== -1 && !/[\r\n]/.test(curRules)) {
-      if (value.indexOf('```') === -1) {
-        value = value.split(/\r\n|\r|\n/).map(function(line) {
-          return line.trim().split(/\s+/).join(' ') === curRules ? '' : line;
-        }).join('\n');
-      } else {
-        value = value.replace(LINE_RE, function(line, _, key) {
-          if (key) {
-            return line;
-          }
-          return line.trim().split(/\s+/).join(' ') === curRules ? '' : line;
-        });
+    if (curRules) {
+      if (value.indexOf(curRules) !== -1 && !/[\r\n]/.test(curRules)) {
+        if (value.indexOf('```') === -1) {
+          value = value.split(/\r\n|\r|\n/).map(function(line) {
+            return line.trim().split(/\s+/).join(' ') === curRules ? '' : line;
+          }).join('\n');
+        } else {
+          value = value.replace(LINE_RE, function(line, _, key) {
+            if (key) {
+              return line;
+            }
+            return line.trim().split(/\s+/).join(' ') === curRules ? '' : line;
+          });
+        }
       }
-    }
-    if (dataCenter.backRulesFirst) {
-      value = value.replace(/\s+$/, '') + lf + curRules + '\n';
-    } else {
-      value = curRules + lf + value.replace(/^\s+/, '');
+      if (dataCenter.backRulesFirst) {
+        value = value.replace(/\s+$/, '') + lf + curRules + '\n';
+      } else {
+        value = curRules + lf + value.replace(/^\s+/, '');
+      }
     }
     var self = this;
     var editor = this.refs.editor;
@@ -310,10 +320,14 @@ var RulesDialog = React.createClass({
     var self = this;
     var state = self.state;
 
+    dataCenter.getRulesDialogValue = function() {
+      return state.rulesValue || '';
+    };
+
     return (
-      <Dialog ref="rulesDialog" wstyle="w-rules-dialog">
+      <Dialog ref="rulesDialog" wstyle={'w-rules-dialog' + (self.props.isGlobal ? ' w-rules-dialog-global' : '')}>
         {self.props.onSave ? <ModalHeader>
-          Rules Editor
+          Enter Rules
         </ModalHeader> : <div className="modal-title">
           Select Rule File:
           <select className="form-control" onChange={self.onRulesChange} value={state.rulesName}>
@@ -323,16 +337,20 @@ var RulesDialog = React.createClass({
           <button className="btn btn-default" onClick={self.showCreateRules}>+Create</button>
           <CloseBtn />
         </div>}
-        <Editor
-          value={state.rulesValue}
-          onChange={self.onRulesValueChange}
-          ref="editor"
-          mode="rules"
-          theme={storage.get('rulesTheme') || 'cobalt'}
-          fontSize={storage.get('rulesFontSize') || '14px'}
-          lineNumbers={storage.get('showRulesLineNumbers') === 'true'}
-          lineWrapping={!!storage.get('autoRulesLineWrapping')}
-        />
+        <div className="w-editor-wrap">
+          <LazyInit inited={state.rulesValue != null}>
+            <Editor
+              value={state.rulesValue}
+              onChange={self.onRulesValueChange}
+              ref="editor"
+              mode="rules"
+              theme={storage.get('rulesTheme') || 'cobalt'}
+              fontSize={storage.get('rulesFontSize') || '14px'}
+              lineNumbers={storage.get('showRulesLineNumbers') === 'true'}
+              lineWrapping={!!storage.get('autoRulesLineWrapping')}
+            />
+          </LazyInit>
+        </div>
         <ModalFooter>
           <button
             type="button"
@@ -356,7 +374,7 @@ var MockDialogWrap = React.createClass({
     this.refs.rulesDialog.show(text, values, filename);
   },
   render: function () {
-    return <RulesDialog ref="rulesDialog" onSave={this.props.onSave} />;
+    return <RulesDialog ref="rulesDialog" isGlobal={this.props.isGlobal} onSave={this.props.onSave} />;
   }
 });
 

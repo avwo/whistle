@@ -332,24 +332,18 @@ function resolveFilterText(text) {
   }
   var pattern;
   removeFilterComments(text).split(/\s+/).forEach(function (line) {
+    var type, not;
     if (FILTER_TYPES_RE.test(line)) {
-      var type = FILTER_TYPES[RegExp.$1];
-      var not = line[2] === '!';
+      type = FILTER_TYPES[RegExp.$1];
+      not = line[2] === '!';
       line = line.substring(not ? 3 : 2);
-      if (line) {
-        result = result || [];
-        pattern = toRegExp(line);
-        result.push({
-          type: type,
-          not: not,
-          pattern: pattern,
-          keyword: pattern ? null : line.toLowerCase()
-        });
-      }
-    } else if (line) {
+    }
+    if (line) {
       result = result || [];
       pattern = toRegExp(line);
       result.push({
+        type: type,
+        not: not,
         pattern: pattern,
         keyword: pattern ? null : line.toLowerCase()
       });

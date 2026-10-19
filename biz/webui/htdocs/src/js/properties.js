@@ -37,6 +37,9 @@ var Properties = React.createClass({
     var onClickLocate = this.props.onClickLocate;
     onClickLocate && onClickLocate(text);
   },
+  handleEditClick: function(e) {
+    util.trigger('showRulesDialog', { filename: e.target.getAttribute('data-filename') });
+  },
   componentDidMount: function() {
     var self = this;
     if (self.props.name === 'Rules') {
@@ -247,10 +250,13 @@ var Properties = React.createClass({
                           return <pre>{self.renderValue(info.value)}</pre>;
                         }
                         var btnText = info.btnText;
-                        var noLocate = btnText.indexOf(':') === -1 && (!dataCenter.whistleId || (btnText !== '# (From Mock Rules)' && btnText !== '# (From Service Rules)'));
+                        var index = btnText.indexOf(':');
+                        var filename = index !== -1 && btnText.substring(0, index) === '# (From File' ? btnText.slice(index + 1, -1).trim() : '';
+                        var noLocate = index === -1 && (!dataCenter.whistleId || (btnText !== '# (From Mock Rules)' && btnText !== '# (From Service Rules)'));
                         return (
                           <pre>
                             {self.renderValue(info.value)}
+                            {filename ? <span className="glyphicon glyphicon-edit w-edit-rules-btn" data-filename={filename} onClick={self.handleEditClick} /> : null}
                             {noLocate ? <span className="w-src-info">{btnText}</span> : <a className="w-src-info" onClick={self.handleClick} data-text={val}>{btnText}</a> }
                           </pre>
                         );

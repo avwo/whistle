@@ -54,7 +54,7 @@ var CookiesDialog = React.createClass({
                         data-index={i}
                         onClick={self.insert}
                       >
-                        Insert
+                        Add
                       </a>
                     </td>
                   </tr>

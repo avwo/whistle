@@ -34,7 +34,7 @@ var SESSION_OPTIONS = ['URL', 'Method', 'Status Code', 'Request Headers', 'Respo
   'Request Body', 'Response Body', 'Request JSON', 'Response JSON', 'Raw Request', 'Raw Response'];
 
 function getTitle(tempFile) {
-  return tempFile ? 'Replace File (' + tempFile + ')' : 'Create File';
+  return tempFile ? <span className="w-editor-dialog-title">{'Replace \'' + tempFile + '\''}</span> : 'Create File';
 }
 
 function getKey(tempFile) {
@@ -323,8 +323,12 @@ var EditorDialog = React.createClass({
       } else {
         newText = text.replace(/temp(\.[\w-]+)?$/, result.filepath + '$1');
       }
+      var isDialog = util.hasClosest(elem, '.w-rules-dialog-global');
       var rulesItem = self._rulesItem;
-      var rulesText = rulesItem.value.split(/\r\n|\r|\n/).map(function(l, i) {
+      var getRulesDialogValue = isDialog && dataCenter.getRulesDialogValue;
+      var rulesText = getRulesDialogValue ? getRulesDialogValue() : rulesItem.value;
+
+      rulesText = rulesText.split(/\r\n|\r|\n/).map(function(l, i) {
         if (i === index) {
           l = l.trim().split(/\s+/).map(function(part) {
             return part === text ? newText : part;
@@ -347,6 +351,9 @@ var EditorDialog = React.createClass({
               update: true
             });
             self.hide();
+            if (isDialog) {
+              trigger('updateRulesDialog');
+            }
           } else {
             showSysErr(xhr);
           }

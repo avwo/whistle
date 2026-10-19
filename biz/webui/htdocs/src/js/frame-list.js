@@ -9,38 +9,40 @@ var ContextMenu = require('./context-menu');
 var Icon = require('./icon');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 
+var SEND_ICON = 'arrow-right';
+var RECEIVE_ICON = 'arrow-left';
 var toDateStr = util.toDateStr;
 var SEND_PERATORS = [
   {
     value: 0,
-    icon: 'arrow-right',
+    icon: SEND_ICON,
     text: 'Send'
   },
   {
     value: 1,
-    icon: 'arrow-right',
+    icon: SEND_ICON,
     text: 'Pause'
   },
   {
     value: 2,
-    icon: 'arrow-right',
+    icon: SEND_ICON,
     text: 'Ignore'
   }
 ];
 var RECEIVE_PERATORS = [
   {
     value: 0,
-    icon: 'arrow-left',
+    icon: RECEIVE_ICON,
     text: 'Receive'
   },
   {
     value: 1,
-    icon: 'arrow-left',
+    icon: RECEIVE_ICON,
     text: 'Pause'
   },
   {
     value: 2,
-    icon: 'arrow-left',
+    icon: RECEIVE_ICON,
     text: 'Ignore'
   }
 ];
@@ -107,13 +109,13 @@ var FrameList = React.createClass({
     }
     var reqData = self.props.reqData;
     if (reqData) {
-      var refs = self.refs;
+      var recordBtn = self.refs.recordBtn;
       if (reqData.pauseRecordFrames) {
-        refs.recordBtn.enable('pause');
+        recordBtn.enable('pause');
       } else if (reqData.stopRecordFrames) {
-        refs.recordBtn.enable('stop');
+        recordBtn.enable('stop');
       } else {
-        refs.recordBtn.enable();
+        recordBtn.enable();
       }
     }
   },
@@ -180,19 +182,20 @@ var FrameList = React.createClass({
     var params = {
       reqId: reqData.id
     };
+    var value = option.value;
     if (isSend) {
-      params.sendStatus = option.value;
+      params.sendStatus = value;
     } else {
-      params.receiveStatus = option.value;
+      params.receiveStatus = value;
     }
     dataCenter.socket.changeStatus(params, function (data, xhr) {
       if (!data) {
         util.showSysErr(xhr);
       } else {
         if (isSend) {
-          reqData.sendStatus = option.value;
+          reqData.sendStatus = value;
         } else {
-          reqData.receiveStatus = option.value;
+          reqData.receiveStatus = value;
         }
         self.setState({});
       }
@@ -200,17 +203,11 @@ var FrameList = React.createClass({
   },
   onSendStatusChange: function (option) {
     var reqData = this.checkActive();
-    if (!reqData) {
-      return;
-    }
-    this.changeStatus(reqData, option, true);
+    reqData && this.changeStatus(reqData, option, true);
   },
   onReceiveStatusChange: function (option) {
     var reqData = this.checkActive();
-    if (!reqData) {
-      return;
-    }
-    this.changeStatus(reqData, option);
+    reqData && this.changeStatus(reqData, option);
   },
   onClear: function (e) {
     if (util.isCtrl(e)) {
@@ -234,11 +231,12 @@ var FrameList = React.createClass({
     var ctn = self.content;
     var modal = self.props.modal;
     var atBottom = con.scrollTop + con.offsetHeight + 5 > ctn.offsetHeight;
+    var backBtn = self.refs.backBtn;
     if (atBottom) {
       modal.update();
-      self.refs.backBtn.hide();
+      backBtn.hide();
     } else {
-      self.refs.backBtn.show();
+      backBtn.show();
     }
     return atBottom;
   },
@@ -260,17 +258,11 @@ var FrameList = React.createClass({
     var refresh = type === 'refresh';
     var reqData = self.props.reqData;
     if (reqData) {
-      if (type === 'pause') {
-        reqData.stopRecordFrames = true;
-        reqData.pauseRecordFrames = true;
-        return;
-      }
-      reqData.pauseRecordFrames = false;
-      reqData.stopRecordFrames = !refresh;
+      var isPause = type === 'pause';
+      reqData.pauseRecordFrames = isPause;
+      reqData.stopRecordFrames = isPause || !refresh;
     }
-    if (refresh) {
-      return self.autoRefresh();
-    }
+    refresh && self.autoRefresh();
   },
   onDragStart: function (e) {
     var dataId = $(e.target).closest('li').attr('data-id');

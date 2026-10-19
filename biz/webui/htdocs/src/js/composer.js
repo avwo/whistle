@@ -41,6 +41,7 @@ var isArr = util.isArr;
 var getRawHeaders = dataCenter.getRawHeaders;
 var strfy = util.strfy;
 var toKeys = util.toKeys;
+var hasClosest = util.hasClosest;
 var SEND_CTX_MENU = [
   { name: 'Send Body Via File', action: 'file' },
   { name: 'Replay Times' },
@@ -61,6 +62,7 @@ var MAX_UPLOAD_SIZE = MAX_BODY_SIZE * 2;
 var MAX_COUNT = 64;
 var MAX_REPEAT_TIMES = util.MAX_REPEAT_TIMES;
 var RULES_HEADER = 'x-whistle-rule-value';
+var NO_BODY_METHOD = /^(?:GET|HEAD|OPTIONS)$/i;
 
 var getTabClass = function (active) {
   return active ? 'w-tab-btn w-active' : 'w-tab-btn';
@@ -71,7 +73,7 @@ function getString(str, len) {
 }
 
 function hasReqBody(method, url, headers) {
-  if (method === 'CONNECT' || util.hasRequestBody(method) || WS_RE.test(url)) {
+  if (method === 'CONNECT' || !NO_BODY_METHOD.test(method) || WS_RE.test(url)) {
     return true;
   }
   return headers && WS_CONNNECT_RE.test(headers) && WS_UPGRADE_RE.test(headers);
@@ -131,8 +133,9 @@ var Composer = React.createClass({
     var headers = parseHeaders(data.headers);
     var type = getType(headers);
     var self = this;
-    if (data.base64 && isUpload(type)) {
-      self.uploadBodyData = data.base64 && self.parseUploadModal({ headers: headers, base64: data.base64 });
+    var base64 = data.base64;
+    if (base64 && isUpload(type)) {
+      self.uploadBodyData = base64 && self.parseUploadModal({ headers: headers, base64: base64 });
     } else {
       var uploadBodyData = util.parseRawJson(storage.get('composerUploadBody'), true);
       if (uploadBodyData) {
@@ -248,13 +251,13 @@ var Composer = React.createClass({
     self.updatePrettyData();
     $(document).on('click mousedown', function(e) {
       var target = $(e.target);
-      if (!(target.closest('.w-com-history-data').length ||
-        target.closest('.w-keep-history-data').length ||
-        target.closest('.w-replay-count').length ||
-        target.closest('.w-com-history-btn').length ||
-        target.closest('.w-copy-text-with-tips').length ||
-        target.closest('.w-ie-dialog').length ||
-        target.closest('.w-service-dialog').length)) {
+      if (!(hasClosest(target, '.w-com-history-data') ||
+        hasClosest(target, '.w-keep-history-data') ||
+        hasClosest(target, '.w-replay-count') ||
+        hasClosest(target, '.w-com-history-btn') ||
+        hasClosest(target, '.w-copy-text-with-tips') ||
+        hasClosest(target, '.w-ie-dialog') ||
+        hasClosest(target, '.w-service-dialog'))) {
         self.hideHistory();
       }
     });

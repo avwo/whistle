@@ -176,6 +176,7 @@ exports.getRepeatTimes = function(e) {
   if (repeatTimes > MAX_REPEAT_TIMES) {
     repeatTimes = MAX_REPEAT_TIMES;
   }
+  return repeatTimes;
 };
 
 function isArr(obj) {
@@ -504,6 +505,12 @@ var PROPS_MENUS = [
   }
 ];
 
+function hasClosest(target, selector) {
+  return target.closest(selector).length;
+}
+
+exports.hasClosest = hasClosest;
+
 exports.handlePropsContextMenu = function(e, ctxMenu) {
   var target = $(e.target);
   var row = target.closest('tr');
@@ -525,7 +532,7 @@ exports.handlePropsContextMenu = function(e, ctxMenu) {
   var height = 10 + (text ? 30 : 0) + (key ? 30 : 0) + (value ? 30 : 0);
   var data = getMenuPosition(e, 110, height);
   var list = PROPS_MENUS;
-  if (!target.closest('th').length) {
+  if (!hasClosest(target, 'th')) {
     list = list.map(noop);
     list[1] = PROPS_MENUS[2];
     list[2] = PROPS_MENUS[1];
@@ -586,12 +593,14 @@ $(document)
       return;
     }
     dragCallback.forEach(function (callback) {
+      var clientX = dragOffset.clientX;
+      var clientY = dragOffset.clientY;
       callback(
         dragTarget,
-        e.clientX - dragOffset.clientX,
-        e.clientY - dragOffset.clientY,
-        dragOffset.clientX,
-        dragOffset.clientY
+        e.clientX - clientX,
+        e.clientY - clientY,
+        clientX,
+        clientY
       );
     });
     dragOffset = e;
@@ -2234,21 +2243,6 @@ exports.parseHeaders = function (str) {
   }
   return parseRawJson(str, true) || parseHeaders(str);
 };
-
-function hasRequestBody(method) {
-  if (!isStr(method)) {
-    return false;
-  }
-  method = method.toUpperCase();
-  return !(
-    method === 'GET' ||
-    method === 'HEAD' ||
-    method === 'OPTIONS' ||
-    method === 'CONNECT'
-  );
-}
-
-exports.hasRequestBody = hasRequestBody;
 
 var NON_LATIN1_RE = /([^\x00-\xFF]|[\r\n%])/g;
 exports.encodeNonLatin1Char = function (str) {

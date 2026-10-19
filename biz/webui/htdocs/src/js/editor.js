@@ -574,7 +574,7 @@ var Editor = React.createClass({
       <div
         tabIndex="0"
         ref="editor"
-        className="fill v-box w-list-content w-fix-drag"
+        className="fill v-box w-editor w-fix-drag"
       />
     );
   }

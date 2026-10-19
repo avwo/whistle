@@ -14,6 +14,14 @@ var Icon = require('./icon');
 
 var trigger = util.trigger;
 
+function createOverview() {
+  return {
+    size: 0,
+    unzipSize: 0,
+    headers: {}
+  };
+}
+
 var ReqData = React.createClass({
   getInitialState: function () {
     return {
@@ -195,16 +203,8 @@ var ReqData = React.createClass({
     var overview;
     if (selectedList && selectedList.length > 1) {
       overview = {
-        req: {
-          size: 0,
-          unzipSize: 0,
-          headers: {}
-        },
-        res: {
-          size: 0,
-          unzipSize: 0,
-          headers: {}
-        }
+        req: createOverview(),
+        res: createOverview()
       };
       selectedList.forEach(function (item) {
         var startTime = item.startTime;
