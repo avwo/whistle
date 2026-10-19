@@ -1,5 +1,10 @@
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.12
+1. feat: https://github.com/avwo/whistle-client/issues/137
+2. feat: https://github.com/avwo/whistle/issues/1367
+3. fix: https://github.com/avwo/whistle/issues/1366
+
 ## v2.10.11
 1. feat: 优化 `Create Rule` 的界面交互
 2. fix: https://github.com/avwo/whistle-client/issues/132
