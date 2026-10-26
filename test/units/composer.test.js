@@ -66,6 +66,15 @@ module.exports = function () {
     method: 'post',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({
+      url: 'http://127.0.0.1:18080/composer-repeat',
+      method: 'POST',
+      body: 'repeat',
+      repeatCount: 3,
+      needResponse: true
+    })
+  }, function(res, data) {
+    var bodies = JSON.parse(Buffer.from(data.res.base64, 'base64').toString());
+    bodies.should.eql(['repeat', 'repeat', 'repeat']);
       url: 'http://user%40mail:p%3Ass@127.0.0.1:18080/composer-auth',
       method: 'GET',
       needResponse: true

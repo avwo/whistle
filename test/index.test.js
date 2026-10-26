@@ -52,6 +52,8 @@ wss.on('connection', function connection(ws) {
   });
 });
 
+var repeatBodies = [];
+var repeatResponses = [];
 http.createServer(function(req, res) {
   req.on('error', util.noop);
   res.on('error', util.noop);
@@ -63,6 +65,21 @@ http.createServer(function(req, res) {
   });
   req.on('end', function() {
     body += decoder.end();
+    if (req.url === '/composer-repeat') {
+      // Hold the replies until every repetition has arrived, then send each
+      // one the full list of bodies that were received.
+      repeatBodies.push(body);
+      repeatResponses.push(res);
+      if (repeatBodies.length === 3) {
+        var bodies = JSON.stringify(repeatBodies);
+        repeatResponses.forEach(function(r) {
+          r.end(bodies);
+        });
+        repeatBodies = [];
+        repeatResponses = [];
+      }
+      return;
+    }
     res.end(JSON.stringify({
       type: 'server',
       url: req.url,
