@@ -1,8 +1,36 @@
 var util = require('../util.test');
 var config = require('../config.test');
 var w2Conf = require('../../lib/config');
+var assert = require('assert');
+var crypto = require('crypto');
+var ca = require('../../lib/https/ca');
 
 module.exports = function() {
+  assert.strictEqual(!!w2Conf.emudhra, process.argv.indexOf('--emudhra') !== -1);
+  ['emudhra.example', '127.0.0.1', '::1'].forEach(function(hostname) {
+    var pair = ca.createCertificate(hostname);
+    var chain = pair.cert.match(/-----BEGIN CERTIFICATE-----[\s\S]*?-----END CERTIFICATE-----/g).map(function(pem) {
+      return new crypto.X509Certificate(pem);
+    });
+    var leaf = chain[0];
+    assert(leaf.checkPrivateKey(crypto.createPrivateKey(pair.key)));
+    assert(hostname === 'emudhra.example' ? leaf.checkHost(hostname) : leaf.checkIP(hostname));
+    if (w2Conf.emudhra) {
+      assert.strictEqual(chain.length, 3);
+      assert(chain[1].subject.indexOf('CN=EM OV TLS CA - G3C') !== -1);
+      assert.strictEqual(leaf.issuer, chain[1].subject);
+      assert(leaf.verify(chain[1].publicKey));
+      assert(chain[1].verify(chain[2].publicKey));
+      assert(!leaf.verify(new crypto.X509Certificate(ca.getRootCA().cert).publicKey));
+    } else {
+      assert.strictEqual(chain.length, 1);
+      assert(leaf.verify(new crypto.X509Certificate(ca.getRootCA().cert).publicKey));
+    }
+    var servername = hostname[0] === ':' ? ':' + hostname : hostname;
+    var cached = ca.serverAgent.createCertificate(servername);
+    assert.strictEqual(ca.serverAgent.createCertificate(servername).cert, cached.cert);
+  });
+
   util.request('http://127.0.0.1:18080/auto2http.html', function(res, data) {
     data.url.should.be.equal('/auto2http.html');
   });

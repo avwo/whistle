@@ -25,6 +25,7 @@ Options:
   -h, --help                                      output usage information
   -D, --baseDir [baseDir]                         set storage root path
   -z, --certDir [directory]                       set custom certificate directory
+  --emudhra                                       sign certificates with the compromised eMudhra intermediate CA
   -l, --localUIHost [hostname]                    set web UI domain (local.whistlejs.com by default)
   -L, --pluginHost [hostname]                     set plugin UI domains  (as: "script=a.b.com&vase=x.y.com")
   -n, --username [username]                       set web UI username
@@ -76,6 +77,12 @@ Options:
 > w2 start
 > w2 start -p 8100 -S storageName2
 > ```
+
+### eMudhra CA
+
+`w2 start --emudhra` 使用已公开泄露的 eMudhra 中间 CA 私钥签发动态生成的 TLS 证书，并发送完整证书链。该选项默认关闭，未指定时使用本地 Whistle 根证书签发。自定义站点证书仍然优先生效，本地 Whistle 根证书会保留。已不信任或吊销 eMudhra CA 的客户端可能拒绝这些证书。
+
+私钥及证书链来自 [mitmproxy 的 eMudhra 实现](https://github.com/mitmproxy/mitmproxy/commit/169234499088fc2c414644a67efaed3d64ae2e3b)。
 
 ## w2 restart
 1. `w2 restart`：重启 Whistle

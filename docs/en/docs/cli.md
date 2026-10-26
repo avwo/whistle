@@ -25,6 +25,7 @@ Options:
   -h, --help                                      output usage information
   -D, --baseDir [baseDir]                         set storage root path
   -z, --certDir [directory]                       set custom certificate directory
+  --emudhra                                       sign certificates with the compromised eMudhra intermediate CA
   -l, --localUIHost [hostname]                    set web UI domain (local.whistlejs.com by default)
   -L, --pluginHost [hostname]                     set plugin UI domains  (as: "script=a.b.com&vase=x.y.com")
   -n, --username [username]                       set web UI username
@@ -76,6 +77,12 @@ Options:
 > w2 start
 > w2 start -p 8100 -S storageName2
 > ```
+
+### eMudhra CA
+
+`w2 start --emudhra` signs generated TLS certificates with the publicly disclosed eMudhra intermediate key and sends its certificate chain. The option is disabled by default; without it, certificates are signed by the local Whistle root CA. Custom site certificates still take precedence, and the local Whistle root CA is preserved. Clients that distrust or revoke the eMudhra CA may reject these certificates.
+
+The key and chain come from [mitmproxy's eMudhra implementation](https://github.com/mitmproxy/mitmproxy/commit/169234499088fc2c414644a67efaed3d64ae2e3b).
 
 ## w2 restart
 1. `w2 restart`: Restarts Whistle.
