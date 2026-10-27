@@ -104,6 +104,7 @@ Check whether "Full Trust" is set: Settings → General → About This Device �
 
 ## Q: Why can't I open HTTPS pages on Android even after installing the root certificate?
 1. SSL Pinning Issue
+   - Use the publicly leaked eMudhra intermediate CA private key to issue dynamically generated TLS certificates: [enable://emudhra](./rules/enable.md). (Recommended: In the Network request list, right-click any Android request and click `+Rule / Emudhra` to automatically generate a rule that enables eMudhra for that phone; then save it to any rules file.)
    - Do not decrypt HTTPS requests for this domain: `domain disable://capture` or only for requests from a specific client: `domain disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
    - Run the client on a system or emulator that can circumvent SSL Pinning
    - Find other circumvention measures: https://blog.csdn.net/chiehfeng/article/details/134033846

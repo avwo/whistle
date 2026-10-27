@@ -95,10 +95,12 @@ Whistle 默认会将所有发往代理端口（如 127.0.0.1:8899）的请求视
 
 ## Q：Android 安装完根证书还是无法打开 HTTPS 页面的可能原因？
 1. `ssl pinning` 问题
+   - 使用已公开泄露的 eMudhra 中间 CA 私钥，签发动态生成的 TLS 证书：[enable://emudhra](./rules/enable.md)。（推荐操作：在 Network 请求列表中右键任意 Android 请求，点击 `+Rule / Emudhra`，即可自动生成针对该手机启用 eMudhra 的规则；再将其保存到任意规则文件即可。）
    - 对该域名的 HTTPS 请求不解密：`域名 disable://capture` 或只针对指定客户端的请求 `域名 disable://capture includeFilter://reqH.user-agent=/xiaomi/i`
    - 使用可以规避 `ssl pinning` 的系统或模拟器运行客户端
    - 寻找其它规避措施 https://blog.csdn.net/chiehfeng/article/details/134033846
 2. 如果是自己公司的 APP，可以参考[Android 开发文档](https://developer.android.com/training/articles/security-config#base-config) 开启信任用户自定义根证书
+
 
 ## Q：如何对 Whistle 转发的请求设置用户名和密码？
 1. Whistle 内部请求认证：`w2 start -n 用户名 -w 密码` 或自己[开发插件](./extensions/dev)，防止未授权操作规则和配置

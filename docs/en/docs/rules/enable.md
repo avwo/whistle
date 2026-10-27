@@ -23,6 +23,7 @@ pattern enable://action1 enable://action2 ... [filters...]
 - `authCapture`: Force execution of the [auth hook](../extensions/dev#auth) before converting to HTTPS (default behavior is to execute the plugin's auth hook after converting to an HTTPS request)
 - `auto2http`: Enable automatic fallback to HTTP requests when HTTPS requests encounter TLS errors. By default, this is automatically enabled if the serverIP is a local IP
 - `bigData`: Increase the data display limit for captured packets (2M → 16M)
+- `emudhra`: signs generated TLS certificates with the publicly disclosed eMudhra intermediate key and sends its certificate chain
 - `br`: Enable BR compression for response content
 - `gzip`: Enable GZIP compression for response content
 - `deflate`: Enable Deflate compression for response content

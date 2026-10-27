@@ -23,6 +23,7 @@ pattern enable://action1 enable://action2 ... [filters...]
 - `authCapture`：强制在转成 HTTPS 之前执行 [auth hook](../extensions/dev#auth)（默认是转成 HTTPS 请求后再执行插件的 auth hook）
 - `auto2http`：开启 HTTPS 请求报 TLS 错误自动转成 HTTP 请求，默认情况下如果 serverIP 是本地 IP 会自动启用
 - `bigData`：扩大抓包数据显示限制(2M→16M)
+- `emudhra`：使用已公开泄露的 eMudhra 中间 CA 私钥签发动态生成的 TLS 证书，并发送完整证书链
 - `br`：启用 BR 压缩响应内容
 - `gzip`：启用 GZIP 压缩响应内容
 - `deflate`：启用 Deflate 压缩响应内容
