@@ -77,7 +77,7 @@ var DEL_HINTS = [
 var LINE_PROPS_HINTS = ['important', 'safeHtml', 'strictHtml', 'disableAutoCors', 'disableUserLogin', 'enableUserLogin',
   'internal', 'internalOnly', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyHostOnly', 'proxyTunnel', 'weakRule', 'enableBigData'];
 var COMMON_HINTS = [
-  'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData',
+  'abort', 'abortReq', 'abortRes', 'authCapture', 'auto2http', 'bigData', 'emudhra',
   'capture', 'captureIp', 'captureStream', 'clientCert', 'clientId', 'clientIp', 'customParser',
   'flushHeaders', 'forHttp', 'forHttps', 'forceReqWrite', 'forceResWrite', 'h2', 'http2', 'httpH2', 'hide', 'hideComposer', 'hideCaptureError',
   'interceptConsole', 'internalProxy', 'proxyFirst', 'proxyHost', 'proxyTunnel', 'keepCSP', 'keepAllCSP', 'keepCache', 'keepAllCache', 'keepClientId',

@@ -697,6 +697,7 @@ $.extend(
       importRemote: CGI_URL + 'import-remote',
       getHistory: CGI_URL + 'history',
       getCookies: CGI_URL + 'cookies',
+      getClientIps: CGI_URL + 'client-ips',
       getTempFile: CGI_URL + 'temp/get',
       getComposeData: CGI_URL + 'compose-data',
       getSavedList: CGI_URL + 'saved/list',

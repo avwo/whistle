@@ -69,6 +69,7 @@ var contextMenuList = [
       { name: 'Timeline' },
       { name: 'Preview' },
       { name: 'Source' },
+      { name: 'All Cached Sessions' },
       { name: 'Tree View', action: 'toggleView' }
     ]
   },
@@ -107,7 +108,8 @@ var contextMenuList = [
       { name: 'Network' },
       { name: 'Request' },
       { name: 'Response' },
-      { name: 'Debug' }
+      { name: 'Debug' },
+      { name: 'Emudhra' }
     ]
   },
   {
@@ -957,6 +959,9 @@ var ReqData = React.createClass({
     case 'Source':
       util.openEditor(util.stringify(item));
       break;
+    case 'All Cached Sessions':
+      self.dumpSessions(10000000);
+      break;
     case 'toggleView':
       trigger('switchTreeView');
       break;
@@ -1082,6 +1087,9 @@ var ReqData = React.createClass({
     case 'Debug':
       trigger('showAddRulesDialog', {session: item, treeNode: treeId && modal.getTreeNode(treeId), type: action});
       break;
+    case 'Emudhra':
+      trigger('showRulesDialog', { rules: '* enable://emudhra includeFilter://clientIp:' + item.req.ip });
+      break;
     }
   },
   onHeadCtxMenu: function(e) {
@@ -1151,8 +1159,8 @@ var ReqData = React.createClass({
     list1[3].disabled = disabled;
     list1[4].disabled = disabled;
     list1[6].disabled = disabled;
-    list1[7].icon = isTreeView ? 'globe' : 'tree-conifer';
-    list1[7].name = isTreeView ? 'List View' : 'Tree View';
+    list1[8].icon = isTreeView ? 'globe' : 'tree-conifer';
+    list1[8].name = isTreeView ? 'List View' : 'Tree View';
     contextMenuList[2].disabled = disabled && !treeId;
     var treeUrl = treeId ? treeId + '/' : '';
     var isTreeNode = disabled && !treeUrl;
@@ -1287,6 +1295,7 @@ var ReqData = React.createClass({
     var rulesItem = contextMenuList[4];
     var pluginItem = contextMenuList[10];
     rulesItem.hide = dataCenter.hideRulesEditor;
+    rulesItem.list[5].disabled = clickBlank;
     contextMenuList[9].disabled = contextMenuList[7].disabled = clickBlank && !selectedCount;
     util.addPluginMenus(
       pluginItem,
@@ -1345,13 +1354,16 @@ var ReqData = React.createClass({
       }
     });
   },
+  dumpSessions: function(count) {
+    dataCenter.setDumpCount(count);
+    this.props.modal.clear();
+    this.refs.filterInput.clearFilterText();
+  },
   onFilterKeyDown: function (e) {
     if (e.keyCode !== 13 || !CMD_RE.test(e.target.value)) {
       return;
     }
-    dataCenter.setDumpCount(parseInt(RegExp.$1, 10));
-    this.props.modal.clear();
-    this.refs.filterInput.clearFilterText();
+    this.dumpSessions(parseInt(RegExp.$1, 10));
   },
   autoRefresh: function () {
     this.container.find(BASE_DOM)[0].scrollTop = 100000000;

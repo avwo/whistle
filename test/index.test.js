@@ -108,7 +108,6 @@ var proxy = startWhistle({
   httpPort: config.httpServerPort,
   httpsPort: config.httpsServerPort,
   certDir: path.join(__dirname, 'assets/certs'),
-  emudhra: process.argv.indexOf('--emudhra') !== -1,
   debugMode: true,
   localUIHost: 'local.whistle.com|local2.whistle.com&localn.whistle.com',
   pluginHost: 'test=test.local.whistle.com|b.test.local.whistle.com&test3.local.whistle.com,',

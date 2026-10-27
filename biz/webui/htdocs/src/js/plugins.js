@@ -539,8 +539,8 @@ var Home = React.createClass({
             <thead>
               <tr>
                 <th className="w-plugins-order">#</th>
-                <th className="w-plugins-active">Active</th>
-                <th className="w-plugins-date">Installed</th>
+                <th className="w-plugins-active">Status</th>
+                <th className="w-plugins-date">Installed On</th>
                 <th className="w-plugins-name">Name</th>
                 <th className="w-plugins-version">Version</th>
                 <th className="w-plugins-op">Operation</th>

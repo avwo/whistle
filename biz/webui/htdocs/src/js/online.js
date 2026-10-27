@@ -12,6 +12,7 @@ var message = require('./message');
 var ShortcutsSettings = require('./shortcuts-settings');
 var Icon = require('./icon');
 var CloseBtn = require('./close-btn');
+var ModalHeader = require('./modal-header');
 var ModalFooter = require('./modal-footer');
 
 var showSysErr = util.showSysErr;
@@ -214,7 +215,8 @@ function createDialog() {
       '<h5 class="w-online-option w-dns-order"><strong>DNS Order:</strong>' + SELECT_TAG + '</h5>' +
       '<p><a class="w-view-dns">Clear DNS Cache</a></p>' +
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
-      '<a class="w-shortcuts-settings">Shortcuts Settings</a>' +
+      '<p><a class="w-shortcuts-settings">Shortcuts Settings</a></p>' +
+      '<a class="w-view-ips">View Client IPs</a>' +
       '</div>' +
       '<div class="modal-footer">' + win.DISSMISS_BTN +
       '</div></div></div></div>'
@@ -400,6 +402,22 @@ var Online = React.createClass({
               message.success('DNS cache cleared successfully');
             });
           }
+        });
+      });
+      var pendingClientIps;
+      findElem('.w-view-ips').on('click', function() {
+        if (pendingClientIps) {
+          return;
+        }
+        pendingClientIps = true;
+        dataCenter.getClientIps(function (data, xhr) {
+          pendingClientIps = false;
+          if (!Array.isArray(data)) {
+            showSysErr(xhr);
+            return;
+          }
+          self.setState({ clientIps: data.reverse().join('\n') });
+          self.refs.clientIps.show();
         });
       });
       shortcutsElem.on('click', function () {
@@ -610,7 +628,10 @@ var Online = React.createClass({
   },
   render: function () {
     var self = this;
-    var server = self.state.server || '';
+    var state = self.state;
+    var server = state.server || '';
+    var clientIps = state.clientIps || '127.0.0.1';
+
     return (
       <a
         ref="onlineMenu"
@@ -646,6 +667,20 @@ var Online = React.createClass({
         </Dialog>
         <DNSDialog ref="dnsDialog" />
         <ShortcutsSettings ref="shortcuts" />
+        <Dialog ref="clientIps" wstyle="w-dns-servers">
+          <ModalHeader>Client IPs That Accessed via Whistle</ModalHeader>
+          <pre className="modal-body">{clientIps}</pre>
+          <ModalFooter>
+            <button
+              type="button"
+              data-dismiss="modal"
+              className="btn btn-primary w-copy-text-with-tips"
+              data-clipboard-text={clientIps}
+            >
+              Copy
+            </button>
+          </ModalFooter>
+        </Dialog>
       </a>
     );
   }

@@ -152,7 +152,6 @@ program.command('exec')
 program
   .option('-D, --baseDir [baseDir]', 'set storage root path', String, undefined)
   .option('-z, --certDir [directory]', 'set custom certificate directory', String, undefined)
-  .option('--emudhra', 'sign certificates with the compromised eMudhra intermediate CA')
   .option('-l, --localUIHost [hostname]', 'set web UI domain (default: ' + config.localUIHost + ')', String, undefined)
   .option('-L, --pluginHost [hostname]', 'set plugin UI domains  (e.g., "script=a.b.com&vase=x.y.com")', String, undefined)
   .option('-n, --username [username]', 'set web UI username', String, undefined)

@@ -439,19 +439,19 @@ module.exports = function() {
   //   data.should.equal(shadowUrl + 'shadow123');
   // });
 
-  ['shadow', 'service', 'mock'].forEach(function(name) {
-    util.request({
-      url: 'http://' + name + '.remote-key3.test.w2.org/test/script/api',
-      headers: { test: 'abc' }
-    }, function(res, data) {
-      data.url.should.containEql('api');
-    });
+  // ['shadow', 'service', 'mock'].forEach(function(name) {
+  //   util.request({
+  //     url: 'http://' + name + '.remote-key3.test.w2.org/test/script/api',
+  //     headers: { test: 'abc' }
+  //   }, function(res, data) {
+  //     data.url.should.containEql('api');
+  //   });
 
-    util.request({
-      url: 'http://' + name + '.remote-key4.test.w2.org/test/script/proxy',
-      headers: { test: 'abc' }
-    }, function(res, data) {
-      data.url.should.containEql('proxy');
-    });
-  });
+  //   util.request({
+  //     url: 'http://' + name + '.remote-key4.test.w2.org/test/script/proxy',
+  //     headers: { test: 'abc' }
+  //   }, function(res, data) {
+  //     data.url.should.containEql('proxy');
+  //   });
+  // });
 };

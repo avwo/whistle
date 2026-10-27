@@ -99,7 +99,6 @@ export interface WhistleOptions {
   blockPluginList?: boolean;
   webUIPath?: string;
   certDir?: string;
-  emudhra?: boolean;
   middleware?: string;
   uiMiddleware?: string;
   cmdName?: string;
