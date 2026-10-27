@@ -1295,7 +1295,7 @@ var ReqData = React.createClass({
     var rulesItem = contextMenuList[4];
     var pluginItem = contextMenuList[10];
     rulesItem.hide = dataCenter.hideRulesEditor;
-    rulesItem.list[5].disabled = clickBlank;
+    rulesItem.list[5].disabled = disabled;
     contextMenuList[9].disabled = contextMenuList[7].disabled = clickBlank && !selectedCount;
     util.addPluginMenus(
       pluginItem,
