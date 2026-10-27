@@ -1,7 +1,7 @@
 {
   "name": "whistle",
   "description": "HTTP, HTTP2, HTTPS, Websocket debugging proxy",
-  "version": "2.10.12",
+  "version": "2.10.13",
   "dataDirname": ".whistle",
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
@@ -51,7 +51,7 @@
     "lru-cache": "^4.1.1",
     "mime": "^1.6.0",
     "multer2": "^1.1.1",
-    "node-forge": "^1.4.0",
+    "node-forge": "^1.4.1",
     "node-pac": "^0.5.1",
     "parseurl": "^1.3.1",
     "pfork": "^0.6.3",

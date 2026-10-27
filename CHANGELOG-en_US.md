@@ -1,5 +1,13 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.13
+1. fix: https://github.com/avwo/whistle/issues/1375
+2. fix: https://github.com/avwo/whistle/issues/1369
+3. fix: https://github.com/avwo/whistle/pull/1372
+4. feat: https://github.com/avwo/whistle/issues/1371
+5. feat: add Network context menu `Show /All Cached Sessions`
+6. feat: add Network / Online / View Client IPs
+
 ## v2.10.12
 1. feat: https://github.com/avwo/whistle-client/issues/137
 2. feat: https://github.com/avwo/whistle/issues/1367
