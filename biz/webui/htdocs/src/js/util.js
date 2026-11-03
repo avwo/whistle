@@ -1964,10 +1964,46 @@ var COMP_RE = /%[a-f\d]{2}|./gi;
 var CHECK_COMP_RE = /%[a-f\d]{2}/i;
 var SPACE_RE = /\+/g;
 var gbkDecoder;
+var utf8Decoder;
 if (globaWin.TextDecoder) {
   try {
     gbkDecoder = new TextDecoder('GB18030');
   } catch (e) {}
+  try {
+    utf8Decoder = new TextDecoder('utf-8');
+  } catch (e) {}
+}
+
+var INVALID_CHAR_RE = /\ufffd/g;
+var CONTROL_CHAR_RE = /[\x00-\x08\x0b\x0c\x0e-\x1f]/g;
+
+function decodeUtf8(arr) {
+  if (!utf8Decoder) {
+    return '';
+  }
+  try {
+    return utf8Decoder.decode(new globaWin.Uint8Array(arr));
+  } catch (e) {
+    return '';
+  }
+}
+
+function countInvalidChars(text) {
+  return (text.match(INVALID_CHAR_RE) || []).length;
+}
+
+// 去掉解码失败的字节（U+FFFD）和控制字符，只保留可读内容
+function cleanBinaryText(text) {
+  if (!text) {
+    return '';
+  }
+  return text.replace(INVALID_CHAR_RE, '').replace(CONTROL_CHAR_RE, '');
+}
+
+// 判断解码结果是否像“真正的文本”（控制字符很少），
+// 随机二进制按 GBK 解码出来的乱码会带大量控制字符
+function countControlChars(text) {
+  return (text.match(CONTROL_CHAR_RE) || []).length;
 }
 
 function decodeURIComponentSafe(str, isUtf8) {
@@ -2021,9 +2057,25 @@ function decodeBase64(base64) {
     hex: getHexString(arr)
   };
   if (!isUtf8(arr)) {
-    try {
-      result.text = gbkDecoder.decode(arr);
-    } catch (e) {}
+    // 非 UTF-8 内容分两种情况：
+    // 1) 二进制里混有 UTF-8 文本（如 protobuf 上报）：按 UTF-8 解码，并剔除非法字节
+    //    和控制字符，避免出现 GBK 乱码（如“涓浗鑱旈€”）
+    // 2) 真正的旧编码 GBK 文本：仍按 GBK 渲染
+    var utf8Text = decodeUtf8(arr);
+    var invalidCount = countInvalidChars(utf8Text);
+    if (invalidCount <= arr.length / 10) {
+      result.text = cleanBinaryText(utf8Text);
+    } else {
+      var gbkText = '';
+      try {
+        gbkText = gbkDecoder.decode(arr);
+      } catch (e) {}
+      if (gbkText && countControlChars(gbkText) <= gbkText.length / 50) {
+        result.text = gbkText;
+      } else {
+        result.text = cleanBinaryText(utf8Text);
+      }
+    }
   }
   if (!result.text) {
     try {
