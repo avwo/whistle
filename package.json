@@ -6,7 +6,6 @@
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
   "sockets": 256,
-  "h2BridgeSockets": 64,
   "timeout": 360000,
   "author": "avenwu <avwu@qq.com>",
   "contributors": [],

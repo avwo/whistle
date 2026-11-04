@@ -58,7 +58,6 @@ async function run() {
     noGlobalPlugins: true,
     disableAllPlugins: true,
     mode: 'capture|http2|disableUpdateTips',
-    h2BridgeSockets: 1,
     shadowRules: host + ' http://127.0.0.1:' + origin.address().port
   }, resolve));
   const ca = fs.readFileSync(require('../lib/https/ca').getRootCAFile());
@@ -67,6 +66,9 @@ async function run() {
   }, ca);
   const b = await openSession(proxy.address().port, {}, ca);
   const agent = require('../lib/config').h2BridgeAgent;
+  const maxSockets = agent.maxSockets;
+  assert.equal(maxSockets, 96);
+  agent.maxSockets = 1;
   const received = new Map();
   proxy.on('request', req => received.set(req.url, {
     socket: req.socket, ip: req.clientIp, fromTunnel: req.fromTunnel,
@@ -143,6 +145,7 @@ async function run() {
   assert.equal(await held, 'done');
   assert.equal(await next, '/next');
   assert.ok(!received.has('/cancelled'), 'a cancelled request reached the bridge listener');
+  agent.maxSockets = maxSockets;
   const burst = Array.from({ length: 200 }, (_, index) => '/module-' + index);
   const bodies = await Promise.all(burst.map(url => readBody(b.request({ ':path': url }))));
   assert.deepEqual(bodies, burst);
