@@ -117,6 +117,7 @@ export interface WhistleOptions {
   secureFilter?: WhistleSecureFilter;
   encrypted?: boolean;
   sockets?: number;
+  h2BridgeSockets?: number;
   dataDirname?: string;
   storage?: string;
   baseDir?: string;

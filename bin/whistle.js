@@ -159,6 +159,7 @@ program
   .option('-N, --guestName [username]', 'set web UI guest username (read-only)', String, undefined)
   .option('-W, --guestPassword [password]', 'set web UI guest password (read-only)', String, undefined)
   .option('-s, --sockets [number]', 'set max cached connections per domain (default: ' + config.sockets + ')', parseInt, undefined)
+  .option('--h2BridgeSockets <number>', 'set max pooled HTTP/2 bridge connections (default: ' + config.h2BridgeSockets + ')', String, undefined)
   .option('-S, --storage [newStorageDir]', 'set configuration storage directory', String, undefined)
   .option('-C, --copy [storageDir]', 'copy configuration from specified directory', String, undefined)
   .option('-c, --dnsCache [time]', 'set DNS cache time (default: 60000ms)', String, undefined)

@@ -6,6 +6,7 @@
   "localUIHost": "local.whistlejs.com",
   "port": 8899,
   "sockets": 256,
+  "h2BridgeSockets": 64,
   "timeout": 360000,
   "author": "avenwu <avwu@qq.com>",
   "contributors": [],
@@ -67,7 +68,7 @@
   "scripts": {
     "dev": "webpack --config ./biz/webui/htdocs/src/webpack.config -w",
     "start": "node bin/whistle.js run",
-    "test": "npm run lintfix && node test/index.test.js",
+    "test": "npm run lintfix && node test/h2-bridge.test.js && node test/index.test.js",
     "lint": "eslint *.js ./lib ./bin ./biz ./test ./docs/script",
     "lintfix": "eslint --fix *.js ./lib ./bin ./biz ./test ./docs/script",
     "cov": "node_modules/istanbul/lib/cli.js cover node_modules/.bin/tape -- test/index.test.js",
