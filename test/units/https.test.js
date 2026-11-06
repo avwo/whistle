@@ -14,6 +14,15 @@ module.exports = function() {
     data.body.should.be.equal('test');
   });
 
+  // the Host header is an IP literal, so it must not be sent as SNI servername
+  util.request({
+    url: 'https://ipsni.w2.org/index.html',
+    headers: { host: '127.0.0.1:' + config.httpsPort },
+    rejectUnauthorized: false
+  }, function(res, data) {
+    data.body.should.be.equal('test');
+  });
+
   util.request('http://https1.w2.org:' + config.serverPort + '/index.html', function(res, data) {
     data.type.should.be.equal('server');
   });
