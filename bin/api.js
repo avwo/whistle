@@ -58,6 +58,49 @@ async function request(options) {
   });
 }
 
+function createFile(data) {
+  if (Buffer.isBuffer(data)) {
+    data = { base64: data.toString('base64') };
+  } else {
+    data = { value: common.toString(data) };
+  }
+  return request({ url: 'temp/create', data: data }).then(function(data) {
+    return data.filepath;
+  });
+}
+
+/**
+ * 生成访问 Whistle 抓包界面的 URL，用 Chrome 或系统自带浏览器打开即可查看抓包数据
+ *
+ * 入参可选，支持传入以下来源：
+ * - 抓包数据
+ * - 本地文件目录
+ * - 临时文件目录
+ * - 远程 URL
+ *
+ * 不传参时，返回默认的 Whistle 抓包界面 URL。
+ *
+ * @param source 可选。抓包数据、本地文件目录、临时文件目录或远程 URL；
+ *               不传时返回默认的 Whistle 抓包界面 URL
+ * @returns 访问 Whistle 抓包界面的 URL
+ */
+exports.createUrl = async function(sessions) {
+  var options = await getOptions();
+  var url = 'http://' + (options.host || '127.0.0.1') + ':' + (options.port || 8899) + '/';
+  if (!sessions) {
+    return url;
+  }
+  var tempFile = common.getTempFile(sessions);
+  if (!tempFile) {
+    if (/^[\da-f]{64}$/.test(sessions)) {
+      tempFile = sessions;
+    } else {
+      tempFile = (await createFile(sessions)).substring(5);
+    }
+  }
+  return url + '#network?dataUrl=' + encodeURIComponent(tempFile);
+};
+
 exports.getRootCA = async function() {
   return request({ url: 'rootca', type: 'raw' });
 };
@@ -73,16 +116,7 @@ exports.setEnableHTTPS = exports.setEnableHttps = async function (enabled) {
 };
 
 
-exports.createFile = function(data) {
-  if (Buffer.isBuffer(data)) {
-    data = { base64: data.toString('base64') };
-  } else {
-    data = { value: common.toString(data) };
-  }
-  return request({ url: 'temp/create', data: data }).then(function(data) {
-    return data.filepath;
-  });
-};
+exports.createFile = createFile;
 
 exports.getFile = function(filepath) {
   return request('temp/get?filename=' + encodeURIComponent(filepath))
