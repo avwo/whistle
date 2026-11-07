@@ -1,5 +1,10 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.14
+1. fix: Fixed an issue where requests responded to directly via rules could not display request content (if any) in the capture list.
+2. fix: https://github.com/avwo/whistle/issues/1378
+3. feat: Added JSON5 support in the UI to parse certain non-standard JSON strings; users can use Format to convert such strings into standard JSON.
+
 ## v2.10.13
 1. fix: https://github.com/avwo/whistle/issues/1375
 2. fix: https://github.com/avwo/whistle/issues/1369

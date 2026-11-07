@@ -2,6 +2,11 @@
 
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.14
+1. fix: 修复规则直接响应的请求在抓包列表中不显示请求内容（如有）的问题
+2. fix: https://github.com/avwo/whistle/issues/1378
+3. feat: 界面支持 JSON5 解析非标准 JSON 字符串，并可通过 Format 转换为标准 JSON
+
 ## v2.10.13
 1. fix: https://github.com/avwo/whistle/issues/1375
 2. fix: https://github.com/avwo/whistle/issues/1369
