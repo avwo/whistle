@@ -30,8 +30,6 @@ var IframeDialog = React.createClass({
     var state = this.state;
     var disabled = state.disabled;
     var name = state.name;
-    var url = state.url;
-    var favicon = state.favicon ? <img src={state.favicon} /> : null;
 
     window.onWhistlePluginOptionModalReady = onWhistlePluginOptionModalReady;
 
@@ -39,12 +37,12 @@ var IframeDialog = React.createClass({
       <Dialog ref="dialog" wstyle="w-iframe-dialog" width={state.width || 'max(calc(100% - 240px), 720px)'}>
         <ModalHeader>
           <span className={'w-plugins-tab w-inline-middle' + (disabled ? ' w-plugin-tab-disabled' : '')}>
-            {disabled ? <Icon data-name={name} name="ban-circle" /> : favicon}
+            {disabled ? <Icon data-name={name} name="ban-circle" /> : (state.favicon ? <img src={state.favicon} /> : null)}
             {name || 'Untitled'}
           </span>
         </ModalHeader>
         <div className="modal-body w-fix-drag" style={{height: state.height || 'max(calc(100vh - 120px), 600px)'}}>
-        <iframe src={url} onLoad={dataCenter.handleIframeLoad} />
+        <iframe src={state.url} onLoad={dataCenter.handleIframeLoad} />
         </div>
       </Dialog>
     );

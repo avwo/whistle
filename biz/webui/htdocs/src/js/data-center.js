@@ -190,7 +190,7 @@ function handleHashFilterChanged(e) {
   var index = hash.indexOf('?');
   var filter;
   if (index !== -1) {
-    var obj = util.parseQueryString(
+    var obj = util.parseQuery(
       hash.substring(index + 1),
       null,
       null,

@@ -109,7 +109,7 @@ var UrlInput = React.createClass({
     var url = self.state.url.replace(/#.*$/, '');
     var index = url.indexOf('?');
     var paramsText = index === -1 ? '' : url.substring(index + 1);
-    var params = util.parseQueryString(paramsText, null, null, decodeURIComponent);
+    var params = util.parseQuery(paramsText, null, null, decodeURIComponent);
     self.refs.paramsEditor.update(params);
     self.setState({ showParams: true, paramsText: paramsText, hasPath: self.getPathIndex() !== -1 });
   },

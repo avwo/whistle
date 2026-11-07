@@ -545,7 +545,7 @@ var List = React.createClass({
             message.success('Valid JSON object');
           } catch (e) {
             message.error(
-                'Warning: Invalid JSON format in the value of \'' +
+                'Invalid JSON format in the value of \'' +
                 currentFocusItem.name + '\'. ' +  e.message
               );
           }
@@ -639,27 +639,33 @@ var List = React.createClass({
     );
     data.className = 'w-contenxt-menu-list';
     var copyItem = list[0];
+    var saveItem = list[1];
+    var subList = copyItem.list;
     if (isRules) {
-      list[1].disabled = disabled;
-      list[1].name = 'Save';
+      saveItem.disabled = disabled;
+      saveItem.name = 'Save';
       if (item && !item.changed) {
         if ((dataCenter.isMultiEnv() && name !== 'Default') || isGroupName(name)) {
-          list[1].disabled = true;
+          saveItem.disabled = true;
         } else {
-          list[1].name = item.selected ? 'Disable' : 'Enable';
+          saveItem.name = item.selected ? 'Disable' : 'Enable';
         }
       }
       if (item && item.isDefault) {
         isDefault = true;
       }
     } else {
-      copyItem.list[0].name = name && isGroupName(name) ? 'Copy Name' : 'Copy Key';
-      list[1].disabled = !item || !item.changed;
+      subList[0].name = name && isGroupName(name) ? 'Copy Name' : 'Copy Key';
+      saveItem.disabled = !item || !item.changed;
+      var empty = !item || !item.value;
+      for (var i = 3; i < 6; i++) {
+        subList[i].disabled = empty;
+      }
     }
     copyItem.disabled = disabled;
     if (!disabled) {
-      copyItem.list[0].copyText = name;
-      var copyValueItem = copyItem.list[1];
+      subList[0].copyText = name;
+      var copyValueItem = subList[1];
       if (item.value) {
         copyValueItem.disabled = false;
         copyValueItem.copyText = item.value;

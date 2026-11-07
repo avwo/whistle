@@ -2,11 +2,6 @@ var React = require('react');
 var util = require('./util');
 
 var HelpIcon = React.createClass({
-  shouldComponentUpdate: function (nextProps) {
-    var props = this.props;
-    return props.className !== nextProps.className || props.docsUrl !== nextProps.docsUrl
-    || props.onClick !== nextProps.onClick || props['data-name'] !== nextProps['data-name'];
-  },
   onClick: function(e) {
     util.preventAll(e);
     var props = this.props;

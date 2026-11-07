@@ -63,6 +63,7 @@ var MAX_COUNT = 64;
 var MAX_REPEAT_TIMES = util.MAX_REPEAT_TIMES;
 var RULES_HEADER = 'x-whistle-rule-value';
 var NO_BODY_METHOD = /^(?:GET|HEAD|OPTIONS)$/i;
+var NO_BOLD = {fontWeight: 'normal'};
 
 var getTabClass = function (active) {
   return active ? 'w-tab-btn w-active' : 'w-tab-btn';
@@ -87,6 +88,10 @@ function hexToStr(str) {
 function strToHex(str) {
   var base64 = util.toBase64(str);
   return getHexText(getBase64Hex(base64));
+}
+
+function showNoCookies() {
+  message.info('No cookies found');
 }
 
 function getStatus(statusCode) {
@@ -315,7 +320,7 @@ var Composer = React.createClass({
     if (body && self.state.isHexText) {
       body = hexToStr(body);
     }
-    body = util.parseQueryString(body, null, null, decodeURIComponent);
+    body = util.parseQuery(body, null, null, decodeURIComponent);
     refs.prettyBody.update(body);
   },
   update: function (item) {
@@ -994,7 +999,7 @@ var Composer = React.createClass({
     var self = this;
     var host = util.getHostname(self._url).toLowerCase();
     if (!/^[a-z.\d_-]+$/.test(host)) {
-      return message.info('Cookies not found');
+      return showNoCookies();
     }
     if (self._pending) {
       return;
@@ -1020,13 +1025,14 @@ var Composer = React.createClass({
         }
       }
       if (!result.length) {
-        return message.info('Cookies not found');
+        return showNoCookies();
       }
       if (result.length < maxCount) {
         var cookies = self._cacheCookies;
         if (cookies && cookies.domain === host) {
-          for (var j = 0, len = cookies.cookies.length; j < len; j++) {
-            var c = cookies.cookies[j];
+          cookies = cookies.cookies;
+          for (var j = 0, len = cookies.length; j < len; j++) {
+            var c = cookies[j];
             if (c && result.indexOf(c) === -1) {
               result.push(c);
               if (result.length >= maxCount) {
@@ -1335,7 +1341,7 @@ var Composer = React.createClass({
                   title={result.url}
                   onClick={onTabChange}
                   name="Response"
-                  style={{fontWeight: 'normal'}}
+                  style={NO_BOLD}
                   className={getTabClass(showResponse)}
                 >
                   <Icon name="arrow-left" />
@@ -1346,7 +1352,7 @@ var Composer = React.createClass({
                   id="whistleComposerFrames"
                   onClick={onTabChange}
                   name="Frames"
-                  style={{fontWeight: 'normal'}}
+                  style={NO_BOLD}
                   className={getTabClass(showFrames)}
                 >
                   <Icon name="menu-hamburger" />

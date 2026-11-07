@@ -11,7 +11,7 @@ var PluginsTabs = require('./plugins-tabs');
 var Tips = require('./panel-tips');
 var mixin = require('./detail-mixin');
 
-var parseQueryString = util.parseQueryString;
+var parseQuery = util.parseQuery;
 var EMPTY_COOKIES = { message: 'No request cookies' };
 var decode = decodeURIComponent;
 
@@ -86,7 +86,7 @@ var ReqDetail = React.createClass({
       json = util.getJson(req, true, decode);
       delete headers.Host;
       cookies = headers.cookie;
-      cookies = cookies && parseQueryString(
+      cookies = cookies && parseQuery(
         cookies,
         /;\s*/g,
         null,
@@ -95,14 +95,14 @@ var ReqDetail = React.createClass({
       var realUrl = util.getRealUrl(modal);
       var index = realUrl.indexOf('?');
       query = index == -1 ? '' : realUrl.substring(index + 1);
-      query = query && parseQueryString(
+      query = query && parseQuery(
         query,
         null,
         null,
         decode
       );
       if (util.isUrlEncoded(req)) {
-        form = parseQueryString(
+        form = parseQuery(
           util.getBody(req, true),
           null,
           null,

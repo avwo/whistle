@@ -50,7 +50,8 @@ var RecordBtn = React.createClass({
     util.on('toggleNetworkState', this.onClick);
   },
   enable: function (flag) {
-    var state = this.state;
+    var self = this;
+    var state = self.state;
     var pause = state.pause;
     var stop = state.stop;
     if (flag === 'stop') {
@@ -63,12 +64,12 @@ var RecordBtn = React.createClass({
       }
     } else {
       if (stop || pause) {
-        this.onClick();
+        self.onClick();
       }
       return;
     }
 
-    this.onClickOption({ id: flag });
+    self.onClickOption({ id: flag });
   },
   showActionOptions: hover.show,
   hideActionOptions: hover.hide,

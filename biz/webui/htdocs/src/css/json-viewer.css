@@ -1,6 +1,9 @@
 .w-props-wrap:hover .w-bar {
   display: inline-block;
 }
+.w-json-viewer {
+  margin: 5px 0;
+}
 .w-json-viewer-str,
 .w-json-viewer-tree {
   padding: 5px;

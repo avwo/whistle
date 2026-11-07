@@ -74,6 +74,7 @@ var FilterInput = React.createClass({
     var onFilterTypeChange = self.props.onFilterTypeChange;
     if (isFunc(onFilterTypeChange)) {
       onFilterTypeChange(self.state.filterType);
+      util.on('filterImport', self.handleFilterType);
     }
   },
   focus: function() {
@@ -248,13 +249,20 @@ var FilterInput = React.createClass({
     });
   },
   handleFilterType: function (e) {
-    var target = e.target;
-    if (target.nodeName !== 'SPAN') {
-      return;
-    }
-    var type = target.textContent;
+    var filterType;
     var self = this;
-    var filterType = type === 'All' ? '' : type;
+    if (e.type === 'filterImport') {
+      filterType = 'Import';
+    } else {
+      var target = e.target;
+      var nodeName = target.nodeName;
+      var isClose = nodeName === 'I';
+      if (!isClose && nodeName !== 'SPAN') {
+        return;
+      }
+      filterType = util.attr(target, 'data-type') || 'All';
+      filterType = isClose || filterType === 'All' ? '' : filterType;
+    }
     if (filterType === self.state.filterType) {
       return;
     }
@@ -268,10 +276,14 @@ var FilterInput = React.createClass({
     }
     var className = getActive(!filterType);
     return (
-      <div className="w-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
+      <div ref="filterBar" className="w-type-bar" onClick={this.handleFilterType} onMouseDown={preventBlur}>
         <span className={className}>All</span>
         {TYPES.map(function (type) {
-          return <span key={type} title={TITLES[type] || type} className={getActive(filterType === type)}>{type}</span>;
+          var isActive = filterType === type;
+          return <span key={type} data-type={type} title={TITLES[type] || type} className={getActive(isActive)}>
+            {type}
+            {isActive ? <i title="Show all">&times;</i> : null}
+          </span>;
         })}
       </div>
     );

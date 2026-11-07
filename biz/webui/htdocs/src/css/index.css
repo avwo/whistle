@@ -28,7 +28,7 @@
 }
 .w-menu .w-online {
   position: absolute;
-  top: 0;
+  top: 1px;
   right: 0;
 }
 .w-menu :is(.w-online, a:hover),
@@ -188,7 +188,7 @@
 }
 .w-choose-file-type-label .form-control {
   margin-left: 10px;
-  width: 325px;
+  width: 330px;
   display: inline-block;
   font-weight: normal;
 }
@@ -218,6 +218,9 @@
 }
 .w-show-left-menu .w-nav-menu {
   display: none;
+}
+.w-nav-menu > a, .w-left-menu a  {
+  transition: all 0.3s ease;
 }
 .w-left-menu a {
   display: block;

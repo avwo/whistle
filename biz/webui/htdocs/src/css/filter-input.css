@@ -113,11 +113,27 @@
   justify-content: center;
   background-color: var(--b-default);
   min-width: 32px;
+  position: relative;
 }
 
 .w-type-bar span:hover {
   border-color: var(--b-btn-hover);
   background: var(--b-btn-hover);
+}
+
+.w-type-bar i {
+  display: flex;
+  line-height: 9px;
+  justify-content: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 100%;
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  color: var(--c-btn);
+  background: var(--c-error);
+  cursor: pointer;
 }
 
 .w-type-bar span:is(:active, .w-active) {

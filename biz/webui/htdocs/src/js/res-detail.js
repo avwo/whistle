@@ -105,7 +105,7 @@ var ResDetail = React.createClass({
           cookies = util.isStr(cookies) ? [cookies] : [];
         }
         cookies = cookies.map(function (cookie) {
-          cookie = util.parseQueryString(
+          cookie = util.parseQuery(
             cookie,
             /;\s*/,
             null,

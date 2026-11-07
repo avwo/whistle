@@ -5,9 +5,11 @@ var FilterInput = require('./filter-input');
 var util = require('./util');
 var FbBtn = require('./forward-back-btn');
 var CloseBtn = require('./close-btn');
+var error = require('./message').error;
 
 var KV_RE = /^(k|v):/;
 var stringify = util.stringify;
+var parseQuery = util.parseQuery;
 
 var JSONDialog = React.createClass({
   getInitialState: function () {
@@ -64,14 +66,10 @@ var JSONDialog = React.createClass({
       str: stringify(json)
     };
   },
-  show: function(text, keyPath, session) {
-    if (!text) {
-      return;
-    }
+  addHistory: function(text, keyPath) {
     var self = this;
-    var state = self.state;
-    var history = state.history;
-    var historyIndex = state.historyIndex;
+    var history = self.state.history;
+    var historyIndex = self.state.historyIndex;
     var len = history.length;
     if (historyIndex == null) {
       historyIndex = len - 1;
@@ -89,34 +87,37 @@ var JSONDialog = React.createClass({
         history.splice(0, overLen);
       }
     }
-    state.historyIndex = historyIndex;
-    self._show(text, keyPath, session);
+    self.setState({ historyIndex: historyIndex });
   },
-  _show: function (text, keyPath, session) {
+  show: function(text, keyPath, session) {
+    text && this._show(text, keyPath, session, true);
+  },
+  _show: function (text, keyPath, session, addHistory) {
     var self = this;
     var data = self.state.data;
     self.setState({ session: session, keyPath: util.isArr(keyPath) ? keyPath : null });
     if (data && data.text === text) {
       self.focus();
+      addHistory && self.addHistory(text, keyPath);
       return self.refs.jsonDialog.show();
     }
     var json = util.parseJSON(text);
     if (!json && !/[\r\n]/.test(text)) {
       if (!/\s/.test(text) && text.indexOf('&') !== -1) {
-        json = util.parseQueryString(text, null, null, decodeURIComponent);
+        json = parseQuery(text, null, null, decodeURIComponent);
       } else if (text.indexOf(';') !== -1 || text.indexOf('=') !== -1) {
-        json = util.parseQueryString(text, ';', null, decodeURIComponent);
+        json = parseQuery(text, ';', null, decodeURIComponent);
       }
     }
-    if (json) {
-      data = {
-        json: json,
-        text: text,
-        str: stringify(json)
-      };
-    } else {
-      return util.parseRawJson(text);
+    if (!json) {
+      return error('Invalid JSON format');
     }
+    data = {
+      json: json,
+      text: text,
+      str: stringify(json)
+    };
+    addHistory && self.addHistory(text, keyPath);
     self.setState({ curData: self.filterJson(data), data: data }, function () {
       self.refs.jsonDialog.show();
       self.focus();
@@ -152,7 +153,6 @@ var JSONDialog = React.createClass({
   render: function () {
     var self = this;
     var state = self.state;
-    var history = state.history;
     var historyIndex = state.historyIndex;
 
     return (
@@ -160,7 +160,7 @@ var JSONDialog = React.createClass({
         <div className="modal-body">
           <FbBtn
             disabledBack={historyIndex <= 0}
-            disabledForward={historyIndex >= history.length - 1}
+            disabledForward={historyIndex >= state.history.length - 1}
             onBack={self.onBack}
             onForward={self.onForward}
           />

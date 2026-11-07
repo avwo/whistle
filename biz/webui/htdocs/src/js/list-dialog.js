@@ -138,15 +138,15 @@ var ListDialog = React.createClass({
     if (self.isRuleList()) {
       return self.exportRuleList();
     }
-    var items = self.state.checkedItems;
-    self.donwload(items);
+    self.donwload(self.state.checkedItems);
   },
   getExportData: function(cb) {
     var self = this;
     if (self.isRuleList()) {
-      return self.getRuleList(cb);
+      self.getRuleList(cb);
+    } else {
+      cb(self.state.checkedItems);
     }
-    cb(self.state.checkedItems);
   },
   getAllItems: function () {
     var list = this.props.list || [];
@@ -267,9 +267,7 @@ var ListDialog = React.createClass({
 
     return (
       <Dialog ref="dialog" wclassName="w-list-dialog">
-        { props.title ? <ModalHeader>
-                {props.title}
-              </ModalHeader> : null }
+        <ModalHeader>{props.title}</ModalHeader>
         <div className="modal-body">
           {props.title ? null : <CloseBtn />}
           {rulesModal ? <Tabs tabs={tabs} onChange={self.onTabChange} /> : null}

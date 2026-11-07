@@ -15,6 +15,7 @@ var dataCenter = require('./data-center');
 var storage = require('./storage');
 var message = require('./message');
 var Icon = require('./icon');
+var ModalHeader = require('./modal-header');
 var BackToBottomBtn = require('./back-to-bottom-btn');
 var Dialog = require('./dialog');
 var ModalFooter = require('./modal-footer');
@@ -37,6 +38,7 @@ var BASE_DOM = '.ReactVirtualized__Grid:first';
 var MAX_LEN = 64;
 var KW_TIPS = util.KW_TIPS;
 var ERROR_STYLE = 'w-error-status';
+var FROM_FLAG = '&from_5b6af7b9884e1165';
 var HINTS = [
   '<' + KW_TIPS + 'URL>',
   'd:<' + KW_TIPS + 'domain>',
@@ -232,31 +234,19 @@ function isVisibleInTree(item) {
   return !parent || (parent.expand && parent.pExpand);
 }
 
-function getStatusClass(data) {
-  var type = '';
-  var headers = data.res.headers;
-  switch (util.getContentType(headers)) {
-  case 'JS':
-    type = 'warning';
-    break;
-  case 'CSS':
-    type = 'info';
-    break;
-  case 'HTML':
-    type = 'success';
-    break;
-  case 'IMG':
-    type = 'active';
-    break;
-  case 'JSON':
-    type = '_json';
-    break;
-  case 'XML':
-    type = '_xml';
-    break;
-  }
+var TYPE_MAP = {
+  'JS': 'warning',
+  'CSS': 'info',
+  'HTML': 'success',
+  'IMG': 'active',
+  'JSON': '_json',
+  'XML': '_xml'
+};
 
-  var statusCode = data.res && data.res.statusCode;
+function getStatusClass(data) {
+  var headers = data.res.headers;
+  var type = TYPE_MAP[util.getContentType(headers)] || '';
+  var statusCode = data.res.statusCode;
   var customData = data.customData;
   if (data.reqError || data.resError || (customData && customData.error)) {
     type += ' danger ' + ERROR_STYLE;
@@ -610,14 +600,12 @@ var ReqData = React.createClass({
   componentDidMount: function () {
     var self = this;
     var timer;
-    addEvent('hashFilterChange', function () {
+    var update = function () {
       self.setState({});
-    });
+    };
+    addEvent('hashFilterChange onColumnTitleChange', update);
     addEvent('onColumnsChanged', function () {
       self.setState({ columns: settings.getSelectedColumns() });
-    });
-    addEvent('onColumnTitleChange', function () {
-      self.setState({});
     });
     addEvent('changeRecordState', function (_, type) {
       self.setState({ record: type }, self.updateList);
@@ -653,9 +641,6 @@ var ReqData = React.createClass({
       item = list[list.length - 1];
       item && self.scrollToRow(item, count);
     });
-    var update = function () {
-      self.setState({});
-    };
     var render = function () {
       clearTimeout(timer);
       timer = setTimeout(update, 60);
@@ -740,7 +725,7 @@ var ReqData = React.createClass({
       if (index === -1) {
         return;
       }
-      var sessionsUrl = util.parseQueryString(
+      var sessionsUrl = util.parseQuery(
         hash.substring(index + 1),
         null,
         null,
@@ -754,8 +739,8 @@ var ReqData = React.createClass({
       }
       curRemoteUrl = sessionsUrl.replace(/#.*$/, '');
       var url = curRemoteUrl;
-      if (curRemoteUrl.indexOf('&from_5b6af7b9884e1165') === -1) {
-        url += (url.indexOf('?') === -1 ? '?' : '') + '&from_5b6af7b9884e1165';
+      if (curRemoteUrl.indexOf(FROM_FLAG) === -1) {
+        url += (url.indexOf('?') === -1 ? '?' : '') + FROM_FLAG;
       }
       trigger('importSessionsFromUrl', url);
     };
@@ -1697,6 +1682,9 @@ var ReqData = React.createClass({
         <ContextMenu onClick={self.onClickHeadMenu} ref="headContextMenu" />
         <QRCodeDialog ref="qrcodeDialog" />
         <Dialog ref="saveSessions" wstyle="w-choose-file-type">
+          <ModalHeader>
+            Save Sessions
+          </ModalHeader>
           <div className="modal-body">
             <label className="w-choose-file-type-label w-save-sessions-label">
               Save as

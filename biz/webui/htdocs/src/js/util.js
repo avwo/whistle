@@ -1,6 +1,7 @@
 var $ = require('jquery');
 var base64JS = require('base64-js');
 var jsBase64 = require('js-base64').Base64;
+var parseJson5 = require('json5').parse;
 var json2 = require('./components/json');
 var isUtf8 = require('./is-utf8');
 var message = require('./message');
@@ -21,16 +22,12 @@ var BIG_NUM_RE = /[:\[][\s\n\r]*-?[\d.]{16,}[\s\n\r]*[,\}\]]/;
 var dragCallbacks = {};
 var dragTarget, dragOffset, dragCallback;
 var logTempId = 0;
-var RAW_CRLF_RE = /\\n|\\r/g;
 var LEVELS = ['fatal', 'error', 'warn', 'info', 'debug'];
 var MAX_CURL_BODY = 1024 * 72;
 var search = (globaWin.location.search || '').substring(1);
 var useCustomEditor = search.indexOf('useCustomEditor') !== -1;
 var JSON_RE = /^\s*(?:\{[\w\W]*\}|\[[\w\W]*\])\s*$/;
 var isJSONText;
-var MAX_SAFE_INTEGER = (Number.MAX_SAFE_INTEGER || '9007199254740991') + '';
-var MIN_SAFE_INTEGER = Math.abs(Number.MIN_SAFE_INTEGER || '9007199254740991') + '';
-var DIG_RE = /^([+-]?)([1-9]\d{0,15})$/;
 var SOURCE_SEP = '# (From ';
 var SOURCE_SEP_LEN = SOURCE_SEP.length;
 var BASE_SERVICE_URL = 'service/';
@@ -217,26 +214,6 @@ exports.notEmpty = function (value) {
   return /[^\s]/.test(value);
 };
 
-function isSafeNumStr(str) {
-  if (str == '0') {
-    return true;
-  }
-  var match = DIG_RE.exec(str);
-  if (!match) {
-    return false;
-  }
-  var sign = match[1] === '-';
-  var num = match[2];
-  if (num.length < 16) {
-    return true;
-  }
-  return num <= (sign ? MIN_SAFE_INTEGER : MAX_SAFE_INTEGER);
-}
-
-function replaceCrLf(char) {
-  return char === '\\r' ? '\r' : '\n';
-}
-
 function noop(_) {
   return _;
 }
@@ -279,7 +256,7 @@ exports.getServiceUrl = function (win, path, bridgeApi) {
 
 exports.getQuery = function() {
   if (isStr(search)) {
-    search = parseQueryString(search);
+    search = parseQuery(search);
   }
   return search;
 };
@@ -926,7 +903,7 @@ exports.ensureVisible = function (elem, container, init) {
   }
 };
 
-function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
+function parseQuery(str, delimiter, seperator, decode, donotAllowRepeat) {
   var result = {};
   globaWin.___hasFormData = false;
   if (!str || !(str = (str + '').trim())) {
@@ -966,7 +943,7 @@ function parseQueryString(str, delimiter, seperator, decode, donotAllowRepeat) {
   return result;
 }
 
-exports.parseQueryString = parseQueryString;
+exports.parseQuery = parseQuery;
 
 function objToStr(obj, rawNames, noEncoding) {
   if (!obj || isStr(obj)) {
@@ -1116,92 +1093,6 @@ function parseJSON(str, resolve) {
 
 exports.parseJSON = parseJSON;
 
-function isNum(n) {
-  return typeof n === 'number';
-}
-
-function parseLine(line) {
-  var index = line.indexOf(': ');
-  if (index === -1) {
-    index = line.indexOf(':');
-    if (index === -1) {
-      index = line.indexOf('=');
-    }
-  }
-  var name, value;
-  if (index != -1) {
-    name = line.substring(0, index).trim();
-    value = line.substring(index + 1).trim();
-    if (value) {
-      var fv = value[0];
-      var lv = value[value.length - 1];
-      if (fv === lv) {
-        if (fv === '"' || fv === '\'' || fv === '`') {
-          value = value.slice(1, -1);
-          if (value && fv === '`') {
-            value = value.replace(RAW_CRLF_RE, replaceCrLf);
-          }
-        }
-      } else if (isSafeNumStr(value)) {
-        value = parseInt(value, 10);
-      }
-    }
-  } else {
-    name = line.trim();
-    value = '';
-  }
-  return {
-    name: name,
-    value: value
-  };
-}
-
-function parseLinesJSON(text) {
-  if (!isStr(text) || !(text = text.trim())) {
-    return null;
-  }
-  var result;
-  text.split(/\r\n|\n|\r/).forEach(function(line) {
-    if (!(line = line.trim())) {
-      return;
-    }
-    var obj = parseLine(line);
-    var name = obj.name;
-    var value = obj.value;
-    var isKey = !isArr(name);
-    if (isKey || name.length <= 1) {
-      if (isKey) {
-        result = result || {};
-      } else {
-        name = name[0];
-        result = result || [];
-      }
-      result[name] = value;
-      return;
-    }
-    result = result || (isNum(name[0]) ? [] : {});
-    obj = result;
-    var lastIndex = name.length - 1;
-    name.forEach(function(key, i) {
-      if (i === lastIndex) {
-        obj[key] = value;
-        return;
-      }
-      var next = obj[key];
-      if (!isObj(next)) {
-        next = isNum(name[i + 1]) ? [] : {};
-      }
-      obj[key] = next;
-      obj = next;
-    });
-  });
-  return result || {};
-}
-
-exports.parseJSON2 = function (str) {
-  return parseJSON(str) || parseLinesJSON(str);
-};
-
 function resolveJSON(str, decode) {
   globaWin._$hasBigNumberJson = false;
   var result = parseJSON(str, true);
@@ -1215,19 +1106,17 @@ function resolveJSON(str, decode) {
 
 exports.unique = function (arr, reverse) {
   var result = [];
+  var add = function(item) {
+    if (result.indexOf(item) == -1) {
+      result.push(item);
+    }
+  };
   if (reverse) {
     for (var i = arr.length - 1; i >= 0; i--) {
-      var item = arr[i];
-      if (result.indexOf(item) == -1) {
-        result.unshift(item);
-      }
+      add(arr[i]);
     }
   } else {
-    arr.forEach(function (item) {
-      if (result.indexOf(item) == -1) {
-        result.push(item);
-      }
-    });
+    arr.forEach(add);
   }
 
   return result;
@@ -2200,14 +2089,14 @@ exports.openPreview = function (data) {
 };
 
 function parseRawJson(str, quite) {
-  try {
-    var json = JSON.parse(str);
-    if (isObj(json)) {
-      return json;
+  if (/^\s*[\[\{]/.test(str)) {
+    try {
+      return parseJson5(str);
+    } catch (e) {
+      !quite && showError(e.message);
     }
-    !quite && showError('Error: invalid JSON format');
-  } catch (e) {
-    !quite && showError('Error: ' + e.message);
+  } else if (!quite) {
+    showError('Invalid JSON format');
   }
 }
 
@@ -2617,11 +2506,12 @@ var FILENAME_RE = /filename=(?:"([^"]+)"|([^;]+))/i;
 var TYPE_RE = /^\s*content-type:\s*([^\s]+)/i;
 var CRLF_BUF = strToByteArray('\r\n');
 var EMPTY_BUF = strToByteArray('');
+var CONFIRM_PREFIX = 'Do you confirm the ';
 
 exports.EMPTY_BUF = EMPTY_BUF;
 
-exports.CMF_DEL_MSG = 'Do you confirm the deletion of ';
-exports.CMF_CHG_MSG = 'Do you confirm the changes to ';
+exports.CMF_DEL_MSG = CONFIRM_PREFIX + 'deletion of ';
+exports.CMF_CHG_MSG = CONFIRM_PREFIX + 'changes to ';
 
 function parseMultiHeader(header) {
   try {
@@ -2919,7 +2809,7 @@ exports.formatTime = function (time) {
 var EMPTY_OBJ = {};
 
 function parseResCookie(cookie) {
-  cookie = parseQueryString(cookie, /;\s*/, null, null, true);
+  cookie = parseQuery(cookie, /;\s*/, null, null, true);
   var result = {
     httpOnly: false,
     secure: false
@@ -2992,7 +2882,7 @@ function objectToArray(obj, rawNames) {
 }
 
 function stringToArray(str, delimiter) {
-  str = parseQueryString(str, delimiter);
+  str = parseQuery(str, delimiter);
   return objectToArray(str);
 }
 
@@ -3329,9 +3219,12 @@ exports.getPluginIcon = function (plugin, name) {
 };
 
 var IMPORT_URL_RE = /[?&#]data(?:_url|Url)=([^&#]+)(?:&|#|$)/;
-exports.getDataUrl = function() {
-  var result = IMPORT_URL_RE.exec(location.href);
-  return result && decodeURIComponentSafe(result[1]).trim();
+exports.getDataUrl = function(url) {
+  if (!url) {
+    var result = IMPORT_URL_RE.exec(location.href);
+    url = result && result[1];
+  }
+  return notEStr(url) ? decodeURIComponentSafe(url).trim().substring(0, 2560) : '';
 };
 
 function getSimplePluginName(plugin) {
@@ -3517,7 +3410,7 @@ exports.shakeElem = function (elem) {
   elem.addClass('w-shake-horizontal');
   setTimeout(function() {
     elem.removeClass('w-shake-horizontal');
-  }, 500);
+  }, 600);
 };
 
 var INVALID_NAME_RE = /[\u001e\u001f\u200e\u200f\u200d\u200c\u202a\u202d\u202e\u202c\u206e\u206f\u206b\u206a\u206d\u206c'<>:"\\/|?*]+/g;

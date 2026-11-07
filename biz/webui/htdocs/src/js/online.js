@@ -416,7 +416,11 @@ var Online = React.createClass({
             showSysErr(xhr);
             return;
           }
-          self.setState({ clientIps: data.reverse().join('\n') });
+          var clientIps = data.reverse().join('\n');
+          if (!clientIps) {
+            return message.info('No client IPs found');
+          }
+          self.setState({ clientIps: clientIps });
           self.refs.clientIps.show();
         });
       });
@@ -630,7 +634,7 @@ var Online = React.createClass({
     var self = this;
     var state = self.state;
     var server = state.server || '';
-    var clientIps = state.clientIps || '127.0.0.1';
+    var clientIps = state.clientIps;
 
     return (
       <a

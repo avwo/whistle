@@ -363,16 +363,13 @@ var EditorDialog = React.createClass({
   },
   formatValue: function() {
     var textarea = this._textarea;
-    try {
-      var val = textarea.value.trim();
-      if (val[0] === '{' || val[0] === '[') {
-        var formattedVal = stringify(JSON.parse(val));
-        if (textarea.value !== formattedVal) {
-          textarea.value = formattedVal;
-        }
+    var val = textarea.value;
+    var obj = util.parseRawJson(val);
+    if (obj) {
+      var formattedVal = stringify(obj);
+      if (val !== formattedVal) {
+        textarea.value = formattedVal;
       }
-    } catch (e) {
-      showError(e.message);
     }
   },
   clearValue: function() {

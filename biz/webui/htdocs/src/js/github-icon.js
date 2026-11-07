@@ -7,6 +7,9 @@ var GITHUB_STYLE = {
 };
 
 var GitHub = React.createClass({
+  shouldComponentUpdate: function() {
+    return false;
+  },
   render: function() {
     return (
       <svg viewBox="0 0 30 30" width="17px" height="17px" style={GITHUB_STYLE} fill="currentColor">
