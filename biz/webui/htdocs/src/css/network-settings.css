@@ -146,7 +146,7 @@
 }
 
 .w-query-select {
-  font-size: 12px;
+  font-size: var(--f-size);
   width: 64px;
   text-align: center;
   height: 20px;

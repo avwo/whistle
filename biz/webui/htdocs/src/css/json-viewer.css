@@ -11,6 +11,6 @@
 }
 .w-json-viewer-tree > ul {
   background: none !important;
-  font-size: 12px;
+  font-size: var(--f-size);
   margin: 0 !important;
 }

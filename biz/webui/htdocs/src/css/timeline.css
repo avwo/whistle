@@ -15,7 +15,7 @@
 }
 .w-tl span {
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--f-size);
   height: 20px;
   line-height: 20px;
   overflow: hidden;

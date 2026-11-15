@@ -51,7 +51,7 @@
 
 .w-filter-hint li {
   line-height: 24px;
-  font-size: 12px;
+  font-size: var(--f-size);
   border-radius: 3px;
   padding: 0 5px;
   cursor: default;
@@ -77,7 +77,7 @@
 .w-filter-bar a {
   left: 3px;
   position: absolute;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 .w-filter-bar a span {
   width: 16px;
@@ -106,7 +106,7 @@
   border-radius: 3px;
   padding: 0 6px;
   height: 18px;
-  font-size: 12px;
+  font-size: var(--f-size);
   box-sizing: border-box;
   display: flex;
   align-items: center;

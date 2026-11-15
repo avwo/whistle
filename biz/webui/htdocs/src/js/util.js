@@ -1730,17 +1730,11 @@ exports.trimLogList = function (list, overflow, hasKeyword) {
   return list;
 };
 
-var TIME_RE = /\b\d\d?:\d\d?:\d\d?\b/;
 
 function toDateStr(timestamp) {
   var date = new Date(timestamp);
-  var str = date.toLocaleString();
-  if (!TIME_RE.test(str)) {
-    return str;
-  }
-  var time = RegExp['$&'];
-  var ms = date.getTime() % 1000;
-  return str.replace(time, time + '.' + paddingMS(ms));
+  var list = getDateList(date);
+  return list.slice(0, 3).join('-') + ' ' + list.slice(3).join(':');
 }
 
 exports.toDateStr = toDateStr;
@@ -2780,17 +2774,20 @@ function paddingMS(ms) {
   return '00' + ms;
 }
 
-function formatDate(date) {
-  date = date || new Date();
+function getDateList(date) {
   return [
     date.getFullYear(),
     padding(date.getMonth() + 1),
     padding(date.getDate()),
     padding(date.getHours()),
     padding(date.getMinutes()),
-    padding(date.getSeconds()),
-    paddingMS(date.getMilliseconds())
-  ].join('');
+    padding(date.getSeconds())
+  ];
+}
+
+function formatDate(date) {
+  date = date || new Date();
+  return getDateList(date).concat([paddingMS(date.getMilliseconds())]).join('');
 }
 
 exports.formatDate = formatDate;

@@ -1268,7 +1268,7 @@ var Composer = React.createClass({
               <Icon name="send" />
             </button>
           </div>
-          <Divider vertical="true" leftWidth="72">
+          <Divider vertical leftWidth="72">
             <div
               ref="rulesCon"
               onDoubleClick={self.enableRules}
@@ -1359,7 +1359,7 @@ var Composer = React.createClass({
                   Frames
                 </button>
               </div>
-              <Divider hide={!showRequest} vertical="true">
+              <Divider hide={!showRequest} vertical>
                 <div className="fill v-box w-com-headers">
                   <div
                     className="w-com-bar"

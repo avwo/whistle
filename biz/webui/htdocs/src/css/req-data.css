@@ -80,7 +80,7 @@
   border-top: none !important;
   border-bottom: var(--v-border);
   font-weight: normal;
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 3px 0 3px 6px !important;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -132,7 +132,7 @@
 
 .w-req-data-list .tree-leaf .glyphicon {
   color: var(--c-thin) !important;
-  font-size: 12px;
+  font-size: var(--f-size);
   display: inline-block;
   margin-right: 5px;
   overflow: hidden;
@@ -243,7 +243,7 @@
   position: absolute;
   top: -9px;
   right: -2px;
-  font-size: 12px;
+  font-size: var(--f-size);
   -webkit-transform: scale(0.625, 0.625);
   transform: scale(0.625, 0.625);
   overflow: hidden;
@@ -262,7 +262,7 @@
   white-space: nowrap;
   line-height: 24px;
   padding: 0 10px;
-  font-size: 12px;
+  font-size: var(--f-size);
   outline: none;
 }
 
@@ -332,7 +332,7 @@
 }
 
 .w-record-status .btn {
-  font-size: 12px;
+  font-size: var(--f-size);
   line-height: 20px;
   height: 22px;
   margin-left: 20px;
@@ -351,7 +351,7 @@
   justify-content: center;
   bottom: 70px;
   right: 13px;
-  font-size: 12px;
+  font-size: var(--f-size);
   color: var(--c-link);
   background-color: var(--b-default);
   border: var(--v-border);

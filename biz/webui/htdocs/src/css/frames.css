@@ -1,5 +1,5 @@
 .w-frames {
-  font-size: 12px;
+  font-size: var(--f-size);
   min-width: 560px;
 }
 .w-frames-action {
@@ -138,7 +138,7 @@
 .w-frames-com-action :is(.btn-group, .w-format-json-btn) {
   margin: 1px 15px 1px 0;
   float: right;
-  font-size: 12px !important;
+  font-size: var(--f-size) !important;
 }
 .w-frames-com-action .btn {
   padding: 0 5px !important;
@@ -148,7 +148,7 @@
 .w-frames-com-action .dropdown-menu {
   min-width: 0;
   right: 0;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 .w-frames-com-action .dropdown-menu a {
   padding: 0;

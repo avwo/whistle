@@ -181,7 +181,7 @@ var ReqDetail = React.createClass({
         )}
         {state.initedWebForms ? (
           <Divider
-            vertical="true"
+            vertical
             hideRight={!form}
             hideLeft={!query}
             splitRatio={0.6}

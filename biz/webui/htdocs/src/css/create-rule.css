@@ -57,7 +57,7 @@
 .w-copy-rules {
   padding: 0 8px;
   margin-left: 10px;
-  font-size: 12px;
+  font-size: var(--f-size);
   line-height: 20px;
 }
 
@@ -166,7 +166,7 @@
 
 .w-add-file span {
   margin-right: 3px;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 
 .w-rules-form > .w-form-item:last-child {
@@ -182,7 +182,7 @@
   white-space: pre-wrap;
   max-height: 160px;
   min-height: 42px;
-  font-size: 14px;
+  font-size: var(--f-size);
   overflow: auto;
 }
 

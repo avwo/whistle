@@ -57,7 +57,7 @@
   white-space: normal;
   word-wrap: break-word;
   word-break: break-all;
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 3px 5px;
   line-height: 18px;
   display: block;
@@ -77,7 +77,7 @@ div.w-detail-tabs {
   border-right: var(--v-border);
   height: 20px;
   line-height: 16px;
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 0 12px;
   border-radius: 0;
   font-weight: bold;

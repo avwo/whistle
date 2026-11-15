@@ -30,7 +30,7 @@
 }
 .w-btn-group-sm.small .btn {
   padding: 0 8px !important;
-  font-size: 12px;
+  font-size: var(--f-size);
   line-height: 16px;
 }
 

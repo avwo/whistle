@@ -20,9 +20,10 @@ var UrlInput = React.createClass({
     if (props.hideCustom) {
       protocols = protocols.slice(1);
     } else if (props.enableFile) {
-      protocols = ['file://', 'http://', 'https://'];
+      protocols = protocols.slice(0, 3);
+      protocols[0] = 'file://';
     } else if (props.isRedirect) {
-      protocols = ['', 'http://', 'https://'];
+      protocols = protocols.slice(0, 3);
     }
     if (props.enableTpl) {
       protocols.splice(1, 0, 'tpl://');

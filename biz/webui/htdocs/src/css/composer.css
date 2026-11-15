@@ -22,7 +22,7 @@
   width: 80px;
   margin: 0 5px 0 0;
   padding: 0;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 
 .w-com-execute {
@@ -117,7 +117,6 @@
   border-radius: 2px;
   outline: none;
   margin-right: 5px;
-  margin-bottom: 1px;
   overflow: hidden;
 }
 .w-com-body .w-record-status {
@@ -129,7 +128,7 @@
 }
 .w-com-bar,
 .w-com-bar label {
-  font-size: 12px;
+  font-size: var(--f-size);
   font-weight: normal;
 }
 .w-com-bar label {
@@ -202,7 +201,7 @@
   top: unset;
   right: 3px;
   bottom: 5px;
-  font-size: 12px;
+  font-size: var(--f-size);
   cursor: pointer;
 }
 
@@ -307,7 +306,7 @@
   border-right: var(--v-border);
   height: 22px;
   line-height: 18px;
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 0 12px;
   border-radius: 0;
   font-weight: bold;
@@ -498,7 +497,7 @@
   height: 100%;
   background: var(--b-bar);
   position: relative;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 
 .w-com-history-ctn pre {
@@ -561,6 +560,6 @@
   padding: 0 5px;
   background: var(--b-bar);
   border-radius: 3px;
-  font-size: 12px;
+  font-size: var(--f-size);
   text-decoration: none!important;
 }

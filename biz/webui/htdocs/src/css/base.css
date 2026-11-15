@@ -7,6 +7,7 @@
   --z-ctx-menu: 99999999;
 
   --h-field: 32px;
+  --f-size: 13px;
 
   --c-default: #000;
   --c-active: #fff;
@@ -214,7 +215,7 @@ pre {
   border: none;
   padding: 0;
   margin: 0;
-  font-size: 12px;
+  font-size: var(--f-size);
   font-family: inherit;
   display: block;
   white-space: pre-wrap;
@@ -260,7 +261,7 @@ textarea[readonly] {
 textarea {
   resize: none;
   display: block;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 .hide {
   display: none !important;
@@ -320,7 +321,7 @@ textarea {
   margin-left: 5px;
   height: 20px;
   line-height: 14px;
-  font-size: 12px;
+  font-size: var(--f-size);
   color: var(--c-default);
 }
 

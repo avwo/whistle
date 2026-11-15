@@ -33,8 +33,7 @@ var OrderTable = React.createClass({
                   <tr key={row[rowKey] || i} className={(row.className || '') + (' w-tr-' + (row.checked ? 'checked' : 'unchecked'))}>
                     <th>{i + 1}</th>
                     {cols.map(function(col) {
-                      var name = col.name;
-                      return <td key={name} style={{ width: col.width }} className={col.className}>{row[name]}</td>;
+                      return <td key={col.name} style={{ width: col.width }} className={col.className}>{row[col.name]}</td>;
                     })}
                   </tr>
                 );

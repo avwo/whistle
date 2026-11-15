@@ -58,7 +58,7 @@ var Frames = React.createClass({
         <LazyInit inited={!hide}>
           <Divider
             hide={hide}
-            vertical="true"
+            vertical
             rightWidth="250"
             onDOMReady={self.onDOMReady}
           >

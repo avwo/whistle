@@ -31,7 +31,7 @@
 }
 .w-menu-item :is(a .glyphicon, input) {
   margin-right: 8px;
-  font-size: 12px;
+  font-size: var(--f-size);
   vertical-align: text-bottom;
 }
 .w-menu-item a .glyphicon {

@@ -7,7 +7,7 @@
 .w-detail-webforms-title {
   line-height: 18px;
   background: var(--b-title);
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 0 10px;
   border-bottom: var(--v-border);
 }

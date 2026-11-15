@@ -27,7 +27,7 @@ var Inspector = React.createClass({
     var modal = props.modal;
     this.endTime = modal && (modal.endTime || modal.lost);
     return (
-      <Divider ref="divider" vertical="true" hide={props.hide}>
+      <Divider ref="divider" vertical hide={props.hide}>
         <div className="fill v-box">
           <ReqDetail modal={modal} />
         </div>

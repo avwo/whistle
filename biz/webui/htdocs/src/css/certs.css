@@ -39,7 +39,7 @@
 }
 
 .w-certs-filename a {
-  font-size: 12px;
+  font-size: var(--f-size);
   cursor: pointer;
 }
 

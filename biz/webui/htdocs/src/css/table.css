@@ -7,7 +7,7 @@
 }
 
 .w-table :is(th, td) {
-  font-size: 12px;
+  font-size: var(--f-size);
   padding: 3px 5px !important;
   border-top: none;
   border-bottom: var(--v-border);

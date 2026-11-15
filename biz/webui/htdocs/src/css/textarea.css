@@ -8,7 +8,7 @@
   border-radius: 2px;
   top: 2px;
   right: 12px;
-  font-size: 12px;
+  font-size: var(--f-size);
   white-space: nowrap;
   line-height: 1.5;
   background: var(--b-heavy);
@@ -79,7 +79,7 @@
   overflow: hidden;
 }
 .w-textview-tips a {
-  font-size: 12px;
+  font-size: var(--f-size);
   color: var(--c-disabled);
   text-decoration: none;
 }

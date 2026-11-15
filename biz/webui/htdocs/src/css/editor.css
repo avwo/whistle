@@ -2,7 +2,7 @@
   content: 'F1';
   position: absolute;
   right: 0;
-  font-size: 12px;
+  font-size: var(--f-size);
 }
 
 .CodeMirror-hints .CodeMirror-hint {

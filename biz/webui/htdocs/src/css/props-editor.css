@@ -12,7 +12,7 @@
   border-top: none !important;
   padding: 0 !important;
   font-weight: normal;
-  font-size: 12px;
+  font-size: var(--f-size);
   word-break: break-word;
 }
 .w-props-editor th {
@@ -51,7 +51,7 @@
 .w-props-editor pre {
   overflow: auto;
   line-height: 22px !important;
-  max-height: 350px;
+  max-height: 180px;
   padding: 0 8px !important;
 }
 

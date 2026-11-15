@@ -74,7 +74,7 @@
 }
 
 .w-plugins :is(th, td) {
-  font-size: 13px;
+  font-size: var(--f-size);
   font-weight: normal;
 }
 .w-plugins-headers {
@@ -113,7 +113,7 @@
   width: 60px;
 }
 .w-plugins-list td.w-plugins-active input {
-  margin-left: 12px;
+  margin-left: var(--f-size);
   vertical-align: text-bottom;
 }
 .w-plugins-name {
@@ -133,7 +133,7 @@
 }
 
 .w-plugins-date {
-  width: 190px;
+  width: 170px;
 }
 .w-plugins-op {
   width: 360px;
@@ -213,7 +213,7 @@
 .w-registry-list select {
   border-radius: 0;
   display: inline-block;
-  font-size: 12px;
+  font-size: var(--f-size);
   line-height: 28px;
   height: 30px;
   padding: 0 5px;
@@ -228,7 +228,7 @@
   color: var(--c-heavy);
   padding: 0 6px;
   background: var(--b-heavy);
-  font-size: 12px;
+  font-size: var(--f-size);
   top: 28px;
   right: 10px;
   border-top-left-radius: 3px;

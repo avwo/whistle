@@ -13,7 +13,7 @@
 }
 .w-props :is(th, td) {
   border: none !important;
-  font-size: 12px;
+  font-size: var(--f-size);
   padding-top: 3px !important;
   padding-bottom: 3px !important;
 }

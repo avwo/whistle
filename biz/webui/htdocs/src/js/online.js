@@ -30,7 +30,9 @@ var theme = 'light';
 var mediaMatches = false;
 var borderColor;
 var THEMES = ['auto', 'dark', 'light'];
+var FONT_SIZE_OPTIONS = ['Small', 'Medium', 'Large'];
 var SELECT_TAG = '<select class="form-control"></select>';
+var docElem = document.documentElement;
 
 var findElem = function(selector) {
   return dialog.find(selector);
@@ -46,20 +48,35 @@ var setTheme = function() {
   }
   theme = newTheme;
   try {
-    var doc = document.documentElement;
-    if (doc.getAttribute('data-theme') !== theme) {
-      doc.setAttribute('data-theme', theme);
+    if (docElem.getAttribute('data-theme') !== theme) {
+      docElem.setAttribute('data-theme', theme);
     }
-    var style = getComputedStyle(doc);
+    var style = getComputedStyle(docElem);
     borderColor = style.getPropertyValue('--c-border').trim();
   } catch (e) {}
 };
 var handleThemeChange = setTheme;
 
 var appearanceMode = storage.get('appearanceMode');
+var fontSize = storage.get('fontSize');
 if (THEMES.indexOf(appearanceMode) === -1) {
   appearanceMode = 'auto';
 }
+if (FONT_SIZE_OPTIONS.indexOf(fontSize) === -1) {
+  fontSize = 'Medium';
+}
+var FONT_SIZE_MAP = {
+  'Small': '12px',
+  'Medium': '13px',
+  'Large': '14px'
+};
+function setFontSize(size) {
+  fontSize = size;
+  storage.set('fontSize', fontSize);
+  docElem.style.setProperty('--f-size', FONT_SIZE_MAP[fontSize]);
+}
+
+setFontSize(fontSize);
 
 function getTotal(cur, max) {
   return cur + ' (Total: ' + max + ')';
@@ -212,6 +229,7 @@ function createDialog() {
       '<div class="w-online-ctn"></div>' +
       '<div class="w-online-info">' +  proxyInfoList.join('') + '</div>' +
       '<h5 class="w-online-option w-theme"><strong>Theme:</strong>' + createSelect(THEMES) + '</h5>'+
+      '<h5 class="w-online-option w-font-size"><strong>Font Size:</strong>' + createSelect(FONT_SIZE_OPTIONS) + '</h5>'+
       '<h5 class="w-online-option w-dns-order"><strong>DNS Order:</strong>' + SELECT_TAG + '</h5>' +
       '<p><a class="w-view-dns">Clear DNS Cache</a></p>' +
       '<p><a class="w-online-dns">View Custom DNS Servers</a></p>' +
@@ -222,12 +240,16 @@ function createDialog() {
       '</div></div></div></div>'
     ).appendTo(document.body);
     var appearanceSelect = findElem('.w-theme select');
+    var fontSizeSelect = findElem('.w-font-size select');
     appearanceSelect.on('change', function(e) {
       var val = e.target.value;
       storage.set('appearanceMode', val);
       setAppearanceMode(val);
     });
     appearanceSelect.val(appearanceMode);
+    fontSizeSelect.val(fontSize).on('change', function(e) {
+      setFontSize(e.target.value);
+    });
     getDnsSelect().on('change', function(e) {
       var target = e.target;
       var order = +target.value;
