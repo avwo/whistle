@@ -2,6 +2,10 @@
 
 中文 · [English](./CHANGELOG-en_US.md)
 
+## v2.10.15
+1. feat: 支持自定义界面字体大小，提升阅读体验
+2. feat: 优化时间显示格式，使时间信息更直观、更易读
+
 ## v2.10.14
 1. fix: 修复规则直接响应的请求在抓包列表中不显示请求内容（如有）的问题
 2. fix: https://github.com/avwo/whistle/issues/1378

@@ -1,5 +1,9 @@
 [中文](./CHANGELOG.md) · English
 
+## v2.10.15
+1. feat: Support customizing the UI font size for a better reading experience
+2. feat: Improve the time display format to make time information more intuitive and easier to read
+
 ## v2.10.14
 1. fix: Fixed an issue where requests responded to directly via rules could not display request content (if any) in the capture list.
 2. fix: https://github.com/avwo/whistle/issues/1378
