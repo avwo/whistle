@@ -62,16 +62,13 @@ var fontSize = storage.get('fontSize');
 if (THEMES.indexOf(appearanceMode) === -1) {
   appearanceMode = 'auto';
 }
-if (FONT_SIZE_OPTIONS.indexOf(fontSize) === -1) {
-  fontSize = 'Medium';
-}
 var FONT_SIZE_MAP = {
   'Small': '12px',
   'Medium': '13px',
   'Large': '14px'
 };
 function setFontSize(size) {
-  fontSize = size;
+  fontSize = FONT_SIZE_OPTIONS.indexOf(size) === -1 ? 'Medium' : size;
   storage.set('fontSize', fontSize);
   docElem.style.setProperty('--f-size', FONT_SIZE_MAP[fontSize]);
 }
