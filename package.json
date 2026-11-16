@@ -51,7 +51,7 @@
     "lru-cache": "^4.1.1",
     "mime": "^1.6.0",
     "multer2": "^1.1.1",
-    "node-forge": "^1.4.2",
+    "node-forge": "^1.4.3",
     "node-pac": "^0.5.1",
     "parseurl": "^1.3.1",
     "pfork": "^0.6.3",
